@@ -2,7 +2,7 @@
 # Typecheck the qbs library (src/QBS).
 #   sh qbs/check.sh              strict: every module must produce no Agda output (so no unsolved
 #                                         holes `?`), and there are no postulates.
-#   sh qbs/check.sh --clean      deletes the .agdai interfaces first, for a from-scratch check
+#   sh qbs/check.sh --clean      deletes the interfaces (_build/) first, for a from-scratch check
 #                                         (otherwise Agda reuses them; combine with --progress as needed).
 #   sh qbs/check.sh --progress   unsolved holes are tolerated (skeleton modules live at their final
 #                                         paths); any other error or a postulate still fails, and the files
@@ -16,7 +16,7 @@ progress=0
 for a in "$@"; do
   case "$a" in
     --progress) progress=1 ;;
-    --clean) find src -name '*.agdai' -delete ;;
+    --clean) rm -rf _build ;;
   esac
 done
 fails=0

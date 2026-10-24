@@ -406,10 +406,18 @@ Agda output, postulate or unsolved hole. Planned results are stated as skeleton 
 (`?`) at their final paths (load one with the Agda MCP `agda_load_and_goals` to see the goals), so
 strict mode fails while any remain. `sh qbs/check.sh --progress` tolerates unsolved holes,
 failing only on other errors or postulates, and lists the files with holes. Agda reuses the
-`.agdai` interfaces between runs; `--clean` deletes them first for a from-scratch check. Current skeleton:
+`.agdai` interfaces between runs; `--clean` deletes `_build/` first for a from-scratch check. Current skeleton:
 `Analysis/Unbounded.agda` (integration of unbounded functions, the crux of the s-finite monad). It needs Agda 2.7.0.1 with
 `standard-library` v2.3 and `agda-categories` at c2e7c13e registered. `.github/workflows/qbs.yml`
 has a `progress` job (the gate) and a `continue-on-error` strict job (manual trigger; untested).
+
+A from-scratch check takes about 6–10 minutes (interfaces are in `_build/`). Slowness pitfalls: give
+every definition an explicit type (an unsolved `z₀ : _` once cost 30 minutes), and do not restate
+a big proof term repeated in two places (conversion compares whole `Measure` records: naming the
+kernel proof once as `kernel₁` took `IsProb-tensor₁` in `Analysis/Tensor` from 108s to 0.2s). An
+error also makes a run fast, so check the output. Profile with
+`agda --profile=definitions`, after changing the file's content (unchanged files are skipped).
+Slowest remaining: `Model/StatInstance.discreteStat` (45s).
 
 ## Not done
 

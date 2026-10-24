@@ -43,15 +43,16 @@ module Tensor (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
   constK n fh = Fun-const (I n _ fh) (I-≤1 n fh)
 
   -- the product, integrating the first coordinate outside / the second coordinate outside
+  kernel₁ : ∀ n → KernelOk (P₁.pushMerge (λ _ → n))
+  kernel₁ n = P₁.KernelOk-pushMerge {λ _ → n} (constK n)
+
   tensor₁ tensor₂ : Measure → Measure → Measure
-  tensor₁ m n = bind m (P₁.pushMerge (λ _ → n)) (P₁.KernelOk-pushMerge {λ _ → n} (constK n))
+  tensor₁ m n = bind m (P₁.pushMerge (λ _ → n)) (kernel₁ n)
   tensor₂ m n = bind n (P₂.pushMerge (λ _ → m)) (P₂.KernelOk-pushMerge {λ _ → m} (constK m))
 
   -- products of probability measures are probability measures
   IsProb-tensor₁ : ∀ m n → IsProb m → IsProb n → IsProb (tensor₁ m n)
-  IsProb-tensor₁ m n pm pn =
-    IsProb-bind {m} {P₁.pushMerge (λ _ → n)} {P₁.KernelOk-pushMerge {λ _ → n} (constK n)} pm
-      (λ r → IsProb-push {P₁.mergeR r} (measurable-merge₁ (lower r)) {n} pn)
+  IsProb-tensor₁ m n pm pn = IsProb-bind {m} {P₁.pushMerge (λ _ → n)} {kernel₁ n} pm (λ r → IsProb-push {P₁.mergeR r} (measurable-merge₁ (lower r)) {n} pn)
 
   module _ (m n : Measure) where
 
