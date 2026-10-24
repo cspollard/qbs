@@ -21,6 +21,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁; down)
+open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Borel.PiLambda using (Cyl; cylTop; cylAnd; cylResp)
 open import QBS.Borel.Merge using (Cyl-borel)
 open import QBS.Analysis.Omega
@@ -39,14 +40,7 @@ open import QBS.Analysis.CoinSets using (module CoinSets)
 open import QBS.Continuous.FairCoin
 
 ----------------------------------------------------------------------------
--- prepending a bit is measurable, and pulls cylinders back to cylinders
-
-consR : Bool → R₁ → R₁
-consR b r = lift (cons b (lower r))
-
-measurable-cons : ∀ b → Measurable (down (consR b))
-measurable-cons b zero b′ = measurable-const (λ _ → b) zero b′
-measurable-cons b (suc n) b′ = gen n b′
+-- prepending a bit pulls cylinders back to cylinders
 
 private
   ⊥-cyl : Cyl (λ _ → ⊥)
