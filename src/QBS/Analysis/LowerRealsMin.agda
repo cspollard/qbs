@@ -8,13 +8,15 @@ open import Function.Base using (case_of_)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥)
-open import Data.Rational.Unnormalised.Base using (_+_; -_; _<_)
+open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Rational.Unnormalised.Base using (_+_; -_; _<_; _≤_)
 
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
 open Cut
 open _⊑_
 open import QBS.Analysis.Omega using (OmegaSemiring)
+open import QBS.Analysis.LowerRealsArch using (qC; qC-add; pos+; ≤-+ʳ′)
 open import QBS.Analysis.Min
 
 infixl 7 _⊓_
@@ -55,6 +57,40 @@ add-⊓ a b c = mk⊑ (λ q ((r , s , mr , ms , le) , mc) →
       { (inj₁ q≤s) → ap (⊕-comm⊑ (b ⊓ c) (a ⊓ c)) q (big b a c (down b q≤s ms) mc)
       ; (inj₂ s<q) → r , s , (mr , down c (<-≤ r<q) mc) , (ms , down c (<-≤ s<q) mc) , le } })
 
+-- the powers of two as rationals and as cuts
+ntwo : ℕ → Q
+ntwo zero = 1Q
+ntwo (suc k) = ntwo k + ntwo k
+
+ntwo-pos : ∀ k → 0Q < ntwo k
+ntwo-pos zero = 0<1
+ntwo-pos (suc k) = pos+ (ntwo-pos k) (ntwo-pos k)
+
+ntwo-≥1 : ∀ k → 1Q ≤ ntwo k
+ntwo-≥1 zero = ≤-refl
+ntwo-≥1 (suc k) = ≤-trans (ntwo-≥1 k) (≤-+ʳ′ (ntwo k) (ntwo k) (<-≤ (ntwo-pos k)))
+
+nat-lt : ∀ k → nat k < ntwo k
+nat-lt zero = 0<1
+nat-lt (suc k) = ≃-<ˡ (≃-sym (nat-suc k))
+  (<-≤-trans (+-mono-<-≤ (nat-lt k) (≤-refl {1Q})) (+-mono-≤ (≤-refl {ntwo k}) (ntwo-≥1 k)))
+
+ntwo-big : ∀ q → Σ ℕ (λ k → q < ntwo k)
+ntwo-big q with nat-bound q
+... | k , le = k , ≤-<-trans le (nat-lt k)
+
+module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+  open Pow (LowerRealsOmega lem) using (pw)
+
+  pw-qC : ∀ k → pw k ≋ qC (ntwo k) (ntwo-pos k)
+  pw-qC zero = mk⊑ (λ s x → x) , mk⊑ (λ s x → x)
+  pw-qC (suc k) = ≋-trans (⊕-cong (pw-qC k) (pw-qC k)) (qC-add (ntwo-pos k) (ntwo-pos k))
+
+  min-sup : ∀ a (inc : OmegaSemiring.Increasing (LowerRealsOmega lem) (λ k → a ⊓ pw k)) →
+    a ⊑ unionC (λ k → a ⊓ pw k)
+  min-sup a inc = mk⊑ (λ q m →
+    let k , lt = ntwo-big q in k , (m , ap (proj₂ (pw-qC k)) q lt))
+
 lowerRealsMin : ∀ lem → Min (LowerRealsOmega lem)
 lowerRealsMin lem = record
   { mn = _⊓_
@@ -63,4 +99,5 @@ lowerRealsMin lem = record
   ; mn-glb = λ f g → mk⊑ (λ q m → ap f q m , ap g q m)
   ; mn-⨆ = λ c _ b _ → mk⊑ (λ q ((n , mc) , mb) → n , (mc , mb))
   ; mn-add = λ {a} {b} {c} → add-⊓ a b c
+  ; mn-sup = min-sup lem
   }

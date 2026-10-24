@@ -31,6 +31,7 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
   open ArchLemmas R using (hp-≤)
   open HalfOrder A R using (half≤1; half-twice)
   open Min M
+  open Pow A public
   open Measurable A
   open Integration A
   open Series A using (⨆-+-diag)
@@ -39,11 +40,6 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
 
   ----------------------------------------------------------------------------
   -- the dyadic truncations
-
-  -- 2ᵏ
-  pw : ℕ → ∣A∣
-  pw ℕ.zero = 1#
-  pw (ℕ.suc k) = pw k + pw k
 
   hp-pw : ∀ k → hp k * pw k ≈ 1#
   hp-pw ℕ.zero = trans (*-identityʳ _) hp-zero
@@ -269,3 +265,159 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
                         (≤-reflexive (distribˡ half _ _))))
               (≤-reflexive (Iu k)))))
           (≤-reflexive (pw-half-sum k _ _)))
+
+  ----------------------------------------------------------------------------
+  -- linearity: Iinf (c · φ) = c · Iinf φ for every constant c ∈ [0,∞]
+
+  -- the value does not depend on the witness of measurability
+  Iinf-irrel : ∀ m {h} (f f′ : FunInf h) → Iinf m h f ≈ Iinf m h f′
+  Iinf-irrel m f f′ = ⨆-cong (Iseq-inc m _ f) (Iseq-inc m _ f′)
+    (λ k → *-cong refl (I-cong m (λ x → refl) (f k) (f′ k)))
+
+  Iinf-cong : ∀ m {h h′} (f : FunInf h) (f′ : FunInf h′) → (∀ x → h x ≈ h′ x) → Iinf m h f ≈ Iinf m h′ f′
+  Iinf-cong m f f′ e = ≤-antisym (Iinf-mono m f f′ (λ x → ≤-reflexive (e x)))
+                                 (Iinf-mono m f′ f (λ x → ≤-reflexive (sym (e x))))
+
+  pw-tr : ∀ k a → pw k * tr k a ≈ mn a (pw k)
+  pw-tr k a = begin
+    pw k * (hp k * mn a (pw k))   ≈⟨ sym (*-assoc _ _ _) ⟩
+    (pw k * hp k) * mn a (pw k)   ≈⟨ *-cong (trans (*-comm _ _) (hp-pw k)) refl ⟩
+    1# * mn a (pw k)              ≈⟨ *-identityˡ _ ⟩
+    mn a (pw k) ∎
+
+
+  -- the approximations φₙ = 2ⁿ · tr n φ ↑ φ
+  φn : (S → ∣A∣) → ℕ → S → ∣A∣
+  φn φ n x = pw n * tr n (φ x)
+
+  incφ : ∀ φ x → Increasing (λ n → φn φ n x)
+  incφ φ x n = ≤-trans (≤-reflexive (pw-tr n (φ x)))
+    (≤-trans (mn-mono ≤-refl (pw-≤ n)) (≤-reflexive (sym (pw-tr (ℕ.suc n) (φ x)))))
+
+  eqφ : ∀ φ x → φ x ≈ ⨆ (λ n → φn φ n x) (incφ φ x)
+  eqφ φ x = ≤-antisym
+    (≤-trans (mn-sup (φ x) (λ n → mn-mono ≤-refl (pw-≤ n)))
+      (⨆-lub _ _ (λ n → ≤-trans (≤-reflexive (sym (pw-tr n (φ x)))) (⨆-ub _ (incφ φ x) n))))
+    (⨆-lub _ _ (λ n → ≤-trans (≤-reflexive (pw-tr n (φ x))) mn-≤l))
+
+
+  -- closure properties of measurability, supplied by the model
+  record Closed : Set₁ where
+    field
+      cl-mul : ∀ c {h} → FunInf h → FunInf (λ x → c * h x)
+      cl-add : ∀ {h₁ h₂} → FunInf h₁ → FunInf h₂ → FunInf (λ x → h₁ x + h₂ x)
+
+  module Linear (C : Closed) where
+    open Closed C
+
+    -- the powers of two times a bounded function
+    Iinf-pw : ∀ m j {f} (F : Fun f) (Fj : FunInf (λ x → pw j * f x)) →
+      Iinf m (λ x → pw j * f x) Fj ≈ pw j * I m f F
+    Iinf-pw m ℕ.zero {f} F Fj = begin
+      Iinf m (λ x → 1# * f x) Fj                  ≈⟨ Iinf-cong m Fj (FunInf-bounded F) (λ x → *-identityˡ _) ⟩
+      Iinf m f (FunInf-bounded F)                 ≈⟨ Iinf-bounded m F (FunInf-bounded F) ⟩
+      I m f F                                     ≈⟨ sym (*-identityˡ _) ⟩
+      1# * I m f F ∎
+    Iinf-pw m (ℕ.suc j) {f} F Fj = begin
+      Iinf m (λ x → (pw j + pw j) * f x) Fj
+        ≈⟨ Iinf-add m Fj F₁ F₁ (λ x → distribʳ (f x) (pw j) (pw j)) ⟩
+      Iinf m (λ x → pw j * f x) F₁ + Iinf m (λ x → pw j * f x) F₁
+        ≈⟨ +-cong (Iinf-pw m j F F₁) (Iinf-pw m j F F₁) ⟩
+      pw j * I m f F + pw j * I m f F
+        ≈⟨ sym (distribʳ _ _ _) ⟩
+      (pw j + pw j) * I m f F ∎
+      where F₁ = cl-mul (pw j) (FunInf-bounded F)
+
+    -- d · g for a bounded g and any constant d
+    private
+      mn-inc : ∀ d → Increasing (λ j → mn d (pw j))
+      mn-inc d j = mn-mono ≤-refl (pw-≤ j)
+
+      mn-⨆-d : ∀ d → d ≈ ⨆ (λ j → mn d (pw j)) (mn-inc d)
+      mn-⨆-d d = ≤-antisym (mn-sup d (mn-inc d)) (⨆-lub _ (mn-inc d) (λ j → mn-≤l))
+
+      -- multiplying on the right instead of the left
+      comm-inc : ∀ a {c : ℕ → ∣A∣} → Increasing c → Increasing (λ j → c j * a)
+      comm-inc a {c} inc j = ≤-trans (≤-reflexive (*-comm _ _))
+        (≤-trans (*-mono a (inc j)) (≤-reflexive (*-comm _ _)))
+
+    Iinf-scale-fun : ∀ m d {g} (G : Fun g) (F : FunInf (λ x → d * g x)) →
+      Iinf m (λ x → d * g x) F ≈ d * I m g G
+    Iinf-scale-fun m d {g} G F = begin
+      Iinf m (λ x → d * g x) F
+        ≈⟨ Iinf-sup m (λ j x → mn d (pw j) * g x) fsj incJ F eqJ ⟩
+      ⨆ (λ j → Iinf m (λ x → mn d (pw j) * g x) (fsj j)) _
+        ≈⟨ ⨆-cong _ incK termJ ⟩
+      ⨆ (λ j → mn d (pw j) * I m g G) incK
+        ≈⟨ sym (⨆-cong incK′ incK (λ j → *-comm _ _)) ⟩
+      ⨆ (λ j → I m g G * mn d (pw j)) incK′
+        ≈⟨ sym (*-⨆ (I m g G) (λ j → mn d (pw j)) (mn-inc d) incK′) ⟩
+      I m g G * ⨆ (λ j → mn d (pw j)) (mn-inc d)
+        ≈⟨ *-comm _ _ ⟩
+      ⨆ (λ j → mn d (pw j)) (mn-inc d) * I m g G
+        ≈⟨ *-cong (sym (mn-⨆-d d)) refl ⟩
+      d * I m g G ∎
+      where
+        fsj : ∀ j → FunInf (λ x → mn d (pw j) * g x)
+        fsj j = cl-mul (mn d (pw j)) (FunInf-bounded G)
+
+        incJ : ∀ x → Increasing (λ j → mn d (pw j) * g x)
+        incJ x = comm-inc (g x) (mn-inc d)
+
+        eqJ : ∀ x → d * g x ≈ ⨆ (λ j → mn d (pw j) * g x) (incJ x)
+        eqJ x = begin
+          d * g x                                          ≈⟨ *-cong (mn-⨆-d d) refl ⟩
+          ⨆ (λ j → mn d (pw j)) (mn-inc d) * g x           ≈⟨ *-comm _ _ ⟩
+          g x * ⨆ (λ j → mn d (pw j)) (mn-inc d)           ≈⟨ *-⨆ (g x) (λ j → mn d (pw j)) (mn-inc d) (λ j → *-mono (g x) (mn-inc d j)) ⟩
+          ⨆ (λ j → g x * mn d (pw j)) (λ j → *-mono (g x) (mn-inc d j))
+                                                           ≈⟨ ⨆-cong _ (incJ x) (λ j → *-comm _ _) ⟩
+          ⨆ (λ j → mn d (pw j) * g x) (incJ x) ∎
+
+        incK : Increasing (λ j → mn d (pw j) * I m g G)
+        incK = comm-inc (I m g G) (mn-inc d)
+
+        incK′ : Increasing (λ j → I m g G * mn d (pw j))
+        incK′ j = *-mono (I m g G) (mn-inc d j)
+
+        termJ : ∀ j → Iinf m (λ x → mn d (pw j) * g x) (fsj j) ≈ mn d (pw j) * I m g G
+        termJ j = begin
+          Iinf m (λ x → mn d (pw j) * g x) (fsj j)
+            ≈⟨ Iinf-cong m (fsj j) (cl-mul (pw j) (FunInf-bounded Fu))
+                 (λ x → sym (trans (sym (*-assoc _ _ _)) (*-cong (pw-tr j d) refl))) ⟩
+          Iinf m (λ x → pw j * (tr j d * g x)) (cl-mul (pw j) (FunInf-bounded Fu))
+            ≈⟨ Iinf-pw m j Fu (cl-mul (pw j) (FunInf-bounded Fu)) ⟩
+          pw j * I m (λ x → tr j d * g x) Fu
+            ≈⟨ *-cong refl (I-scale m (tr j d) G Fu (λ x → refl)) ⟩
+          pw j * (tr j d * I m g G)
+            ≈⟨ sym (*-assoc _ _ _) ⟩
+          (pw j * tr j d) * I m g G
+            ≈⟨ *-cong (pw-tr j d) refl ⟩
+          mn d (pw j) * I m g G ∎
+          where Fu = Fun-scale (tr j d) (tr-≤1 j d) G
+
+    -- scaling an unbounded function
+    Iinf-scale : ∀ m c {φ} (f∞ : FunInf φ) →
+      Iinf m (λ x → c * φ x) (cl-mul c f∞) ≈ c * Iinf m φ f∞
+    Iinf-scale m c {φ} f∞ = begin
+      Iinf m (λ x → c * φ x) (cl-mul c f∞)
+        ≈⟨ Iinf-sup m (λ n x → c * φn φ n x) (λ n → cl-mul c (fn n)) (λ x n → *-mono c (incφ φ x n)) (cl-mul c f∞)
+             (λ x → trans (*-cong refl (eqφ φ x)) (*-⨆ c (λ n → φn φ n x) (incφ φ x) (λ n → *-mono c (incφ φ x n)))) ⟩
+      ⨆ (λ n → Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n))) _
+        ≈⟨ ⨆-cong _ (λ n → *-mono c (Iseq-inc m φ f∞ n)) termN ⟩
+      ⨆ (λ n → c * Iseq m φ f∞ n) (λ n → *-mono c (Iseq-inc m φ f∞ n))
+        ≈⟨ sym (*-⨆ c (Iseq m φ f∞) (Iseq-inc m φ f∞) (λ n → *-mono c (Iseq-inc m φ f∞ n))) ⟩
+      c * Iinf m φ f∞ ∎
+      where
+        fn : ∀ n → FunInf (φn φ n)
+        fn n = cl-mul (pw n) (FunInf-bounded (f∞ n))
+
+        termN : ∀ n → Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n)) ≈ c * Iseq m φ f∞ n
+        termN n = begin
+          Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n))
+            ≈⟨ Iinf-cong m (cl-mul c (fn n)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
+                 (λ x → sym (*-assoc _ _ _)) ⟩
+          Iinf m (λ x → (c * pw n) * tr n (φ x)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
+            ≈⟨ Iinf-scale-fun m (c * pw n) (f∞ n) (cl-mul (c * pw n) (FunInf-bounded (f∞ n))) ⟩
+          (c * pw n) * I m (λ x → tr n (φ x)) (f∞ n)
+            ≈⟨ *-assoc _ _ _ ⟩
+          c * Iseq m φ f∞ n ∎
