@@ -20,12 +20,14 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Archimedean using (Arch)
+open import QBS.Analysis.HalfOrder using (module HalfOrder)
 
 module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
     (tot : ∀ t → OmegaSemiring._≤_ A t (Arch.half R) ⊎ OmegaSemiring._≤_ A (Arch.half R) t)
     (F Z : OmegaSemiring.Carrier A → OmegaSemiring.Carrier A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R
+  open HalfOrder A R using (half≤1; half-twice)
   open SetoidReasoning setoid
 
   module _
@@ -37,17 +39,6 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
     (Z0 : Z 0# ≤ 0#)
     (FR : ∀ s → s ≤ 1# → F (half + half * s) ≈ half * F s + half * 1#)
     where
-
-    half≤1 : half ≤ 1#
-    half≤1 = ≤-trans ≤-+ʳ (≤-reflexive half+half)
-
-    half-twice : ∀ x → half * (x + x) ≈ x
-    half-twice x = begin
-      half * (x + x)       ≈⟨ distribˡ half x x ⟩
-      half * x + half * x  ≈⟨ sym (distribʳ x half half) ⟩
-      (half + half) * x    ≈⟨ *-cong half+half refl ⟩
-      1# * x               ≈⟨ *-identityˡ x ⟩
-      x ∎
 
     hp-half : ∀ n → half * hp n ≈ hp (ℕ.suc n)
     hp-half n = begin

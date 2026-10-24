@@ -17,7 +17,7 @@ dependencies. File paths below are relative to `src/QBS/`.
 | Discrete model | `Model/` | measures as weighted countable families over a complete semiring (Boolean, Viterbi, `ℕ∞`, additive `[0,∞]`), probability and sub-probability classes, the statistical instance with `normalize` |
 | Continuous model | `Borel/`, `Analysis/`, `Continuous/` | Cantor space as the random source; measures as Daniell functionals on measurable functions; the fair coin, independence of even/odd bits, the uniform distribution, sub-probability monad with scoring and restriction; Riesz round trips |
 | Programs | `Example/` | `do`-notation programs, conditioning (`guard`, `condition`), Bayes' rule, real probabilities |
-| Open | skeleton modules with holes | `Analysis/Unbounded.agda`, `Continuous/UniformCDF.agda` (see "Checking" and `TODO.md`) |
+| Open | skeleton module with holes | `Analysis/Unbounded.agda` (see "Checking" and `TODO.md`) |
 
 Start with the discrete model and `Example/Program.agda` for a working probabilistic program, or with
 "The fair-coin measure" for the continuous construction.
@@ -306,6 +306,16 @@ checks in 4 seconds with one spelling.
   a `supF` of finite `sumF`s of weighted bit indicators) and `≤ 1`.
 - `Uniform.agda` – `uniform : Pre AQ`, the fair coin pushed forward along the expansion probe: the
   uniform distribution on the unit interval as an element of the continuous probability monad.
+- The CDF `P(u ≤ t) = t` for every `t ≤ 1` (`UniformCDF.cdf : ∫ uniformSub (cdfTest t) ≈ t`). Steps:
+  `Analysis/Mixture.agda` (the mixture `½μ₁ + ½μ₂` is a measure), `Continuous/FirstBit.agda`
+  (`firstBit-fun`: `∫h dμ = ½∫h(true::·)dμ + ½∫h(false::·)dμ` for the fair coin, by `Uniqueness`, since
+  `cons b` pulls cylinders back to cylinders and `μ0` of a tree is the average of its children),
+  `Analysis/ExpansionCons.agda` (`expansion (b :: r) = b/2 + expansion r/2`), `Analysis/Threshold.agda`
+  (`{x | h x ≤ t}` is Borel for measurable `h`, hence `cdfTest t` is a morphism; `½` is comparable with
+  every real), and `Analysis/SelfSimilar.agda`: in any `Arch` semiring, a monotone `F` with
+  `F(½s) = ½Z(s) + ½F(s)` (`Z(s) ≤ F(0)`, `Z(0) = 0`), `F(½+½s) = ½F(s) + ½` and `F(1) = 1` is the
+  identity (`F(0) = 0` follows; the fixed points contain 0, 1 and are closed under the two maps, so every
+  `t` is squeezed between fixed points `2⁻ⁿ` apart). No dyadic numerals or null-set argument is needed.
 
 ## Worked example (`Example/Program.agda`)
 
@@ -396,9 +406,8 @@ Agda output, postulate or unsolved hole. Planned results are stated as skeleton 
 (`?`) at their final paths (load one with the Agda MCP `agda_load_and_goals` to see the goals), so
 strict mode fails while any remain. `sh qbs/check.sh --progress` tolerates unsolved holes,
 failing only on other errors or postulates, and lists the files with holes. Agda reuses the
-`.agdai` interfaces between runs; `--clean` deletes them first for a from-scratch check. Current skeletons:
-`Continuous/UniformCDF.agda` (`P(u ≤ t) = t`) and `Analysis/Unbounded.agda` (integration of
-unbounded functions, the crux of the s-finite monad). It needs Agda 2.7.0.1 with
+`.agdai` interfaces between runs; `--clean` deletes them first for a from-scratch check. Current skeleton:
+`Analysis/Unbounded.agda` (integration of unbounded functions, the crux of the s-finite monad). It needs Agda 2.7.0.1 with
 `standard-library` v2.3 and `agda-categories` at c2e7c13e registered. `.github/workflows/qbs.yml`
 has a `progress` job (the gate) and a `continue-on-error` strict job (manual trigger; untested).
 
@@ -406,7 +415,7 @@ has a `progress` job (the gate) and a `continue-on-error` strict job (manual tri
 
 - The s-finite measure monad (`StatisticalInterface`) for the continuous model; it needs integration of
   unbounded functions (skeleton `Analysis/Unbounded.agda`).
-- The uniform CDF and higher moments (skeleton `Continuous/UniformCDF.agda`).
+- Higher moments of the uniform distribution (the CDF is done).
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.
