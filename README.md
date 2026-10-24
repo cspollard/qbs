@@ -15,9 +15,8 @@ dependencies. File paths below are relative to `src/QBS/`.
 |---|---|---|
 | Abstract | `Core` … `Instance`, `Statistical`, `IsStatisticalQBSLike` | QBS as a category (complete, cocomplete, cartesian closed); `IsQBSLike` / `IsStatisticalQBSLike`: the minimal structure for probability and soft conditioning, with a probability monad as a hypothesis |
 | Discrete model | `Model/` | measures as weighted countable families over a complete semiring (Boolean, Viterbi, `ℕ∞`, additive `[0,∞]`), probability and sub-probability classes, the statistical instance with `normalize` |
-| Continuous model | `Borel/`, `Analysis/`, `Continuous/` | Cantor space as the random source; measures as Daniell functionals on measurable functions; the fair coin, independence of even/odd bits, the uniform distribution, sub-probability monad with scoring and restriction; Riesz round trips |
+| Continuous model | `Borel/`, `Analysis/`, `Continuous/` | Cantor space as the random source; measures as Daniell functionals on measurable functions; the fair coin, independence of even/odd bits, the uniform distribution, sub-probability monad with scoring and restriction; Riesz round trips; integration of unbounded `[0,∞]`-valued functions by dyadic truncation (`Analysis/Unbounded`) |
 | Programs | `Example/` | `do`-notation programs, conditioning (`guard`, `condition`), Bayes' rule, real probabilities |
-| Open | skeleton module with holes | `Analysis/Unbounded.agda` (see "Checking" and `TODO.md`) |
 
 Start with the discrete model and `Example/Program.agda` for a working probabilistic program, or with
 "The fair-coin measure" for the continuous construction.
@@ -404,10 +403,9 @@ Where the formalisation deliberately differs:
 `sh qbs/check.sh` (from anywhere) is strict: it typechecks every module and fails on any
 Agda output, postulate or unsolved hole. Planned results are stated as skeleton modules with holes
 (`?`) at their final paths (load one with the Agda MCP `agda_load_and_goals` to see the goals), so
-strict mode fails while any remain. `sh qbs/check.sh --progress` tolerates unsolved holes,
+strict mode fails while any remain (there are none at present). `sh qbs/check.sh --progress` tolerates unsolved holes,
 failing only on other errors or postulates, and lists the files with holes. Agda reuses the
-`.agdai` interfaces between runs; `--clean` deletes `_build/` first for a from-scratch check. Current skeleton:
-`Analysis/Unbounded.agda` (integration of unbounded functions, the crux of the s-finite monad). It needs Agda 2.7.0.1 with
+`.agdai` interfaces between runs; `--clean` deletes `_build/` first for a from-scratch check. There is no skeleton at present, so strict mode passes. It needs Agda 2.7.0.1 with
 `standard-library` v2.3 and `agda-categories` at c2e7c13e registered. `.github/workflows/qbs.yml`
 has a `progress` job (the gate) and a `continue-on-error` strict job (manual trigger; untested).
 
@@ -419,10 +417,25 @@ error also makes a run fast, so check the output. Profile with
 `agda --profile=definitions`, after changing the file's content (unchanged files are skipped).
 Slowest remaining: `Model/StatInstance.discreteStat` (45s).
 
+## Unbounded integration
+
+`Analysis/Unbounded` extends the bounded integral `I` to `[0,∞]`-valued measurable functions. With
+`pw k = 2ᵏ` and `tr k a = 2⁻ᵏ · min (a, 2ᵏ)` (a `[0,1]`-valued truncation), `FunInf h` says that every
+`tr k ∘ h` is a `Fun`, and `Iinf m h = ⨆ₖ 2ᵏ · ∫ (tr k ∘ h) dm`. Because `FunInf` is a predicate on
+values and `I-cong` ignores the measurability proof, `Iinf` is independent of representation. Proved:
+`Iinf-bounded` (extends `I`), `Iinf-mono`, `Iinf-add`, monotone convergence `Iinf-sup`, and
+`FunInf-bounded`, `FunInf-sup` (closure). The module is abstract in an `Arch` semiring with a `Min`
+(`Analysis/Min`: glb, continuity along suprema, `min (a+b, c) ≤ min (a,c) + min (b,c)`); lower cuts
+use intersection (`Analysis/LowerRealsMin`; `Analysis/UnboundedLowerReals` instantiates it).
+Decision: truncation by `2⁻ᵏ` needs only halves, so no division by naturals; a dyadic scale is also
+what makes the approximations `[0,1]`-valued, as `Fun` and `I-scale` require.
+
 ## Not done
 
-- The s-finite measure monad (`StatisticalInterface`) for the continuous model; it needs integration of
-  unbounded functions (skeleton `Analysis/Unbounded.agda`).
+- The s-finite measure monad (`StatisticalInterface`) for the continuous model: the unbounded integral
+  exists (`Analysis/Unbounded`) but is not yet used. Missing: measures of unbounded mass (the
+  `Measure` record is still sub-probability), closure of `FunInf` under sums and products, and
+  `join` on `M (M X)`.
 - Higher moments of the uniform distribution (the CDF is done).
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
