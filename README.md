@@ -433,7 +433,8 @@ proves that every `Meas` function bounded by 1 is a `Fun` (running maxima of the
 below `h x`), so `Fun` = bounded `Meas`, and `FunInf` = `Meas` (`Analysis/Lebesgue`). There `J m φ`
 (`Iinf` of a `Meas` function) is proved independent of the measurability proof, monotone, additive,
 homogeneous for every constant in `[0,∞]` (`Linear` in `Analysis/Unbounded`: `Iinf-scale`, via
-`Iinf-pw` and `Min.mn-sup`), and monotone-convergent. Plan for the s-finite monad (see `TODO.md`):
+`Iinf-pw` and `Min.mn-sup`), and monotone-convergent. `Analysis/Tonelli` gives `Meas-J` (`r ↦ J (g r) φ` is `Meas` for a kernel `g`) and
+`J-bind : J (bind m g) φ ≈ J m (r ↦ J (g r) φ)` for unbounded `φ`. Plan for the s-finite monad (see `TODO.md`):
 measures `[α, m, w]` with `m` a probability measure and `w : R → [0,∞]` a `Meas` density.
 Decision: truncation by `2⁻ᵏ` needs only halves, so no division by naturals; a dyadic scale is also
 what makes the approximations `[0,1]`-valued, as `Fun` and `I-scale` require.
