@@ -1,3 +1,5 @@
 _build/
 *.agdai
 .DS_Store
+profile/*
+!profile/summary.md

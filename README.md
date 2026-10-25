@@ -400,10 +400,10 @@ Where the formalisation deliberately differs:
 
 ## Checking
 
-`sh qbs/check.sh` (from anywhere) is strict: it typechecks every module and fails on any
+`make check` is strict: it typechecks every module and fails on any
 Agda output, postulate or unsolved hole. Planned results are stated as skeleton modules with holes
 (`?`) at their final paths (load one with the Agda MCP `agda_load_and_goals` to see the goals), so
-strict mode fails while any remain (there are none at present). `sh qbs/check.sh --progress` tolerates unsolved holes,
+strict mode fails while any remain (there are none at present). `make progress` tolerates unsolved holes,
 failing only on other errors or postulates, and lists the files with holes. Agda reuses the
 `.agdai` interfaces between runs; `--clean` deletes `_build/` first for a from-scratch check. There is no skeleton at present, so strict mode passes. It needs Agda 2.7.0.1 with
 `standard-library` v2.3 and `agda-categories` at c2e7c13e registered. `.github/workflows/qbs.yml`

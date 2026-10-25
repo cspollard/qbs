@@ -24,7 +24,7 @@ jobs:
           mkdir -p "$HOME/.agda"
           echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
           echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
-      - run: sh check.sh
+      - run: make check
   progress:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -41,4 +41,4 @@ jobs:
           mkdir -p "$HOME/.agda"
           echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
           echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
-      - run: sh check.sh --progress
+      - run: make progress
