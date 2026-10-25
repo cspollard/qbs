@@ -59,37 +59,42 @@ module Lebesgue (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ----------------------------------------------------------------------------
   -- the integral
 
-  J : Measure → ∀ φ → Meas φ → Cut
-  J m φ mφ = Iinf m φ (FunInf-Meas mφ)
+  abstract
+    J : Measure → ∀ φ → Meas φ → Cut
+    J m φ mφ = Iinf m φ (FunInf-Meas mφ)
 
-  J-irrel : ∀ m {φ} (p q : Meas φ) → J m φ p ≈ J m φ q
-  J-irrel m {φ} p q = Iinf-irrel m {φ} (FunInf-Meas p) (FunInf-Meas q)
+    J-irrel : ∀ m {φ} (p q : Meas φ) → J m φ p ≈ J m φ q
+    J-irrel m {φ} p q = Iinf-irrel m {φ} (FunInf-Meas p) (FunInf-Meas q)
 
-  J-cong : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) → (∀ x → φ x ≈ ψ x) → J m φ p ≈ J m ψ q
-  J-cong m {φ} {ψ} p q e = Iinf-cong m {φ} {ψ} (FunInf-Meas p) (FunInf-Meas q) e
+    J-cong : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) → (∀ x → φ x ≈ ψ x) → J m φ p ≈ J m ψ q
+    J-cong m {φ} {ψ} p q e = Iinf-cong m {φ} {ψ} (FunInf-Meas p) (FunInf-Meas q) e
 
-  J-mono : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) → (∀ x → φ x ≤ ψ x) → J m φ p ≤ J m ψ q
-  J-mono m {φ} {ψ} p q le = Iinf-mono m {φ} {ψ} (FunInf-Meas p) (FunInf-Meas q) le
+    J-mono : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) → (∀ x → φ x ≤ ψ x) → J m φ p ≤ J m ψ q
+    J-mono m {φ} {ψ} p q le = Iinf-mono m {φ} {ψ} (FunInf-Meas p) (FunInf-Meas q) le
 
-  -- it extends the bounded integral
-  J-fun : ∀ m {h} (F : Fun h) → J m h (LS F) ≈ I m h F
-  J-fun m {h} F = Iinf-bounded m {h} F (FunInf-Meas {h} (LS F))
+    -- it extends the bounded integral
+    J-fun : ∀ m {h} (F : Fun h) → J m h (LS F) ≈ I m h F
+    J-fun m {h} F = Iinf-bounded m {h} F (FunInf-Meas {h} (LS F))
 
-  J-add : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) →
-    J m (λ x → φ x + ψ x) (Meas-⊕ {φ} {ψ} p q) ≈ J m φ p + J m ψ q
-  J-add m {φ} {ψ} p q = Iinf-add m {λ x → φ x + ψ x} {φ} {ψ}
-    (FunInf-Meas (Meas-⊕ {φ} {ψ} p q)) (FunInf-Meas p) (FunInf-Meas q) (λ x → OmegaSemiring.refl A)
+    J-add : ∀ m {φ ψ} (p : Meas φ) (q : Meas ψ) →
+      J m (λ x → φ x + ψ x) (Meas-⊕ {φ} {ψ} p q) ≈ J m φ p + J m ψ q
+    J-add m {φ} {ψ} p q = Iinf-add m {λ x → φ x + ψ x} {φ} {ψ}
+      (FunInf-Meas (Meas-⊕ {φ} {ψ} p q)) (FunInf-Meas p) (FunInf-Meas q) (λ x → OmegaSemiring.refl A)
 
 
-  J-scale : ∀ m c {φ} (p : Meas φ) →
-    J m (λ x → c * φ x) (Meas-⊗ {λ _ → c} {φ} (Meas-const c) p) ≈ c * J m φ p
-  J-scale m c {φ} p = OmegaSemiring.trans A
-    (Iinf-irrel m {λ x → c * φ x} (FunInf-Meas {λ x → c * φ x} (Meas-⊗ {λ _ → c} {φ} (Meas-const c) p))
-                                   (Closed.cl-mul closed c {φ} (FunInf-Meas {φ} p)))
-    (Iinf-scale m c {φ} (FunInf-Meas {φ} p))
+    J-scale : ∀ m c {φ} (p : Meas φ) →
+      J m (λ x → c * φ x) (Meas-⊗ {λ _ → c} {φ} (Meas-const c) p) ≈ c * J m φ p
+    J-scale m c {φ} p = OmegaSemiring.trans A
+      (Iinf-irrel m {λ x → c * φ x} (FunInf-Meas {λ x → c * φ x} (Meas-⊗ {λ _ → c} {φ} (Meas-const c) p))
+                                     (Closed.cl-mul closed c {φ} (FunInf-Meas {φ} p)))
+      (Iinf-scale m c {φ} (FunInf-Meas {φ} p))
 
-  -- monotone convergence
-  J-⨆ : ∀ m {φ} (φs : ℕ → R₁ → Cut) (ps : ∀ n → Meas (φs n)) (inc : ∀ x → Increasing (λ n → φs n x))
-    (p : Meas φ) → (∀ x → φ x ≈ ⨆ (λ n → φs n x) (inc x)) →
-    J m φ p ≈ ⨆ (λ n → J m (φs n) (ps n)) (λ n → J-mono m (ps n) (ps (ℕ.suc n)) (λ x → inc x n))
-  J-⨆ m {φ} φs ps inc p e = Iinf-sup m {φ} φs (λ n → FunInf-Meas {φs n} (ps n)) inc (FunInf-Meas {φ} p) e
+    -- monotone convergence
+    J-⨆ : ∀ m {φ} (φs : ℕ → R₁ → Cut) (ps : ∀ n → Meas (φs n)) (inc : ∀ x → Increasing (λ n → φs n x))
+      (p : Meas φ) → (∀ x → φ x ≈ ⨆ (λ n → φs n x) (inc x)) →
+      J m φ p ≈ ⨆ (λ n → J m (φs n) (ps n)) (λ n → J-mono m (ps n) (ps (ℕ.suc n)) (λ x → inc x n))
+    J-⨆ m {φ} φs ps inc p e = Iinf-sup m {φ} φs (λ n → FunInf-Meas {φs n} (ps n)) inc (FunInf-Meas {φ} p) e
+
+    -- `J` is opaque: its uses never need to unfold the supremum of truncations
+    J-def : ∀ m {φ} (p : Meas φ) → J m φ p ≈ Iinf m φ (FunInf-Meas p)
+    J-def m p = OmegaSemiring.refl A

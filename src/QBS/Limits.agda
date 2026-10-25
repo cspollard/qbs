@@ -43,17 +43,15 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- Binary products: a pair is random iff both components are.
   _×Q_ : QBS S → QBS S → QBS S
-  X ×Q Y = record
-    { Carrier = ×-setoid (Carrier X) (Carrier Y)
-    ; Random = λ α → Random X (proj₁ ∘ α) × Random Y (proj₂ ∘ α)
-    ; random-resp = λ e (p , q) →
-        random-resp X (λ r → proj₁ (e r)) p , random-resp Y (λ r → proj₂ (e r)) q
-    ; const-random = λ _ → const-random X _ , const-random Y _
-    ; pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
-    ; glue-random = λ i α p →
-        glue-random X i (λ n → proj₁ ∘ α n) (λ n → proj₁ (p n)) ,
-        glue-random Y i (λ n → proj₂ ∘ α n) (λ n → proj₂ (p n))
-    }
+  _×Q_ X Y .QBS.Carrier = ×-setoid (Carrier X) (Carrier Y)
+  _×Q_ X Y .QBS.Random = λ α → Random X (proj₁ ∘ α) × Random Y (proj₂ ∘ α)
+  _×Q_ X Y .QBS.random-resp = λ e (p , q) →
+    random-resp X (λ r → proj₁ (e r)) p , random-resp Y (λ r → proj₂ (e r)) q
+  _×Q_ X Y .QBS.const-random = λ _ → const-random X _ , const-random Y _
+  _×Q_ X Y .QBS.pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
+  _×Q_ X Y .QBS.glue-random = λ i α p →
+    glue-random X i (λ n → proj₁ ∘ α n) (λ n → proj₁ (p n)) ,
+    glue-random Y i (λ n → proj₂ ∘ α n) (λ n → proj₂ (p n))
 
   -- Equalizers: the subspace on which two maps agree.
   EqQ : ∀ {X Y} → Hom S X Y → Hom S X Y → QBS S

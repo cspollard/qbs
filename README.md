@@ -439,12 +439,28 @@ measures `[α, m, w]` with `m` a probability measure and `w : R → [0,∞]` a `
 Decision: truncation by `2⁻ᵏ` needs only halves, so no division by naturals; a dyadic scale is also
 what makes the approximations `[0,1]`-valued, as `Fun` and `I-scale` require.
 
+## The s-finite monad (in progress)
+
+A measure on `X` is a pre-measure on `W × X` (`W = [0,∞]` with `Meas` as its random elements,
+`Continuous/Weights`): a probe `α : R → W × X` and a probability measure `m`. The weighted integral
+of a test function `f : X → W` is `J m (r ↦ w(α r) · f(x(α r)))`, and two measures are equal when all
+these agree (`Continuous/SFinite`: `∫ᴹ`, `≈ᴹ`, `TQ`, `TH`, `ηM`, `∫ᶠ`, `joinPre` with Tonelli
+`∫ᴹ-join`); `Continuous/SFiniteMonad` has the join witness and the monad `TM`,
+`Continuous/SFiniteStrong` the strength, `Continuous/SFiniteCommute` commutativity
+(`Analysis/JFubini`: Fubini for unbounded integrands, `Analysis/JParam`, `Analysis/MixtureN`).
+Performance pitfalls found here (each cost hours): `J` is `abstract` in `Analysis/Lebesgue` (use
+`J-def`) and so are `mapM`, `joinPre`; `QBS` is `no-eta-equality`, and `TQ`, `_×Q_` are defined by
+copatterns, so that comparing two objects compares their arguments instead of unfolding the
+records (a conversion between `Functor.F₀ TF (Functor.F₀ TF X)` and `TQ (TQ X)` took minutes
+otherwise); pass implicit arguments explicitly only where Agda cannot invert them (`Meas ?φ`,
+`XW ?X`), but leave nested ones to unification (`mm4` vs `mm5` in the history); make measurability
+witnesses `abstract`.
+
 ## Not done
 
-- The s-finite measure monad (`StatisticalInterface`) for the continuous model: the unbounded integral
-  exists (`Analysis/Unbounded`) but is not yet used. Missing: measures of unbounded mass (the
-  `Measure` record is still sub-probability), closure of `FunInf` under sums and products, and
-  `join` on `M (M X)`.
+- The s-finite measure monad (`StatisticalInterface`) for the continuous model: the monad `TM`, its
+  strength and (soon) commutativity exist; missing: the inclusion of Prob, `score`/`zero`, `sumM`,
+  `scaleM`, `sumK`, `scaled-laws`, `normalize` and the assembled instance.
 - Higher moments of the uniform distribution (the CDF is done).
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.

@@ -31,11 +31,11 @@ module Tonelli (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   Meas-J g kg {φ} p = Meas-⨆ {λ r → J (g r) φ p} (λ n r → Iseq (g r) φ (FunInf-Meas p) n)
     (λ n → Meas-⊗ {λ _ → pw n} {λ r → I (g r) (λ x → tr n (φ x)) (FunInf-Meas p n)}
              (Meas-const (pw n)) (LS (kg (FunInf-Meas p n))))
-    (λ r → ≋-refl)
+    (λ r → J-def (g r) p)
 
   J-bind : ∀ m (g : R₁ → Measure) (kg : KernelOk g) {φ} (p : Meas φ) (mk : Meas (λ r → J (g r) φ p)) →
     J (bind m g kg) φ p ≈ J m (λ r → J (g r) φ p) mk
-  J-bind m g kg {φ} p mk = trans step (sym (J-⨆ m {λ r → J (g r) φ p} u ps incU mk (λ r → ≋-refl)))
+  J-bind m g kg {φ} p mk = trans step (sym (J-⨆ m {λ r → J (g r) φ p} u ps incU mk (λ r → J-def (g r) p)))
     where
       f∞ = FunInf-Meas p
 
@@ -55,7 +55,7 @@ module Tonelli (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       incJ n = J-mono m (ps n) (ps (ℕ.suc n)) (λ x → incU x n)
 
       termN : ∀ n → J m (u n) (ps n) ≈ pw n * I m (v n) (kg (f∞ n))
-      termN n = Iinf-pw m n {v n} (kg (f∞ n)) (FunInf-Meas {u n} (ps n))
+      termN n = trans (J-def m (ps n)) (Iinf-pw m n {v n} (kg (f∞ n)) (FunInf-Meas {u n} (ps n)))
 
       step : J (bind m g kg) φ p ≈ ⨆ (λ n → J m (u n) (ps n)) incJ
-      step = ⨆-cong (Iseq-inc (bind m g kg) φ f∞) incJ (λ n → sym (termN n))
+      step = trans (J-def (bind m g kg) p) (⨆-cong (Iseq-inc (bind m g kg) φ f∞) incJ (λ n → sym (termN n)))

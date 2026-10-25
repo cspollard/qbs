@@ -22,7 +22,7 @@ open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_)
 open import QBS.Model.Pairing
 open import QBS.Analysis.RationalLemmas
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁)
+open import QBS.Borel.Source using (R₁; downℕ) renaming (down to downR)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsMin using (_⊓_)
 open import QBS.Analysis.LevelSets using (enumQ; enumQ-surj; module LevelSets)
@@ -102,3 +102,16 @@ module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   Meas-⨆ : ∀ {h} (hs : ℕ → R₁ → Cut) → (∀ n → Meas (hs n)) →
     (∀ x → h x ≋ unionC (λ n → hs n x)) → Meas h
   Meas-⨆ hs ms e = Meas-ext (λ x → ≋-sym (e x)) (λ q → ⋃ (λ n → ms n q))
+
+  -- precomposition with a measurable map
+  Meas-pre : ∀ {h f} → Meas h → Measurable (downR f) → Meas (λ x → h (f x))
+  Meas-pre {h} {f} m mf q = preimage mf (m q)
+
+  -- gluing along a measurable countable partition
+  Meas-glue : ∀ {j : R₁ → ℕ} {hs : ℕ → R₁ → Cut} → Partition (downℕ j) → (∀ k → Meas (hs k)) →
+    Meas (λ x → hs (j x) x)
+  Meas-glue {j} {hs} pj ms q = resp e (⋃ (λ k → inter₂ (pj k) (ms k q)))
+    where
+      e : (λ c → Σ ℕ (λ k → (j (lift c) ≡ k) × Lvl (hs k) q c)) ≐ Lvl (λ x → hs (j x) x) q
+      e c = (λ { (k , p , l) → ≡.subst (λ k′ → mem (hs k′ (lift c)) q) (≡.sym p) l })
+          , (λ l → j (lift c) , ≡.refl , l)

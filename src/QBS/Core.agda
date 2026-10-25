@@ -41,6 +41,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   -- A quasi-Borel space: a setoid with a class of "random elements" R → X
   -- that respects the setoid equality.
   record QBS : Set (suc ℓ) where
+    no-eta-equality
     field
       Carrier : Setoid ℓ ℓ
     open Setoid Carrier public using () renaming (Carrier to ∣_∣; _≈_ to _≈ˣ_)
