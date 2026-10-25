@@ -32,3 +32,12 @@ discreteSource ℓ = record
   ; unpair-pair = unpair-pair
   ; idx-glue = λ _ _ → tt
   }
+
+-- One shared name for `discreteSource ℓ`.  Modules that each defined their own private alias
+-- `S = discreteSource ℓ` made Agda compare the (large) cartesian-closed structures of `QBSCat S` through
+-- the two aliases by unfolding them (30 s per conversion in `Model/ProbInstance`); a single alias makes
+-- the two spellings syntactically equal.
+module DS (ℓ : Level) where
+  S : RandomSource ℓ
+  S = discreteSource ℓ
+  {-# INLINE S #-}

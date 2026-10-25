@@ -108,6 +108,17 @@ gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , mai
     main = ≤-trans (≤-≃ (*-distribˡ-+ q s (ε + ε)))
              (≤-trans (+-mono-≤ (≤-refl {q * s}) (≤-trans m2 m3)) (≤-≃ m4))
 
+-- `q ≤ r s` from `r ρ ≃ q′` and `q ρ ≤ q′ s`.  A standalone lemma: the `with` on `≤-or->` used to sit in the
+-- local context of `InvClassical.inv-prop` and took 14 s there.
+le-of-scaled : ∀ {q r s ρ q′} → 0Q < ρ → r * ρ ≃ q′ → q * ρ ≤ q′ * s → q ≤ r * s
+le-of-scaled {q} {r} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s with ≤-or-> q (r * s)
+... | inj₁ le = le
+... | inj₂ rs<q = ⊥-elim (<-irrefl ≃-refl (<-≤-trans
+      (≃-<ˡ (≃-trans swap (*-cong rρ (≃-refl {s}))) (*-mono-<-posʳ 0<ρ rs<q)) qρ≤q′s))
+  where
+    swap : (r * s) * ρ ≃ (r * ρ) * s
+    swap = ≃-trans (*-assoc r s ρ) (≃-trans (*-cong (≃-refl {r}) (P.*-comm s ρ)) (≃-sym (*-assoc r ρ s)))
+
 ----------------------------------------------------------------------------
 -- the boundary of a bounded cut is approximated by its elements (classical)
 
@@ -217,13 +228,7 @@ module InvClassical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
           rρ<1 : (q′ * t) * ρ < 1Q
           rρ<1 = ≃-<ˡ (≃-sym rρ) q′<1
           q≤rs : q ≤ (q′ * t) * s
-          q≤rs with ≤-or-> q ((q′ * t) * s)
-          ... | inj₁ le = le
-          ... | inj₂ rs<q = ⊥-elim (<-irrefl ≃-refl (<-≤-trans
-                (≃-<ˡ (≃-trans (swap-ρ (q′ * t) s ρ) (*-cong rρ (≃-refl {s}))) (*-mono-<-posʳ 0<ρ rs<q)) qρ≤q′s))
-            where
-              swap-ρ : ∀ r s ρ → (r * s) * ρ ≃ (r * ρ) * s
-              swap-ρ = solve 3 (λ r s ρ → (r :* s) :* ρ := (r :* ρ) :* s) ≃-refl
+          q≤rs = le-of-scaled {q} {q′ * t} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s
 
   inv-mul : ∀ c → Σ Q (λ s₀ → 0Q < s₀ × mem c s₀) → Σ Q (λ ρ₀ → mem c ρ₀ → ⊥) → invC c ⊗ c ≋ oneC
   inv-mul c hs hρ = inv-mul-⊑ c , inv-mul-⊒ c hs hρ

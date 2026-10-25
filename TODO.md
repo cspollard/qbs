@@ -75,6 +75,37 @@ So the profile supports "a handful of single definitions" (instance records `dis
 fields at once, i.e. hypothesis 1/3: large record conversion and long argument spines) over "flat/with/import cost" (4, 5, 6).
 Not yet done: definition-level profiles above depth 7, and `SFiniteCommute` (never finishes in 120 s).
 
+### Done so far, and findings for later (timings are wall-clock on a machine that was sometimes under load; only large effects are trustworthy)
+
+- `Analysis/LowerInverse`: the `with ≤-or->` inside `InvClassical.inv-prop` (13.7 s) is now the standalone lemma
+  `le-of-scaled`; the module went from ~24 s to ~3.5 s. Pass its implicit arguments explicitly (otherwise two unsolved metas).
+- Mixed spellings of one argument (the README's lesson again), seen in `Model/ProbInstance.discreteProb`: checking
+  `commutativeMonad` against the interface type costs 0.03 s when the type is spelled with the module's alias `S`, but
+  ~28 s when spelled `QBSCat (discreteSource ℓ)`. Agda compares the large cartesian-closed structures by unfolding the
+  two aliases. Changes made: one shared `DS.S` (`Model/DiscreteSource`, `INLINE`) replacing five private aliases
+  `S = discreteSource ℓ`; `INLINE` on `cartesian`, `V`, `braided` in `Model/Strong`; `Model/Strong.commutativeMonad`
+  packaged once. Effect on `discreteProb` ~34 s → ~22 s (small; re-measure on a quiet machine).
+- Tried and reverted (no measurable effect): `no-eta-equality` on `RandomSource`; defining `QBSCat` by copatterns.
+- A full cold `make profile-tree` after these changes: no errors; `SFiniteStrong` (~104–116 s) sits at the 120 s limit and
+  its dependents `SFiniteCommute`, `SFiniteIncl` are skipped when it goes over, so raise `LIMIT` (e.g. `make profile-tree LIMIT=300`) to see them.
+
+Ideas not yet tried, roughly by expected payoff:
+
+1. The remaining ~22 s in `discreteProb` and ~30 s in `discreteStat` is still a conversion of the `commutativeMonad` field
+   (a standalone `cmTest : CommutativeMonad (Symmetric.braided …)` still costs ~22 s). Find which two terms are compared:
+   build Agda with `--enable-debug` for `-v tc.conv`/`tc.constr` (the shipped binary printed nothing), or bisect by
+   normalising both types (`C-u C-c C-n`) and diffing (look for implicit level arguments, `Lift`, `probClass A` vs `K`,
+   `Measures A K`). Candidate fixes: INLINE the remaining private aliases (`K`, `R`) in the instance modules; make
+   `cartesianClosed S` / `isCartesian` opaque via an `abstract` wrapper plus explicit projection lemmas; or give the
+   interface a `CC`-indexed `braided` argument instead of recomputing it from `CC`.
+2. `Analysis/Lebesgue`: `J-add` 17.5 s, `J-scale` 11.9 s, `J-cong` 6.5 s, `J-irrel` 5.8 s. Profile with
+   `make profile-QBS.Analysis.Lebesgue`; likely `Fun`/`FunInf` structure conversions (same cause as above).
+3. The s-finite stack: `JParam` (65–76 s), `JSum` (55 s), `Tonelli` (47–52 s), `SFinite*` (each 100+ s). Profile definitions
+   (one definition per module dominates in the three modules examined so far; expect the same here) and split such
+   definitions into named steps with explicit implicit arguments.
+4. Tooling: record user CPU time and take the minimum of two runs in `scripts/profile-tree.py` to reduce load noise;
+   an `AGDA_RTS` variable in the `Makefile` for `-A`/`-M` experiments; CI caching of `_build`.
+
 ### Measurement plan (leaf-first)
 
 1. `make profile-tree` (`scripts/profile-tree.py`): check every module individually, leaves of the import graph

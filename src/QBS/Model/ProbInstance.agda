@@ -37,12 +37,12 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
   open Sums A
   open Cantor A
   private
-    S = discreteSource ℓ
+    open DS ℓ using (S)
     K = probClass A
     R = Lift ℓ ℕ
   open WeightClass K
   open Measures A K
-  open Strength A K using (strongMonad; commutative)
+  open Strength A K using (strongMonad; commutative; commutativeMonad)
   open QBS
   open Hom
   open Pre
@@ -86,7 +86,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
 
   discreteProb : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)
   discreteProb = record
-    { commutativeMonad = record { strongMonad = strongMonad ; commutative = commutative }
+    { commutativeMonad = commutativeMonad
     ; Measure = Σ (R → ∣A∣) Ok
     ; pushforward = λ m (μ , ok) → push (λ r → map m ⟨$⟩ r) μ , ok-push _ ok
     ; law = lawH

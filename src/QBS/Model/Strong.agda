@@ -33,7 +33,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   open WeightClass K
   open Measures A K
   private
-    S = discreteSource ℓ
+    open DS ℓ using (S)
     R = Lift ℓ ℕ
   open RandomSource S using () renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
   open QBS
@@ -102,6 +102,8 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   private
     cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
     V = CM.CartesianMonoidal.monoidal cartesian
+    {-# INLINE cartesian #-}
+    {-# INLINE V #-}
 
   strength : Strength V TM
   strength = record
@@ -127,6 +129,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
 
   private
     braided = Symmetric.braided (CSM.symmetric (QBSCat S) cartesian)
+    {-# INLINE braided #-}
 
   -- Fubini: the two orders of integrating a pair of independent measures agree.
   fubini : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Func (×-setoid (Carrier X) (Carrier Y)) Aˢ) →
@@ -159,3 +162,8 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
       (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
       (Setoid.trans Aˢ (fubini {X} {Y} s t g)
         (Setoid.sym Aˢ (∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g))) }
+
+  -- packaged here, where `V` and `braided` are in scope, so that `Model/ProbInstance` need not re-check
+  -- `strongMonad` against `Braided.monoidal braided` (that conversion took ~30 s there)
+  commutativeMonad : CommutativeMonad braided
+  commutativeMonad = record { strongMonad = strongMonad ; commutative = commutative }

@@ -48,7 +48,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   open CompleteSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Sums A
   private
-    S = discreteSource ℓ
+    open DS ℓ using (S)
     R = Lift ℓ ℕ
   open Cantor A
   module MA = Measures A (allClass A)

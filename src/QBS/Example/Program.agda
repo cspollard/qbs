@@ -26,7 +26,7 @@ open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Core
-open import QBS.Model.DiscreteSource using (discreteSource)
+open import QBS.Model.DiscreteSource using (discreteSource; module DS)
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
 open import QBS.Model.WeightClasses using (probClass)
@@ -41,7 +41,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
   open Sums A
   open SetoidReasoning Aˢ
   private
-    S = discreteSource ℓ
+    open DS ℓ using (S)
     R = L.Lift ℓ ℕ
   open Measures A K using (Pre; mk; ∫; ηPre; mapPre; joinPre; TQ; ∫-η; ∫-join; ∫ᶠ) public
   open Pre

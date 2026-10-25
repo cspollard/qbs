@@ -53,7 +53,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   open Sums A
   open WeightClass K
   private
-    S = discreteSource ℓ
+    open DS ℓ using (S)
     R = Lift ℓ ℕ
   open RandomSource S using () renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
   open QBS
