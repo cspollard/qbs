@@ -1,0 +1,44 @@
+name: qbs
+# Typechecks qbs (Agda 2.7.0.1, standard-library v2.3, agda-categories c2e7c13e).
+#   progress: the gate. Unsolved holes in skeleton modules (at their final paths) are tolerated; any
+#             other error or a postulate fails.
+#   strict:   release quality (no output, postulates or holes); expected to fail while skeletons have
+#             holes, so it is allowed to fail without failing the workflow.
+# Manual trigger only: these jobs have not been run yet; enable `push` once they have passed.
+on: workflow_dispatch
+jobs:
+  strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wenkokke/setup-agda@v2
+        with:
+          agda-version: 2.7.0.1
+      - name: libraries
+        run: |
+          git clone --depth 1 --branch v2.3 https://github.com/agda/agda-stdlib "$HOME/agda-stdlib"
+          git clone https://github.com/agda/agda-categories "$HOME/agda-categories"
+          git -C "$HOME/agda-categories" checkout c2e7c13e
+          mkdir -p "$HOME/.agda"
+          echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
+          echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
+      - run: sh check.sh
+  progress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wenkokke/setup-agda@v2
+        with:
+          agda-version: 2.7.0.1
+      - name: libraries
+        run: |
+          git clone --depth 1 --branch v2.3 https://github.com/agda/agda-stdlib "$HOME/agda-stdlib"
+          git clone https://github.com/agda/agda-categories "$HOME/agda-categories"
+          git -C "$HOME/agda-categories" checkout c2e7c13e
+          mkdir -p "$HOME/.agda"
+          echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
+          echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
+      - run: sh check.sh --progress
