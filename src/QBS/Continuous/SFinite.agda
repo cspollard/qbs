@@ -141,31 +141,47 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
     ; w-eq = λ r → ≈ᵖ⇒≈ᴹ {X} (β r) (kerP {X} (C.Wit.a {XW X} {β} w) (C.Wit.g {XW X} {β} w) (C.Wit.g-pr {XW X} {β} w) r)
                     (C.Wit.w-eq {XW X} {β} w r) }
 
+  -- The proofs of randomness are produced by `abstract` helpers: conversions at nested measure
+  -- spaces (`TQ (X ×Q TQ Y)`, ...) must never unfold these witnesses (see TODO, compile time).
+  abstract
+    TQ-resp : ∀ {X : QBS S} {α β : R₁ → Pre (XW X)} → (∀ r → _≈ᴹ_ {X} (α r) (β r)) → WitM {X} α → WitM {X} β
+    TQ-resp {X} e w = record
+      { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
+      ; w-eq = λ r f → trans (sym (e r f)) (w-eq w r f) }
+
+    TQ-const : ∀ {X : QBS S} (p : Pre (XW X)) → WitM {X} (const p)
+    TQ-const {X} p = fromWit {X} (QBS.const-random (C.TQ (XW X)) p)
+
+    TQ-pre : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} {f : R₁ → R₁} → WitM {X} β → RandomSource.Meas S f → WitM {X} (β ∘ f)
+    TQ-pre {X} {β} {f} w mf = record
+      { a = preJ mf (a w)
+      ; g = λ r → g w (f r)
+      ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
+      ; g-pr = λ r → g-pr w (f r)
+      ; w-eq = λ r h → trans (w-eq w (f r) h)
+          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a w) (g w) (g-pr w) (f r)) (kerP {X} (preJ mf (a w)) (λ r′ → g w (f r′)) (λ r′ → g-pr w (f r′)) r)
+             (C.rand-irrel {XW X} (sec-random (a w) (f r)) (sec-random (preJ mf (a w)) r) (g w (f r)) (g-pr w (f r))) h) }
+
+    TQ-glue : ∀ {X : QBS S} {i : R₁ → ℕ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
+      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i r) r)
+    TQ-glue {X} {i} pi β ws = record
+      { a = glueJ pi (λ n → a (ws n))
+      ; g = λ r → g (ws (i r)) r
+      ; g-ok = λ {h} fh → Glue.Fun-glue i pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
+      ; g-pr = λ r → g-pr (ws (i r)) r
+      ; w-eq = λ r h → trans (w-eq (ws (i r)) r h)
+          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a (ws (i r))) (g (ws (i r))) (g-pr (ws (i r))) r)
+             (kerP {X} (glueJ pi (λ n → a (ws n))) (λ r′ → g (ws (i r′)) r′) (λ r′ → g-pr (ws (i r′)) r′) r)
+             (C.mk-cong {XW X} (sec-random (a (ws (i r))) r) (sec-random (glueJ pi (λ n → a (ws n))) r)
+                (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
+
   TQ : QBS S → QBS S
   TQ X .QBS.Carrier = PreMS X
   TQ X .QBS.Random = WitM {X}
-  TQ X .QBS.random-resp e w = record
-    { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
-    ; w-eq = λ r f → trans (sym (e r f)) (w-eq w r f) }
-  TQ X .QBS.const-random p = fromWit {X} (QBS.const-random (C.TQ (XW X)) p)
-  TQ X .QBS.pre-random {β} {f} w mf = record
-    { a = preJ mf (a w)
-    ; g = λ r → g w (f r)
-    ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
-    ; g-pr = λ r → g-pr w (f r)
-    ; w-eq = λ r h → trans (w-eq w (f r) h)
-        (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a w) (g w) (g-pr w) (f r)) (kerP {X} (preJ mf (a w)) (λ r′ → g w (f r′)) (λ r′ → g-pr w (f r′)) r)
-           (C.rand-irrel {XW X} (sec-random (a w) (f r)) (sec-random (preJ mf (a w)) r) (g w (f r)) (g-pr w (f r))) h) }
-  TQ X .QBS.glue-random {i} pi β ws = record
-    { a = glueJ pi (λ n → a (ws n))
-    ; g = λ r → g (ws (i r)) r
-    ; g-ok = λ {h} fh → Glue.Fun-glue i pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-    ; g-pr = λ r → g-pr (ws (i r)) r
-    ; w-eq = λ r h → trans (w-eq (ws (i r)) r h)
-        (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a (ws (i r))) (g (ws (i r))) (g-pr (ws (i r))) r)
-           (kerP {X} (glueJ pi (λ n → a (ws n))) (λ r′ → g (ws (i r′)) r′) (λ r′ → g-pr (ws (i r′)) r′) r)
-           (C.mk-cong {XW X} (sec-random (a (ws (i r))) r) (sec-random (glueJ pi (λ n → a (ws n))) r)
-              (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
+  TQ X .QBS.random-resp = TQ-resp {X}
+  TQ X .QBS.const-random p = TQ-const {X} p
+  TQ X .QBS.pre-random w mf = TQ-pre {X} w mf
+  TQ X .QBS.glue-random pi β ws = TQ-glue {X} pi β ws
 
   ----------------------------------------------------------------------------
   -- functor action

@@ -7,6 +7,13 @@ Open items are ordered easiest first; finished items are at the end. Skeleton mo
 - [~] CI for `qbs`: `make` typechecks every module (Agda 2.7.0.1, stdlib v2.3, agda-categories c2e7c13e; fails on output, postulates, holes) and `.github/workflows/qbs.yml` runs it (manual trigger; the workflow has NOT been run yet: verify it, then switch the trigger to push/pull_request on `qbs/**`).
 - [ ] s-finite measure monad for the continuous model (`StatisticalInterface` over `QBSCat cantorSource`). Hardest. Done so far: unbounded integration (`Analysis/Unbounded`: `FunInf`, `Iinf`, `Iinf-bounded/mono/add/sup/scale`), threshold measurability (`Analysis/Meas`, `Analysis/MeasFun`: `Fun` = bounded `Meas`), the integral API `Analysis/Lebesgue` (`J`), Tonelli for `bind` (`Analysis/Tonelli`: `Meas-J`, `J-bind`). Design decided: a measure on `X` is `[α, m, w]` (probe, probability measure, `Meas` density), i.e. a probability measure on `X × W` with weighted integral `J m (w · f∘α)`; the monad reuses `Continuous/Monad` for the measure part and needs unbounded Fubini (termwise from the bounded `fubini`), the weight object `W` with `Meas` as its randomness, `scaled-laws` (needs inverses of finite positive masses, classical), and `sumM` (countable mixtures on `ℕ × R ≅ R`). Done since: `Analysis/JParam`, `JFubini`, `MixtureN`, `Continuous/Weights`, `SFinite`, `SFiniteMonad` (monad `TM`), `SFiniteStrong`. Remaining (old list, partly superseded): (1) measures of unbounded mass (`Measure` is sub-probability: `I-sub`; generalise to an `s-finite` class, e.g. countable sums of sub-probability measures via `Analysis/Series`); (2) closure of `FunInf` under `+`, scaling by `A`-valued constants, products and precomposition with measurable maps (so that `ν ↦ ∫ν f` is `FunInf` and `join` on `M (M X)` is defined); (3) `join` with its monad laws; (4) normalisation. Literature (Staton 2017; Hirata–Minamide–Sato ITP 2023; Affeldt–Cohen–Saito CPP 2023) gets these from a host measure-theory library.
 
+  Roadmap to the assembled instance (skeleton modules with holes exist at their final paths; `make progress` accepts them):
+  1. DONE: `Continuous/SFiniteCommute` (commutativity of `TM`; 16 s). It was blocked on compile time (never finished); see "Compile time" below for the cause and fix (`abstract` randomness witnesses of `SFinite.TQ`).
+  2. `Continuous/SFiniteStat` (skeleton): fills the `StatisticalInterface` record; most fields are one-line uses of the pre-measure lemmas in `SFiniteSum`/`SFiniteIncl` (`scale-*-lem`, `sum-*-lem`, `∫ᴹ-score`, `ι-strong`), stated at the category-theoretic form of each field, so state bridge lemmas per field (as `catA`/`catB` in `SFiniteCommute`) and avoid explicit implicit arguments.
+  3. `Continuous/SFiniteDecomp` (skeleton): `densityM` (a `Meas` density ≤ 1 times a measure), `normM`, level-set pieces of the weight, `scaledLawsPre`; then the global-element form for `scaled-laws` in `SFiniteStat`.
+  4. `Continuous/SFiniteNorm` (skeleton): mass, classical `invDec`, `normPre`, `caseIdx` with its Borel partition (`caseIdx-Idx`, the hardest measurability step), `normRandom`, and the three laws `normProb`, `normZero`, `normScale`.
+  5. README: update the "Not done" list and the section "The s-finite monad".
+
 - [ ] (future) Constructive foundations: `lem` enters only through `Classical` in `Analysis/LowerReals` (`near-sup`, hence `complement`, `cancel`, `Arch.cancel≤`, `way-below`); everything else is generic in `OmegaSemiring`. Removing it needs located reals (Cauchy/Dedekind) and a `Fun` without the `complF` constructor, which touches `Fun-scale`, `Mask` and the Riesz pipeline.
 - [ ] (future) Negative reals: a signed layer on `[0,∞]` (differences of finite values; `E[X] = ∫X⁺ − ∫X⁻`, variance) or genuine Dedekind reals from ℚ (about 1.5–3k lines); measures keep `[0,∞]` values. Real-valued random variables need only threshold sets `{x | q < h x}` Borel, as in `Analysis/Threshold`.
 - [x] Unbounded integration: DONE (`Analysis/Unbounded`, `Analysis/Min`, `Analysis/LowerRealsMin`, `Analysis/UnboundedLowerReals`; dyadic truncation `tr k a = 2⁻ᵏ·min(a,2ᵏ)`, `FunInf h` = all truncations are `Fun`, so `Iinf` is representation-independent; the five skeleton goals `Iinf`, `Iinf-bounded`, `Iinf-mono`, `Iinf-add`, `Iinf-sup`). The skeleton's inductive `FunInf` was replaced by this predicate, which avoids proving independence of the chosen supremum representation.
@@ -22,6 +29,19 @@ Open items are ordered easiest first; finished items are at the end. Skeleton mo
 - [x] `bind` linear in the kernel argument: DONE (`sumK`, `sumK-point`, `bind-sumK` in `StatisticalInterface`; proved in `Model/StatInstance.agda`, hence also for the Boolean and Viterbi models). A continuous statistical instance would need them too.
 
 ## Compile time: audit, profiling and improvement strategy
+
+**Finding (2026-10-26), `Continuous.SFiniteCommute` (never finished → 16 s).** The cost was *conversion at nested
+`TQ` types*: two terms of type `Hom`/`Pre` that differ only in spelling (e.g. `RS.τ {X} {Functor.F₀ TF Y}` vs
+`RS.τ {X} {TQ Y}`, or the same composite `_∘H_ S (∫ᶠ g) (σH X Y)` elaborated twice) are compared by
+unfolding, and at `Y := TQ Y` the randomness witnesses of `TQ` (`pre-random`, `glue-random`, ...) reduce to huge
+records.  What fixed it, in order of effect: (1) the four randomness fields of `SFinite.TQ` are `abstract` helpers
+(`TQ-resp`, `TQ-const`, `TQ-pre`, `TQ-glue`); (2) `INLINE` on `TF`, `TM`, `strongMonad` and on the private
+`cartesian`/`V`/`braided` aliases (spelling the same object one way); (3) in `SFiniteCommute`, a named composite
+(`Hg`), `τH`/`τ-app` wrappers, one lemma per step (`mapStep`, `commB₀..₂`) and bridge lemmas stated at the
+category-theoretic form of the goal (`catA`, `catB`); (4) no explicit implicit arguments in chains (`τ-int {X} {TQ Y}`
+cost 50 s, `τ-int s t g` 7 s).  Tried without effect: `no-eta-equality` on `Wit`/`WitM`, `Pre`, `Hom`.  Method that
+found it: truncate the file and time each prefix (`perl -e 'alarm N; exec @ARGV' agda F`), isolate one step with `?`
+for the rest, then test the same statement at an opaque `postulate`d object vs at `TQ _`.
 
 Cold build is ~17 minutes (measured below; single modules used to take 10–70 minutes before the fixes in the README "Performance note" and the `Meas`/`J` pitfalls). This section records what the Agda
 literature and this repository suggest is responsible, and a plan to confirm it with measurements before

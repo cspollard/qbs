@@ -446,7 +446,7 @@ A measure on `X` is a pre-measure on `W × X` (`W = [0,∞]` with `Meas` as its 
 of a test function `f : X → W` is `J m (r ↦ w(α r) · f(x(α r)))`, and two measures are equal when all
 these agree (`Continuous/SFinite`: `∫ᴹ`, `≈ᴹ`, `TQ`, `TH`, `ηM`, `∫ᶠ`, `joinPre` with Tonelli
 `∫ᴹ-join`); `Continuous/SFiniteMonad` has the join witness and the monad `TM`,
-`Continuous/SFiniteStrong` the strength, `Continuous/SFiniteCommute` commutativity
+`Continuous/SFiniteStrong` the strength, `Continuous/SFiniteCommute` commutativity (done)
 (`Analysis/JFubini`: Fubini for unbounded integrands, `Analysis/JParam`, `Analysis/MixtureN`).
 Performance pitfalls found here (each cost hours): `J` is `abstract` in `Analysis/Lebesgue` (use
 `J-def`) and so are `mapM`, `joinPre`; `QBS` is `no-eta-equality`, and `TQ`, `_×Q_` are defined by
@@ -459,10 +459,12 @@ witnesses `abstract`.
 ## Not done
 
 - The s-finite measure monad (`StatisticalInterface`) for the continuous model: the monad `TM`, its
-  strength and (soon) commutativity exist; missing: the inclusion of Prob, `score`/`zero`, `sumM`,
-  `scaleM`, `sumK`, `scaled-laws`, `normalize` and the assembled instance.
+  strength, commutativity, the inclusion of Prob, `score`/`zero` and the pre-measure laws of `scaleM`/`sumM`/`sumK`
+  exist.  Skeleton modules with holes (`make progress` accepts them, `make check` does not):
+  `Continuous/SFiniteDecomp` (`scaled-laws`), `Continuous/SFiniteNorm` (`normalize`), and the assembled
+  `Continuous/SFiniteStat` (`continuousStat`).
 - Higher moments of the uniform distribution (the CDF is done).
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.
-- The CI workflow has not been run.
+- The CI workflow has not been run (it runs `make`, which will fail until the skeleton holes are filled; use `make progress` meanwhile).

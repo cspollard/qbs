@@ -78,8 +78,16 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
   private
     cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
     braided = Symmetric.braided (CSM.symmetric (QBSCat S) cartesian)
+    {-# INLINE cartesian #-}
+    {-# INLINE braided #-}
     module SP = Categories.Monad.Strong.Properties
     module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided strength)
+
+  τH : ∀ X Y → Hom S (_×Q_ S (TQ X) Y) (TQ (_×Q_ S X Y))
+  τH X Y = RS.τ {X} {Y}
+
+  τ-app : ∀ {X Y : QBS S} → Pre (XW X) → ∣ Y ∣ → Pre (XW (_×Q_ S X Y))
+  τ-app {X} {Y} s y = map (τH X Y) ⟨$⟩ (s , y)
 
   -- the test function x ↦ f (x , y)
   fixH₂ : ∀ {X Y : QBS S} → ∣ Y ∣ → Hom S (_×Q_ S X Y) WQ → Hom S X WQ
@@ -92,7 +100,7 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
 
   -- the right strength integrates the left component
   τ-int : ∀ {X Y : QBS S} (s : Pre (XW X)) (y : ∣ Y ∣) (g : Hom S (_×Q_ S X Y) WQ) →
-    ∫ᴹ {_×Q_ S X Y} (map (RS.τ {X} {Y}) ⟨$⟩ (s , y)) g ≈ ∫ᴹ {X} s (fixH₂ {X} {Y} y g)
+    ∫ᴹ {_×Q_ S X Y} (τ-app {X} {Y} s y) g ≈ ∫ᴹ {X} s (fixH₂ {X} {Y} y g)
   τ-int {X} {Y} s y g =
     trans (∫ᴹ-map _ (σPre {Y} {X} (y , s)) g)
       (trans (∫ᴹ-σ {Y} {X} y s _) (∫ᴹ-cong s (λ x → refl)))
@@ -130,7 +138,7 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
 
     -- the two sides of Fubini as test functions on the other factor
     Gs : Hom S Y WQ
-    Gs = _∘H_ S {Y} {_×Q_ S (TQ X) Y} {WQ} (_∘H_ S {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} {WQ} (∫ᶠ {_×Q_ S X Y} g) (RS.τ {X} {Y}))
+    Gs = _∘H_ S {Y} {_×Q_ S (TQ X) Y} {WQ} (_∘H_ S {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} {WQ} (∫ᶠ {_×Q_ S X Y} g) (τH X Y))
            (pairQ S {Y} {TQ X} {Y} (constH s) (idH S))
 
     Gt : Hom S X WQ
@@ -173,26 +181,65 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
           (mψ {X} s Gt) (Meas-Jsec (λ _ → m t) (constK (m t)) {Φ} mΦ) pw₁)))
 
   commA : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
-    ∫ᴹ {_×Q_ S X Y} (joinPre {_×Q_ S X Y} (mapM {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)))) g
+    ∫ᴹ {_×Q_ S X Y} (joinPre {_×Q_ S X Y} (mapM {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (τH X Y) (σPre {TQ X} {Y} (s , t)))) g
       ≈ ∫ᴹ {Y} t (Fub.Gs {X} {Y} s t g)
   commA {X} {Y} s t g =
-    trans (∫ᴹ-join {_×Q_ S X Y} (mapM {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
-      (trans (∫ᴹ-map {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)) (∫ᶠ {_×Q_ S X Y} g))
-        (trans (∫ᴹ-σ {TQ X} {Y} s t (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (RS.τ {X} {Y})))
-          (∫ᴹ-cong {Y} t {fixH {TQ X} {Y} s (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (RS.τ {X} {Y}))} {Fub.Gs {X} {Y} s t g}
+    trans (∫ᴹ-join {_×Q_ S X Y} (mapM {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (τH X Y) (σPre {TQ X} {Y} (s , t))) g)
+      (trans (∫ᴹ-map {_×Q_ S (TQ X) Y} {TQ (_×Q_ S X Y)} (τH X Y) (σPre {TQ X} {Y} (s , t)) (∫ᶠ {_×Q_ S X Y} g))
+        (trans (∫ᴹ-σ {TQ X} {Y} s t (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (τH X Y)))
+          (∫ᴹ-cong {Y} t {fixH {TQ X} {Y} s (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (τH X Y))} {Fub.Gs {X} {Y} s t g}
             (λ y → refl))))
+
+  Hg : ∀ {X Y : QBS S} → Hom S (_×Q_ S X Y) WQ → Hom S (_×Q_ S X (TQ Y)) WQ
+  Hg {X} {Y} g = _∘H_ S (∫ᶠ g) (σH X Y)
+
+  zz : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ s (fixH₂ {X} {TQ Y} t (Hg g)) ≈ ∫ᴹ s (Fub.Gt s t g)
+  zz s t g = ∫ᴹ-cong s (λ x → refl)
+
+  commB₀ : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ (τ-app {X} {TQ Y} s t) (Hg g) ≈ ∫ᴹ s (Fub.Gt s t g)
+  commB₀ s t g = trans (τ-int s t (Hg g)) (zz s t g)
+
+  mapStep : ∀ {X Y : QBS S} (p : Pre (XW (_×Q_ S X (TQ Y)))) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ (mapM {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y) p) (∫ᶠ g) ≈ ∫ᴹ p (Hg g)
+  mapStep {X} {Y} p g = ∫ᴹ-map (σH X Y) p (∫ᶠ g)
+
+  commB₁ : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ (mapM {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y) (τ-app {X} {TQ Y} s t)) (∫ᶠ g) ≈ ∫ᴹ s (Fub.Gt s t g)
+  commB₁ s t g = trans (mapStep (τ-app s t) g) (commB₀ s t g)
+
+  commB₂ : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ {_×Q_ S X Y} (joinPre {_×Q_ S X Y} (mapM {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y) (τ-app {X} {TQ Y} s t))) g
+      ≈ ∫ᴹ s (Fub.Gt s t g)
+  commB₂ s t g = trans (∫ᴹ-join _ g) (commB₁ s t g)
 
   commB : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
     ∫ᴹ {_×Q_ S X Y} (map (joinT (_×Q_ S X Y)) ⟨$⟩ (map (TH {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y)) ⟨$⟩
-                       (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)))) g
+                       (τ-app {X} {TQ Y} s t))) g
       ≈ ∫ᴹ {X} s (Fub.Gt {X} {Y} s t g)
-  commB {X} {Y} s t g =
-    trans (∫ᴹ-join {_×Q_ S X Y} (mapM {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g)
-      (trans (∫ᴹ-map {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)) (∫ᶠ {_×Q_ S X Y} g))
-        (trans (τ-int {X} {TQ Y} s t (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (σH X Y)))
-          (∫ᴹ-cong {X} s {fixH₂ {X} {TQ Y} t (_∘H_ S (∫ᶠ {_×Q_ S X Y} g) (σH X Y))} {Fub.Gt {X} {Y} s t g}
-            (λ x → refl))))
+  commB s t g = commB₂ s t g
+
+  open import Categories.Category.Core using (Category)
+
+  catB : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ (Func.to (map (Category._∘_ (QBSCat S)
+          (NaturalTransformation.η (Monad.μ (StrongMonad.M strongMonad)) (_×Q_ S X Y))
+          (Category._∘_ (QBSCat S)
+            (Functor.F₁ (Monad.F (StrongMonad.M strongMonad)) (NaturalTransformation.η (Strength.strengthen (StrongMonad.strength strongMonad)) (X , Y)))
+            (RS.τ {X} {TQ Y}))) ) (s , t)) g
+      ≈ ∫ᴹ s (Fub.Gt s t g)
+  catB s t g = commB₂ s t g
+
+  catA : ∀ {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) →
+    ∫ᴹ (Func.to (map (Category._∘_ (QBSCat S)
+          (NaturalTransformation.η (Monad.μ (StrongMonad.M strongMonad)) (_×Q_ S X Y))
+          (Category._∘_ (QBSCat S)
+            (Functor.F₁ (Monad.F (StrongMonad.M strongMonad)) (RS.τ {X} {Y}))
+            (NaturalTransformation.η (Strength.strengthen (StrongMonad.strength strongMonad)) (TQ X , Y)))) ) (s , t)) g
+      ≈ ∫ᴹ t (Fub.Gs s t g)
+  catA s t g = commA s t g
 
   commutative : Commutative braided strongMonad
   commutative = record { commutes = λ {X} {Y} (s , t) g →
-    trans (commA {X} {Y} s t g) (trans (Fub.fubiniᴹ {X} {Y} s t g) (sym (commB {X} {Y} s t g))) }
+    trans (catA s t g) (trans (Fub.fubiniᴹ s t g) (sym (catB s t g))) }

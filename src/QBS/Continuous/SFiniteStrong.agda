@@ -142,6 +142,8 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   private
     cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
     V = CM.CartesianMonoidal.monoidal cartesian
+    {-# INLINE cartesian #-}
+    {-# INLINE V #-}
 
   strength : Strength V TM
   strength = record
@@ -174,3 +176,4 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
 
   strongMonad : StrongMonad V
   strongMonad = record { M = TM ; strength = strength }
+  {-# INLINE strongMonad #-}

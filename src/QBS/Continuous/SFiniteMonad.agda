@@ -74,6 +74,8 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
           (trans (∫ᴹ-cong {X} p (λ x → Func.cong (map k) (e x))) (sym (∫ᴹ-map {X} {Y} h p k)))
     }
 
+  {-# INLINE TF #-}
+
   ----------------------------------------------------------------------------
   -- a witness for a random family of joins
 
@@ -275,3 +277,5 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
     ; identityˡ = λ {X} p f → join-unitˡ p f
     ; identityʳ = λ {X} p f → join-unitʳ p f
     }
+
+  {-# INLINE TM #-}
