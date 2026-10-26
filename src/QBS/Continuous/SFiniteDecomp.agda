@@ -64,6 +64,8 @@ open import Categories.Functor using () renaming (id to idF)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
+open import QBS.Analysis.Density using (module Density)
+open import QBS.Analysis.LevelSets using (module LevelSets)
 
 module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
   open JParam lem
@@ -74,6 +76,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
+  open Density lem using (densM; J-dens)
+  open LevelSets lem using (LS)
   open Split funext
   open UnitInterval A using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
@@ -93,7 +97,11 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   -- 1. measures with a `Meas` density (sub-probability when the density is ≤ 1)
 
   densityM : ∀ (m : Measure) (d : R₁ → Cut) → Meas d → (∀ r → d r ≤ 1#) → Measure
-  densityM m d md d≤1 = ?
+  densityM m d md d≤1 = densM m d md 1#
+    (≤-trans (≤-reflexive (*-identityˡ _))
+     (≤-trans (J-mono m md (LS (Fun-const 1# ≤-refl)) d≤1)
+      (≤-trans (≤-reflexive (J-fun m (Fun-const 1# ≤-refl)))
+       (Measure.I-sub m (Fun-const 1# ≤-refl)))))
 
   I-densityM : ∀ (m : Measure) (d : R₁ → Cut) (md : Meas d) (d≤1 : ∀ r → d r ≤ 1#) →
     ∀ h (fh : Fun h) (mdh : Meas (λ r → d r * h r)) →
