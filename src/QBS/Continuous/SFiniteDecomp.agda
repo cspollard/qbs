@@ -145,6 +145,37 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   pieceMeasure : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) → Measure
   pieceMeasure p n = densityM (m p) (pieceDensity p n) (pieceDensity-Meas p n) (pieceDensity≤1 p n)
 
+  -- the integrand of the n-th piece against a test function f
+  pieceψ : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → R₁ → Cut
+  pieceψ {X} p n f r = pieceDensity p n r * (map f ⟨$⟩ proj₂ (α p r))
+
+  pieceψ-Meas : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → Meas (pieceψ {X} p n f)
+  pieceψ-Meas {X} p n f = ?   -- Meas-⊗ (pieceDensity-Meas p n) (map-random f (proj₂ (α-random p)))
+
+  -- the integral splits over the pieces (pieces-sum, then J-∑ for the series)
+  ∫ᴹ-pieces : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) →
+    ∫ᴹ {X} p f ≈ ∑ᶠ (λ n → natC (ℕ.suc n) * J (m p) (pieceψ {X} p n f) (pieceψ-Meas {X} p n f))
+  ∫ᴹ-pieces {X} p f = ?
+
+  -- the probe of the X-component of `p`, as a morphism ℛ ⇒ X
+  probeOf : ∀ {X : QBS S} → Pre (XW X) → Hom S (Probes.ℛQ S) X
+  probeOf p = Probes.probe S (proj₂ (α-random p))
+
+  -- the mass of a piece, and the piece as a probability measure (a fixed dummy when the mass is 0,
+  -- `lem` decides which; `normM` otherwise)
+  pieceMass : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) → Cut
+  pieceMass p n = massM (pieceMeasure p n)
+
+  pieceProb : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) → Σ Measure IsProb
+  pieceProb p n = ?
+
+  -- mass · (integral against the normalised piece) = integral against the piece; both sides vanish when the mass is 0
+  pieceProb-int : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) →
+    pieceMass p n * J (proj₁ (pieceProb p n)) (λ r → map f ⟨$⟩ proj₂ (α p r))
+      (map-random f (proj₂ (α-random p)))
+    ≈ J (m p) (pieceψ {X} p n f) (pieceψ-Meas {X} p n f)
+  pieceProb-int p n f = ?
+
   ----------------------------------------------------------------------------
   -- 3. the decomposition
 

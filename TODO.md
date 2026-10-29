@@ -14,6 +14,54 @@ Open items are ordered easiest first; finished items are at the end. Skeleton mo
   4. `Continuous/SFiniteNorm` (skeleton): mass, classical `invDec`, `normPre`, `caseIdx` with its Borel partition (`caseIdx-Idx`, the hardest measurability step), `normRandom`, and the three laws `normProb`, `normZero`, `normScale`.
   5. README: update the "Not done" list and the section "The s-finite monad".
 
+## Audit of the open s-finite work (2026-10-29): declared holes and how to fill them
+
+**Coverage.** All 34 fields of `StatisticalInterface` are present in `SFiniteStat.continuousStat`: 16 are filled
+(`W`, `mulW`, `oneW`, `zeroW`, the four monoid laws, `commutativeMonad`, `inclusion`, `zero`, `score`, `sumM`, `scaleM`,
+`sumK`, `normalize`) and 18 are holes. `SFiniteDecomp` has 12 holes and `SFiniteNorm` 13 (43 in all; `scripts/holes.py`
+counts them). Every intermediate statement the proofs need is now a named top-level declaration, so no hole hides an
+undeclared lemma. Added in this audit: `pieceψ(-Meas)`, `∫ᴹ-pieces`, `probeOf`, `pieceMass`, `pieceProb(-int)` in `SFiniteDecomp`;
+`massP-Meas`, `invOf(-Meas)`, `normPre-random` in `SFiniteNorm`. `scaled-laws` is the one field with no separate global-element
+lemma: its type is the interface's, so state it as `scaledLaws-global` in `SFiniteStat` when filling it.
+Not planned here (outside the interface): a continuous worked example (Bayes with a `score`) and the `Hom`-level packaging of `restrictM`.
+
+**Hole map (easiest first).**
+
+| group | holes | route |
+|---|---|---|
+| `SFiniteStat` one-liners | `scale-one/mul/sum/nat/join`, `sum-nat/join`, `sumK-point` | `SFiniteSum`/`SFiniteIncl` lemmas of the same name; bridge lemma per field |
+| `SFiniteStat` weights | `score-zero`, `score-mul`, `scale-return`, `zero-bind`, `inclusion-strong` | `∫ᴹ-score`, `∫ᴹ-join`, `J-scale`; `ι-strong` |
+| `SFiniteStat` `bind-sumK` | 1 | `∫ᴹ-join`, `∫ᴹ-sumK`, `∑ᶠ-swap` (`Analysis/Series`), `∫ᴹ-sum` |
+| `SFiniteDecomp` measure plumbing | `I-densityM`, `normM`, `I-normM` | `densM` is `1 · J m (d·h)`; normalisation = scaling by the classical inverse (`Analysis/LowerInverse.inv-mul`) |
+| `SFiniteDecomp` pieces | `pieceDensity(-Meas, ≤1)`, `pieces-sum`, `pieceψ-Meas`, `∫ᴹ-pieces`, `pieceProb(-int)` | level sets of the weight, `J-∑`, `Density` |
+| `SFiniteDecomp.scaledLawsPre` | 1 | assemble: probe `probeOf p`, weight `(n+1)·pieceMass`, measure `pieceProb` |
+| `SFiniteNorm` laws | `invDec`, `normPre`, `∫-normPre`, `normC-cong`, `normProb/Zero/Scale` | classical `lem`; `massP-scale`; uniqueness of inverses |
+| `SFiniteNorm` measurability | `massP-Meas`, `invOf(-Meas)`, `normPre-random`, `caseIdx-Idx`, `normRandom` | hardest: Borel partition `{0 < m < ∞}`, glue via `Colimits` coproduct randomness |
+| `SFiniteStat.scaled-laws/normalize-*` | 4 | lift `scaledLawsPre`, `normProb/Zero/Scale` to global elements |
+
+**Literature guide** (Vákár–Ong, *On S-Finite Measures and Kernels*, arXiv 1810.01837; Hirata–Minamide–Sato, ITP 2023,
+*Semantic Foundations of Higher-Order Probabilistic Programs in Isabelle/HOL*, LIPIcs 268, 18, with AFP entry
+`S_Finite_Measure_Monad`; Affeldt–Cohen–Saito, CPP 2023; Staton, ESOP 2017, *Commutative semantics for probabilistic
+programming*). Read from the arXiv HTML; the two PDFs could not be text-extracted here, so Hirata–Minamide–Sato and
+Affeldt–Cohen–Saito are cited by section title only and NOT checked against our statements.
+
+- **Decomposition into scaled probabilities** (`scaledLawsPre`): Vákár–Ong Thm 5(1) splits a finite kernel `ν_n` with
+  mass bound `I_n` into `I_n` copies of `ν_n/I_n`, each sub-probability; Thm 6(2) divides by a bound on a *measurable
+  partition* of `X × Y` by mass, which is our level-set partition `Bₙ = {n ≤ w < n+1}`. Our version is simpler (weights
+  are real-valued and we sum pieces of bounded weight `n+1`), and the piece's mass is divided out by `normM` when positive;
+  a mass-0 piece contributes nothing, so any dummy probability will do (`pieceProb`). This is where `lem` is used.
+- **Randomised representation** (our `[α, m, w]` triple): Vákár–Ong §10–11: Def. 6 (randomisable s-finite measure `⟨Ω, μ, α⟩`),
+  Lemmas 5–6 (randomisation of probability and sub-probability kernels, with `⊥` where the mass is 0), Thm 14 (`ℕ × [0,1]`
+  representation), Thm 19 (the monad is commutative, inherited from the continuation monad `((−)⇒[0,∞])⇒[0,∞]`), Thm 20 (equality is
+  equality of pushforward measures on `Σ_X`). Our `≈ᴹ` is the integral-level form of Thm 20.
+- **Fubini/commutativity**: Vákár–Ong Thm 1 and Thm 4 (limited Fubini) cite Staton 2017 for the proof; our `SFiniteCommute`
+  already uses Tonelli termwise (the bounded `fubini`, then `J-⨆`). `bind-sumK` is the series version (`∑ᶠ-swap`).
+- **Normalisation** (`SFiniteNorm`): none of the sources read treats normalisation as a theorem. Vákár–Ong only reweights
+  s-finite kernels into sub-probability ones (Thms 5(3), 5(4), 6(3)). Our `normalize` (fixes probabilities, fails on
+  zero mass, unconstrained on infinite mass) is therefore ours: `normProb`, `normZero`, `normScale` follow from the
+  definition by classical case analysis (`invDec`). `caseIdx-Idx` is a Borel measurability fact, not in these sources.
+- **Open problem to avoid**: Vákár–Ong note disintegration for quasi-Borel spaces is open; none of the holes needs it.
+
 - [ ] (future) Constructive foundations: `lem` enters only through `Classical` in `Analysis/LowerReals` (`near-sup`, hence `complement`, `cancel`, `Arch.cancel≤`, `way-below`); everything else is generic in `OmegaSemiring`. Removing it needs located reals (Cauchy/Dedekind) and a `Fun` without the `complF` constructor, which touches `Fun-scale`, `Mask` and the Riesz pipeline.
 - [ ] (future) Negative reals: a signed layer on `[0,∞]` (differences of finite values; `E[X] = ∫X⁺ − ∫X⁻`, variance) or genuine Dedekind reals from ℚ (about 1.5–3k lines); measures keep `[0,∞]` values. Real-valued random variables need only threshold sets `{x | q < h x}` Borel, as in `Analysis/Threshold`.
 - [x] Unbounded integration: DONE (`Analysis/Unbounded`, `Analysis/Min`, `Analysis/LowerRealsMin`, `Analysis/UnboundedLowerReals`; dyadic truncation `tr k a = 2⁻ᵏ·min(a,2ᵏ)`, `FunInf h` = all truncations are `Fun`, so `Iinf` is representation-independent; the five skeleton goals `Iinf`, `Iinf-bounded`, `Iinf-mono`, `Iinf-add`, `Iinf-sup`). The skeleton's inductive `FunInf` was replaced by this predicate, which avoids proving independence of the chosen supremum representation.

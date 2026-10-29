@@ -8,6 +8,10 @@
 #                      files with holes get --allow-unsolved-metas, their importers lose --safe).  Any other
 #                      error or a postulate still fails; files with holes are listed with their counts
 #                      (scripts/holes.py counts the `?` tokens, since Agda prints nothing for them).
+#   make html          generate build/Everything.agda (imports every module), the Agda HTML documentation in
+#                      html/ (from the progress overlay, so skeleton modules with holes are included), then
+#                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
+#                      only serves.
 #   make clean         delete the Agda interfaces (_build/) and the logs, for a from-scratch check.
 #   make profile       typecheck from scratch with `--profile=modules` (one mode per run in Agda 2.7) and write
 #                      per-module/per-definition timings to profile/ (see TODO.md, "Compile time").
@@ -32,7 +36,7 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: check progress report clean all-interfaces profile profile-tree
+.PHONY: check progress html serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
@@ -41,6 +45,20 @@ check:
 progress:
 	@python3 scripts/progress-overlay.py $(SRC) $(PROGDIR)
 	@$(MAKE) --no-print-directory -C $(PROGDIR) -f $(CURDIR)/Makefile report MODE=progress SRC=src HOLES=$(CURDIR)/scripts/holes.py
+
+PORT ?= 8081
+html:
+	@python3 scripts/progress-overlay.py $(SRC) $(PROGDIR)
+	@mkdir -p build $(PROGDIR)/build html
+	@{ echo '{-# OPTIONS --without-K #-}'; echo 'module Everything where'; \
+	   for m in $(MODULES); do echo "import $$(echo $$m | tr / .)"; done; } > build/Everything.agda
+	@cp build/Everything.agda $(PROGDIR)/build/Everything.agda
+	@cd $(PROGDIR) && $(AGDA) -i build --html --html-dir=$(CURDIR)/html build/Everything.agda
+	@cp html/Everything.html html/index.html
+	@$(MAKE) --no-print-directory serve
+serve:
+	@echo "serving html/ at http://$$(ipconfig getifaddr en0 2>/dev/null || hostname):$(PORT)/"
+	@cd html && python3 -m http.server $(PORT) --bind 0.0.0.0
 
 # One log per module: the Agda output minus the "Checking" lines.  Any source change re-runs every
 # module (Agda itself reuses unchanged interfaces, so this is cheap).

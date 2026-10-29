@@ -141,6 +141,23 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   caseIdx-Idx : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β → RandomSource.Idx S (λ r → caseIdx (β r))
   caseIdx-Idx w = ?
 
+  -- r ↦ massP (β r) is `Meas` (Tonelli.Meas-J)
+  massP-Meas : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β → Meas (λ r → massP (β r))
+  massP-Meas w = ?
+
+  -- the classical inverse as a function (0 where there is none); a Borel function of the mass
+  invOf : Cut → Cut
+  invOf m = ?
+
+  invOf-Meas : ∀ {f : R₁ → Cut} → Meas f → Meas (λ r → invOf (f r))
+  invOf-Meas mf = ?
+
+  -- on the invertible case, the normalised family is a random element of C.TQ X
+  normPre-random : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β →
+    (inv : ∀ r → massP (β r) * invOf (massP (β r)) ≈ 1#) →
+    QBS.Random (C.TQ X) (λ r → normPre (β r) (invOf (massP (β r))) (inv r))
+  normPre-random w inv = ?
+
   normRandom : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β →
     QBS.Random (_+Q_ S (C.TQ X) (1Q S)) (λ r → normC (β r))
   normRandom w = ?

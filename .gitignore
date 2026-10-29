@@ -3,3 +3,5 @@ _build/
 .DS_Store
 profile/*
 !profile/summary.md
+build/
+html/
