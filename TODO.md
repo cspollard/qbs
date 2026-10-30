@@ -97,6 +97,7 @@ instead of using `with`); (2) leaving the implicit arguments of a lemma about ra
 unification (give them explicitly; `+`, `*` are not injective for unification); (3) binding `wmOf p`, `g (wmOf p)` and
 similar to local names in `SFinite.∫ᴹ-join` made the check run for more than five minutes (original 5.6 s), so that
 proof is still in `scripts/longdecls.baseline`; if retried, give each local a type signature or make them `abstract`.
+(2026-10-30, with `--lossy-unification`: `∫ᴹ-join` split into `∫ᴹ-join-pt`/`-inner` with a helper `joinKer`, 5 s.  The baseline is now empty.)
 Compile times before and after were equal for `StatInstance` (30 s), `LowerReals`, `LevelSets`, `Unbounded`, `Fun`,
 `Restrict` and `SFiniteIncl`.
 

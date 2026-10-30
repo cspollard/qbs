@@ -212,20 +212,12 @@ module Measurable (A : OmegaSemiring (suc zero)) where
   ----------------------------------------------------------------------------
   -- scaling by a constant c ≤ 1
 
-  Fun-scale : ∀ {h} c → c ≤ 1# → Fun h → Fun (λ x → c * h x)
-  Fun-scale {h} c c≤1 (ind {U} d d≤1 bU e₀ e₁ b) = ind (c * d) cd≤1 bU
-    (λ x u → trans (*-cong refl (e₀ x u)) refl)
-    (λ x nu → trans (*-cong refl (e₁ x nu)) (zeroʳ c))
-    (λ x → ≤-trans (*-mono c (b x)) (≤-resp (sym (*-identityʳ c)) refl c≤1))
-    where cd≤1 = ≤-trans (*-mono c d≤1) (≤-resp (sym (*-identityʳ c)) refl c≤1)
-  Fun-scale c c≤1 (sumF {h} {h₁} {h₂} f₁ f₂ q b) = sumF (Fun-scale c c≤1 f₁) (Fun-scale c c≤1 f₂)
-    (λ x → trans (*-cong refl (q x)) (distribˡ c (h₁ x) (h₂ x)))
-    (λ x → ≤-trans (*-mono c (b x)) (≤-resp (sym (*-identityʳ c)) refl c≤1))
-  Fun-scale c c≤1 (supF {h} hs fs inc q) = supF (λ n x → c * hs n x) (λ n → Fun-scale c c≤1 (fs n))
-    (λ x n → *-mono c (inc x n))
-    (λ x → trans (*-cong refl (q x)) (*-⨆ c (λ n → hs n x) (inc x) (λ n → *-mono c (inc x n))))
-  Fun-scale {h} c c≤1 (complF {h₀} {h′} f q) =
-    complF {h = λ x → c * h₀ x} (sumF (Fun-scale c c≤1 f) (Fun-const d d≤1) (λ x → refl) bd) pw
+  -- the complement case of `Fun-scale`: c·(1 - h′) = c·1 - c·h′ is the sum of `c·h′` and the constant `1 - c`
+  Fun-scale-compl : ∀ {h₀ h′ : R → ∣A∣} c → c ≤ 1# → (f : Fun h′) → (∀ x → h₀ x + h′ x ≈ 1#) →
+    Fun (λ x → c * h′ x) → Fun (λ x → c * h₀ x)
+  Fun-scale-compl {h₀} {h′} c c≤1 f q sf =
+    complF {h = λ x → c * h₀ x} {h′ = λ x → c * h′ x + d}
+      (sumF {h = λ x → c * h′ x + d} {h₁ = λ x → c * h′ x} {h₂ = const d} sf (Fun-const d d≤1) (λ x → refl) bd) pw
     where
       d : ∣A∣
       d = proj₁ (complement c≤1)
@@ -238,3 +230,17 @@ module Measurable (A : OmegaSemiring (suc zero)) where
       pw : ∀ x → c * h₀ x + (c * h′ x + d) ≈ 1#
       pw x = trans (sym (+-assoc _ _ _)) (trans (+-cong (sym (distribˡ c (h₀ x) (h′ x))) refl)
                (trans (+-cong (*-cong refl (q x)) refl) (trans (+-cong (*-identityʳ c) refl) cd)))
+
+  Fun-scale : ∀ {h} c → c ≤ 1# → Fun h → Fun (λ x → c * h x)
+  Fun-scale {h} c c≤1 (ind {U} d d≤1 bU e₀ e₁ b) = ind (c * d) cd≤1 bU
+    (λ x u → trans (*-cong refl (e₀ x u)) refl)
+    (λ x nu → trans (*-cong refl (e₁ x nu)) (zeroʳ c))
+    (λ x → ≤-trans (*-mono c (b x)) (≤-resp (sym (*-identityʳ c)) refl c≤1))
+    where cd≤1 = ≤-trans (*-mono c d≤1) (≤-resp (sym (*-identityʳ c)) refl c≤1)
+  Fun-scale c c≤1 (sumF {h} {h₁} {h₂} f₁ f₂ q b) = sumF (Fun-scale c c≤1 f₁) (Fun-scale c c≤1 f₂)
+    (λ x → trans (*-cong refl (q x)) (distribˡ c (h₁ x) (h₂ x)))
+    (λ x → ≤-trans (*-mono c (b x)) (≤-resp (sym (*-identityʳ c)) refl c≤1))
+  Fun-scale c c≤1 (supF {h} hs fs inc q) = supF (λ n x → c * hs n x) (λ n → Fun-scale c c≤1 (fs n))
+    (λ x n → *-mono c (inc x n))
+    (λ x → trans (*-cong refl (q x)) (*-⨆ c (λ n → hs n x) (inc x) (λ n → *-mono c (inc x n))))
+  Fun-scale c c≤1 (complF {h₀} {h′} f q) = Fun-scale-compl {h₀} {h′} c c≤1 f q (Fun-scale c c≤1 f)

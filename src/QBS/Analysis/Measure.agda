@@ -118,7 +118,11 @@ module Integration (A : OmegaSemiring (suc zero)) where
 
   probClass : MeasureClass
   probClass = record
-    { Ok = IsProb ; ok-dirac = IsProb-dirac ; ok-push = λ {f} mf {m} pm → IsProb-push {f} mf {m} pm ; ok-bind = λ {m} {g} {kg} pm pg → IsProb-bind {m} {g} {kg} pm pg }
+    { Ok = IsProb
+    ; ok-dirac = IsProb-dirac
+    ; ok-push = λ {f} mf {m} pm → IsProb-push {f} mf {m} pm
+    ; ok-bind = λ {m} {g} {kg} pm pg → IsProb-bind {m} {g} {kg} pm pg
+    }
 
   -- every measure is a sub-probability measure
   subClass : MeasureClass

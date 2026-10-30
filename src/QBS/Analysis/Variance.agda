@@ -83,10 +83,16 @@ module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) whe
       x12′ x = x4′ x :+ (x4′ x :+ x4′ x)
 
   x12-as-3 : ∀ x → x12 x ≃ (x4 x +S x4 x) +S x4 x
-  x12-as-3 x = solve 1 (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) := (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) :+ ((x :+ x) :+ (x :+ x))) ≃-refl x
+  x12-as-3 x = solve 1
+    (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x)))
+           := (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) :+ ((x :+ x) :+ (x :+ x)))
+    ≃-refl x
 
   x12-as-4 : ∀ x → x12 x ≃ x4 ((x +S x) +S x)
-  x12-as-4 x = solve 1 (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) := (((x :+ x) :+ x) :+ ((x :+ x) :+ x)) :+ (((x :+ x) :+ x) :+ ((x :+ x) :+ x))) ≃-refl x
+  x12-as-4 x = solve 1
+    (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x)))
+           := (((x :+ x) :+ x) :+ ((x :+ x) :+ x)) :+ (((x :+ x) :+ x) :+ ((x :+ x) :+ x)))
+    ≃-refl x
 
   x4-0 : x4 0S ≃ 0S
   x4-0 = ≃-trans (+S-cong (+S-identityˡ 0S) (+S-identityˡ 0S)) (+S-identityˡ 0S)

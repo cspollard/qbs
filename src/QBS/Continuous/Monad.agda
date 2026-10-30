@@ -165,10 +165,12 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
 
   glue-eq : ∀ {X : QBS S} {i : R → ℕ} (pi : Partition (downℕ i)) {β : ℕ → R → Pre X}
     (ws : ∀ n → Wit (β n)) r →
-    _≈ᵖ_ {X} (β (i r) r) (mk {X} (sec {X} (glueJ {X} pi (λ n → a (ws n))) r) (sec-random {X} (glueJ {X} pi (λ n → a (ws n))) r) (g (ws (i r)) r) (g-pr (ws (i r)) r))
+    _≈ᵖ_ {X} (β (i r) r)
+      (mk {X} (sec {X} (glueJ {X} pi (λ n → a (ws n))) r) (sec-random {X} (glueJ {X} pi (λ n → a (ws n))) r)
+          (g (ws (i r)) r) (g-pr (ws (i r)) r))
   glue-eq {X} {i} pi {β} ws r h = Setoid.trans Aˢ (w-eq (ws (i r)) r h)
-    (mk-cong {X} (sec-random {X} (a (ws (i r))) r) (sec-random {X} (glueJ {X} pi (λ n → a (ws n))) r) (g (ws (i r)) r) (g-pr (ws (i r)) r)
-       (λ s → Setoid.refl (Carrier X)) h)
+    (mk-cong {X} (sec-random {X} (a (ws (i r))) r) (sec-random {X} (glueJ {X} pi (λ n → a (ws n))) r)
+       (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier X)) h)
 
   TQ : QBS S → QBS S
   TQ X = record

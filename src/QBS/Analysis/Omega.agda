@@ -18,7 +18,8 @@ open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
+-- a commutative semiring with a compatible order: monotone `+` and `*`, `0` least, complements below `1`
+record OrderedSemiring (ℓ : Level) : Set (L.suc ℓ) where
   field
     commutativeSemiring : CommutativeSemiring ℓ ℓ
   open CommutativeSemiring commutativeSemiring public
@@ -38,6 +39,12 @@ record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
 
   Increasing : (ℕ → Carrier) → Set ℓ
   Increasing c = ∀ n → c n ≤ c (suc n)
+
+-- an ordered semiring with suprema of increasing sequences, along which `+` and `*` are continuous
+record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
+  field
+    ordered : OrderedSemiring ℓ
+  open OrderedSemiring ordered public
 
   field
     ⨆ : (c : ℕ → Carrier) → Increasing c → Carrier

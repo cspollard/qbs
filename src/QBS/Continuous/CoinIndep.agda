@@ -57,37 +57,44 @@ module CoinIndep (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
     ... | ()
     bool-ext {false} {false} f g = ≡.refl
 
+  -- the clopen tree of a cylinder accepts the merge of `a` and `s` iff the trees of its two factors accept `a`, resp. `s`
+  tree-fw : ∀ {U} (c : Cyl U) (a s : Cantor) →
+    eval (proj₁ (cyl→tree c)) (mergeC a s) ≡ true →
+    eval (proj₁ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c))) a
+      ∧ eval (proj₁ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c))) s ≡ true
+  tree-fw c a s h =
+    let (p₁ , p₂) = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ (Cyl-rect c))))) a s (proj₂ (proj₂ (cyl→tree c) (mergeC a s)) h)
+    in and-intro (proj₁ (proj₂ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c)) a) p₁)
+                 (proj₁ (proj₂ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c)) s) p₂)
+
+  tree-bw : ∀ {U} (c : Cyl U) (a s : Cantor) →
+    eval (proj₁ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c))) a
+      ∧ eval (proj₁ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c))) s ≡ true →
+    eval (proj₁ (cyl→tree c)) (mergeC a s) ≡ true
+  tree-bw c a s h =
+    let (e₁ , e₂) = and-elim (eval (proj₁ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c))) a)
+                             (eval (proj₁ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c))) s) h
+    in proj₁ (proj₂ (cyl→tree c) (mergeC a s))
+         (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (Cyl-rect c))))) a s
+            (proj₂ (proj₂ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c)) a) e₁)
+            (proj₂ (proj₂ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c)) s) e₂))
+
   -- the clopen tree of a cylinder is the interleaving of the trees of its two factors
   tree-split : ∀ {U} (c : Cyl U) (x : Cantor) →
     eval (proj₁ (cyl→tree c)) x ≡
     eval (interleave (proj₁ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c)))
                      (proj₁ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c)))) x
   tree-split {U} c x =
-    ≡.trans (shift tU)
-      (≡.trans (bool-ext F G)
+    ≡.trans (shift (proj₁ (cyl→tree c)))
+      (≡.trans (bool-ext (tree-fw c a s) (tree-bw c a s))
         (≡.trans (≡.sym (eval-interleave t₁ t₂ a s)) (≡.sym (shift (interleave t₁ t₂)))))
     where
-      g = λ (_ : R₁) → fairCoin
-      kg = constK fairCoin
-      c₁ = P₁.rc₁ g kg c
-      c₂ = P₁.rc₂ g kg c
-      rect = Cyl-rect c
-      fw = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ rect))))
-      bw = proj₂ (proj₂ (proj₂ (proj₂ (proj₂ rect))))
-      tU = proj₁ (cyl→tree c)
-      t₁ = proj₁ (cyl→tree c₁)
-      t₂ = proj₁ (cyl→tree c₂)
+      t₁ = proj₁ (cyl→tree (P₁.rc₁ (λ _ → fairCoin) (constK fairCoin) c))
+      t₂ = proj₁ (cyl→tree (P₁.rc₂ (λ _ → fairCoin) (constK fairCoin) c))
       a = evens x
       s = odds x
-      m = mergeC a s
-      shift : ∀ T → eval T x ≡ eval T m
+      shift : ∀ T → eval T x ≡ eval T (mergeC a s)
       shift T = eval-ext T (λ n → ≡.sym (merge-split x n))
-      F : eval tU m ≡ true → eval t₁ a ∧ eval t₂ s ≡ true
-      F h = let (p₁ , p₂) = fw a s (proj₂ (proj₂ (cyl→tree c) m) h)
-            in and-intro (proj₁ (proj₂ (cyl→tree c₁) a) p₁) (proj₁ (proj₂ (cyl→tree c₂) s) p₂)
-      G : eval t₁ a ∧ eval t₂ s ≡ true → eval tU m ≡ true
-      G h = let (e₁ , e₂) = and-elim (eval t₁ a) (eval t₂ s) h
-            in proj₁ (proj₂ (cyl→tree c) m) (bw a s (proj₂ (proj₂ (cyl→tree c₁) a) e₁) (proj₂ (proj₂ (cyl→tree c₂) s) e₂))
 
   -- the two factors agree with the coin on every finite cylinder ...
   indep-cyl : ∀ {U} (c : Cyl U) →

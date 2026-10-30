@@ -1,17 +1,2 @@
 # Known long declarations tolerated by 'make longcheck' (scripts/longdecls.py); each is a candidate for splitting into named lemmas.
 # Remove a line once the declaration is shortened; do not add new ones without a reason.
-QBS.Analysis.CutSum.dist2
-QBS.Analysis.Fun.Fun-scale
-QBS.Analysis.MeasFun.mutual
-QBS.Analysis.Measure.probClass
-QBS.Analysis.Mixture.mix
-QBS.Analysis.Param.PF
-QBS.Analysis.Uniqueness.agree-fun
-QBS.Analysis.Variance.x12-as-3
-QBS.Analysis.Variance.x12-as-4
-QBS.Continuous.CoinIndep.tree-split
-QBS.Continuous.FirstBit.term
-QBS.Continuous.Monad.glue-eq
-QBS.Continuous.SFinite.∫ᴹ-join
-QBS.Continuous.SFiniteIncl.ι-mult
-QBS.Analysis.Omega.OmegaSemiring

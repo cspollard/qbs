@@ -308,16 +308,18 @@ module Instance (ℓ : Level) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   ExtNatOmega : OmegaSemiring ℓ
   ExtNatOmega = record
-    { commutativeSemiring = commSemiring
-    ; _≤_ = _≤ᶜ_
-    ; ≤-reflexive = λ e → lift (⊑-reflexive (cong lower e))
-    ; ≤-trans = λ p q → lift (⊑-trans (lower p) (lower q))
-    ; ≤-antisym = λ p q → lc (⊑-antisym (lower p) (lower q))
-    ; 0-least = lift 0-⊑
-    ; ≤-+ʳ = λ {a} {b} → lift (x⊑x+y (lower a) (lower b))
-    ; +-mono = λ p q → lift (+-mono′ (lower p) (lower q))
-    ; *-mono = λ c p → lift (*-mono⊑ (lower c) (lower p))
-    ; complement = λ {c} h → let (d , e) = ⊑⇒≤ (lower h) in lift d , lc e
+    { ordered = record
+          { commutativeSemiring = commSemiring
+        ; _≤_ = _≤ᶜ_
+        ; ≤-reflexive = λ e → lift (⊑-reflexive (cong lower e))
+        ; ≤-trans = λ p q → lift (⊑-trans (lower p) (lower q))
+        ; ≤-antisym = λ p q → lc (⊑-antisym (lower p) (lower q))
+        ; 0-least = lift 0-⊑
+        ; ≤-+ʳ = λ {a} {b} → lift (x⊑x+y (lower a) (lower b))
+        ; +-mono = λ p q → lift (+-mono′ (lower p) (lower q))
+        ; *-mono = λ c p → lift (*-mono⊑ (lower c) (lower p))
+        ; complement = λ {c} h → let (d , e) = ⊑⇒≤ (lower h) in lift d , lc e
+          }
     ; ⨆ = λ c inc → lift (proj₁ (supOf c inc))
     ; ⨆-ub = λ c inc n → lift (Sup-ub (proj₂ (supOf c inc)) n)
     ; ⨆-lub = λ c inc {b} le → lift (Sup-lub (proj₂ (supOf c inc)) (λ n → lower (le n)))

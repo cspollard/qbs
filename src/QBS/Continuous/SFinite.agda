@@ -294,7 +294,38 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
       (IsProb-bind {m p} {P₁.pushMerge (g (wmOf {X} p))} {P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))} (ok p)
          (λ r → IsProb-push {mergeR r} (measurable-merge₁ (lower r)) {g (wmOf {X} p) r} (g-pr (wmOf {X} p) r)))
 
+    -- the r-th section kernel of the witness of `p`, as a pre-measure on X
+    joinKer : ∀ {X : QBS S} (p : Pre (XW (TQ X))) → R₁ → Pre (XW X)
+    joinKer {X} p r = kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r
+
     -- Tonelli: the integral of a join is the integral of the integrals
+    ∫ᴹ-join-pt : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) (r s : R₁) → ψ {X} (joinPre {X} p) f (mergeR r s)
+                 ≈ proj₁ (α p r) * ψ {X} (joinKer {X} p r) f s
+    ∫ᴹ-join-pt {X} p f r s = trans
+      (Setoid.reflexive Aˢ (≡.cong₂ (λ r′ s′ → (proj₁ (α p r′) * proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′)))
+                                                * (map f ⟨$⟩ proj₂ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′))))
+                                (merge-evens r s) (merge-odds r s)))
+      (*-assoc _ _ _)
+
+
+    ∫ᴹ-join-inner : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) (r : R₁) →
+      J (P₁.pushMerge (g (wmOf {X} p)) r) (ψ {X} (joinPre {X} p) f) (mψ {X} (joinPre {X} p) f)
+        ≈ ψ {TQ X} p (∫ᶠ {X} f) r
+    ∫ᴹ-join-inner {X} p f r = trans
+      (J-push {mergeR r} (measurable-merge₁ (lower r)) (g (wmOf {X} p) r) {ψ {X} (joinPre {X} p) f}
+         (mψ {X} (joinPre {X} p) f)
+         (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r))))
+      (trans
+        (J-cong (g (wmOf {X} p) r) {λ s → ψ {X} (joinPre {X} p) f (mergeR r s)}
+           {λ s → proj₁ (α p r) * ψ {X} (joinKer {X} p r) f s}
+           (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r)))
+           (Meas-⊗ {λ _ → proj₁ (α p r)} {ψ {X} (joinKer {X} p r) f}
+              (Meas-const (proj₁ (α p r))) (mψ {X} (joinKer {X} p r) f))
+           (λ s → ∫ᴹ-join-pt {X} p f r s))
+        (trans (J-scale (g (wmOf {X} p) r) (proj₁ (α p r)) {ψ {X} (joinKer {X} p r) f}
+                  (mψ {X} (joinKer {X} p r) f))
+          (*-cong refl (sym (w-eq (wmOf {X} p) r f)))))
+
     ∫ᴹ-join : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) →
       ∫ᴹ {X} (joinPre {X} p) f ≈ ∫ᴹ {TQ X} p (∫ᶠ {X} f)
     ∫ᴹ-join {X} p f = trans
@@ -307,29 +338,4 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
         (Meas-J (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))) {ψ {X} (joinPre {X} p) f}
           (mψ {X} (joinPre {X} p) f))
         (mψ {TQ X} p (∫ᶠ {X} f))
-        inner)
-      where
-        pt : ∀ r s → ψ {X} (joinPre {X} p) f (mergeR r s)
-                     ≈ proj₁ (α p r) * ψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f s
-        pt r s = trans
-          (Setoid.reflexive Aˢ (≡.cong₂ (λ r′ s′ → (proj₁ (α p r′) * proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′)))
-                                                    * (map f ⟨$⟩ proj₂ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′))))
-                                    (merge-evens r s) (merge-odds r s)))
-          (*-assoc _ _ _)
-
-        inner : ∀ r → J (P₁.pushMerge (g (wmOf {X} p)) r) (ψ {X} (joinPre {X} p) f) (mψ {X} (joinPre {X} p) f)
-                      ≈ ψ {TQ X} p (∫ᶠ {X} f) r
-        inner r = trans
-          (J-push {mergeR r} (measurable-merge₁ (lower r)) (g (wmOf {X} p) r) {ψ {X} (joinPre {X} p) f}
-             (mψ {X} (joinPre {X} p) f)
-             (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r))))
-          (trans
-            (J-cong (g (wmOf {X} p) r) {λ s → ψ {X} (joinPre {X} p) f (mergeR r s)}
-               {λ s → proj₁ (α p r) * ψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f s}
-               (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r)))
-               (Meas-⊗ {λ _ → proj₁ (α p r)} {ψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f}
-                  (Meas-const (proj₁ (α p r))) (mψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f))
-               (λ s → pt r s))
-            (trans (J-scale (g (wmOf {X} p) r) (proj₁ (α p r)) {ψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f}
-                      (mψ {X} (kerP {X} (a (wmOf {X} p)) (g (wmOf {X} p)) (g-pr (wmOf {X} p)) r) f))
-              (*-cong refl (sym (w-eq (wmOf {X} p) r f)))))
+        (∫ᴹ-join-inner {X} p f))
