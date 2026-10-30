@@ -59,8 +59,11 @@ module _ (lem₁ : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
     ; ∑-Σ = λ {I} {J} f → sum-Σ f
     ; ∑-reindex = λ {I} {J} e f →
         mk⊑ (λ q d → Mem⇒sum (Mem-mono (λ j → subst-⊑ f (Inverse.inverseˡ e refl))
-               (Reindex.reidx (Inverse.to e) (Inverse.from e) (λ i → Inverse.inverseʳ e refl) (λ j → Inverse.inverseˡ e refl) (sum⇒Mem d))))
-        , mk⊑ (λ q d → Mem⇒sum (Reindex.reidx (Inverse.from e) (Inverse.to e) (λ j → Inverse.inverseˡ e refl) (λ i → Inverse.inverseʳ e refl) (sum⇒Mem d)))
+               (Reindex.reidx (Inverse.to e) (Inverse.from e) (λ i → Inverse.inverseʳ e refl)
+                   (λ j → Inverse.inverseˡ e refl) (sum⇒Mem d))))
+        , mk⊑ (λ q d → Mem⇒sum
+            (Reindex.reidx (Inverse.from e) (Inverse.to e) (λ j → Inverse.inverseˡ e refl)
+            (λ i → Inverse.inverseʳ e refl) (sum⇒Mem d)))
     ; ∑-distribˡ = λ {I} x f → sum-distribˡ x f
     }
     where

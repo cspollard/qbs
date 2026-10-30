@@ -67,7 +67,8 @@ nat-nonneg (suc k) = ≤-resp (≃-refl) (≃-sym (nat-suc k))
   where _|>_ = λ {A B : Set} (v : A) (f : A → B) → f v
 
 nat-1≤1 : nat 1 ≤ 1ℚᵘ
-nat-1≤1 = ≤-≃ (≃-trans (nat-suc 0) (≃-trans (+-cong (≃-refl {nat 0}) (≃-refl {1ℚᵘ})) (≃-trans (+-cong z (≃-refl {1ℚᵘ})) (+-identityˡ 1ℚᵘ))))
+nat-1≤1 = ≤-≃
+    (≃-trans (nat-suc 0) (≃-trans (+-cong (≃-refl {nat 0}) (≃-refl {1ℚᵘ})) (≃-trans (+-cong z (≃-refl {1ℚᵘ})) (+-identityˡ 1ℚᵘ))))
   where z : nat 0 ≃ 0ℚᵘ
         z = ≃-refl
 

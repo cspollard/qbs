@@ -223,7 +223,8 @@ module Fan (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       ...   | y , ey = by-bit (y 0) (trans (sym (eval-pt (G (N ⊔ N₀)) y)) ey)
         where
           by-bit : ∀ b → eval (child b (G (N ⊔ N₀))) (tl y) ≡ true → Ne (child true (G N))
-          by-bit false h = ⊥-elim (nne (tl y , child-sub (G (N ⊔ N₀)) (G N₀) (dec-mono G d {N₀} {N ⊔ N₀} (ℕₚ.≤⇒≤′ (ℕₚ.m≤n⊔m N N₀))) false (tl y) h))
+          by-bit false h = ⊥-elim
+              (nne (tl y , child-sub (G (N ⊔ N₀)) (G N₀) (dec-mono G d {N₀} {N ⊔ N₀} (ℕₚ.≤⇒≤′ (ℕₚ.m≤n⊔m N N₀))) false (tl y) h))
           by-bit true h = tl y , child-sub (G (N ⊔ N₀)) (G N) (dec-mono G d {N} {N ⊔ N₀} (ℕₚ.≤⇒≤′ (ℕₚ.m≤m⊔n N N₀))) true (tl y) h
 
   pick : (P : Set) → P ⊎ (P → ⊥) → Bool

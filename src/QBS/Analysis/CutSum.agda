@@ -395,7 +395,9 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
     row-add (m-neg lt) F F′ hH hF dj mF′ = Mem-down (add-neg-le′ lt) (Mem-mono hF mF′)
     row-add {i₀} {H} (m-step {q = ρ} {q′ = ρ′} j r H′ mr ex gz mH′ le) F F′ {q′} hH hF dj mF′ with dj j
     ... | inj₂ Hj≤0 =
-      Mem-down (≤-trans (+-mono-≤ le (≤-refl {q′})) (≤-trans (+-mono-≤ (≤-trans (+-mono-≤ (<-≤ r<0) (≤-refl {ρ′})) (≤-≃ (+-identityˡ ρ′))) (≤-refl {q′})) (≤-refl {ρ′ + q′})))
+      Mem-down (≤-trans (+-mono-≤ le (≤-refl {q′}))
+          (≤-trans (+-mono-≤ (≤-trans (+-mono-≤ (<-≤ r<0) (≤-refl {ρ′})) (≤-≃ (+-identityˡ ρ′))) (≤-refl {q′}))
+          (≤-refl {ρ′ + q′})))
         (row-add mH′ F F′ hH′ hF dj′ mF′)
       where
         r<0 : r < 0ℚᵘ
@@ -407,7 +409,8 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
         ... | inj₁ z = inj₁ z
         ... | inj₂ z = inj₂ (⊑-trans (step-below ex gz j′) z)
     ... | inj₁ F′j≤0 =
-      Mem-down (≤-trans (+-mono-≤ le (≤-refl {q′})) (≤-≃ (solve 3 (λ r ρ′ q′ → (r :+ ρ′) :+ q′ := ρ′ :+ (r :+ q′)) ≃-refl r ρ′ q′)))
+      Mem-down (≤-trans (+-mono-≤ le (≤-refl {q′}))
+          (≤-≃ (solve 3 (λ r ρ′ q′ → (r :+ ρ′) :+ q′ := ρ′ :+ (r :+ q′)) ≃-refl r ρ′ q′)))
         (row-add mH′ F F″ hH′ (repl-below hF) dj″ mF″)
       where
         k₀ = i₀ , j

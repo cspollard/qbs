@@ -178,7 +178,8 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     cN N = ratC (enumQ N) ⊓ oneC
 
     cN-ratC : ∀ N → mem oneC (enumQ N) → cN N ≋ ratC (enumQ N)
-    cN-ratC N lt = mk⊑ (λ s m → proj₁ m) , mk⊑ (λ { s (inj₁ s<q) → inj₁ s<q , <-trans s<q lt ; s (inj₂ s<0) → inj₂ s<0 , <-trans s<0 0<1 })
+    cN-ratC N lt = mk⊑ (λ s m → proj₁ m) , mk⊑
+        (λ { s (inj₁ s<q) → inj₁ s<q , <-trans s<q lt ; s (inj₂ s<0) → inj₂ s<0 , <-trans s<0 0<1 })
 
     -- the step from `M N` to `M (suc N)`: on `W N` the approximant is the constant `cN N`, elsewhere it is `M N`
     module Step N (FMN : Fun (M N)) where

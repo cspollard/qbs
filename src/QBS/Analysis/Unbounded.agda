@@ -233,7 +233,8 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
 
     hsum-I : ∀ m k {h₁ h₂} (f₁ : FunInf h₁) (f₂ : FunInf h₂) → I m (hsum k f₁ f₂) (hsum-fun k f₁ f₂) ≈
       half * I m (λ x → tr k (h₁ x)) (f₁ k) + half * I m (λ x → tr k (h₂ x)) (f₂ k)
-    hsum-I m k f₁ f₂ = trans (I-add m (hsum-fun k f₁ f₂) (Fun-scale half half≤1 (f₁ k)) (Fun-scale half half≤1 (f₂ k)) (λ x → refl))
+    hsum-I m k f₁ f₂ = trans
+        (I-add m (hsum-fun k f₁ f₂) (Fun-scale half half≤1 (f₁ k)) (Fun-scale half half≤1 (f₂ k)) (λ x → refl))
       (+-cong (I-scale m half (f₁ k) (Fun-scale half half≤1 (f₁ k)) (λ x → refl))
               (I-scale m half (f₂ k) (Fun-scale half half≤1 (f₂ k)) (λ x → refl)))
 
@@ -359,7 +360,8 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
       scale-eqJ d g x = begin
         d * g x                                          ≈⟨ *-cong (mn-⨆-d d) refl ⟩
         ⨆ (λ j → mn d (pw j)) (mn-inc d) * g x           ≈⟨ *-comm _ _ ⟩
-        g x * ⨆ (λ j → mn d (pw j)) (mn-inc d)           ≈⟨ *-⨆ (g x) (λ j → mn d (pw j)) (mn-inc d) (λ j → *-mono (g x) (mn-inc d j)) ⟩
+        g x * ⨆ (λ j → mn d (pw j)) (mn-inc d)
+            ≈⟨ *-⨆ (g x) (λ j → mn d (pw j)) (mn-inc d) (λ j → *-mono (g x) (mn-inc d j)) ⟩
         ⨆ (λ j → g x * mn d (pw j)) (λ j → *-mono (g x) (mn-inc d j))
                                                          ≈⟨ ⨆-cong _ (scale-incJ d g x) (λ j → *-comm _ _) ⟩
         ⨆ (λ j → mn d (pw j) * g x) (scale-incJ d g x) ∎

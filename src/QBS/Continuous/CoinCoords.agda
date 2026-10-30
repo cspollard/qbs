@@ -110,13 +110,15 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
   -- 2. each half, and each coordinate, has the law of the coin
   J-evens : ∀ {φ} (p : Meas φ) → J fairCoin (λ r → φ (evensR r)) (pe {φ} p) ≈ J fairCoin φ p
   J-evens {φ} p = trans
-    (J-cong fairCoin (pe {φ} p) (Meas-⊗ {λ r → φ (evensR r)} {λ r → 1#} (pe {φ} p) (po {λ _ → 1#} (Meas-const 1#))) (λ r → sym (*-identityʳ (φ (evensR r)))))
+    (J-cong fairCoin (pe {φ} p) (Meas-⊗ {λ r → φ (evensR r)} {λ r → 1#} (pe {φ} p) (po {λ _ → 1#} (Meas-const 1#)))
+        (λ r → sym (*-identityʳ (φ (evensR r)))))
     (trans (J-split {φ} {λ _ → 1#} p (Meas-const 1#))
       (trans (*-cong refl (J-const fairCoin-prob 1#)) (*-identityʳ (J fairCoin φ p))))
 
   J-odds : ∀ {φ} (p : Meas φ) → J fairCoin (λ r → φ (oddsR r)) (po {φ} p) ≈ J fairCoin φ p
   J-odds {φ} p = trans
-    (J-cong fairCoin (po {φ} p) (Meas-⊗ {λ r → 1#} {λ r → φ (oddsR r)} (pe {λ _ → 1#} (Meas-const 1#)) (po {φ} p)) (λ r → sym (*-identityˡ (φ (oddsR r)))))
+    (J-cong fairCoin (po {φ} p) (Meas-⊗ {λ r → 1#} {λ r → φ (oddsR r)} (pe {λ _ → 1#} (Meas-const 1#)) (po {φ} p))
+        (λ r → sym (*-identityˡ (φ (oddsR r)))))
     (trans (J-split {λ _ → 1#} {φ} (Meas-const 1#) p)
       (trans (*-cong (J-const fairCoin-prob 1#) refl) (*-identityˡ (J fairCoin φ p))))
 
@@ -127,16 +129,20 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
 
   -- 3. coordinates: one factor in coordinate i, one in a later coordinate j
   J-indep : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) i j (h : i < j) →
-    J fairCoin (λ r → φ (coord i r) * ψ (coord j r)) (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j))
+    J fairCoin (λ r → φ (coord i r) * ψ (coord j r))
+        (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j))
       ≈ J fairCoin φ p * J fairCoin ψ q
   J-indep {φ} {ψ} p q zero (suc j) h =
     trans (J-irrel fairCoin (Meas-⊗ {λ r → φ (coord zero r)} {λ r → ψ (coord (suc j) r)} (pc {φ} p zero) (pc {ψ} q (suc j)))
-                            (Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (coord j (oddsR r))} (pe {φ} p) (po {λ r → ψ (coord j r)} (pc {ψ} q j))))
+                            (Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (coord j (oddsR r))} (pe {φ} p)
+                                (po {λ r → ψ (coord j r)} (pc {ψ} q j))))
       (trans (J-split {φ} {λ r → ψ (coord j r)} p (pc {ψ} q j)) (*-cong refl (J-coord q j)))
   J-indep {φ} {ψ} p q (suc i) (suc j) (s≤s h) =
     trans (J-irrel fairCoin (Meas-⊗ {λ r → φ (coord (suc i) r)} {λ r → ψ (coord (suc j) r)} (pc {φ} p (suc i)) (pc {ψ} q (suc j)))
-                            (po {λ r → φ (coord i r) * ψ (coord j r)} (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j))))
-      (trans (J-odds {λ r → φ (coord i r) * ψ (coord j r)} (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j)))
+                            (po {λ r → φ (coord i r) * ψ (coord j r)}
+                                (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j))))
+      (trans (J-odds {λ r → φ (coord i r) * ψ (coord j r)}
+          (Meas-⊗ {λ r → φ (coord i r)} {λ r → ψ (coord j r)} (pc {φ} p i) (pc {ψ} q j)))
         (J-indep p q i j h))
 
   ----------------------------------------------------------------------------
@@ -170,14 +176,18 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
 
   -- the two parts of the product, integrated: kept as separate lemmas so that the types stay small
   prod⁺ : ∀ i j → i < j → (f g : SF fairCoin) (bf : Bdd f) →
-    J fairCoin (f⁺ (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ])) (f⁺-meas (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
-      ≈ J fairCoin (f⁺ f) (f⁺-meas f) * J fairCoin (f⁺ g) (f⁺-meas g) + J fairCoin (f⁻ f) (f⁻-meas f) * J fairCoin (f⁻ g) (f⁻-meas g)
+    J fairCoin (f⁺ (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
+        (f⁺-meas (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
+      ≈ J fairCoin (f⁺ f) (f⁺-meas f) * J fairCoin (f⁺ g) (f⁺-meas g) + J fairCoin (f⁻ f) (f⁻-meas f) * J fairCoin
+          (f⁻ g) (f⁻-meas g)
   prod⁺ i j h f g bf = trans (mul⁺ (coordSF i f) (coordSF j g) (coordSF-bdd i f bf))
     (+-cong (J-indep {f⁺ f} {f⁺ g} (f⁺-meas f) (f⁺-meas g) i j h) (J-indep {f⁻ f} {f⁻ g} (f⁻-meas f) (f⁻-meas g) i j h))
 
   prod⁻ : ∀ i j → i < j → (f g : SF fairCoin) (bf : Bdd f) →
-    J fairCoin (f⁻ (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ])) (f⁻-meas (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
-      ≈ J fairCoin (f⁺ f) (f⁺-meas f) * J fairCoin (f⁻ g) (f⁻-meas g) + J fairCoin (f⁻ f) (f⁻-meas f) * J fairCoin (f⁺ g) (f⁺-meas g)
+    J fairCoin (f⁻ (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
+        (f⁻-meas (coordSF i f *SF coordSF j g [ coordSF-bdd i f bf ]))
+      ≈ J fairCoin (f⁺ f) (f⁺-meas f) * J fairCoin (f⁻ g) (f⁻-meas g) + J fairCoin (f⁻ f) (f⁻-meas f) * J fairCoin
+          (f⁺ g) (f⁺-meas g)
   prod⁻ i j h f g bf = trans (mul⁻ (coordSF i f) (coordSF j g) (coordSF-bdd i f bf))
     (+-cong (J-indep {f⁺ f} {f⁻ g} (f⁺-meas f) (f⁻-meas g) i j h) (J-indep {f⁻ f} {f⁺ g} (f⁻-meas f) (f⁺-meas g) i j h))
 

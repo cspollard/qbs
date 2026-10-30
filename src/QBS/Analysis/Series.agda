@@ -286,7 +286,8 @@ module Series {ℓ} (A : OmegaSemiring ℓ) where
       (∀ j → j ℕ.< J → f j ℕ.< K) →
       ∀ b → psum (λ j → b (f j)) J ≤ psum b K
     inj-subsum ℕ.zero f K inj bd b = 0-least
-    inj-subsum (ℕ.suc J) f K inj bd b = ≤-trans (+-mono part₁ part₂) (≤-reflexive (trans (sym (psum-+ _ _ K)) (psum-cong split K)))
+    inj-subsum (ℕ.suc J) f K inj bd b = ≤-trans (+-mono part₁ part₂)
+        (≤-reflexive (trans (sym (psum-+ _ _ K)) (psum-cong split K)))
       where
         b′ = ne (f J) b
         b″ = eq (f J) b

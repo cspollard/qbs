@@ -226,7 +226,8 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
     ∫ᴹ (Func.to (map (Category._∘_ (QBSCat S)
           (NaturalTransformation.η (Monad.μ (StrongMonad.M strongMonad)) (_×Q_ S X Y))
           (Category._∘_ (QBSCat S)
-            (Functor.F₁ (Monad.F (StrongMonad.M strongMonad)) (NaturalTransformation.η (Strength.strengthen (StrongMonad.strength strongMonad)) (X , Y)))
+            (Functor.F₁ (Monad.F (StrongMonad.M strongMonad))
+                (NaturalTransformation.η (Strength.strengthen (StrongMonad.strength strongMonad)) (X , Y)))
             (RS.τ {X} {TQ Y}))) ) (s , t)) g
       ≈ ∫ᴹ s (Fub.Gt s t g)
   catB s t g = commB₂ s t g

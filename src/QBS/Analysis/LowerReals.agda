@@ -351,7 +351,8 @@ module Classical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
             δ , 0<δ , δ<η = dense (pos-diff q<1)
             r , mr , hr = near-sup c bd 0<δ
         in r , q + - r , mr ,
-           (η + - δ , pos-diff δ<η , λ r′ m′ → ≤-trans (+-mono-≤ (hr r′ m′) (≤-refl {(q + - r) + (η + - δ)})) (≤-≃ (ring₃ r δ q 1ℚᵘ))) ,
+           (η + - δ , pos-diff δ<η , λ r′ m′ → ≤-trans (+-mono-≤ (hr r′ m′) (≤-refl {(q + - r) + (η + - δ)}))
+               (≤-≃ (ring₃ r δ q 1ℚᵘ))) ,
            ≤-≃ (≃-sym (add-sub r q))
 
   cancel-⊑ : ∀ {a x y} → a ⊑ oneC → a ⊕ x ⊑ a ⊕ y → x ⊑ y

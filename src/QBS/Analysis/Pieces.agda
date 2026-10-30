@@ -28,7 +28,8 @@ open _⊑_
 
 module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   A = LowerRealsOmega lem
-  open OmegaSemiring A using (_≈_; _*_; 0#; 1#; trans; sym; refl; zeroˡ) renaming (*-cong to *ᴬ-cong; *-identityˡ to *ᴬ-identityˡ; *-assoc to *ᴬ-assoc)
+  open OmegaSemiring A using (_≈_; _*_; 0#; 1#; trans; sym; refl; zeroˡ) renaming
+      (*-cong to *ᴬ-cong; *-identityˡ to *ᴬ-identityˡ; *-assoc to *ᴬ-assoc)
   open Series A
 
   -- the piece predicates on a weight
@@ -118,7 +119,8 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- on its own piece the integrand is `w · g`
   onPiece : ∀ n w g χ → InPiece n w → χ ≈ 1# → κ n * ((χ * fac n w) * g) ≈ w * g
-  onPiece ℕ.zero w g χ all χ1 = trans (*ᴬ-cong (refl {infC}) (trans (*ᴬ-cong (trans (*ᴬ-cong χ1 (refl {1#})) (*ᴬ-identityˡ 1#)) (refl {g})) (*ᴬ-identityˡ g)))
+  onPiece ℕ.zero w g χ all χ1 = trans
+      (*ᴬ-cong (refl {infC}) (trans (*ᴬ-cong (trans (*ᴬ-cong χ1 (refl {1#})) (*ᴬ-identityˡ 1#)) (refl {g})) (*ᴬ-identityˡ g)))
                                        (*ᴬ-cong (sym (all⇒inf w all)) (refl {g}))
   onPiece (ℕ.suc _) w g χ _ χ1 = trans (*ᴬ-identityˡ _) (*ᴬ-cong (trans (*ᴬ-cong χ1 (refl {w})) (*ᴬ-identityˡ w)) (refl {g}))
 
@@ -131,7 +133,9 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       off : ∀ n → (n ≡.≡ n₀ → ⊥) → κ n * ((χs n * fac n w) * g) ≈ 0#
       off n n≢ with hχ n
       ... | inj₁ (inn , _) = ⊥-elim (n≢ (piece-unique w inn in₀))
-      ... | inj₂ (_ , z) = trans (*ᴬ-cong (refl {κ n}) (trans (*ᴬ-cong (trans (*ᴬ-cong z (refl {fac n w})) (zeroˡ _)) (refl {g})) (zeroˡ g))) (OmegaSemiring.zeroʳ A (κ n))
+      ... | inj₂ (_ , z) = trans
+          (*ᴬ-cong (refl {κ n}) (trans (*ᴬ-cong (trans (*ᴬ-cong z (refl {fac n w})) (zeroˡ _)) (refl {g})) (zeroˡ g)))
+          (OmegaSemiring.zeroʳ A (κ n))
       χ₀ : χs n₀ ≈ 1#
       χ₀ with hχ n₀
       ... | inj₁ (_ , o) = o
@@ -147,4 +151,6 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       zeros : ∀ n → κ n * ((χs n * fac n w) * g) ≈ 0#
       zeros n with hχ n
       ... | inj₁ (inn , _) = ⊥-elim (noPiece n inn)
-      ... | inj₂ (_ , z) = trans (*ᴬ-cong (refl {κ n}) (trans (*ᴬ-cong (trans (*ᴬ-cong z (refl {fac n w})) (zeroˡ _)) (refl {g})) (zeroˡ g))) (OmegaSemiring.zeroʳ A (κ n))
+      ... | inj₂ (_ , z) = trans
+          (*ᴬ-cong (refl {κ n}) (trans (*ᴬ-cong (trans (*ᴬ-cong z (refl {fac n w})) (zeroˡ _)) (refl {g})) (zeroˡ g)))
+          (OmegaSemiring.zeroʳ A (κ n))

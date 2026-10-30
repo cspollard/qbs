@@ -149,7 +149,8 @@ module Measurable (A : OmegaSemiring (suc zero)) where
     Fun-mask (sumF {h} {h₁} {h₂} f₁ f₂ q b) = sumF (Fun-mask f₁) (Fun-mask f₂) (mask-+ q) (mask-≤1 h b)
     Fun-mask (supF hs fs inc q) = supF (λ n → mask (hs n)) (λ n → Fun-mask (fs n)) (mask-inc hs inc) (mask-⨆ hs inc q)
     Fun-mask (complF {h} {h′} f q) =
-      complF (sumF (Fun-mask f) Fun-cmask (λ x → refl) (λ x → ≤-trans ≤-+ʳ (≤-reflexive (trans (+-comm _ _) (mask-compl q x))))) (mask-compl q)
+      complF (sumF (Fun-mask f) Fun-cmask (λ x → refl)
+          (λ x → ≤-trans ≤-+ʳ (≤-reflexive (trans (+-comm _ _) (mask-compl q x))))) (mask-compl q)
 
   ----------------------------------------------------------------------------
   -- gluing along a measurable countable partition
@@ -226,7 +227,8 @@ module Measurable (A : OmegaSemiring (suc zero)) where
       d≤1 : d ≤ 1#
       d≤1 = ≤-trans ≤-+ʳ (≤-reflexive (trans (+-comm d c) cd))
       bd : ∀ x → c * h′ x + d ≤ 1#
-      bd x = ≤-trans (+-mono (*-mono c (Fun-≤1 f x)) ≤-refl) (≤-resp refl cd (≤-resp (sym (+-cong (*-identityʳ c) refl)) refl ≤-refl))
+      bd x = ≤-trans (+-mono (*-mono c (Fun-≤1 f x)) ≤-refl)
+          (≤-resp refl cd (≤-resp (sym (+-cong (*-identityʳ c) refl)) refl ≤-refl))
       pw : ∀ x → c * h₀ x + (c * h′ x + d) ≈ 1#
       pw x = trans (sym (+-assoc _ _ _)) (trans (+-cong (sym (distribˡ c (h₀ x) (h′ x))) refl)
                (trans (+-cong (*-cong refl (q x)) refl) (trans (+-cong (*-identityʳ c) refl) cd)))

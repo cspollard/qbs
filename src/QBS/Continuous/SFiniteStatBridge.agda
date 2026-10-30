@@ -213,7 +213,8 @@ module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : E
 
   sumJoinG : ∀ {X : QBS S} (ts : ℕ → Hom S (1Q S) (TQ (TQ X))) (pt : ∣ 1Q S ∣) (h : Hom S X WQ) →
     ∫ᴹ {X} (map (_∘H_ S {1Q S} {TQ (TQ X)} {TQ X} (NaturalTransformation.η (Monad.μ TM) X) (sumK {1Q S} {TQ X} ts)) ⟨$⟩ pt) h
-      ≈ ∫ᴹ {X} (map (sumK {1Q S} {X} (λ n → _∘H_ S {1Q S} {TQ (TQ X)} {TQ X} (NaturalTransformation.η (Monad.μ TM) X) (ts n))) ⟨$⟩ pt) h
+      ≈ ∫ᴹ {X} (map
+          (sumK {1Q S} {X} (λ n → _∘H_ S {1Q S} {TQ (TQ X)} {TQ X} (NaturalTransformation.η (Monad.μ TM) X) (ts n))) ⟨$⟩ pt) h
   sumJoinG {X} ts pt h =
     trans (∫ᴹ-join {X} (map (sumK {1Q S} {TQ X} ts) ⟨$⟩ pt) h)
       (trans (∫ᴹ-sumK ts pt (∫ᶠ {X} h))

@@ -56,7 +56,8 @@ module Riesz (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   setFun m pm = record
     { μ = λ bU → I m (χ _) (Fun-χ bU)
     ; μ-resp = λ bU bV e → I-cong m (χ-cong e) (Fun-χ bU) (Fun-χ bV)
-    ; μ-⋃ = λ {V} bs dj → let a = λ n → I m (χ (V n)) (Fun-χ (bs n)) in trans (I-⋃ m bs dj) (⨆-cong (fsum-inc a) (psum-inc a) (fsum≈psum a))
+    ; μ-⋃ = λ {V} bs dj → let a = λ n → I m (χ (V n)) (Fun-χ (bs n)) in trans (I-⋃ m bs dj)
+        (⨆-cong (fsum-inc a) (psum-inc a) (fsum≈psum a))
     ; μ-⊤ = trans (I-cong m χ-⊤ (Fun-χ ⊤-borel) (Fun-const 1# ≤-refl)) pm
     ; μ-⊥ = I-χ-⊥ m ⊥-borel
     }

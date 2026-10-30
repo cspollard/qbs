@@ -100,10 +100,18 @@ module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
                         k₁ , p₁ = enumQ-surj ρ
                         k₂ , p₂ = enumQ-surj σ
                         eq : (enumQ (proj₁ (unpair (pair k₁ k₂))) , enumQ (proj₂ (unpair (pair k₁ k₂)))) ≡ (ρ , σ)
-                        eq = ≡.trans (≡.cong₂ _,_ (≡.cong (λ u → enumQ (proj₁ u)) (unpair-pair k₁ k₂)) (≡.cong (λ u → enumQ (proj₂ u)) (unpair-pair k₁ k₂)))
+                        eq = ≡.trans (≡.cong₂ _,_ (≡.cong (λ u → enumQ (proj₁ u)) (unpair-pair k₁ k₂))
+                            (≡.cong (λ u → enumQ (proj₂ u)) (unpair-pair k₁ k₂)))
                                      (≡.cong₂ _,_ p₁ p₂)
-                    in pair k₁ k₂ , ≡.subst (λ pr → (q ≤ proj₁ pr + proj₂ pr) × (mem (h₁ (lift c)) (proj₁ pr) × mem (h₂ (lift c)) (proj₂ pr)))
+                    in pair k₁ k₂ , ≡.subst
+                        (λ pr → (q ≤ proj₁ pr + proj₂ pr) × (mem (h₁ (lift c)) (proj₁ pr) × mem (h₂ (lift c)) (proj₂ pr)))
                                             (≡.sym eq) (le , m₁ , m₂))
+
+  -- a member of a cut lies below every non-member
+  mem-<-of-¬ : ∀ (c : Cut) {q r} → (mem c q → ⊥) → mem c r → r < q
+  mem-<-of-¬ c {q} {r} nm m with ≤-or-> q r
+  ... | inj₁ q≤r = ⊥-elim (nm (down c q≤r m))
+  ... | inj₂ lt = lt
 
   -- complements: h + h′ = 1.  Pointwise, `q ∈ h x` iff some rational k > q has `1 − k ∉ h′ x`.
   compl-contra : ∀ {h h′ : R₁ → Cut} → (∀ x → h x ⊕ h′ x ≈ 1#) → ∀ q x k →
@@ -119,13 +127,9 @@ module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       go (r , t , mr , mt , le) = <-irrefl ≃-refl (≤-<-trans le r+t<s)
         where
           r<q : r < q
-          r<q with ≤-or-> q r
-          ... | inj₁ q≤r = ⊥-elim (no (down (h x) q≤r mr))
-          ... | inj₂ lt = lt
+          r<q = mem-<-of-¬ (h x) no mr
           t<u : t < 1ℚᵘ + - enumQ k
-          t<u with ≤-or-> (1ℚᵘ + - enumQ k) t
-          ... | inj₁ u≤t = ⊥-elim (nm (down (h′ x) u≤t mt))
-          ... | inj₂ lt = lt
+          t<u = mem-<-of-¬ (h′ x) nm mt
           r+t<s : r + t < s
           r+t<s = ≃-<ʳ (solve 2 (λ q ek → q :+ (con 1ℚᵘ :+ :- ek) := con 1ℚᵘ :+ :- (ek :+ :- q)) ≃-refl q (enumQ k))
                        (+-mono-< r<q t<u)

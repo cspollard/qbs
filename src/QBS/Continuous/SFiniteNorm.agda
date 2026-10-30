@@ -304,7 +304,8 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   case1-to {m} (inj₂ no) _ = λ pf → no (LI.invC m) (inv-ok m (proj₁ pf) (proj₂ pf))
 
   case1-from : ∀ {m} (d : InvDec m) → (PosC m × FinC m → ⊥) → caseOf d ≡.≡ ℕ.suc ℕ.zero
-  case1-from {m} (inj₁ (n , h)) npf = ⊥-elim (npf ((let a , b , 0<a , _ , ma , _ = inv-pos m n h in a , 0<a , ma) , inv-fin m n h))
+  case1-from {m} (inj₁ (n , h)) npf = ⊥-elim
+      (npf ((let a , b , 0<a , _ , ma , _ = inv-pos m n h in a , 0<a , ma) , inv-fin m n h))
   case1-from (inj₂ _) _ = ≡.refl
 
   case2 : ∀ {m} (d : InvDec m) (k : ℕ) → caseOf d ≡.≡ ℕ.suc (ℕ.suc k) → ⊥
@@ -446,12 +447,14 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
     τ : R₁ → C.Pre X
     τ r = normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r)
 
-    τ-random : QBS.Random (C.TQ X) (λ r → normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r))
+    τ-random : QBS.Random (C.TQ X)
+        (λ r → normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r))
     τ-random = normPre-random {X} {λ r → pick (caseIdx {X} (β r)) r} w̃ inṽ
 
     τ′-ok : ∀ r (e : InvDec (massP {X} (β r))) (n : Cut) (h : massP {X} (β r) * n ≈ 1#) →
       e ≡.≡ inj₁ (n , h) → C._≈ᵖ_ {X} (normPre {X} (β r) n h) (τ′ r e)
-    τ′-ok r .(inj₁ (n , h)) n h ≡.refl = normPre-≈ {X} {β r} {β r} (λ f → refl) n (invOf (massP {X} (β r))) h (inṽ-aux r (inj₁ (n , h)))
+    τ′-ok r .(inj₁ (n , h)) n h ≡.refl = normPre-≈ {X} {β r} {β r} (λ f → refl) n (invOf (massP {X} (β r))) h
+        (inṽ-aux r (inj₁ (n , h)))
 
     c : ℕ → Piece S (C.TQ X) (1Q S)
     c ℕ.zero = inj₁ (τ , τ-random)

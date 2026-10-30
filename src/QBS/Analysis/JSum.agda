@@ -51,7 +51,8 @@ module JSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   J-psum : ∀ m (a : ℕ → R₁ → Cut) (ma : ∀ n → Meas (a n)) N →
     J m (λ x → psum (λ n → a n x) N) (Meas-psum a ma N) ≈ psum (λ n → J m (a n) (ma n)) N
-  J-psum m a ma ℕ.zero = trans (J-cong m (Meas-const 0#) (Meas-⊗ {λ _ → 0#} {λ _ → 0#} (Meas-const 0#) (Meas-const 0#)) (λ x → sym (zeroˡ 0#)))
+  J-psum m a ma ℕ.zero = trans
+      (J-cong m (Meas-const 0#) (Meas-⊗ {λ _ → 0#} {λ _ → 0#} (Meas-const 0#) (Meas-const 0#)) (λ x → sym (zeroˡ 0#)))
     (trans (J-scale m 0# {λ _ → 0#} (Meas-const 0#)) (zeroˡ _))
   J-psum m a ma (ℕ.suc N) = trans (J-add m {λ x → psum (λ n → a n x) N} {a N} (Meas-psum a ma N) (ma N))
     (+-cong (J-psum m a ma N) (refl {J m (a N) (ma N)}))
@@ -74,7 +75,8 @@ module JSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   ∑hp≤1 : ∑ᶠ (λ n → hp (ℕ.suc n)) ≤ 1#
   ∑hp≤1 = ∑ᶠ-lub (λ N → ≤-trans {psum (λ i → hp (ℕ.suc i)) N} {psum (λ i → hp (ℕ.suc i)) N + hp N} {1#}
-    (OmegaSemiring.≤-+ʳ A {psum (λ i → hp (ℕ.suc i)) N} {hp N}) (≤-reflexive {psum (λ i → hp (ℕ.suc i)) N + hp N} {1#} (hp-geo N)))
+    (OmegaSemiring.≤-+ʳ A {psum (λ i → hp (ℕ.suc i)) N} {hp N})
+        (≤-reflexive {psum (λ i → hp (ℕ.suc i)) N + hp N} {1#} (hp-geo N)))
 
   ∑hp≈1 : ∑ᶠ (λ n → hp (ℕ.suc n)) ≈ 1#
   ∑hp≈1 = ≤-antisym ∑hp≤1 (arch {1#} {∑ᶠ (λ n → hp (ℕ.suc n))} (λ n →

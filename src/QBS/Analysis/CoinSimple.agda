@@ -59,22 +59,25 @@ module Simple (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure l
     (λ x i k (a , _) (b , _) → dj s x i k a b)
     (λ x → (λ w → let i , v = cov s x in i , v , w) , (λ { (i , v , w) → w }))
 
+  -- each cell contributes monotonically: on a non-null cell the values are ordered, on a null cell both sides vanish
+  cell-mono : ∀ s t → (∀ i j x → V s i x → V t j x → ρ s i ≤ ρ t j) → ∀ i j →
+    ρ s i * cell s t i j ≤ ρ t j * cell s t i j
+  cell-mono s t le i j with lem (Σ Cantor (λ x → V s i x × V t j x))
+  ... | inj₁ (x , a , b) = ≤-trans (≤-reflexive (*-comm _ _))
+      (≤-trans (*-mono (cell s t i j) (le i j x a b)) (≤-reflexive (*-comm _ _)))
+  ... | inj₂ none = ≤-trans (≤-reflexive (trans (*-cong refl z) (zeroʳ _)))
+      (≤-trans 0-least (≤-reflexive (sym (trans (*-cong refl z) (zeroʳ _)))))
+    where z : cell s t i j ≈ 0#
+          z = μ-null (inter₂ (bV s i) (bV t j)) (λ x (a , b) → none (x , a , b))
+
   -- monotonicity of the integral
   ∫-mono : ∀ s t → (∀ i j x → V s i x → V t j x → ρ s i ≤ ρ t j) → ∫ s ≤ ∫ t
   ∫-mono s t le = ≤-trans (≤-reflexive step₁) (≤-trans mid (≤-reflexive (sym step₃)))
     where
       step₁ : ∫ s ≈ ∑ᶠ (λ i → ∑ᶠ (λ j → ρ s i * cell s t i j))
       step₁ = ∑ᶠ-cong (λ i → trans (*-cong refl (refine₁ s t i)) (∑ᶠ-scale (ρ s i) (λ j → cell s t i j)))
-      term : ∀ i j → ρ s i * cell s t i j ≤ ρ t j * cell s t i j
-      term i j with lem (Σ Cantor (λ x → V s i x × V t j x))
-      ... | inj₁ (x , a , b) = *-mono-r (le i j x a b)
-        where *-mono-r : ρ s i ≤ ρ t j → ρ s i * cell s t i j ≤ ρ t j * cell s t i j
-              *-mono-r h = ≤-trans (≤-reflexive (*-comm _ _)) (≤-trans (*-mono (cell s t i j) h) (≤-reflexive (*-comm _ _)))
-      ... | inj₂ none = ≤-trans (≤-reflexive (trans (*-cong refl z) (zeroʳ _))) (≤-trans 0-least (≤-reflexive (sym (trans (*-cong refl z) (zeroʳ _)))))
-        where z : cell s t i j ≈ 0#
-              z = μ-null (inter₂ (bV s i) (bV t j)) (λ x (a , b) → none (x , a , b))
       mid : ∑ᶠ (λ i → ∑ᶠ (λ j → ρ s i * cell s t i j)) ≤ ∑ᶠ (λ j → ∑ᶠ (λ i → ρ t j * cell s t i j))
-      mid = ≤-trans (∑ᶠ-mono (λ i → ∑ᶠ-mono (λ j → term i j))) (≤-reflexive (∑ᶠ-swap (λ i j → ρ t j * cell s t i j)))
+      mid = ≤-trans (∑ᶠ-mono (λ i → ∑ᶠ-mono (λ j → cell-mono s t le i j))) (≤-reflexive (∑ᶠ-swap (λ i j → ρ t j * cell s t i j)))
       step₃ : ∫ t ≈ ∑ᶠ (λ j → ∑ᶠ (λ i → ρ t j * cell s t i j))
       step₃ = ∑ᶠ-cong (λ j → trans (*-cong refl (refine₂ s t j)) (∑ᶠ-scale (ρ t j) (λ i → cell s t i j)))
 

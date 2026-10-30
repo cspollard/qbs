@@ -329,13 +329,16 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
     ∫ᴹ-join : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) →
       ∫ᴹ {X} (joinPre {X} p) f ≈ ∫ᴹ {TQ X} p (∫ᶠ {X} f)
     ∫ᴹ-join {X} p f = trans
-      (J-bind (m p) (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))) {ψ {X} (joinPre {X} p) f}
+      (J-bind (m p) (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p)))
+          {ψ {X} (joinPre {X} p) f}
         (mψ {X} (joinPre {X} p) f)
-        (Meas-J (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))) {ψ {X} (joinPre {X} p) f}
+        (Meas-J (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p)))
+            {ψ {X} (joinPre {X} p) f}
           (mψ {X} (joinPre {X} p) f)))
       (J-cong (m p) {λ r → J (P₁.pushMerge (g (wmOf {X} p)) r) (ψ {X} (joinPre {X} p) f) (mψ {X} (joinPre {X} p) f)}
         {ψ {TQ X} p (∫ᶠ {X} f)}
-        (Meas-J (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))) {ψ {X} (joinPre {X} p) f}
+        (Meas-J (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p)))
+            {ψ {X} (joinPre {X} p) f}
           (mψ {X} (joinPre {X} p) f))
         (mψ {TQ X} p (∫ᶠ {X} f))
         (∫ᴹ-join-inner {X} p f))

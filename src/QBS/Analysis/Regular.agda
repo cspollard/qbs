@@ -85,7 +85,8 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
           ... | inj₂ nu = inj₂ (sP′ x nu)
           eq : (m + hp (suc k)) + (1# + hp (suc k)) ≈ 1# + (m + hp k)
           eq = begin
-            (m + hp (suc k)) + (1# + hp (suc k)) ≈⟨ solve 3 (λ a b c → (a :+ b) :+ (c :+ b) := c :+ (a :+ (b :+ b))) refl m (hp (suc k)) 1# ⟩
+            (m + hp (suc k)) + (1# + hp (suc k))
+                ≈⟨ solve 3 (λ a b c → (a :+ b) :+ (c :+ b) := c :+ (a :+ (b :+ b))) refl m (hp (suc k)) 1# ⟩
             1# + (m + (hp (suc k) + hp (suc k)))  ≈⟨ +-cong refl (+-cong refl (hp-double k)) ⟩
             1# + (m + hp k) ∎
 
