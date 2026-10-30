@@ -17,7 +17,9 @@ open import Data.Empty using (⊥)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
-open import Function.Bundles using (_⟨$⟩_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Relation.Binary using (Setoid)
+import Relation.Binary.PropositionalEquality as ≡
 import Level as L
 open import Axiom.Extensionality.Propositional using (Extensionality)
 
@@ -28,6 +30,7 @@ open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Measure using (module Integration)
+open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
@@ -41,10 +44,12 @@ open import QBS.Inference.Frequentist
 
 module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
   open Lebesgue (lemOf lem₁) using (A)
-  open Integration A using (probClass)
-  open Continuous A (lemOf lem₁) funext probClass using (Pre; mk; TQ; _≈ᵖ_)
+  open Integration A using (probClass; I-cong)
+  open Tensor A (lemOf lem₁) using (constK)
+  open RandomSource S using () renaming (meas-id to measId)
+  open Continuous A (lemOf lem₁) funext probClass using (Pre; mk; TQ; _≈ᵖ_; Joint; sec-random; rand-irrel)
   open Pre
-  open Bounded A using (Sg; _≃_; _+S_; _*S_)
+  open Bounded A using (Sg; _≃_; ≃-refl; _+S_; _*S_)
   open SignedIntegral (lemOf lem₁) using (E)
   open BoundedRing (lemOf lem₁) using (BSF; boundedRing; E-B)
   open SignedTests (lemOf lem₁) using (STest; pullback)
@@ -67,7 +72,7 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   draw s θ r = Hom.map s ⟨$⟩ (θ , r)
 
   draw-random : ∀ {Θ X} (s : Sampler Θ X) θ → QBS.Random X (draw s θ)
-  draw-random s θ = ?   -- `map-random` at the probe (const θ , id), as `Monad.sec-random`
+  draw-random {Θ} s θ = Hom.map-random s {λ r → θ , r} (QBS.const-random Θ θ , measId)
 
   -- the statistic of one draw, a bounded signed random variable on the fair coin
   single : ∀ {Θ X} → Sampler Θ X → STest X → QBS.∣ Θ ∣ → BSF fairCoin fairCoin-prob
@@ -118,7 +123,23 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
 
   -- the model of a sampler: θ ↦ [draw θ, fair coin]; it is a morphism because (θ , r) ↦ draw is a joint probe
   samplerModel : ∀ {Θ X} → Sampler Θ X → Model Θ X
-  samplerModel s = record { kernel = ? }   -- the `Wit` of the constant family of coin measures (cf. `Monad.sec`)
+  samplerModel {Θ} {X} s = record { kernel = record
+    { map = record
+        { to = λ θ → mk (draw s θ) (draw-random s θ) fairCoin fairCoin-prob
+        ; cong = λ {θ} {θ′} e f → I-cong fairCoin
+            (λ r → Func.cong (Hom.map f) (Func.cong (Hom.map s) (e , Setoid.refl (QBS.Carrier (Probes.ℛQ S)))))
+            (Hom.map-random f (draw-random s θ)) (Hom.map-random f (draw-random s θ′)) }
+    ; map-random = λ {γ} rγ → record
+        { a = joint rγ ; g = λ _ → fairCoin ; g-ok = constK fairCoin ; g-pr = λ _ → fairCoin-prob
+        ; w-eq = λ r → rand-irrel {X} (draw-random s (γ r)) (sec-random {X} (joint rγ) r) fairCoin fairCoin-prob } } }
+    where
+    -- (r , t) ↦ draw (γ r) t, a joint probe because γ is random
+    joint : ∀ {γ} → QBS.Random Θ γ → Joint X
+    joint {γ} rγ = record
+      { map = record { to = λ p → Hom.map s ⟨$⟩ (γ (proj₁ p) , proj₂ p)
+                     ; cong = λ { (≡.refl , ≡.refl) → Func.cong (Hom.map s) (Setoid.refl (QBS.Carrier Θ) , ≡.refl) } }
+      ; map-random = λ {δ} (m₁ , m₂) → Hom.map-random s {λ x → γ (proj₁ (δ x)) , proj₂ (δ x)} (QBS.pre-random Θ rγ m₁ , m₂)
+      }
 
   -- the expectation of a bounded signed statistic under a measure of the monad
   E-at : ∀ {X} → Pre X → STest X → Sg
@@ -127,7 +148,7 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   -- for the model of a sampler it is the expectation of the single draw
   E-at-sampler : ∀ {Θ X} (s : Sampler Θ X) (g : STest X) θ →
     E-at (lawAt (samplerModel s) θ) g ≃ E-B fairCoin fairCoin-prob (single s g θ)
-  E-at-sampler s g θ = ?
+  E-at-sampler s g θ = ≃-refl
 
   -- the expectation respects the identification of measures by [0,1]-tests (truncate at n and use monotone convergence)
   E-resp : ∀ {X} {p q : Pre X} → p ≈ᵖ q → (g : STest X) → E-at p g ≃ E-at q g
