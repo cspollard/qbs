@@ -12,6 +12,8 @@
 #                      html/ (from the progress overlay, so skeleton modules with holes are included), then
 #                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
 #                      only serves.
+#   make htmlbuild     the same without serving (used by .github/workflows/pages.yml, which publishes html/ to
+#                      GitHub Pages; html/index.html is a copy of Everything.html, listing every module).
 #   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
 #                      known offenders are listed in scripts/longdecls.baseline, anything new fails.  Needs no Agda.
 #   make doccheck      check the docs against the code (scripts/doccheck.py): every module has a header comment,
@@ -41,7 +43,7 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: longcheck doccheck check progress html serve report clean all-interfaces profile profile-tree
+.PHONY: longcheck doccheck check progress html htmlbuild serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
@@ -57,7 +59,7 @@ progress:
 	@$(MAKE) --no-print-directory -C $(PROGDIR) -f $(CURDIR)/Makefile report MODE=progress SRC=src HOLES=$(CURDIR)/scripts/holes.py
 
 PORT ?= 8081
-html:
+htmlbuild:
 	@python3 scripts/progress-overlay.py $(SRC) $(PROGDIR)
 	@mkdir -p build $(PROGDIR)/build html
 	@{ echo '{-# OPTIONS --without-K #-}'; echo 'module Everything where'; \
@@ -65,6 +67,7 @@ html:
 	@cp build/Everything.agda $(PROGDIR)/build/Everything.agda
 	@cd $(PROGDIR) && $(AGDA) -i build --html --html-dir=$(CURDIR)/html build/Everything.agda
 	@cp html/Everything.html html/index.html
+html: htmlbuild
 	@$(MAKE) --no-print-directory serve
 serve:
 	@echo "serving html/ at http://$$(ipconfig getifaddr en0 2>/dev/null || hostname):$(PORT)/"
