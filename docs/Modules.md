@@ -109,6 +109,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.SelfSimilar` | 154 |  | A self-similar distribution function is the identity. |
 | `QBS.Analysis.Series` | 456 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
 | `QBS.Analysis.SeriesSup` | 62 |  | Countable sums commute with suprema of increasing sequences (monotone convergence for series). |
+| `QBS.Analysis.Signed` | 235 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
+| `QBS.Analysis.SignedIntegral` | 179 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
+| `QBS.Analysis.SignedOmega` | 51 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
 | `QBS.Analysis.Tensor` | 123 | lem | The product of two measures, integrated in either order, and Fubini's theorem: the two iterated integrals agree. |
 | `QBS.Analysis.Threshold` | 73 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
 | `QBS.Analysis.Tonelli` | 62 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |

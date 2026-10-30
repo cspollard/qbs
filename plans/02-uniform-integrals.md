@@ -11,14 +11,17 @@ Available: `Continuous/Uniform` (`uniform`), `UniformMean` (E[u] = ½), `Uniform
 (`CoinIndep`, `Interleave`), the integral `J`/`Lebesgue` with Tonelli, Fubini, `FunInf`.
 Missing: signed values, subtraction, E[X²], n-fold products, linearity for signed functions.
 
+## Status (2026-10-30)
+- **Step 1 (signed layer) DONE** in `Analysis/Signed`, `SignedOmega`, `SignedIntegral`: the signed values are the Grothendieck ring over the *bounded* elements (restriction to finite elements is essential: with `∞` the construction collapses), which needs no cancellation, no classical principle and no Dedekind reals. `E` has additivity, negation, scaling by signed constants, and `E` of a constant. Not yet: monotonicity of `E`, products of signed functions.
+- Steps 2–5 not started.
+
 ## Steps
 
 1. **Signed layer (`Analysis/Signed.agda`).** Define signed values as pairs `(p, n)` of `[0,∞]` with the usual
    quotient (or a setoid), with `+`, `−`, `×`, `≤`. Restrict to finite values where possible.
    Integrable signed function: `h⁺, h⁻` both with finite integral. `E h = ∫h⁺ − ∫h⁻`.
    Prove linearity (`E(f+g) = E f + E g`, `E(c·f) = c·E f`), monotonicity, and `E` of constants.
-   This reuses `Analysis/Unbounded` and `Lebesgue`. Decision to make early: setoid pairs (cheap, enough for
-   this plan) versus Dedekind reals from ℚ (TODO.md's estimate: 1.5–3k lines; defer).
+   This reuses `Analysis/Unbounded` and `Lebesgue`. Decision made: a Grothendieck construction over the elements bounded by a natural number (see Status), not Dedekind reals.
    Also decide the carrier for the variance: it is nonnegative, so `[0,∞]`-valued with a signed difference
    inside is enough.
 

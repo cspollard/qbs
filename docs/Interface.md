@@ -83,6 +83,14 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Analysis.Meas`, `QBS.Analysis.Lebesgue`
 - `Meas` — threshold measurability of `[0,∞]`-valued functions; `Lebesgue`: `J m φ` — the integral of a `Meas` function (unbounded).
 
+### `QBS.Analysis.Signed`, `QBS.Analysis.SignedOmega`, `QBS.Analysis.SignedIntegral`
+Signed values and signed integrals (plan 2, step 1). No cancellation or classical principle in `Signed`.
+- `SubSemiring` (`Signed`) — a subsemiring of "finite" elements; `Signed` — `module Signed R F`: the ring of differences of finite elements (Grothendieck construction).
+- `Sg` — a signed value `pos − neg` with finite parts; `_≃_` equality (`p + n′ + k ≈ p′ + n + k` for finite `k`); `_+S_`, `_*S_`, `-S_`, `0S`, `1S`, `ι` (embedding), `signedRing` (a `CommutativeRing`), `ι-+`, `ι-*`.
+- `Bounded` (`SignedOmega`) — `module Bounded A`: finite = bounded by a natural number (`Bnd`, `nat`); re-exports `Signed` at that subsemiring.
+- `SF m` (`SignedIntegral`) — a signed integrable function against `m`: measurable parts `f⁺`, `f⁻` with bounded integrals; `E` — its signed integral; `_≈SF_`, `E-cong`.
+- `_+SF_`, `E-+` — sum and additivity; `-SF_`, `E-neg`; `scaleSF`, `E-scale` — scaling by a signed constant; `constSF`, `E-const`, `J-const` — constants against a probability measure.
+
 ### `QBS.Continuous.Monad`, `QBS.Continuous.ProbInstance`, `QBS.Continuous.SubProb`, `QBS.Continuous.RealModel`
 - `Continuous` (`Monad`) — `module Continuous A lem funext K` (value semiring, `lem`, `funext`, measure class such as `Integration.probClass`): the probability monad: `Pre`, `mk`, `∫`, `joinPre`, `∫-join`.
 - `ContinuousProb` (`ProbInstance`) — it is a `ProbabilityInterface`; `continuousQBSLike`; `RealModel`: `realQBSLike`.
