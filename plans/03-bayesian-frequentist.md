@@ -19,6 +19,40 @@ The QBS setting is a good fit: `Θ ⇒ M X` is a morphism, so the kernel is meas
 - A statistic is a morphism `T : X ^ n ⇒ S`.
 - Both sides use the same integral `∫` and the same signed layer from Plan 2.
 
+## Design decisions (2026-10-30, after a literature check and a look at the code)
+Literature: a statistical model is a Markov kernel `Θ → P(X)` (Kleisli map of the Giry monad; Fritz 2020, nLab, Mathlib's kernel
+library); priors are states on `Θ`; posteriors are Bayesian inverses, which for QBS rest on disintegration and stay open, so
+we define them through an explicit likelihood (score, then normalise).  In our monad a measure is a probe `α` with a probability
+measure `m` (`Pre X`), and `law-surjective` says every element arises so: a kernel and "a probability space per parameter with
+its observations" are the same thing, the second being what Plan 2 computes with.
+Findings in the code that shape the plan:
+- `∫` only integrates `[0,1]`-valued tests (`Hom S X AQ`); the signed expectation `E` lives on bounded signed functions on a
+  probability space (`Analysis/SignedIntegral`, `BoundedRing`).  Bias, variance and MSE need the signed one.
+- There is no QBS of signed reals.  `Sg` consists of *bounded* pairs, so it fails `glue-random` (countably many pieces with
+  growing bounds), which is exactly why Plan 2 stayed on one probability space.  Gaussian data needs such a space anyway.
+So the frequentist half comes in two layers:
+- **Layer 1 (algebraic, buildable now): `Inference/Frequentist`.**  An `Experiment Θ` is, for each parameter, a probability space
+  and a sequence of observations in the ring of bounded signed random variables.  A statistic is a ring term in `X₀…X_{n−1}`
+  (`Term n`, interpreted in any commutative ring), so sample mean and sample variance are statistics.  `bias`, `variance`, `mse`,
+  `Unbiased` are defined with Plan 2's `E` and the ring `boundedRing`; the estimator theorem of `Analysis/Estimator` gives
+  `unbiased-mean`, `unbiased-variance` for every experiment whose observations have the right moments; the uniform-interval
+  experiment (`θ = (a,c)`, `Yᵢ = a + c·Xᵢ`) is the first instance.
+- **Layer 2 (kernel, later): `Inference/Model`.**  `Model Θ X` is `kernel : Hom S Θ (TQ X)`, `lawAt θ : Pre X`, with statistics
+  `X ⇒ signed reals` and `E_θ[g] = E_m(g ∘ α)`.  Needs a QBS of signed reals with *locally* bounded elements (boundedness only
+  imposed when integrating against a given measure) and the bridge from `Pre X` to `SF m`; both are real design work.  Bridge
+  to layer 1: a model with `X` the signed reals gives an experiment by taking the coordinate probes as observations.
+The Bayesian half (`Inference/Bayesian`) is independent of both layers until continuous data: it is stated for the discrete
+`Example/Bayes` first (prior, joint, evidence, posterior, sequential update, predictive), then `Pre`-based for Beta–Bernoulli.
+
+**Status:** 3a DONE (2026-10-30): `Inference/Frequentist` (all holes filled; ~35 s cold, 4 s warm) and `Inference/UniformExperiment` (the uniform-interval instance with `sample-mean-unbiased`, `sample-variance-unbiased`). Parameters live in `Set₁` because `Sg` does.
+
+### Revised staging (supersedes the staging below where they differ)
+- 3a. `Inference/Frequentist` skeleton (declarations with holes), then definitions, then the generic theorems, then the uniform
+  instance (`Inference/UniformExperiment`).  Each module compiles on its own in seconds; keep proofs short.
+- 3b. `Inference/Bayesian` over the discrete model: Bernoulli with a finite parameter grid, shared with the frequentist statement
+  on the same data (estimator unbiasedness over the grid, posterior mean).
+- 3c. Layer 2: signed-reals QBS, bridge, `Model`.  3d: Beta–Bernoulli.  3e: Gaussian.  3f: intervals, tests, MLE, Cramér–Rao.
+
 ## Frequentist module (`Inference/Frequentist.agda`)
 1. Estimator `θ̂ : X^n ⇒ Θ`, with `bias θ = E_{law θ}[θ̂] − θ` and `variance`, `mse`.
    Unbiased means `∀ θ → bias θ = 0`. The statement is a `∀ θ` over *global elements* `1 ⇒ Θ`, which is how
