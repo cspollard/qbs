@@ -7,8 +7,12 @@ signature and its clauses form one declaration; a record literal with at least f
 largest field).  `abstract`, `private`, `module ... where` and similar
 container lines are looked through.  Blank lines and `--` comment lines do not count.
 
-Usage: scripts/longdecls.py [--lines N] [--chars N] [--width N] [--top K] [--check] [--baseline FILE] [PATH...]
+A `record` is also flagged as a whole when it has too many fields or lines (a giant interface record is hard to
+instantiate, read and extend: factor it into sub-records or parameterised pieces).
+
+Usage: scripts/longdecls.py [--lines N] [--chars N] [--width N] [--fields N] [--rlines N] [--top K] [--check] [--baseline FILE] [PATH...]
   thresholds (defaults 25 lines / 1500 characters / 160 columns): a declaration is flagged when it exceeds any
+  --fields N / --rlines N   record thresholds (default 15 fields / 60 lines)
   --top K      only print the K worst (by score) declarations
   --check      exit 1 if a flagged declaration is not listed in the baseline (see below)
   --baseline   file with one `module.name` per line: known offenders that --check tolerates
@@ -66,10 +70,46 @@ def decls(path):
     flush()
     return [d for d in out if d[0] and d[0] != '...']   # `...` clauses continue the preceding declaration
 
+def records(path):
+    """Yield (name, start_line, lines, fields) for each `record NAME` declaration.  `fields` counts the field
+    declarations (`x y : T` entries at the indentation of the first line after a `field` keyword); `lines` counts
+    the code lines of the header and of the `field` blocks (definitions and lemmas derived from the fields are
+    not part of what an instance must supply, so they do not count)."""
+    rows = []
+    text = strip_comments(open(path).read()).split('\n')
+    i = 0
+    while i < len(text):
+        m = re.match(r'(\s*)record\s+(\S+)', text[i])
+        if not m or not re.search(r'\bwhere\b|\S\s*$', text[i]):
+            i += 1; continue
+        ind, name, start = len(m.group(1)), m.group(2), i + 1
+        lines = fields = 0
+        fcol = None
+        infield, afterfield = True, False   # the header counts
+        j = i
+        while j < len(text):
+            raw = text[j].rstrip()
+            code = re.sub(r'\s--(\s.*)?$', '', raw)
+            s = code.strip()
+            if s and not s.startswith('--') and not s.startswith('{-#'):
+                cur = len(code) - len(code.lstrip())
+                if j > i and cur <= ind: break
+                if s == 'field': infield, fcol, afterfield = True, None, True
+                elif afterfield: fcol, afterfield = cur, False
+                elif fcol is not None and cur < fcol: infield = False
+                if infield: lines += 1
+                if infield and fcol is not None and cur == fcol and re.search(r'\s:\s|\s:$', code): fields += 1
+                if s.startswith('field ') and ':' in s: fields += 1
+            j += 1
+        rows.append((name, start, lines, fields))
+        i = j if j > i else i + 1
+    return rows
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--lines', type=int, default=25); ap.add_argument('--chars', type=int, default=1500)
     ap.add_argument('--width', type=int, default=160); ap.add_argument('--top', type=int, default=0)
+    ap.add_argument('--fields', type=int, default=15); ap.add_argument('--rlines', type=int, default=60)
     ap.add_argument('--check', action='store_true')
     ap.add_argument('--baseline', default=os.path.join(ROOT, 'scripts', 'longdecls.baseline'))
     ap.add_argument('paths', nargs='*')
@@ -85,17 +125,22 @@ def main():
         for name, ind, start, lines, chars, width in decls(f):
             if lines > a.lines or chars > a.chars or width > a.width:
                 score = max(lines / a.lines, chars / a.chars, width / a.width)
-                rows.append((score, mod, name, start, lines, chars, width))
+                rows.append((score, mod, name, start, lines, chars, width, None))
+        for name, start, lines, fields in records(f):
+            if fields > a.fields or lines > a.rlines:
+                score = max(fields / a.fields, lines / a.rlines)
+                rows.append((score, mod, name, start, lines, 0, 0, f'record with {fields} fields'))
     rows.sort(reverse=True)
     base = set()
     if a.check and os.path.exists(a.baseline):
         base = {l.strip() for l in open(a.baseline) if l.strip() and not l.startswith('#')}
     shown = rows[:a.top] if a.top else rows
     bad = 0
-    for score, mod, name, start, lines, chars, width in shown:
+    for score, mod, name, start, lines, chars, width, rec in shown:
         known = f'{mod}.{name}' in base
         bad += not known
-        print(f'{score:5.1f}  {mod}.{name}  (line {start}: {lines} lines, {chars} chars, widest {width})' + ('  [baseline]' if known else ''))
+        detail = f'{lines} lines, {rec}' if rec else f'{lines} lines, {chars} chars, widest {width}'
+        print(f'{score:5.1f}  {mod}.{name}  (line {start}: {detail})' + ('  [baseline]' if known else ''))
     print(f'{len(rows)} flagged declaration(s)', file=sys.stderr)
     if a.check and bad: sys.exit(1)
 

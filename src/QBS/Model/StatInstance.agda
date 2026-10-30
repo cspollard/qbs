@@ -453,44 +453,19 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
          ⟫ ∑-swap (λ r n → μ p r * ∫ (map (ks (lower n)) ⟨$⟩ α p r) f)
          ⟫ ~ (∫-sum (λ n → joinPre (mapPre (ks n) p)) f ⟫ ∑-cong (λ n → ∫-join (mapPre (ks (lower n)) p) f))
 
-    scale-mul-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE (mulH ∘ᵏ ⟨ a , b ⟩) t ≈ᵏ scaleE a (scaleE b t)
-    scale-mul-law {X} a b t pt f =
-      let xa = map a ⟨$⟩ pt
-          xb = map b ⟨$⟩ pt
-          p = map t ⟨$⟩ pt
-      in ∫-scale {X} (xa * xb) p f ⟫ *-assoc xa xb (∫ p f) ⟫ *-cong refl (~ ∫-scale {X} xb p f)
-         ⟫ ~ ∫-scale {X} xa (scaleP xb p) f
+    score-one-law : scoreE ∘ᵏ constH 1# ≈ᵏ M.η.η 𝟙
+    score-one-law pt f = ∫-score 1# f ⟫ *-identityˡ _ ⟫ ~ ∫-η {1Q S} pt f
 
-    scale-sum-law : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (ts : ℕ → 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE a (sumE ts) ≈ᵏ sumE (λ n → scaleE a (ts n))
-    scale-sum-law {X} a ts pt f =
-      let c = map a ⟨$⟩ pt
-          t = λ n → map (ts n) ⟨$⟩ tt
-      in ∫-scale {X} c (sumP t) f ⟫ *-cong refl (∫-sum t f) ⟫ ~ ∑-scale c (λ n → ∫ (t (lower n)) f)
-         ⟫ ∑-cong (λ n → ~ ∫-scale {X} c (t (lower n)) f) ⟫ ~ ∫-sum (λ n → scaleP c (t n)) f
+    -- scaling a measure by a weight is a bind through `score`
+    scale-def : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE a t ≈ᵏ M.μ.η X ∘ᵏ M.F.F₁ t ∘ᵏ scoreE ∘ᵏ a
+    scale-def {X} a t pt f =
+      ∫-scale {X} (map a ⟨$⟩ pt) (map t ⟨$⟩ pt) f
+      ⟫ ~ (∫-join (mapPre t (scoreP (map a ⟨$⟩ pt))) f ⟫ ∫-score (map a ⟨$⟩ pt) (Comp.function (map t) (∫ᶠ f)))
 
     sum-join-law : ∀ {X} (ts : ℕ → 𝟙 ⇒ᵏ M.F.F₀ (M.F.F₀ X)) → M.μ.η X ∘ᵏ sumE ts ≈ᵏ sumE (λ n → M.μ.η X ∘ᵏ ts n)
     sum-join-law {X} ts pt f =
       let t = λ n → map (ts n) ⟨$⟩ tt
       in ∫-join (sumP t) f ⟫ ∫-sum t (∫ᶠ f) ⟫ ∑-cong (λ n → ~ ∫-join (t (lower n)) f) ⟫ ~ ∫-sum (λ n → joinPre (t n)) f
-
-    scale-join-law : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ (M.F.F₀ X)) → M.μ.η X ∘ᵏ scaleE a t ≈ᵏ scaleE a (M.μ.η X ∘ᵏ t)
-    scale-join-law {X} a t pt f =
-      let c = map a ⟨$⟩ pt
-          p = map t ⟨$⟩ pt
-      in ∫-join (scaleP c p) f ⟫ ∫-scale c p (∫ᶠ f) ⟫ *-cong refl (~ ∫-join p f) ⟫ ~ ∫-scale c (joinPre p) f
-
-    scaled-laws-law : ∀ {X} (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
-      Σ (ℕ → ℛQ S ⇒ᵏ X) λ a → Σ (ℕ → 𝟙 ⇒ᵏ WQ) λ w → Σ (ℕ → ProbabilityInterface.Measure (discreteProb A)) λ μ →
-        t ≈ᵏ sumE (λ n → scaleE (w n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (a n) (μ n)))
-    scaled-laws-law {X} t =
-      let p = map t ⟨$⟩ tt
-          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (QBS.pre-random X {α p} {id} (α-random p) tt) (dirac (lift n)) tt
-          fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
-      in (λ n → probe S (α-random p))
-       , (λ n → constH (μ p (lift n)))
-       , (λ n → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n))
-       , (λ pt f → ~ (∫-sum fam f ⟫ ∑-cong (λ n → ∫-scale (μ p n) (lawA (lower n)) f
-                                                  ⟫ *-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))
 
     normalize-prob-law : ∀ X → normH X ∘ᵏ Monad⇒-id.α.η inclusion X ≈ᵏ i₁
     normalize-prob-law X p = normProb p (NormalizableSemiring.invertible? N (mass (forgetPre p)))
@@ -500,18 +475,10 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
       normZero (mapPre x zeroP) (∑-zero _ (λ _ → refl))
       (NormalizableSemiring.invertible? N (mass (mapPre x zeroP)))
 
-    normalize-scale-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) → mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ constH 1# →
-      ∀ (t : 𝟙 ⇒ᵏ M.F.F₀ X) → normH X ∘ᵏ scaleE a t ≈ᵏ normH X ∘ᵏ t
-    normalize-scale-law {X} a b hab t pt =
-      normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
-      (NormalizableSemiring.invertible? N (mass (scaleP (map a ⟨$⟩ pt) (map t ⟨$⟩ pt))))
-      (NormalizableSemiring.invertible? N (mass (map t ⟨$⟩ pt)))
-
   open Laws
 
-  discreteStat : StatisticalInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) (discreteProb A)
-    (Cocartesian.Cocartesian.coproducts (cocartesian S))
-  discreteStat = record
+  discreteWeights : WeightMonoid (QBSCat S) (cartesianClosed S)
+  discreteWeights = record
     { W = WQ
     ; mulW = mulH
     ; oneW = constH 1#
@@ -520,32 +487,89 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     ; mul-comm = λ a b z → *-comm _ _
     ; mul-one = λ a z → *-identityʳ _
     ; mul-zero = λ a z → zeroʳ _
-    ; commutativeMonad = record { strongMonad = SA.strongMonad ; commutative = SA.commutative }
+    }
+
+  discreteMeasures : SubMonad (discreteProb A)
+  discreteMeasures = record
+    { commutativeMonad = record { strongMonad = SA.strongMonad ; commutative = SA.commutative }
     ; inclusion = inclusion
     ; inclusion-strong = λ _ _ _ _ → Setoid.refl Aˢ
-    ; zero = constE zeroP
+    }
+
+  discreteScore : Score discreteWeights discreteMeasures
+  discreteScore = record
+    { zero = constE zeroP
     ; zero-bind = zero-bind-law
     ; score = scoreE
     ; score-zero = score-zero-law
+    ; score-one = score-one-law
     ; score-mul = score-mul-law
-    ; sumM = sumE
-    ; scaleM = scaleE
-    ; sumK = sumKH
+    }
+
+  discreteSums : CountableSums discreteMeasures
+  discreteSums = record
+    { sumK = sumKH
     ; sumK-point = λ ks x pt f → Setoid.refl Aˢ
     ; bind-sumK = bind-sumK-law
-    ; scale-one = λ {X} t pt f → Setoid.trans Aˢ (∫-scale {X} 1# (map t ⟨$⟩ pt) f) (*-identityˡ _)
-    ; scale-mul = scale-mul-law
-    ; scale-return = λ a x pt f → Setoid.refl Aˢ
-    ; scale-sum = scale-sum-law
     ; sum-nat = λ {X} {Y} f ts pt g →
         Setoid.trans Aˢ (∫-sum (λ n → map (ts n) ⟨$⟩ tt) (Comp.function (map f) g))
           (Setoid.sym Aˢ (∫-sum (λ n → mapPre f (map (ts n) ⟨$⟩ tt)) g))
     ; sum-join = sum-join-law
-    ; scale-nat = λ f a t pt g → Setoid.refl Aˢ
-    ; scale-join = scale-join-law
+    }
+
+  module DS′ = Score discreteScore
+  module DM′ = CountableSums discreteSums
+
+  -- the laws involving the derived `scaleM`, bridged to the direct `scaleE` by `scale-def`
+  module Laws₂ where
+    open Category (QBSCat S) using () renaming (_≈_ to _≈ᵏ_; _∘_ to _∘ᵏ_; _⇒_ to _⇒ᵏ_)
+    open Canonical.CartesianClosed (cartesianClosed S) using (!; ⟨_,_⟩) renaming (⊤ to 𝟙)
+    open Setoid Aˢ using () renaming (trans to infixr 5 _⟫_; sym to infix 8 ~_)
+
+    scaled-laws-law : ∀ {X} (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
+      Σ (ℕ → ℛQ S ⇒ᵏ X) λ a → Σ (ℕ → 𝟙 ⇒ᵏ WQ) λ w → Σ (ℕ → ProbabilityInterface.Measure (discreteProb A)) λ μ →
+        t ≈ᵏ DM′.sumM (λ n → DS′.scaleM (w n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (a n) (μ n)))
+    -- a countable sum of global measures is, pointwise in the integrals, the sum of the pre-measures
+    sumM-∫ : ∀ {X} (D : ℕ → 𝟙 ⇒ᵏ M.F.F₀ X) (fam : ℕ → Pre X) →
+      (∀ n f → ∫ (map (D n) ⟨$⟩ tt) f ≈ ∫ (fam n) f) → ∀ f → ∫ (map (DM′.sumM D) ⟨$⟩ tt) f ≈ ∫ (sumP fam) f
+    sumM-∫ D fam h f = ∫-sum (λ n → map (D n) ⟨$⟩ tt) f ⟫ ∑-cong (λ n → h (lower n) f) ⟫ ~ ∫-sum fam f
+
+    scaled-laws-law {X} t =
+      let p = map t ⟨$⟩ tt
+          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (QBS.pre-random X {α p} {id} (α-random p) tt) (dirac (lift n)) tt
+          fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
+          aN = λ (n : ℕ) → probe S (α-random p)
+          wN = λ (n : ℕ) → constH (μ p (lift n))
+          μN = λ (n : ℕ) → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n)
+          D = λ (n : ℕ) → DS′.scaleM (wN n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n))
+      in aN , wN , μN
+       , (λ pt f → ~ (sumM-∫ D fam (λ n f′ → ~ scale-def (wN n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n)) tt f′) f
+                      ⟫ ∫-sum fam f ⟫ ∑-cong (λ n → ∫-scale (μ p n) (lawA (lower n)) f
+                                       ⟫ *-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))
+
+    normalize-scale-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) → mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ constH 1# →
+      ∀ (t : 𝟙 ⇒ᵏ M.F.F₀ X) → normH X ∘ᵏ DS′.scaleM a t ≈ᵏ normH X ∘ᵏ t
+    normalize-scale-law {X} a b hab t pt =
+      Setoid.trans (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S)))
+        (Func.cong (map (normH X)) (λ f → ~ scale-def a t pt f))
+        (normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
+          (NormalizableSemiring.invertible? N (mass (scaleP (map a ⟨$⟩ pt) (map t ⟨$⟩ pt))))
+          (NormalizableSemiring.invertible? N (mass (map t ⟨$⟩ pt))))
+
+  open Laws₂
+
+  discreteStat : StatisticalInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) (discreteProb A)
+    (Cocartesian.Cocartesian.coproducts (cocartesian S))
+  discreteStat = record
+    { weights = discreteWeights
+    ; measures = discreteMeasures
+    ; scoring = discreteScore
+    ; sums = discreteSums
     ; scaled-laws = scaled-laws-law
-    ; normalize = normH
-    ; normalize-prob = normalize-prob-law
-    ; normalize-zero = normalize-zero-law
-    ; normalize-scale = normalize-scale-law
+    ; normalization = record
+        { normalize = normH
+        ; normalize-prob = normalize-prob-law
+        ; normalize-zero = normalize-zero-law
+        ; normalize-scale = normalize-scale-law
+        }
     }
