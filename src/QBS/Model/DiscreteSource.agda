@@ -17,19 +17,21 @@ open import QBS.Model.Pairing
 
 discreteSource : ∀ ℓ → RandomSource ℓ
 discreteSource ℓ = record
-  { R = Lift ℓ ℕ
-  ; Meas = λ _ → ⊤
-  ; Idx = λ _ → ⊤
-  ; meas-id = tt
-  ; meas-∘ = λ _ _ → tt
-  ; meas-ext = λ _ _ → tt
-  ; meas-const = λ _ → tt
-  ; meas-glue = λ _ _ → tt
-  ; idx-const = λ _ → tt
-  ; idx-pre = λ _ _ → tt
-  ; pair = pair
-  ; unpair = unpair
-  ; unpair-pair = unpair-pair
+  { measurable = record
+    { R = Lift ℓ ℕ
+    ; Meas = λ _ → ⊤
+    ; meas-id = tt
+    ; meas-∘ = λ _ _ → tt
+    ; meas-ext = λ _ _ → tt
+    ; meas-const = λ _ → tt
+    }
+  ; partitions = record
+    { Idx = λ _ → ⊤
+    ; meas-glue = λ _ _ → tt
+    ; idx-const = λ _ → tt
+    ; idx-pre = λ _ _ → tt
+    }
+  ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
   ; idx-glue = λ _ _ → tt
   }
 

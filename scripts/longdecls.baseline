@@ -11,8 +11,6 @@ QBS.Analysis.Signed.≃-trans
 QBS.Continuous.CoinCoords.J-evens
 QBS.Analysis.Tensor.IsProb-tensor₁
 QBS.Model.StatInstance.scaled-laws-law
-QBS.Probability.ProbabilityInterface
-QBS.Core.RandomSource
 QBS.Continuous.SFiniteDecomp.probCase-int
 QBS.Analysis.Unbounded.Iinf-scale-fun
 QBS.Analysis.CoinFacts.μ-add

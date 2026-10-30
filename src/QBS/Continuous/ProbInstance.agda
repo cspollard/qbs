@@ -81,10 +81,12 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
           ; map-random = λ {γ′} (m₁ , m₂) → measurable-∘ m₁ mβ , m₂
           }
 
-  continuousProb : ProbabilityInterface (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S)
-  continuousProb = record
-    { commutativeMonad = record { strongMonad = strongMonad ; commutative = commutative }
-    ; Measure = PM
+  continuousMonad : ProbMonad (QBSCat S) (cartesianClosed S)
+  continuousMonad = record { strongMonad = strongMonad ; commutative = commutative }
+
+  continuousProbLaws : ProbLaws (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad
+  continuousProbLaws = record
+    { Measure = PM
     ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) μ
         , IsProb-push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) {μ} pμ
     ; law = lawH
@@ -98,7 +100,11 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ _
         in probe S (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
-    ; split = record
+    }
+
+  continuousProbFubini : Fubini (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad continuousProbLaws
+  continuousProbFubini = record
+    { split = record
         { from = fromH
         ; to = toH
         ; iso = record
@@ -112,6 +118,13 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
         Setoid.trans Aˢ (∫-join {X} (lawP (kerH γ νp) μp) f)
           (I-cong μ (λ r → I-cong ν (λ s → Func.cong (map f) (Func.cong (map γ)
               (Setoid.sym (Carrier (ℛQ S)) (merge-evens r s) , Setoid.sym (Carrier (ℛQ S)) (merge-odds r s)))) _ _) _ _)
+    }
+
+  continuousProb : ProbabilityInterface (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S)
+  continuousProb = record
+    { commutativeMonad = continuousMonad
+    ; laws = continuousProbLaws
+    ; fubini = continuousProbFubini
     }
 
   open import QBS.IsQBSLike using (IsQBSLike)
