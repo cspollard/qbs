@@ -1,6 +1,6 @@
 # Quasi-Borel spaces
 
-An extrinsic formalisation of the category **QBS** (Heunen, Kammar, Staton, Vákár,
+An extrinsic formalisation of the category **QBS** (Heunen, Kammar, Staton, Yang,
 [*A Convenient Category for Higher-Order Probability Theory*](https://arxiv.org/abs/1701.02547)).
 
 ## Documentation
