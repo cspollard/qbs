@@ -77,57 +77,58 @@ module Density (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     ; I-sub = λ f → ≤-trans (*-mono d (J-mono m (Mvh {v} {const 1#} mv f) mv (λ r → ≤-reflexive (*-identityʳ (v r))))) bd
     }
 
+  -- `v · φ` is the supremum of the bounded approximations `v · (pw k · tr k φ)`, whose integrals
+  -- against `m` therefore increase to `J m (v · φ)`.
+  module Approx (m : Measure) (v : R₁ → Cut) (mv : Meas v) {φ} (p : Meas φ) where
+    F = FunInf-Meas {φ} p
+
+    φs : ℕ → R₁ → Cut
+    φs k r = v r * (pw k * tr k (φ r))
+
+    ps : ∀ k → Meas (φs k)
+    ps k = Meas-⊗ {v} {λ r → pw k * tr k (φ r)} mv (Meas-⊗ {λ _ → pw k} {λ r → tr k (φ r)} (Meas-const (pw k)) (LS (F k)))
+
+    incv : ∀ r → Increasing (λ k → φs k r)
+    incv r k = *-mono (v r) (incφ φ r k)
+
+    ev : ∀ r → v r * φ r ≈ ⨆ (λ k → φs k r) (incv r)
+    ev r = trans (*-cong refl (eqφ φ r)) (*-⨆ (v r) (λ k → pw k * tr k (φ r)) (incφ φ r) (incv r))
+
+    incJ : Increasing (λ k → J m (φs k) (ps k))
+    incJ k = J-mono m (ps k) (ps (ℕ.suc k)) (λ r → incv r k)
+
+    -- `J m (v · φ)` is the supremum of the approximations' integrals
+    J-approx : J m (λ r → v r * φ r) (Meas-⊗ {v} {φ} mv p) ≈ ⨆ (λ k → J m (φs k) (ps k)) incJ
+    J-approx = J-⨆ m {λ r → v r * φ r} φs ps incv (Meas-⊗ {v} {φ} mv p) ev
+
+    -- each approximation is again an integral against `m`, after pulling out the constant `2ᵏ`
+    J-approx-pt : ∀ k → J m (φs k) (ps k) ≈ pw k * J m (λ r → v r * tr k (φ r)) (Mvh {v} {λ r → tr k (φ r)} mv (F k))
+    J-approx-pt k = trans
+      (J-cong m (ps k) (Meas-⊗ {λ _ → pw k} {λ r → v r * tr k (φ r)} (Meas-const (pw k)) (Mvh {v} {λ r → tr k (φ r)} mv (F k)))
+         (λ r → swap (v r) (pw k) (tr k (φ r))))
+      (J-scale m (pw k) {λ r → v r * tr k (φ r)} (Mvh {v} {λ r → tr k (φ r)} mv (F k)))
+
   -- the integral of an unbounded function against the density measure
   J-dens : ∀ (m : Measure) (v : R₁ → Cut) (mv : Meas v) (d : Cut) (bd : d * J m v mv ≤ 1#) {φ} (p : Meas φ) →
     J (densM m v mv d bd) φ p ≈ d * J m (λ r → v r * φ r) (Meas-⊗ {v} {φ} mv p)
   J-dens m v mv d bd {φ} p = trans (J-def (densM m v mv d bd) p)
-    (sym (trans (*-cong refl (J-⨆ m {λ r → v r * φ r} φs ps incv (Meas-⊗ {v} {φ} mv p) ev))
-      (trans (*-⨆ d (λ k → J m (φs k) (ps k)) (λ k → J-mono m (ps k) (ps (ℕ.suc k)) (λ r → incv r k))
-                (λ k → *-mono d (J-mono m (ps k) (ps (ℕ.suc k)) (λ r → incv r k))))
-        (⨆-cong (λ k → *-mono d (J-mono m (ps k) (ps (ℕ.suc k)) (λ r → incv r k))) (Iseq-inc (densM m v mv d bd) φ F) pt))))
+    (sym (trans (*-cong refl J-approx)
+      (trans (*-⨆ d (λ k → J m (φs k) (ps k)) incJ (λ k → *-mono d (incJ k)))
+        (⨆-cong (λ k → *-mono d (incJ k)) (Iseq-inc (densM m v mv d bd) φ F) pt))))
     where
-      F = FunInf-Meas p
-
-      φs : ℕ → R₁ → Cut
-      φs k r = v r * (pw k * tr k (φ r))
-
-      ps : ∀ k → Meas (φs k)
-      ps k = Meas-⊗ {v} {λ r → pw k * tr k (φ r)} mv (Meas-⊗ {λ _ → pw k} {λ r → tr k (φ r)} (Meas-const (pw k)) (LS (F k)))
-
-      incv : ∀ r → Increasing (λ k → φs k r)
-      incv r k = *-mono (v r) (incφ φ r k)
-
-      ev : ∀ r → v r * φ r ≈ ⨆ (λ k → φs k r) (incv r)
-      ev r = trans (*-cong refl (eqφ φ r)) (*-⨆ (v r) (λ k → pw k * tr k (φ r)) (incφ φ r) (incv r))
+      open Approx m v mv p
 
       pt : ∀ k → d * J m (φs k) (ps k) ≈ Iseq (densM m v mv d bd) φ F k
-      pt k = trans (*-cong refl (trans
-               (J-cong m (ps k) (Meas-⊗ {λ _ → pw k} {λ r → v r * tr k (φ r)} (Meas-const (pw k)) (Mvh {v} {λ r → tr k (φ r)} mv (F k)))
-                  (λ r → swap (v r) (pw k) (tr k (φ r))))
-               (J-scale m (pw k) {λ r → v r * tr k (φ r)} (Mvh {v} {λ r → tr k (φ r)} mv (F k)))))
-             (swap d (pw k) _)
+      pt k = trans (*-cong refl (J-approx-pt k)) (swap d (pw k) _)
 
   -- a null density integrates everything to 0, even `∞`
   J-null : ∀ (m : Measure) (v : R₁ → Cut) (mv : Meas v) {φ} (p : Meas φ) →
     J m v mv ≈ 0# → J m (λ r → v r * φ r) (Meas-⊗ {v} {φ} mv p) ≈ 0#
   J-null m v mv {φ} p z = ≤-antisym
-    (≤-trans (≤-reflexive (J-⨆ m {λ r → v r * φ r} φs ps incv (Meas-⊗ {v} {φ} mv p) ev))
-      (⨆-lub (λ k → J m (φs k) (ps k)) (λ k → J-mono m (ps k) (ps (ℕ.suc k)) (λ r → incv r k)) bound))
+    (≤-trans (≤-reflexive J-approx) (⨆-lub (λ k → J m (φs k) (ps k)) incJ bound))
     (OmegaSemiring.0-least A)
     where
-      F = FunInf-Meas {φ} p
-
-      φs : ℕ → R₁ → Cut
-      φs k r = v r * (pw k * tr k (φ r))
-
-      ps : ∀ k → Meas (φs k)
-      ps k = Meas-⊗ {v} {λ r → pw k * tr k (φ r)} mv (Meas-⊗ {λ _ → pw k} {λ r → tr k (φ r)} (Meas-const (pw k)) (LS (F k)))
-
-      incv : ∀ r → Increasing (λ k → φs k r)
-      incv r k = *-mono (v r) (incφ φ r k)
-
-      ev : ∀ r → v r * φ r ≈ ⨆ (λ k → φs k r) (incv r)
-      ev r = trans (*-cong refl (eqφ φ r)) (*-⨆ (v r) (λ k → pw k * tr k (φ r)) (incφ φ r) (incv r))
+      open Approx m v mv p
 
       -- each approximation is below `2ᵏ · v`, which has integral 0
       bound : ∀ k → J m (φs k) (ps k) ≤ 0#

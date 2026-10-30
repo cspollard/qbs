@@ -186,30 +186,39 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
   Iinf-mono m f f′ le = ⨆-lub _ _ (λ k →
     ≤-trans (*-mono (pw k) (I-mono m (f k) (f′ k) (λ x → tr-mono k (le x)))) (Iseq-le m f′ k))
 
-  -- monotone convergence
+  -- the integrals of an increasing sequence of functions increase
+  Iinf-inc : ∀ (m : Measure) {hs : ℕ → S → ∣A∣} (fs : ∀ n → FunInf (hs n))
+    (inc : ∀ x → Increasing (λ n → hs n x)) → Increasing (λ n → Iinf m (hs n) (fs n))
+  Iinf-inc m fs inc n = Iinf-mono m (fs n) (fs (ℕ.suc n)) (λ x → inc x n)
+
+  -- monotone convergence, proved level by level: for each `k` the `k`-th truncation of `h` is the
+  -- supremum of those of `hs n`, so `Iseq m h f k` is below the supremum of the `Iinf m (hs n)`
+  module IinfSup (m : Measure) {h} (hs : ℕ → S → ∣A∣) (fs : ∀ n → FunInf (hs n))
+    (inc : ∀ x → Increasing (λ n → hs n x)) (f : FunInf h) (e : ∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) where
+
+    incI : ∀ k n → I m (λ x → tr k (hs n x)) (fs n k) ≤ I m (λ x → tr k (hs (ℕ.suc n) x)) (fs (ℕ.suc n) k)
+    incI k n = I-mono m (fs n k) (fs (ℕ.suc n) k) (λ x → tr-mono k (inc x n))
+
+    incK : ∀ k → Increasing (λ n → pw k * I m (λ x → tr k (hs n x)) (fs n k))
+    incK k n = *-mono (pw k) (incI k n)
+
+    step : ∀ k → Iseq m h f k ≈ ⨆ (λ n → pw k * I m (λ x → tr k (hs n x)) (fs n k)) (incK k)
+    step k = trans
+      (*-cong refl (I-sup m (λ n x → tr k (hs n x)) (λ n → fs n k) (λ x n → tr-mono k (inc x n)) (f k)
+        (λ x → trans (tr-cong k (e x)) (tr-⨆ k (λ n → hs n x) (inc x) (λ n → tr-mono k (inc x n))))))
+      (*-⨆ (pw k) _ (incI k) (incK k))
+
+    bound : ∀ k → Iseq m h f k ≤ ⨆ (λ n → Iinf m (hs n) (fs n)) (Iinf-inc m fs inc)
+    bound k = ≤-trans (≤-reflexive (step k))
+      (⨆-lub _ (incK k) (λ n → ≤-trans (Iseq-le m (fs n) k) (⨆-ub _ (Iinf-inc m fs inc) n)))
+
   Iinf-sup : ∀ (m : Measure) {h} (hs : ℕ → S → ∣A∣) (fs : ∀ n → FunInf (hs n))
     (inc : ∀ x → Increasing (λ n → hs n x)) (f : FunInf h) →
     (∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) →
-    Iinf m h f ≈ ⨆ (λ n → Iinf m (hs n) (fs n)) (λ n → Iinf-mono m (fs n) (fs (ℕ.suc n)) (λ x → inc x n))
+    Iinf m h f ≈ ⨆ (λ n → Iinf m (hs n) (fs n)) (Iinf-inc m fs inc)
   Iinf-sup m {h} hs fs inc f e = ≤-antisym (⨆-lub _ _ bound)
     (⨆-lub _ _ (λ n → Iinf-mono m (fs n) f (λ x → ≤-trans (⨆-ub (λ n → hs n x) (inc x) n) (≤-reflexive (sym (e x))))))
-    where
-      incI : ∀ k → ∀ n → I m (λ x → tr k (hs n x)) (fs n k) ≤ I m (λ x → tr k (hs (ℕ.suc n) x)) (fs (ℕ.suc n) k)
-      incI k n = I-mono m (fs n k) (fs (ℕ.suc n) k) (λ x → tr-mono k (inc x n))
-
-      incK : ∀ k → Increasing (λ n → pw k * I m (λ x → tr k (hs n x)) (fs n k))
-      incK k n = *-mono (pw k) (incI k n)
-
-      step : ∀ k → Iseq m h f k ≈ ⨆ (λ n → pw k * I m (λ x → tr k (hs n x)) (fs n k)) (incK k)
-      step k = trans
-        (*-cong refl (I-sup m (λ n x → tr k (hs n x)) (λ n → fs n k) (λ x n → tr-mono k (inc x n)) (f k)
-          (λ x → trans (tr-cong k (e x)) (tr-⨆ k (λ n → hs n x) (inc x) (λ n → tr-mono k (inc x n))))))
-        (*-⨆ (pw k) _ (incI k) (incK k))
-
-      bound : ∀ k → Iseq m h f k ≤ ⨆ (λ n → Iinf m (hs n) (fs n)) (λ n → Iinf-mono m (fs n) (fs (ℕ.suc n)) (λ x → inc x n))
-      bound k = ≤-trans (≤-reflexive (step k))
-        (⨆-lub _ (incK k) (λ n → ≤-trans (Iseq-le m (fs n) k)
-          (⨆-ub _ (λ n → Iinf-mono m (fs n) (fs (ℕ.suc n)) (λ x → inc x n)) n)))
+    where open IinfSup m hs fs inc f e
 
   -- additivity
   -- the half-weighted sum of the two truncations is again bounded
@@ -395,29 +404,36 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
         incK′ : Increasing (λ j → I m g G * mn d (pw j))
         incK′ j = *-mono (I m g G) (mn-inc d j)
 
+    -- the bounded approximations of `φ`, which `c ·` maps to bounded approximations of `c · φ`
+    scale-fn : ∀ {φ} (f∞ : FunInf φ) n → FunInf (φn φ n)
+    scale-fn f∞ n = cl-mul (pw n) (FunInf-bounded (f∞ n))
+
+    scale-term : ∀ m c {φ} (f∞ : FunInf φ) n →
+      Iinf m (λ x → c * φn φ n x) (cl-mul c (scale-fn f∞ n)) ≈ c * Iseq m φ f∞ n
+    scale-term m c {φ} f∞ n = begin
+      Iinf m (λ x → c * φn φ n x) (cl-mul c (scale-fn f∞ n))
+        ≈⟨ Iinf-cong m (cl-mul c (scale-fn f∞ n)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
+             (λ x → sym (*-assoc _ _ _)) ⟩
+      Iinf m (λ x → (c * pw n) * tr n (φ x)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
+        ≈⟨ Iinf-scale-fun m (c * pw n) (f∞ n) (cl-mul (c * pw n) (FunInf-bounded (f∞ n))) ⟩
+      (c * pw n) * I m (λ x → tr n (φ x)) (f∞ n)
+        ≈⟨ *-assoc _ _ _ ⟩
+      c * Iseq m φ f∞ n ∎
+
+    scale-inc : ∀ c φ x → Increasing (λ n → c * φn φ n x)
+    scale-inc c φ x n = *-mono c (incφ φ x n)
+
+    scale-ev : ∀ c φ x → c * φ x ≈ ⨆ (λ n → c * φn φ n x) (scale-inc c φ x)
+    scale-ev c φ x = trans (*-cong refl (eqφ φ x)) (*-⨆ c (λ n → φn φ n x) (incφ φ x) (scale-inc c φ x))
+
     -- scaling an unbounded function
     Iinf-scale : ∀ m c {φ} (f∞ : FunInf φ) →
       Iinf m (λ x → c * φ x) (cl-mul c f∞) ≈ c * Iinf m φ f∞
     Iinf-scale m c {φ} f∞ = begin
       Iinf m (λ x → c * φ x) (cl-mul c f∞)
-        ≈⟨ Iinf-sup m (λ n x → c * φn φ n x) (λ n → cl-mul c (fn n)) (λ x n → *-mono c (incφ φ x n)) (cl-mul c f∞)
-             (λ x → trans (*-cong refl (eqφ φ x)) (*-⨆ c (λ n → φn φ n x) (incφ φ x) (λ n → *-mono c (incφ φ x n)))) ⟩
-      ⨆ (λ n → Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n))) _
-        ≈⟨ ⨆-cong _ (λ n → *-mono c (Iseq-inc m φ f∞ n)) termN ⟩
+        ≈⟨ Iinf-sup m (λ n x → c * φn φ n x) (λ n → cl-mul c (scale-fn f∞ n)) (scale-inc c φ) (cl-mul c f∞) (scale-ev c φ) ⟩
+      ⨆ (λ n → Iinf m (λ x → c * φn φ n x) (cl-mul c (scale-fn f∞ n))) _
+        ≈⟨ ⨆-cong _ (λ n → *-mono c (Iseq-inc m φ f∞ n)) (scale-term m c f∞) ⟩
       ⨆ (λ n → c * Iseq m φ f∞ n) (λ n → *-mono c (Iseq-inc m φ f∞ n))
         ≈⟨ sym (*-⨆ c (Iseq m φ f∞) (Iseq-inc m φ f∞) (λ n → *-mono c (Iseq-inc m φ f∞ n))) ⟩
       c * Iinf m φ f∞ ∎
-      where
-        fn : ∀ n → FunInf (φn φ n)
-        fn n = cl-mul (pw n) (FunInf-bounded (f∞ n))
-
-        termN : ∀ n → Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n)) ≈ c * Iseq m φ f∞ n
-        termN n = begin
-          Iinf m (λ x → c * φn φ n x) (cl-mul c (fn n))
-            ≈⟨ Iinf-cong m (cl-mul c (fn n)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
-                 (λ x → sym (*-assoc _ _ _)) ⟩
-          Iinf m (λ x → (c * pw n) * tr n (φ x)) (cl-mul (c * pw n) (FunInf-bounded (f∞ n)))
-            ≈⟨ Iinf-scale-fun m (c * pw n) (f∞ n) (cl-mul (c * pw n) (FunInf-bounded (f∞ n))) ⟩
-          (c * pw n) * I m (λ x → tr n (φ x)) (f∞ n)
-            ≈⟨ *-assoc _ _ _ ⟩
-          c * Iseq m φ f∞ n ∎

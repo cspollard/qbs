@@ -180,34 +180,38 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     cN-ratC : ∀ N → mem oneC (enumQ N) → cN N ≋ ratC (enumQ N)
     cN-ratC N lt = mk⊑ (λ s m → proj₁ m) , mk⊑ (λ { s (inj₁ s<q) → inj₁ s<q , <-trans s<q lt ; s (inj₂ s<0) → inj₂ s<0 , <-trans s<0 0<1 })
 
+    -- the step from `M N` to `M (suc N)`: on `W N` the approximant is the constant `cN N`, elsewhere it is `M N`
+    module Step N (FMN : Fun (M N)) where
+      module MW = Mask {W N} (bW N) (λ y → lem (W N y))
+      module MN = Mask {λ c → W N c → ⊥} (compl (bW N)) (λ y → lem (W N y → ⊥))
+
+      F₁ : Fun (MW.mask (λ _ → cN N))
+      F₁ = MW.Fun-mask (Fun-const (cN N) (mk⊑ (λ s m → proj₂ m)))
+
+      F₂ : Fun (MN.mask (M N))
+      F₂ = MN.Fun-mask FMN
+
+      pw-in : ∀ x → W N (lower x) → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
+      pw-in x w@(p , nle) = OA.trans (≡.subst (λ r → ratC r ≋ ratC (enumQ N)) (≡.sym (pW N x p nle)) ≋-refl)
+        (OA.trans (OA.sym (cN-ratC N (ap (bd x) (enumQ N) p)))
+          (OA.trans (OA.sym (OA.+-identityʳ _))
+            (OA.sym (OA.+-cong (MW.mask-in (λ _ → cN N) x w) (MN.mask-out (M N) x (λ nw → nw w))))))
+
+      pw-out : ∀ x → (W N (lower x) → ⊥) → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
+      pw-out x nw = OA.trans (≡.subst (λ r → ratC (best (suc N) x) ≋ ratC r) (pnW N x nw) ≋-refl)
+        (OA.sym (OA.trans (OA.+-cong (MW.mask-out (λ _ → cN N) x nw) (MN.mask-in (M N) x nw)) (OA.+-identityˡ _)))
+
+      pw : ∀ x → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
+      pw x = MW.dec′ x (pw-in x) (pw-out x)
+
+      bound : ∀ x → M (suc N) x OA.≤ OA.1#
+      bound x = ⊑-trans (M⊑h (suc N) x) (bd x)
+
     FM : ∀ N → Fun (M N)
     FM zero = Fun-ext (λ x → mk⊑ (λ s s<0 → inj₁ s<0) , mk⊑ (λ { s (inj₁ s<0) → s<0 ; s (inj₂ s<0) → s<0 }))
                       (Fun-const zeroC 0-least)
     FM (suc N) = sumF F₁ F₂ pw bound
-      where
-        module MW = Mask {W N} (bW N) (λ y → lem (W N y))
-        module MN = Mask {λ c → W N c → ⊥} (compl (bW N)) (λ y → lem (W N y → ⊥))
-
-        F₁ : Fun (MW.mask (λ _ → cN N))
-        F₁ = MW.Fun-mask (Fun-const (cN N) (mk⊑ (λ s m → proj₂ m)))
-
-        F₂ : Fun (MN.mask (M N))
-        F₂ = MN.Fun-mask (FM N)
-
-        pw : ∀ x → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
-        pw x = MW.dec′ x inW outW
-          where
-            inW : W N (lower x) → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
-            inW w@(p , nle) = OA.trans (≡.subst (λ r → ratC r ≋ ratC (enumQ N)) (≡.sym (pW N x p nle)) ≋-refl)
-              (OA.trans (OA.sym (cN-ratC N (ap (bd x) (enumQ N) p)))
-                (OA.trans (OA.sym (OA.+-identityʳ _))
-                  (OA.sym (OA.+-cong (MW.mask-in (λ _ → cN N) x w) (MN.mask-out (M N) x (λ nw → nw w))))))
-            outW : (W N (lower x) → ⊥) → M (suc N) x OA.≈ MW.mask (λ _ → cN N) x OA.+ MN.mask (M N) x
-            outW nw = OA.trans (≡.subst (λ r → ratC (best (suc N) x) ≋ ratC r) (pnW N x nw) ≋-refl)
-              (OA.sym (OA.trans (OA.+-cong (MW.mask-out (λ _ → cN N) x nw) (MN.mask-in (M N) x nw)) (OA.+-identityˡ _)))
-
-        bound : ∀ x → M (suc N) x OA.≤ OA.1#
-        bound x = ⊑-trans (M⊑h (suc N) x) (bd x)
+      where open Step N (FM N)
 
     measFun : Fun h
     measFun = supF M FM inc eq

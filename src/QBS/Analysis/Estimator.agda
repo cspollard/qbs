@@ -157,6 +157,20 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
       (S.trans (S.+-cong (E-sumsq n) (second n))
         (suc-S (natS n) (σ² S.+ m)))
 
+    -- (x + y) − y = x
+    cancel : ∀ x y → (x S.+ y) S.+ S.- y S.≈ x
+    cancel x y = S.trans (S.+-assoc x y (S.- y)) (S.trans (S.+-cong S.refl (S.-‿inverseʳ y)) (S.+-identityʳ x))
+
+    -- a (a (q + m)) = (a² q − a q) + (a q + a² m)
+    split-sq : ∀ a q m → a S.* (a S.* (q S.+ m)) S.≈ (a S.* a S.* q S.+ S.- (a S.* q)) S.+ (a S.* q S.+ a S.* a S.* m)
+    split-sq a q m = S.trans
+      (SolveS.solve 3 expand S.refl a q m)
+      (S.sym (S.trans (S.+-assoc _ _ _) (S.trans (S.+-cong S.refl (S.sym (S.+-assoc _ _ _)))
+        (S.trans (S.+-cong S.refl (S.+-cong (S.-‿inverseˡ (a S.* q)) S.refl)) (S.+-cong S.refl (S.+-identityˡ _))))))
+      where
+        open SolveS using (_:+_; _:*_; _:=_)
+        expand = λ a q m → a :* (a :* (q :+ m)) := (a :* a :* q :+ a :* a :* m)
+
     -- Var Sₙ = E Sₙ² − (E Sₙ)² = n σ²
     var-sum : ∀ n → E (sumR X n R.* sumR X n) S.+ S.- (E (sumR X n) S.* E (sumR X n)) S.≈ natS n S.* σ²
     var-sum n = begin
@@ -167,9 +181,6 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
       (natS n S.* σ² S.+ natS n S.* natS n S.* m) S.+ S.- (natS n S.* natS n S.* m)
         ≈⟨ cancel _ _ ⟩
       natS n S.* σ² ∎
-      where
-        cancel : ∀ x y → (x S.+ y) S.+ S.- y S.≈ x
-        cancel x y = S.trans (S.+-assoc x y (S.- y)) (S.trans (S.+-cong S.refl (S.-‿inverseʳ y)) (S.+-identityʳ x))
 
     -- E (n Qₙ − Sₙ²) = (n² − n) σ²
     E-SS : ∀ n → E (SS X n) S.≈ (natS n S.* natS n S.+ S.- (natS n)) S.* σ²
@@ -190,14 +201,6 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
       where
         u = S.- (natS n S.* σ²)
         T = natS n S.* σ² S.+ natS n S.* natS n S.* m
-        cancel : ∀ x y → (x S.+ y) S.+ S.- y S.≈ x
-        cancel x y = S.trans (S.+-assoc x y (S.- y)) (S.trans (S.+-cong S.refl (S.-‿inverseʳ y)) (S.+-identityʳ x))
-        -- a (a (q + m)) = (a² q − a q) + (a q + a² m)
-        split-sq : ∀ a q m → a S.* (a S.* (q S.+ m)) S.≈ (a S.* a S.* q S.+ S.- (a S.* q)) S.+ (a S.* q S.+ a S.* a S.* m)
-        split-sq a q m = S.trans
-          (SolveS.solve 3 (λ a q m → a SolveS.:* (a SolveS.:* (q SolveS.:+ m)) SolveS.:= (a SolveS.:* a SolveS.:* q SolveS.:+ a SolveS.:* a SolveS.:* m)) S.refl a q m)
-          (S.sym (S.trans (S.+-assoc _ _ _) (S.trans (S.+-cong S.refl (S.sym (S.+-assoc _ _ _)))
-            (S.trans (S.+-cong S.refl (S.+-cong (S.-‿inverseˡ (a S.* q)) S.refl)) (S.+-cong S.refl (S.+-identityˡ _))))))
 
   -- Affine images Yᵢ = a + c·Xᵢ, for a constant embedding κ with E (κ s) = s and E (κ s · x) = s · E x:
   -- the moments become μ′ = a + c μ and σ′² = c² σ².

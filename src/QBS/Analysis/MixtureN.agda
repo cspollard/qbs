@@ -24,50 +24,60 @@ module MixtureN (A : OmegaSemiring (suc zero)) where
   open SeriesSup A
   open SetoidReasoning setoid
 
+  private
+    swap : ∀ x y z → x * (y * z) ≈ y * (x * z)
+    swap x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+
+  -- the mixture functional `h ↦ ∑ₙ cₙ · I μₙ h`
+  mixI : (ℕ → ∣A∣) → (ℕ → Measure) → ∀ {h} → Fun h → ∣A∣
+  mixI c μ {h} f = ∑ᶠ (λ n → c n * I (μ n) h f)
+
+  mixN-mono : ∀ c μ {h h′} (f : Fun h) (f′ : Fun h′) → (∀ x → h x ≤ h′ x) → mixI c μ f ≤ mixI c μ f′
+  mixN-mono c μ f f′ le = ∑ᶠ-mono (λ n → *-mono (c n) (I-mono (μ n) f f′ le))
+
+  mixN-add : ∀ c μ {h h₁ h₂} (f : Fun h) (f₁ : Fun h₁) (f₂ : Fun h₂) → (∀ x → h x ≈ h₁ x + h₂ x) →
+    mixI c μ f ≈ mixI c μ f₁ + mixI c μ f₂
+  mixN-add c μ f f₁ f₂ e = begin
+    ∑ᶠ (λ n → c n * I (μ n) _ f)
+      ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-add (μ n) f f₁ f₂ e)) (distribˡ _ _ _)) ⟩
+    ∑ᶠ (λ n → c n * I (μ n) _ f₁ + c n * I (μ n) _ f₂)
+      ≈⟨ ∑ᶠ-+ _ _ ⟩
+    mixI c μ f₁ + mixI c μ f₂ ∎
+
+  mixN-scale : ∀ c μ {h h′} d (f : Fun h) (f′ : Fun h′) → (∀ x → h′ x ≈ d * h x) →
+    mixI c μ f′ ≈ d * mixI c μ f
+  mixN-scale c μ d f f′ e = begin
+    ∑ᶠ (λ n → c n * I (μ n) _ f′)
+      ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-scale (μ n) d f f′ e)) (swap (c n) d _)) ⟩
+    ∑ᶠ (λ n → d * (c n * I (μ n) _ f))
+      ≈⟨ sym (∑ᶠ-scale d _) ⟩
+    d * mixI c μ f ∎
+
+  mixN-sup : ∀ c μ {h} (hs : ℕ → _ → ∣A∣) (fs : ∀ n → Fun (hs n))
+    (inc : ∀ x → Increasing (λ n → hs n x)) (f : Fun h) →
+    (∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) →
+    mixI c μ f ≈ ⨆ (λ k → mixI c μ (fs k)) (λ k → mixN-mono c μ (fs k) (fs (ℕ.suc k)) (λ x → inc x k))
+  mixN-sup c μ {h} hs fs inc f e = begin
+    ∑ᶠ (λ n → c n * I (μ n) h f)
+      ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-sup (μ n) hs fs inc f e))
+           (*-⨆ (c n) (a n) (ia n) (λ k → *-mono (c n) (ia n k)))) ⟩
+    ∑ᶠ (λ n → ⨆ (λ k → c n * a n k) (λ k → *-mono (c n) (ia n k)))
+      ≈⟨ ∑ᶠ-⨆ (λ n k → c n * a n k) (λ n k → *-mono (c n) (ia n k)) ⟩
+    ⨆ (λ k → ∑ᶠ (λ n → c n * a n k)) _ ∎
+    where
+      a = λ n k → I (μ n) (hs k) (fs k)
+      ia = λ n k → I-mono (μ n) (fs k) (fs (ℕ.suc k)) (λ x → inc x k)
+
   mixN : ∀ (c : ℕ → ∣A∣) → ∑ᶠ c ≤ 1# → (ℕ → Measure) → Measure
   mixN c sub μ = record
-    { I = λ h f → ∑ᶠ (λ n → c n * I (μ n) h f)
+    { I = λ h f → mixI c μ f
     ; I-cong = λ e f f′ → ∑ᶠ-cong (λ n → *-cong refl (I-cong (μ n) e f f′))
-    ; I-mono = mono
-    ; I-add = λ {h} {h₁} {h₂} f f₁ f₂ e → begin
-        ∑ᶠ (λ n → c n * I (μ n) h f)
-          ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-add (μ n) f f₁ f₂ e)) (distribˡ _ _ _)) ⟩
-        ∑ᶠ (λ n → c n * I (μ n) h₁ f₁ + c n * I (μ n) h₂ f₂)
-          ≈⟨ ∑ᶠ-+ _ _ ⟩
-        ∑ᶠ (λ n → c n * I (μ n) h₁ f₁) + ∑ᶠ (λ n → c n * I (μ n) h₂ f₂) ∎
-    ; I-scale = λ {h} {h′} d f f′ e → begin
-        ∑ᶠ (λ n → c n * I (μ n) h′ f′)
-          ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-scale (μ n) d f f′ e)) (swap (c n) d _)) ⟩
-        ∑ᶠ (λ n → d * (c n * I (μ n) h f))
-          ≈⟨ sym (∑ᶠ-scale d _) ⟩
-        d * ∑ᶠ (λ n → c n * I (μ n) h f) ∎
-    ; I-sup = λ {h} hs fs inc f e → sup {h} hs fs inc f e
+    ; I-mono = mixN-mono c μ
+    ; I-add = mixN-add c μ
+    ; I-scale = mixN-scale c μ
+    ; I-sup = mixN-sup c μ
     ; I-sub = λ f → ≤-trans (∑ᶠ-mono (λ n → ≤-trans (*-mono (c n) (I-sub (μ n) f)) (≤-reflexive (*-identityʳ (c n))))) sub
     }
-    where
-      swap : ∀ x y z → x * (y * z) ≈ y * (x * z)
-      swap x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
-
-      mono : ∀ {h h′} (f : Fun h) (f′ : Fun h′) → (∀ x → h x ≤ h′ x) →
-        ∑ᶠ (λ n → c n * I (μ n) h f) ≤ ∑ᶠ (λ n → c n * I (μ n) h′ f′)
-      mono f f′ le = ∑ᶠ-mono (λ n → *-mono (c n) (I-mono (μ n) f f′ le))
-
-      sup : ∀ {h} (hs : ℕ → _ → ∣A∣) (fs : ∀ n → Fun (hs n))
-        (inc : ∀ x → Increasing (λ n → hs n x)) (f : Fun h) →
-        (∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) →
-        ∑ᶠ (λ n → c n * I (μ n) h f) ≈
-          ⨆ (λ k → ∑ᶠ (λ n → c n * I (μ n) (hs k) (fs k)))
-            (λ k → mono (fs k) (fs (ℕ.suc k)) (λ x → inc x k))
-      sup {h} hs fs inc f e = begin
-        ∑ᶠ (λ n → c n * I (μ n) h f)
-          ≈⟨ ∑ᶠ-cong (λ n → trans (*-cong refl (I-sup (μ n) hs fs inc f e))
-               (*-⨆ (c n) (a n) (ia n) (λ k → *-mono (c n) (ia n k)))) ⟩
-        ∑ᶠ (λ n → ⨆ (λ k → c n * a n k) (λ k → *-mono (c n) (ia n k)))
-          ≈⟨ ∑ᶠ-⨆ (λ n k → c n * a n k) (λ n k → *-mono (c n) (ia n k)) ⟩
-        ⨆ (λ k → ∑ᶠ (λ n → c n * a n k)) _ ∎
-        where
-          a = λ n k → I (μ n) (hs k) (fs k)
-          ia = λ n k → I-mono (μ n) (fs k) (fs (ℕ.suc k)) (λ x → inc x k)
 
   -- probability measures mix to a probability measure when the coefficients sum to 1
   mixN-prob : ∀ c (sub : ∑ᶠ c ≤ 1#) (μ : ℕ → Measure) → ∑ᶠ c ≈ 1# → (∀ n → IsProb (μ n)) → IsProb (mixN c sub μ)

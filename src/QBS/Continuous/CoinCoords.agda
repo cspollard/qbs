@@ -73,31 +73,39 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
   pc {φ} p i = Meas-pre {φ} {coord i} p (measurable-coord i)
 
   -- 1. the halves are independent
-  J-split : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) →
-    J fairCoin (λ r → φ (evensR r) * ψ (oddsR r))
-      (Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (oddsR r)} (pe {φ} p) (po {ψ} q))
+  split-meas : ∀ {φ ψ} → Meas φ → Meas ψ → Meas (λ r → φ (evensR r) * ψ (oddsR r))
+  split-meas {φ} {ψ} p q = Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (oddsR r)} (pe {φ} p) (po {ψ} q)
+
+  -- merging the two halves back together recovers both factors
+  split-merge : ∀ {φ ψ} r s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)) ≈ φ r * ψ s
+  split-merge {φ} {ψ} r s = trans (*-cong (≡⇒≈ (≡.cong φ (merge-evens r s))) refl)
+                                  (*-cong refl (≡⇒≈ (≡.cong ψ (merge-odds r s))))
+
+  -- the inner integral: φ is constant in the inner variable
+  split-inner : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) r →
+    J fairCoin (λ s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)))
+      (Meas-pre {λ r′ → φ (evensR r′) * ψ (oddsR r′)} {mergeR r} (split-meas p q) (measurable-merge₁ (lower r)))
+      ≈ φ r * J fairCoin ψ q
+  split-inner {φ} {ψ} p q r =
+    trans (J-cong fairCoin _ (Meas-⊗ {λ _ → φ r} {ψ} (Meas-const (φ r)) q) (split-merge {φ} {ψ} r)) (J-scale fairCoin (φ r) {ψ} q)
+
+  -- the outer integral of `φ · const`
+  split-outer : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) →
+    J fairCoin (λ r → φ r * J fairCoin ψ q) (Meas-⊗ {φ} {λ _ → J fairCoin ψ q} p (Meas-const (J fairCoin ψ q)))
       ≈ J fairCoin φ p * J fairCoin ψ q
+  split-outer {φ} {ψ} p q =
+    trans (J-cong fairCoin (Meas-⊗ {φ} {λ _ → J fairCoin ψ q} p (Meas-const (J fairCoin ψ q)))
+                   (Meas-⊗ {λ _ → J fairCoin ψ q} {φ} (Meas-const (J fairCoin ψ q)) p)
+                   (λ r → *-comm (φ r) (J fairCoin ψ q)))
+      (trans (J-scale fairCoin (J fairCoin ψ q) {φ} p) (*-comm (J fairCoin ψ q) (J fairCoin φ p)))
+
+  J-split : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) →
+    J fairCoin (λ r → φ (evensR r) * ψ (oddsR r)) (split-meas p q) ≈ J fairCoin φ p * J fairCoin ψ q
   J-split {φ} {ψ} p q = trans
-    (sym (J-agree (tensor₁ fairCoin fairCoin) fairCoin pΦ (λ F → fairCoin-indep F)))
-    (trans (J-tensor₁ fairCoin fairCoin pΦ)
-      (trans (J-cong fairCoin _ (Meas-⊗ {λ r → φ r} {λ _ → J fairCoin ψ q} p (Meas-const (J fairCoin ψ q))) inner)
-        (trans (J-cong fairCoin (Meas-⊗ {φ} {λ _ → J fairCoin ψ q} p (Meas-const (J fairCoin ψ q)))
-                       (Meas-⊗ {λ _ → J fairCoin ψ q} {φ} (Meas-const (J fairCoin ψ q)) p)
-                       (λ r → *-comm (φ r) (J fairCoin ψ q)))
-          (trans (J-scale fairCoin (J fairCoin ψ q) {φ} p) (*-comm (J fairCoin ψ q) (J fairCoin φ p))))))
-    where
-      pΦ = Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (oddsR r)} (pe {φ} p) (po {ψ} q)
-
-      pt : ∀ r s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)) ≈ φ r * ψ s
-      pt r s = trans (*-cong (≡⇒≈ (≡.cong φ (merge-evens r s))) refl)
-                     (*-cong refl (≡⇒≈ (≡.cong ψ (merge-odds r s))))
-
-      -- the inner integral: φ is constant in the inner variable
-      inner : ∀ r → J fairCoin (λ s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)))
-                (Meas-pre {λ r′ → φ (evensR r′) * ψ (oddsR r′)} {mergeR r} pΦ (measurable-merge₁ (lower r)))
-                ≈ φ r * J fairCoin ψ q
-      inner r = trans (J-cong fairCoin _ (Meas-⊗ {λ _ → φ r} {ψ} (Meas-const (φ r)) q) (λ s → pt r s))
-                  (J-scale fairCoin (φ r) {ψ} q)
+    (sym (J-agree (tensor₁ fairCoin fairCoin) fairCoin (split-meas p q) (λ F → fairCoin-indep F)))
+    (trans (J-tensor₁ fairCoin fairCoin (split-meas p q))
+      (trans (J-cong fairCoin _ (Meas-⊗ {φ} {λ _ → J fairCoin ψ q} p (Meas-const (J fairCoin ψ q))) (split-inner p q))
+        (split-outer p q)))
 
   -- 2. each half, and each coordinate, has the law of the coin
   J-evens : ∀ {φ} (p : Meas φ) → J fairCoin (λ r → φ (evensR r)) (pe {φ} p) ≈ J fairCoin φ p

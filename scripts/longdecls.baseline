@@ -1,17 +1,9 @@
 # Known long declarations tolerated by 'make longcheck' (scripts/longdecls.py); each is a candidate for splitting into named lemmas.
 # Remove a line once the declaration is shortened; do not add new ones without a reason.
-QBS.Analysis.Estimator.E-SS
-QBS.Analysis.Density.J-dens
-QBS.Model.SubProb.subClass
-QBS.Analysis.Unbounded.Iinf-sup
-QBS.Analysis.Unbounded.Iinf-scale
-QBS.Analysis.MixtureN.mixN
-QBS.Analysis.MeasFun.FM
-QBS.Continuous.CoinCoords.J-split
+QBS.Model.SubProb.subBind
 QBS.Continuous.SFiniteIncl.ι-mult-pw
 QBS.Analysis.LowerInverse.gap
 QBS.Analysis.LevelSets.compl-contra
-QBS.Analysis.Density.J-null
 QBS.Analysis.CoinSimple.∫-mono
 QBS.Continuous.SFiniteMonad.stepC
 QBS.Analysis.Variance.neg4

@@ -30,38 +30,43 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     pushMass f μ = trans (∑-cong (λ j → sym (*-identityʳ (push f μ j))))
       (trans (push-∑ f μ (λ _ → 1#)) (∑-cong (λ i → *-identityʳ (μ i))))
 
+  -- binding a sub-probability `ν` (defect `e`) to sub-probabilities `g r` (defects `d r`) leaves a
+  -- sub-probability, with defect `Σ ν·d + e`
+  subBind : ∀ {ν : R → ∣A∣} {g : R → R → ∣A∣} {e} → ∑ ν + e ≈ 1# → (hg : ∀ r → Σ ∣A∣ (λ d → ∑ (g r) + d ≈ 1#)) →
+    ∑ (λ k → ∑ (λ r → ν r * g r k)) + (∑ (λ r → ν r * proj₁ (hg r)) + e) ≈ 1#
+  subBind {ν} {g} {e} pν hg = begin
+    T + (D + e)                   ≈⟨ +-cong T≈ refl ⟩
+    ∑ (λ r → ν r * m r) + (D + e) ≈⟨ sym (+-assoc _ D e) ⟩
+    (∑ (λ r → ν r * m r) + D) + e ≈⟨ +-cong mass refl ⟩
+    ∑ ν + e                       ≈⟨ pν ⟩
+    1#                            ∎
+    where
+      m : R → ∣A∣
+      m r = ∑ (g r)
+      d : R → ∣A∣
+      d r = proj₁ (hg r)
+      pd : ∀ r → m r + d r ≈ 1#
+      pd r = proj₂ (hg r)
+      T = ∑ (λ k → ∑ (λ r → ν r * g r k))
+      D = ∑ (λ r → ν r * d r)
+      -- T = Σ_r ν r * m r
+      T≈ : T ≈ ∑ (λ r → ν r * m r)
+      T≈ = trans (∑-swap (λ k r → ν r * g r k)) (∑-cong (λ r → ∑-scale (ν r) (g r)))
+      -- Σ_r ν r * m r + Σ_r ν r * d r = Σ ν
+      mass : ∑ (λ r → ν r * m r) + D ≈ ∑ ν
+      mass = begin
+        ∑ (λ r → ν r * m r) + ∑ (λ r → ν r * d r)  ≈⟨ sym (∑-+ (λ r → ν r * m r) (λ r → ν r * d r)) ⟩
+        ∑ (λ r → ν r * m r + ν r * d r)            ≈⟨ ∑-cong (λ r → sym (distribˡ (ν r) (m r) (d r))) ⟩
+        ∑ (λ r → ν r * (m r + d r))                ≈⟨ ∑-cong (λ r → trans (*-cong refl (pd r)) (*-identityʳ (ν r))) ⟩
+        ∑ ν                                         ∎
+
   subClass : WeightClass A
   subClass = record
     { Ok = λ μ → Σ ∣A∣ (λ d → ∑ μ + d ≈ 1#)
     ; ok-resp = λ e (d , p) → d , trans (+-cong (sym (∑-cong e)) refl) p
     ; ok-dirac = λ r₀ → 0# , trans (+-identityʳ _) (diracMass r₀)
     ; ok-push = λ f (d , p) → d , trans (+-cong (pushMass f _) refl) p
-    ; ok-bind = λ {ν} {g} (e , pν) hg →
-        let m : R → ∣A∣
-            m r = ∑ (g r)
-            d : R → ∣A∣
-            d r = proj₁ (hg r)
-            pd : ∀ r → m r + d r ≈ 1#
-            pd r = proj₂ (hg r)
-            T = ∑ (λ k → ∑ (λ r → ν r * g r k))
-            D = ∑ (λ r → ν r * d r)
-            -- T = Σ_r ν r * m r
-            T≈ : T ≈ ∑ (λ r → ν r * m r)
-            T≈ = trans (∑-swap (λ k r → ν r * g r k)) (∑-cong (λ r → ∑-scale (ν r) (g r)))
-            -- Σ_r ν r * m r + Σ_r ν r * d r = Σ ν
-            mass : ∑ (λ r → ν r * m r) + D ≈ ∑ ν
-            mass = begin
-              ∑ (λ r → ν r * m r) + ∑ (λ r → ν r * d r)  ≈⟨ sym (∑-+ (λ r → ν r * m r) (λ r → ν r * d r)) ⟩
-              ∑ (λ r → ν r * m r + ν r * d r)            ≈⟨ ∑-cong (λ r → sym (distribˡ (ν r) (m r) (d r))) ⟩
-              ∑ (λ r → ν r * (m r + d r))                ≈⟨ ∑-cong (λ r → trans (*-cong refl (pd r)) (*-identityʳ (ν r))) ⟩
-              ∑ ν                                         ∎
-        in D + e ,
-           (begin
-              T + (D + e)                           ≈⟨ +-cong T≈ refl ⟩
-              ∑ (λ r → ν r * m r) + (D + e)         ≈⟨ sym (+-assoc _ D e) ⟩
-              (∑ (λ r → ν r * m r) + D) + e         ≈⟨ +-cong mass refl ⟩
-              ∑ ν + e                               ≈⟨ pν ⟩
-              1# ∎)
+    ; ok-bind = λ {ν} {g} (e , pν) hg → _ , subBind {ν} {g} pν hg
     }
 
   -- the monad of sub-probability measures on the discrete model, with its strength; everything
