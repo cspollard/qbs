@@ -38,7 +38,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Pairing` | 68 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 131 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 44 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
-| `QBS.Model.StatInstance` | 514 |  | The discrete measure monad is a model of `StatisticalInterface`. |
+| `QBS.Model.StatInstance` | 552 |  | The discrete measure monad is a model of `StatisticalInterface`. |
 | `QBS.Model.Strong` | 170 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 72 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 118 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |

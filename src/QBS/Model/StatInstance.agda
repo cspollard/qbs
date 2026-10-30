@@ -21,6 +21,9 @@ import Function.Construct.Composition as Comp
 
 open import Categories.Category.Core using (Category)
 open import Categories.Monad.Morphism using (Monad⇒-id)
+open import Categories.Monad using (Monad)
+import Categories.Monad.Strong as CMS
+import Categories.Category.CartesianClosed.Canonical as Canonical
 open import Categories.Functor using (Functor)
 import Categories.Category.Cocartesian as Cocartesian
 open import QBS.Colimits using (cocartesian; _+Q_; Piece; ev)
@@ -415,6 +418,97 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   module SA = Strength A (allClass A)
 
+  -- the laws of the instance, stated in the notation of `StatisticalInterface`
+  module Laws where
+    open Category (QBSCat S) using () renaming (_≈_ to _≈ᵏ_; _∘_ to _∘ᵏ_; _⇒_ to _⇒ᵏ_)
+    open Canonical.CartesianClosed (cartesianClosed S) using (!; ⟨_,_⟩) renaming (⊤ to 𝟙)
+    open Cocartesian.BinaryCoproducts (Cocartesian.Cocartesian.coproducts (cocartesian S)) using (i₁; i₂)
+    module M = Monad (CMS.StrongMonad.M SA.strongMonad)
+    -- chains of equalities in the weights: transitivity and symmetry
+    open Setoid Aˢ using () renaming (trans to infixr 5 _⟫_; sym to infix 8 ~_)
+
+    zero-bind-law : ∀ (k : 𝟙 ⇒ᵏ M.F.F₀ 𝟙) → M.μ.η 𝟙 ∘ᵏ M.F.F₁ k ∘ᵏ constE zeroP ≈ᵏ constE zeroP
+    zero-bind-law k pt f =
+      ∫-join (mapPre k zeroP) f ⟫ ∑-zero _ (λ _ → zeroˡ _) ⟫ ~ ∫-zero f
+
+    score-zero-law : scoreE ∘ᵏ constH 0# ≈ᵏ constE zeroP
+    score-zero-law pt f = ∫-score 0# f ⟫ zeroˡ _ ⟫ ~ ∫-zero f
+
+    score-mul-law : ∀ (a b : 𝟙 ⇒ᵏ WQ) → scoreE ∘ᵏ mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ M.μ.η 𝟙 ∘ᵏ M.F.F₁ (scoreE ∘ᵏ b ∘ᵏ !) ∘ᵏ scoreE ∘ᵏ a
+    score-mul-law a b pt f =
+      let x = map a ⟨$⟩ pt
+          y = map b ⟨$⟩ pt
+          c = f ⟨$⟩ tt
+          g = _∘H_ S scoreE (_∘H_ S b (!Q S))
+      in ∫-score (x * y) f ⟫ *-assoc x y c ⟫ *-cong refl (~ ∫-score y f)
+         ⟫ ~ weight-sum x (∫ (scoreP y) f) ⟫ ~ ∫-join (mapPre g (scoreP x)) f
+
+    bind-sumK-law : ∀ {X Y} (ks : ℕ → X ⇒ᵏ M.F.F₀ Y) (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
+      M.μ.η Y ∘ᵏ M.F.F₁ (sumKH ks) ∘ᵏ t ≈ᵏ sumE (λ n → M.μ.η Y ∘ᵏ M.F.F₁ (ks n) ∘ᵏ t)
+    bind-sumK-law {X} {Y} ks t pt f =
+      let p = map t ⟨$⟩ pt
+      in ∫-join (mapPre (sumKH ks) p) f
+         ⟫ ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-sum (λ n → map (ks n) ⟨$⟩ α p r) f))
+         ⟫ ∑-cong (λ r → ~ ∑-scale (μ p r) (λ n → ∫ (map (ks (lower n)) ⟨$⟩ α p r) f))
+         ⟫ ∑-swap (λ r n → μ p r * ∫ (map (ks (lower n)) ⟨$⟩ α p r) f)
+         ⟫ ~ (∫-sum (λ n → joinPre (mapPre (ks n) p)) f ⟫ ∑-cong (λ n → ∫-join (mapPre (ks (lower n)) p) f))
+
+    scale-mul-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE (mulH ∘ᵏ ⟨ a , b ⟩) t ≈ᵏ scaleE a (scaleE b t)
+    scale-mul-law {X} a b t pt f =
+      let xa = map a ⟨$⟩ pt
+          xb = map b ⟨$⟩ pt
+          p = map t ⟨$⟩ pt
+      in ∫-scale {X} (xa * xb) p f ⟫ *-assoc xa xb (∫ p f) ⟫ *-cong refl (~ ∫-scale {X} xb p f)
+         ⟫ ~ ∫-scale {X} xa (scaleP xb p) f
+
+    scale-sum-law : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (ts : ℕ → 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE a (sumE ts) ≈ᵏ sumE (λ n → scaleE a (ts n))
+    scale-sum-law {X} a ts pt f =
+      let c = map a ⟨$⟩ pt
+          t = λ n → map (ts n) ⟨$⟩ tt
+      in ∫-scale {X} c (sumP t) f ⟫ *-cong refl (∫-sum t f) ⟫ ~ ∑-scale c (λ n → ∫ (t (lower n)) f)
+         ⟫ ∑-cong (λ n → ~ ∫-scale {X} c (t (lower n)) f) ⟫ ~ ∫-sum (λ n → scaleP c (t n)) f
+
+    sum-join-law : ∀ {X} (ts : ℕ → 𝟙 ⇒ᵏ M.F.F₀ (M.F.F₀ X)) → M.μ.η X ∘ᵏ sumE ts ≈ᵏ sumE (λ n → M.μ.η X ∘ᵏ ts n)
+    sum-join-law {X} ts pt f =
+      let t = λ n → map (ts n) ⟨$⟩ tt
+      in ∫-join (sumP t) f ⟫ ∫-sum t (∫ᶠ f) ⟫ ∑-cong (λ n → ~ ∫-join (t (lower n)) f) ⟫ ~ ∫-sum (λ n → joinPre (t n)) f
+
+    scale-join-law : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ (M.F.F₀ X)) → M.μ.η X ∘ᵏ scaleE a t ≈ᵏ scaleE a (M.μ.η X ∘ᵏ t)
+    scale-join-law {X} a t pt f =
+      let c = map a ⟨$⟩ pt
+          p = map t ⟨$⟩ pt
+      in ∫-join (scaleP c p) f ⟫ ∫-scale c p (∫ᶠ f) ⟫ *-cong refl (~ ∫-join p f) ⟫ ~ ∫-scale c (joinPre p) f
+
+    scaled-laws-law : ∀ {X} (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
+      Σ (ℕ → ℛQ S ⇒ᵏ X) λ a → Σ (ℕ → 𝟙 ⇒ᵏ WQ) λ w → Σ (ℕ → ProbabilityInterface.Measure (discreteProb A)) λ μ →
+        t ≈ᵏ sumE (λ n → scaleE (w n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (a n) (μ n)))
+    scaled-laws-law {X} t =
+      let p = map t ⟨$⟩ tt
+          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (QBS.pre-random X {α p} {id} (α-random p) tt) (dirac (lift n)) tt
+          fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
+      in (λ n → probe S (α-random p))
+       , (λ n → constH (μ p (lift n)))
+       , (λ n → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n))
+       , (λ pt f → ~ (∫-sum fam f ⟫ ∑-cong (λ n → ∫-scale (μ p n) (lawA (lower n)) f
+                                                  ⟫ *-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))
+
+    normalize-prob-law : ∀ X → normH X ∘ᵏ Monad⇒-id.α.η inclusion X ≈ᵏ i₁
+    normalize-prob-law X p = normProb p (NormalizableSemiring.invertible? N (mass (forgetPre p)))
+
+    normalize-zero-law : ∀ {X} (x : 𝟙 ⇒ᵏ X) → normH X ∘ᵏ M.F.F₁ x ∘ᵏ constE zeroP ≈ᵏ i₂
+    normalize-zero-law {X} x pt =
+      normZero (mapPre x zeroP) (∑-zero _ (λ _ → refl))
+      (NormalizableSemiring.invertible? N (mass (mapPre x zeroP)))
+
+    normalize-scale-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) → mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ constH 1# →
+      ∀ (t : 𝟙 ⇒ᵏ M.F.F₀ X) → normH X ∘ᵏ scaleE a t ≈ᵏ normH X ∘ᵏ t
+    normalize-scale-law {X} a b hab t pt =
+      normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
+      (NormalizableSemiring.invertible? N (mass (scaleP (map a ⟨$⟩ pt) (map t ⟨$⟩ pt))))
+      (NormalizableSemiring.invertible? N (mass (map t ⟨$⟩ pt)))
+
+  open Laws
+
   discreteStat : StatisticalInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) (discreteProb A)
     (Cocartesian.Cocartesian.coproducts (cocartesian S))
   discreteStat = record
@@ -430,84 +524,28 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     ; inclusion = inclusion
     ; inclusion-strong = λ _ _ _ _ → Setoid.refl Aˢ
     ; zero = constE zeroP
-    ; zero-bind = λ k pt f →
-        Setoid.trans Aˢ (∫-join (mapPre k zeroP) f)
-          (Setoid.trans Aˢ (∑-zero _ (λ _ → zeroˡ _)) (Setoid.sym Aˢ (∫-zero f)))
+    ; zero-bind = zero-bind-law
     ; score = scoreE
-    ; score-zero = λ pt f → Setoid.trans Aˢ (∫-score 0# f) (Setoid.trans Aˢ (zeroˡ _) (Setoid.sym Aˢ (∫-zero f)))
-    ; score-mul = λ a b pt f →
-        let x = map a ⟨$⟩ pt
-            y = map b ⟨$⟩ pt
-            c = f ⟨$⟩ tt
-            g = _∘H_ S scoreE (_∘H_ S b (!Q S))
-        in Setoid.trans Aˢ (∫-score (x * y) f)
-             (Setoid.trans Aˢ (*-assoc x y c)
-               (Setoid.trans Aˢ (*-cong refl (Setoid.sym Aˢ (∫-score y f)))
-                 (Setoid.trans Aˢ (Setoid.sym Aˢ (weight-sum x (∫ (scoreP y) f)))
-                   (Setoid.sym Aˢ (∫-join (mapPre g (scoreP x)) f)))))
+    ; score-zero = score-zero-law
+    ; score-mul = score-mul-law
     ; sumM = sumE
     ; scaleM = scaleE
     ; sumK = sumKH
     ; sumK-point = λ ks x pt f → Setoid.refl Aˢ
-    ; bind-sumK = λ {X} {Y} ks t pt f →
-        let p = map t ⟨$⟩ pt
-        in Setoid.trans Aˢ (∫-join (mapPre (sumKH ks) p) f)
-             (Setoid.trans Aˢ (∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-sum (λ n → map (ks n) ⟨$⟩ α p r) f)))
-               (Setoid.trans Aˢ (∑-cong (λ r → Setoid.sym Aˢ (∑-scale (μ p r) (λ n → ∫ (map (ks (lower n)) ⟨$⟩ α p r) f))))
-                 (Setoid.trans Aˢ (∑-swap (λ r n → μ p r * ∫ (map (ks (lower n)) ⟨$⟩ α p r) f))
-                   (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-sum (λ n → joinPre (mapPre (ks n) p)) f)
-                     (∑-cong (λ n → ∫-join (mapPre (ks (lower n)) p) f)))))))
+    ; bind-sumK = bind-sumK-law
     ; scale-one = λ {X} t pt f → Setoid.trans Aˢ (∫-scale {X} 1# (map t ⟨$⟩ pt) f) (*-identityˡ _)
-    ; scale-mul = λ {X} a b t pt f →
-        let xa = map a ⟨$⟩ pt
-            xb = map b ⟨$⟩ pt
-            p = map t ⟨$⟩ pt
-        in Setoid.trans Aˢ (∫-scale {X} (xa * xb) p f)
-             (Setoid.trans Aˢ (*-assoc xa xb (∫ p f))
-               (Setoid.trans Aˢ (*-cong refl (Setoid.sym Aˢ (∫-scale {X} xb p f)))
-                 (Setoid.sym Aˢ (∫-scale {X} xa (scaleP xb p) f))))
+    ; scale-mul = scale-mul-law
     ; scale-return = λ a x pt f → Setoid.refl Aˢ
-    ; scale-sum = λ {X} a ts pt f →
-        let c = map a ⟨$⟩ pt
-            t = λ n → map (ts n) ⟨$⟩ tt
-        in Setoid.trans Aˢ (∫-scale {X} c (sumP t) f)
-             (Setoid.trans Aˢ (*-cong refl (∫-sum t f))
-               (Setoid.trans Aˢ (Setoid.sym Aˢ (∑-scale c (λ n → ∫ (t (lower n)) f)))
-                 (Setoid.trans Aˢ (∑-cong (λ n → Setoid.sym Aˢ (∫-scale {X} c (t (lower n)) f)))
-                   (Setoid.sym Aˢ (∫-sum (λ n → scaleP c (t n)) f)))))
+    ; scale-sum = scale-sum-law
     ; sum-nat = λ {X} {Y} f ts pt g →
         Setoid.trans Aˢ (∫-sum (λ n → map (ts n) ⟨$⟩ tt) (Comp.function (map f) g))
           (Setoid.sym Aˢ (∫-sum (λ n → mapPre f (map (ts n) ⟨$⟩ tt)) g))
-    ; sum-join = λ {X} ts pt f →
-        let t = λ n → map (ts n) ⟨$⟩ tt
-        in Setoid.trans Aˢ (∫-join (sumP t) f)
-             (Setoid.trans Aˢ (∫-sum t (∫ᶠ f))
-               (Setoid.trans Aˢ (∑-cong (λ n → Setoid.sym Aˢ (∫-join (t (lower n)) f)))
-                 (Setoid.sym Aˢ (∫-sum (λ n → joinPre (t n)) f))))
+    ; sum-join = sum-join-law
     ; scale-nat = λ f a t pt g → Setoid.refl Aˢ
-    ; scale-join = λ {X} a t pt f →
-        let c = map a ⟨$⟩ pt
-            p = map t ⟨$⟩ pt
-        in Setoid.trans Aˢ (∫-join (scaleP c p) f)
-             (Setoid.trans Aˢ (∫-scale c p (∫ᶠ f))
-               (Setoid.trans Aˢ (*-cong refl (Setoid.sym Aˢ (∫-join p f)))
-                 (Setoid.sym Aˢ (∫-scale c (joinPre p) f))))
-    ; scaled-laws = λ {X} t →
-        let p = map t ⟨$⟩ tt
-            lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (QBS.pre-random X {α p} {id} (α-random p) tt) (dirac (lift n)) tt
-            fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
-        in (λ n → probe S (α-random p))
-         , (λ n → constH (μ p (lift n)))
-         , (λ n → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n))
-         , (λ pt f → Setoid.sym Aˢ (Setoid.trans Aˢ (∫-sum fam f)
-             (∑-cong (λ n → Setoid.trans Aˢ (∫-scale (μ p n) (lawA (lower n)) f)
-               (*-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))))
+    ; scale-join = scale-join-law
+    ; scaled-laws = scaled-laws-law
     ; normalize = normH
-    ; normalize-prob = λ X p → normProb p (NormalizableSemiring.invertible? N (mass (forgetPre p)))
-    ; normalize-zero = λ {X} x pt → normZero (mapPre x zeroP) (∑-zero _ (λ _ → refl))
-        (NormalizableSemiring.invertible? N (mass (mapPre x zeroP)))
-    ; normalize-scale = λ {X} a b hab t pt →
-        normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
-          (NormalizableSemiring.invertible? N (mass (scaleP (map a ⟨$⟩ pt) (map t ⟨$⟩ pt))))
-          (NormalizableSemiring.invertible? N (mass (map t ⟨$⟩ pt)))
+    ; normalize-prob = normalize-prob-law
+    ; normalize-zero = normalize-zero-law
+    ; normalize-scale = normalize-scale-law
     }

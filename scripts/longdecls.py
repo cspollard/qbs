@@ -3,7 +3,8 @@
 
 A declaration is a group of consecutive lines starting at a line whose indentation is at most that of the
 previous declaration's first line and whose first token differs from the previous declaration's name (so a
-signature and its clauses form one declaration).  `abstract`, `private`, `module ... where` and similar
+signature and its clauses form one declaration; a record literal with at least five fields is measured by its
+largest field).  `abstract`, `private`, `module ... where` and similar
 container lines are looked through.  Blank lines and `--` comment lines do not count.
 
 Usage: scripts/longdecls.py [--lines N] [--chars N] [--width N] [--top K] [--check] [--baseline FILE] [PATH...]
@@ -38,10 +39,14 @@ def first_token(s):
 
 def decls(path):
     text = strip_comments(open(path).read())
-    cur = None   # [name, indent, start_line, lines, chars, maxwidth]
+    cur = None   # [name, indent, start_line, lines, chars, maxwidth, fields]
     out = []
     def flush():
-        if cur and cur[3] > 0: out.append(tuple(cur))
+        if cur and cur[3] > 0:
+            # a record literal `{ f = … ; g = … }` is measured by its largest field, not by its total length
+            fs = [f for f in cur[6] if f]
+            if len(fs) >= 5: cur[3], cur[4] = max(f[0] for f in fs), max(f[1] for f in fs)
+            out.append(tuple(cur[:6]))
     for n, raw in enumerate(text.split('\n'), 1):
         line = re.sub(r'\s--(\s.*)?$', '', raw.rstrip()) if re.search(r'\s--(\s|$)', raw) else raw.rstrip()
         if not line.strip() or line.lstrip().startswith('--') or line.lstrip().startswith('{-#'): continue
@@ -52,10 +57,12 @@ def decls(path):
             continues = False            # first child of a container starts a new declaration
         if not continues:
             flush()
-            cur = [None if tok in CONTAINERS else tok, ind, n, 0, 0, 0]
+            cur = [None if tok in CONTAINERS else tok, ind, n, 0, 0, 0, []]
             if tok in CONTAINERS and not re.search(r'\bwhere\b.*\S|=', line.split('where', 1)[-1] if 'where' in line else ''):
                 cur[0] = None
         cur[3] += 1; cur[4] += len(line.strip()); cur[5] = max(cur[5], len(line.strip()))
+        if tok in (';', '{'): cur[6].append([0, 0])
+        if cur[6]: cur[6][-1][0] += 1; cur[6][-1][1] += len(line.strip())
     flush()
     return [d for d in out if d[0] and d[0] != '...']   # `...` clauses continue the preceding declaration
 
