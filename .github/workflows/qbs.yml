@@ -19,6 +19,8 @@ jobs:
           git clone --depth 1 --branch v2.3 https://github.com/agda/agda-stdlib "$HOME/agda-stdlib"
           git clone https://github.com/agda/agda-categories "$HOME/agda-categories"
           git -C "$HOME/agda-categories" checkout c2e7c13e
+          # agda-categories at this commit asks for standard-library-2.1; v2.3 is what we use
+          sed -i 's/standard-library-2\.1/standard-library-2.3/' "$HOME/agda-categories/agda-categories.agda-lib"
           mkdir -p "$HOME/.agda"
           echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
           echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
