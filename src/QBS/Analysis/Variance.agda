@@ -74,6 +74,14 @@ module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) whe
       x12′ x = x4′ x :+ (x4′ x :+ x4′ x)
 
   -- 12 M = 4 (3 M);  12 q = 3 (4 q)
+  -- twelve copies of a product
+  x12-* : ∀ a b → x12 (a *S b) ≃ a *S x12 b
+  x12-* a b = solve 2 (λ a b → x12′ (a :* b) := a :* x12′ b) ≃-refl a b
+    where
+      x4′ x12′ : ∀ {n} → Polynomial n → Polynomial n
+      x4′ x = (x :+ x) :+ (x :+ x)
+      x12′ x = x4′ x :+ (x4′ x :+ x4′ x)
+
   x12-as-3 : ∀ x → x12 x ≃ (x4 x +S x4 x) +S x4 x
   x12-as-3 x = solve 1 (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) := (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) :+ ((x :+ x) :+ (x :+ x))) ≃-refl x
 

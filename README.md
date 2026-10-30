@@ -331,6 +331,18 @@ checks in 4 seconds with one spelling.
   identity (`F(0) = 0` follows; the fixed points contain 0, 1 and are closed under the two maps, so every
   `t` is squeezed between fixed points `2⁻ⁿ` apart). No dyadic numerals or null-set argument is needed.
 
+## Moments and estimation for the uniform distribution
+
+Signed values (`Analysis/Signed*`) give `E[u] = ½`, `E[u²] = ⅓` and `Var u = 1/12` (`Continuous/Uniform{Mean,Moment,Variance}`).
+`Continuous/CoinCoords` takes the coordinates `coordᵢ x = evens (oddsⁱ x)` of the fair coin: each has the law of the coin
+and any two are independent (`J-split` is `CoinIndep.fairCoin-indep` combined with `J-fubini`; `E-indep` is its signed form).
+`Analysis/Estimator` is the generic estimator theorem over an abstract ring of random variables with an additive
+expectation; `Analysis/BoundedRing` instantiates it with bounded signed functions (equality is pointwise equality of the
+signed values; the ring laws are those of `Sg`, and `BoundedCancel` cancels bounded elements by halving). For the draws
+`Xᵢ = u ∘ coordᵢ` and `Sₙ = X₀ + … + X_{n−1}`, `Continuous/UniformSample` proves, without division:
+`E Sₙ + E Sₙ = n` (the sample mean is unbiased), `12 · Var Sₙ = n` (`Var x̄ = σ²/n`) and `12 · E (n Qₙ − Sₙ²) = n² − n`
+(`Qₙ = ΣXᵢ²`; the sample variance `(n Qₙ − Sₙ²)/(n(n−1))` is unbiased).
+
 ## Worked example (`Example/Program.agda`)
 
 Probabilistic programs in Agda's `do`-notation on the discrete model, generic in the weight
@@ -476,7 +488,7 @@ witnesses `abstract`.
 - (done) The s-finite measure monad: `Continuous/SFiniteStat.continuousStat` is a complete
   `StatisticalInterface` for the continuous model (`TM`, strength, commutativity, `score`, `scaleM`/`sumM`/`sumK`,
   `scaled-laws` via `SFiniteDecomp`, `normalize` via `SFiniteNorm`).  `make check` is strict and passes.
-- Higher moments of the uniform distribution (the CDF is done).
+- Other distributions (affine `[a,b]`, Gaussian: see `plans/`); the sample mean/variance statements are division-free.
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.

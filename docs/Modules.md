@@ -66,6 +66,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Archimedean` | 55 |  | The extra structure of the extended non-negative reals that the construction of Lebesgue-type measures needs, beyond `OmegaSemiring`: a half, Archimedean closure, cancellation for the order, and tails of convergent se... |
 | `QBS.Analysis.BinaryExpansion` | 109 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
 | `QBS.Analysis.BorelMeasure` | 51 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
+| `QBS.Analysis.BoundedCancel` | 58 |  | Cancellation of elements bounded by a natural number: `a ≤ n`, `a + x = a + y` give `x = y`. |
+| `QBS.Analysis.BoundedRing` | 158 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
 | `QBS.Analysis.Clopen` | 280 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
 | `QBS.Analysis.ClopenMeasure` | 111 |  | The dyadic premeasure on clopen sets (finite trees), with values in an `OmegaSemiring` that has a half: μ0 (leaf true) = 1, μ0 (leaf false) = 0, μ0 (split a b) = ½ (μ0 a + μ0 b). |
 | `QBS.Analysis.CoinCont` | 140 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
@@ -76,6 +78,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinSimple` | 137 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.CutSum` | 458 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
+| `QBS.Analysis.Estimator` | 201 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.ExpansionCons` | 68 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 328 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 241 |  | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
@@ -118,12 +121,13 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Unbounded` | 424 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
 | `QBS.Analysis.UnboundedLowerReals` | 16 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 103 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.Variance` | 237 | lem | Variance of a signed random variable (skeleton: holes first). |
+| `QBS.Analysis.Variance` | 245 | lem | Variance of a signed random variable (skeleton: holes first). |
 
 ## Continuous model
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
+| `QBS.Continuous.CoinCoords` | 183 | lem, funext | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 119 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ExtNatModel` | 25 | lem, funext | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 55 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
@@ -148,6 +152,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformCDF` | 192 | lem, funext | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformMean` | 134 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½. |
 | `QBS.Continuous.UniformMoment` | 180 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
+| `QBS.Continuous.UniformSample` | 117 | lem, funext | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 151 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.Weights` | 56 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
