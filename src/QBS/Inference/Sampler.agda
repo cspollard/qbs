@@ -9,7 +9,8 @@
 --
 -- Also here: the kernel `Θ ⇒ T X` induced by a sampler, and the expectation of a statistic under a measure of the monad.
 --
--- SKELETON: the declarations are in place; the proofs marked by holes are the plan's next steps.
+-- Not here: well-definedness of `E-at` on the quotient `TQ X` (it needs truncation and monotone convergence); the models
+-- built from samplers do not need it.
 module QBS.Inference.Sampler where
 
 open import Algebra.Bundles using (CommutativeRing)
@@ -166,7 +167,3 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   E-at-sampler : ∀ {Θ X} (s : Sampler Θ X) (g : STest X) θ →
     E-at (lawAt (samplerModel s) θ) g ≃ E-B fairCoin fairCoin-prob (single s g θ)
   E-at-sampler s g θ = ≃-refl
-
-  -- the expectation respects the identification of measures by [0,1]-tests (truncate at n and use monotone convergence)
-  E-resp : ∀ {X} {p q : Pre X} → p ≈ᵖ q → (g : STest X) → E-at p g ≃ E-at q g
-  E-resp e g = ?

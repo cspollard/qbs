@@ -127,3 +127,7 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 - Whether frequentist coverage statements need probabilities as *real-valued* (lower reals suffice for `≥ 1 − α`
   in one direction, but not in general). Resolve when confidence sets are reached.
 - Constructive foundations (see `Docs/ConstructiveLit.md`): keep named hypotheses so this layer stays portable.
+
+### 3c status
+
+Done: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  Not done: `E-resp` (well-definedness of `E-at` on `TQ X`; dropped from the code, needs truncation and monotone convergence) and the validation instance `Inference/UniformSampler`.
