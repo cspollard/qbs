@@ -212,11 +212,49 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
           (⨆-ub _ (λ n → Iinf-mono m (fs n) (fs (ℕ.suc n)) (λ x → inc x n)) n)))
 
   -- additivity
+  -- the half-weighted sum of the two truncations is again bounded
+  private
+    hsum : ℕ → ∀ {h₁ h₂} → FunInf h₁ → FunInf h₂ → S → ∣A∣
+    hsum k {h₁} {h₂} _ _ x = half * tr k (h₁ x) + half * tr k (h₂ x)
+
+    hsum-fun : ∀ k {h₁ h₂} (f₁ : FunInf h₁) (f₂ : FunInf h₂) → Fun (hsum k f₁ f₂)
+    hsum-fun k {h₁} {h₂} f₁ f₂ = sumF (Fun-scale half half≤1 (f₁ k)) (Fun-scale half half≤1 (f₂ k)) (λ x → refl)
+      (λ x → ≤-trans (+-mono (*-mono half (tr-≤1 k (h₁ x))) (*-mono half (tr-≤1 k (h₂ x))))
+        (≤-reflexive (trans (+-cong (*-identityʳ half) (*-identityʳ half)) half+half)))
+
+    hsum-I : ∀ m k {h₁ h₂} (f₁ : FunInf h₁) (f₂ : FunInf h₂) → I m (hsum k f₁ f₂) (hsum-fun k f₁ f₂) ≈
+      half * I m (λ x → tr k (h₁ x)) (f₁ k) + half * I m (λ x → tr k (h₂ x)) (f₂ k)
+    hsum-I m k f₁ f₂ = trans (I-add m (hsum-fun k f₁ f₂) (Fun-scale half half≤1 (f₁ k)) (Fun-scale half half≤1 (f₂ k)) (λ x → refl))
+      (+-cong (I-scale m half (f₁ k) (Fun-scale half half≤1 (f₁ k)) (λ x → refl))
+              (I-scale m half (f₂ k) (Fun-scale half half≤1 (f₂ k)) (λ x → refl)))
+
+    -- P k ≤ Iseq (k+1): half (t₁ + t₂) ≤ t_{k+1}(h₁ + h₂)
+    add-hi : ∀ m {h h₁ h₂} (f : FunInf h) (f₁ : FunInf h₁) (f₂ : FunInf h₂) → (∀ x → h x ≈ h₁ x + h₂ x) →
+      ∀ k → Iseq m h₁ f₁ k + Iseq m h₂ f₂ k ≤ Iinf m h f
+    add-hi m {h} {h₁} {h₂} f f₁ f₂ e k = ≤-trans
+      (≤-reflexive (sym (trans (*-cong refl (hsum-I m k f₁ f₂)) (pw-half-sum k _ _))))
+      (≤-trans (*-mono (pw (ℕ.suc k)) (I-mono m (hsum-fun k f₁ f₂) (f (ℕ.suc k))
+          (λ x → ≤-trans (tr-add-lo k (h₁ x) (h₂ x)) (≤-reflexive (tr-cong (ℕ.suc k) (sym (e x)))))))
+        (Iseq-le m f (ℕ.suc k)))
+
+    -- Iseq k ≤ P k: t_k(h₁ + h₂) ≤ t_k h₁ + t_k h₂
+    add-lo : ∀ m {h h₁ h₂} (f : FunInf h) (f₁ : FunInf h₁) (f₂ : FunInf h₂) → (∀ x → h x ≈ h₁ x + h₂ x) →
+      ∀ k → Iseq m h f k ≤ Iseq m h₁ f₁ k + Iseq m h₂ f₂ k
+    add-lo m {h} {h₁} {h₂} f f₁ f₂ e k = ≤-trans
+      (≤-reflexive (sym (half-pw k (I m (λ x → tr k (h x)) (f k)))))
+      (≤-trans (*-mono (pw (ℕ.suc k)) (≤-trans
+          (≤-reflexive (sym (I-scale m half (f k) (Fun-scale half half≤1 (f k)) (λ x → refl))))
+          (≤-trans (I-mono m (Fun-scale half half≤1 (f k)) (hsum-fun k f₁ f₂) (λ x →
+              ≤-trans (*-mono half (≤-trans (≤-reflexive (tr-cong k (e x))) (tr-add-hi k (h₁ x) (h₂ x))))
+                      (≤-reflexive (distribˡ half _ _))))
+            (≤-reflexive (hsum-I m k f₁ f₂)))))
+        (≤-reflexive (pw-half-sum k _ _)))
+
   Iinf-add : ∀ (m : Measure) {h h₁ h₂} (f : FunInf h) (f₁ : FunInf h₁) (f₂ : FunInf h₂) →
     (∀ x → h x ≈ h₁ x + h₂ x) → Iinf m h f ≈ Iinf m h₁ f₁ + Iinf m h₂ f₂
   Iinf-add m {h} {h₁} {h₂} f f₁ f₂ e = trans (≤-antisym
-    (⨆-lub _ _ (λ k → ≤-trans (lo k) (⨆-ub _ incP k)))
-    (⨆-lub _ incP hi))
+    (⨆-lub _ _ (λ k → ≤-trans (add-lo m {h} {h₁} {h₂} f f₁ f₂ e k) (⨆-ub _ incP k)))
+    (⨆-lub _ incP (add-hi m f f₁ f₂ e)))
     (sym (⨆-+-diag (Iseq-inc m h₁ f₁) (Iseq-inc m h₂ f₂) incP))
     where
       P : ℕ → ∣A∣
@@ -224,47 +262,6 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
 
       incP : Increasing P
       incP k = +-mono (Iseq-inc m h₁ f₁ k) (Iseq-inc m h₂ f₂ k)
-
-      -- the half-weighted sum of the two truncations is again bounded
-      u : ℕ → S → ∣A∣
-      u k x = half * tr k (h₁ x) + half * tr k (h₂ x)
-
-      F₁ : ∀ k → Fun (λ x → half * tr k (h₁ x))
-      F₁ k = Fun-scale half half≤1 (f₁ k)
-      F₂′ : ∀ k → Fun (λ x → half * tr k (h₂ x))
-      F₂′ k = Fun-scale half half≤1 (f₂ k)
-
-      u≤1 : ∀ k x → u k x ≤ 1#
-      u≤1 k x = ≤-trans (+-mono (*-mono half (tr-≤1 k (h₁ x))) (*-mono half (tr-≤1 k (h₂ x))))
-        (≤-reflexive (trans (+-cong (*-identityʳ half) (*-identityʳ half)) half+half))
-
-      Fu : ∀ k → Fun (u k)
-      Fu k = sumF (F₁ k) (F₂′ k) (λ x → refl) (u≤1 k)
-
-      Iu : ∀ k → I m (u k) (Fu k) ≈
-        half * I m (λ x → tr k (h₁ x)) (f₁ k) + half * I m (λ x → tr k (h₂ x)) (f₂ k)
-      Iu k = trans (I-add m (Fu k) (F₁ k) (F₂′ k) (λ x → refl))
-        (+-cong (I-scale m half (f₁ k) (F₁ k) (λ x → refl)) (I-scale m half (f₂ k) (F₂′ k) (λ x → refl)))
-
-      -- P k ≤ Iseq (k+1): half (t₁ + t₂) ≤ t_{k+1}(h₁ + h₂)
-      hi : ∀ k → P k ≤ Iinf m h f
-      hi k = ≤-trans
-        (≤-reflexive (sym (trans (*-cong refl (Iu k)) (pw-half-sum k _ _))))
-        (≤-trans (*-mono (pw (ℕ.suc k)) (I-mono m (Fu k) (f (ℕ.suc k))
-            (λ x → ≤-trans (tr-add-lo k (h₁ x) (h₂ x)) (≤-reflexive (tr-cong (ℕ.suc k) (sym (e x)))))))
-          (Iseq-le m f (ℕ.suc k)))
-
-      -- Iseq k ≤ P k: t_k(h₁ + h₂) ≤ t_k h₁ + t_k h₂
-      lo : ∀ k → Iseq m h f k ≤ P k
-      lo k = ≤-trans
-        (≤-reflexive (sym (half-pw k (I m (λ x → tr k (h x)) (f k)))))
-        (≤-trans (*-mono (pw (ℕ.suc k)) (≤-trans
-            (≤-reflexive (sym (I-scale m half (f k) (Fun-scale half half≤1 (f k)) (λ x → refl))))
-            (≤-trans (I-mono m (Fun-scale half half≤1 (f k)) (Fu k) (λ x →
-                ≤-trans (*-mono half (≤-trans (≤-reflexive (tr-cong k (e x))) (tr-add-hi k (h₁ x) (h₂ x))))
-                        (≤-reflexive (distribˡ half _ _))))
-              (≤-reflexive (Iu k)))))
-          (≤-reflexive (pw-half-sum k _ _)))
 
   ----------------------------------------------------------------------------
   -- linearity: Iinf (c · φ) = c · Iinf φ for every constant c ∈ [0,∞]
@@ -341,13 +338,47 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
       comm-inc a {c} inc j = ≤-trans (≤-reflexive (*-comm _ _))
         (≤-trans (*-mono a (inc j)) (≤-reflexive (*-comm _ _)))
 
+    -- the pieces of `Iinf-scale-fun`: d · g = ⨆ⱼ mn d (2ʲ) · g, with each term integrating to mn d (2ʲ) · ∫ g
+    private
+      scale-incJ : ∀ d (g : S → ∣A∣) x → Increasing (λ j → mn d (pw j) * g x)
+      scale-incJ d g x = comm-inc (g x) (mn-inc d)
+
+      scale-fsj : ∀ d {g} (G : Fun g) j → FunInf (λ x → mn d (pw j) * g x)
+      scale-fsj d G j = cl-mul (mn d (pw j)) (FunInf-bounded G)
+
+      scale-eqJ : ∀ d (g : S → ∣A∣) x → d * g x ≈ ⨆ (λ j → mn d (pw j) * g x) (scale-incJ d g x)
+      scale-eqJ d g x = begin
+        d * g x                                          ≈⟨ *-cong (mn-⨆-d d) refl ⟩
+        ⨆ (λ j → mn d (pw j)) (mn-inc d) * g x           ≈⟨ *-comm _ _ ⟩
+        g x * ⨆ (λ j → mn d (pw j)) (mn-inc d)           ≈⟨ *-⨆ (g x) (λ j → mn d (pw j)) (mn-inc d) (λ j → *-mono (g x) (mn-inc d j)) ⟩
+        ⨆ (λ j → g x * mn d (pw j)) (λ j → *-mono (g x) (mn-inc d j))
+                                                         ≈⟨ ⨆-cong _ (scale-incJ d g x) (λ j → *-comm _ _) ⟩
+        ⨆ (λ j → mn d (pw j) * g x) (scale-incJ d g x) ∎
+
+      scale-termJ : ∀ m d {g} (G : Fun g) j →
+        Iinf m (λ x → mn d (pw j) * g x) (scale-fsj d G j) ≈ mn d (pw j) * I m g G
+      scale-termJ m d {g} G j = begin
+        Iinf m (λ x → mn d (pw j) * g x) (scale-fsj d G j)
+          ≈⟨ Iinf-cong m (scale-fsj d G j) (cl-mul (pw j) (FunInf-bounded Fu))
+               (λ x → sym (trans (sym (*-assoc _ _ _)) (*-cong (pw-tr j d) refl))) ⟩
+        Iinf m (λ x → pw j * (tr j d * g x)) (cl-mul (pw j) (FunInf-bounded Fu))
+          ≈⟨ Iinf-pw m j Fu (cl-mul (pw j) (FunInf-bounded Fu)) ⟩
+        pw j * I m (λ x → tr j d * g x) Fu
+          ≈⟨ *-cong refl (I-scale m (tr j d) G Fu (λ x → refl)) ⟩
+        pw j * (tr j d * I m g G)
+          ≈⟨ sym (*-assoc _ _ _) ⟩
+        (pw j * tr j d) * I m g G
+          ≈⟨ *-cong (pw-tr j d) refl ⟩
+        mn d (pw j) * I m g G ∎
+        where Fu = Fun-scale (tr j d) (tr-≤1 j d) G
+
     Iinf-scale-fun : ∀ m d {g} (G : Fun g) (F : FunInf (λ x → d * g x)) →
       Iinf m (λ x → d * g x) F ≈ d * I m g G
     Iinf-scale-fun m d {g} G F = begin
       Iinf m (λ x → d * g x) F
-        ≈⟨ Iinf-sup m (λ j x → mn d (pw j) * g x) fsj incJ F eqJ ⟩
-      ⨆ (λ j → Iinf m (λ x → mn d (pw j) * g x) (fsj j)) _
-        ≈⟨ ⨆-cong _ incK termJ ⟩
+        ≈⟨ Iinf-sup m (λ j x → mn d (pw j) * g x) (scale-fsj d G) (scale-incJ d g) F (scale-eqJ d g) ⟩
+      ⨆ (λ j → Iinf m (λ x → mn d (pw j) * g x) (scale-fsj d G j)) _
+        ≈⟨ ⨆-cong _ incK (scale-termJ m d G) ⟩
       ⨆ (λ j → mn d (pw j) * I m g G) incK
         ≈⟨ sym (⨆-cong incK′ incK (λ j → *-comm _ _)) ⟩
       ⨆ (λ j → I m g G * mn d (pw j)) incK′
@@ -358,42 +389,11 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
         ≈⟨ *-cong (sym (mn-⨆-d d)) refl ⟩
       d * I m g G ∎
       where
-        fsj : ∀ j → FunInf (λ x → mn d (pw j) * g x)
-        fsj j = cl-mul (mn d (pw j)) (FunInf-bounded G)
-
-        incJ : ∀ x → Increasing (λ j → mn d (pw j) * g x)
-        incJ x = comm-inc (g x) (mn-inc d)
-
-        eqJ : ∀ x → d * g x ≈ ⨆ (λ j → mn d (pw j) * g x) (incJ x)
-        eqJ x = begin
-          d * g x                                          ≈⟨ *-cong (mn-⨆-d d) refl ⟩
-          ⨆ (λ j → mn d (pw j)) (mn-inc d) * g x           ≈⟨ *-comm _ _ ⟩
-          g x * ⨆ (λ j → mn d (pw j)) (mn-inc d)           ≈⟨ *-⨆ (g x) (λ j → mn d (pw j)) (mn-inc d) (λ j → *-mono (g x) (mn-inc d j)) ⟩
-          ⨆ (λ j → g x * mn d (pw j)) (λ j → *-mono (g x) (mn-inc d j))
-                                                           ≈⟨ ⨆-cong _ (incJ x) (λ j → *-comm _ _) ⟩
-          ⨆ (λ j → mn d (pw j) * g x) (incJ x) ∎
-
         incK : Increasing (λ j → mn d (pw j) * I m g G)
         incK = comm-inc (I m g G) (mn-inc d)
 
         incK′ : Increasing (λ j → I m g G * mn d (pw j))
         incK′ j = *-mono (I m g G) (mn-inc d j)
-
-        termJ : ∀ j → Iinf m (λ x → mn d (pw j) * g x) (fsj j) ≈ mn d (pw j) * I m g G
-        termJ j = begin
-          Iinf m (λ x → mn d (pw j) * g x) (fsj j)
-            ≈⟨ Iinf-cong m (fsj j) (cl-mul (pw j) (FunInf-bounded Fu))
-                 (λ x → sym (trans (sym (*-assoc _ _ _)) (*-cong (pw-tr j d) refl))) ⟩
-          Iinf m (λ x → pw j * (tr j d * g x)) (cl-mul (pw j) (FunInf-bounded Fu))
-            ≈⟨ Iinf-pw m j Fu (cl-mul (pw j) (FunInf-bounded Fu)) ⟩
-          pw j * I m (λ x → tr j d * g x) Fu
-            ≈⟨ *-cong refl (I-scale m (tr j d) G Fu (λ x → refl)) ⟩
-          pw j * (tr j d * I m g G)
-            ≈⟨ sym (*-assoc _ _ _) ⟩
-          (pw j * tr j d) * I m g G
-            ≈⟨ *-cong (pw-tr j d) refl ⟩
-          mn d (pw j) * I m g G ∎
-          where Fu = Fun-scale (tr j d) (tr-≤1 j d) G
 
     -- scaling an unbounded function
     Iinf-scale : ∀ m c {φ} (f∞ : FunInf φ) →

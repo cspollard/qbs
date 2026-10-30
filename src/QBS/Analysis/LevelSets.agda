@@ -105,50 +105,53 @@ module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
                     in pair k₁ k₂ , ≡.subst (λ pr → (q ≤ proj₁ pr + proj₂ pr) × (mem (h₁ (lift c)) (proj₁ pr) × mem (h₂ (lift c)) (proj₂ pr)))
                                             (≡.sym eq) (le , m₁ , m₂))
 
+  -- complements: h + h′ = 1.  Pointwise, `q ∈ h x` iff some rational k > q has `1 − k ∉ h′ x`.
+  compl-contra : ∀ {h h′ : R₁ → Cut} → (∀ x → h x ⊕ h′ x ≈ 1#) → ∀ q x k →
+    q < enumQ k → (mem (h′ x) (1Q + - enumQ k) → ⊥) → (mem (h x) q → ⊥) → ⊥
+  compl-contra {h} {h′} e q x k q<ek nm no = go (ap (proj₂ (e x)) s s<1)
+    where
+      s : Q
+      s = 1Q + - (enumQ k + - q)
+      s<1 : s < 1Q
+      s<1 = ≃-<ʳ (solve 1 (λ d → (con 1Q :+ :- d) :+ d := con 1Q) ≃-refl (enumQ k + - q))
+                 (lt-add {s} {enumQ k + - q} (pos-diff q<ek))
+      go : Σ Q (λ r → Σ Q (λ t → mem (h x) r × mem (h′ x) t × s ≤ r + t)) → ⊥
+      go (r , t , mr , mt , le) = <-irrefl ≃-refl (≤-<-trans le r+t<s)
+        where
+          r<q : r < q
+          r<q with ≤-or-> q r
+          ... | inj₁ q≤r = ⊥-elim (no (down (h x) q≤r mr))
+          ... | inj₂ lt = lt
+          t<u : t < 1Q + - enumQ k
+          t<u with ≤-or-> (1Q + - enumQ k) t
+          ... | inj₁ u≤t = ⊥-elim (nm (down (h′ x) u≤t mt))
+          ... | inj₂ lt = lt
+          r+t<s : r + t < s
+          r+t<s = ≃-<ʳ (solve 2 (λ q ek → q :+ (con 1Q :+ :- ek) := con 1Q :+ :- (ek :+ :- q)) ≃-refl q (enumQ k))
+                       (+-mono-< r<q t<u)
+
+  compl-bwd : ∀ {h h′ : R₁ → Cut} → (∀ x → h x ⊕ h′ x ≈ 1#) → ∀ q x → mem (h x) q →
+    Σ ℕ (λ k → (q < enumQ k) × (mem (h′ x) (1Q + - enumQ k) → ⊥))
+  compl-bwd {h} {h′} e q x m with open′ (h x) m
+  ... | q′ , q<q′ , mq′ with enumQ-surj q′
+  ... | k , p = k , ≡.subst (q <_) (≡.sym p) q<q′ , λ m′ →
+      <-irrefl ≃-refl (ap (proj₁ (e x)) 1Q (q′ , 1Q + - q′ , mq′ ,
+        ≡.subst (λ z → mem (h′ x) (1Q + - z)) p m′ ,
+        ≤-≃ (≃-sym (solve 1 (λ u → u :+ (con 1Q :+ :- u) := con 1Q) ≃-refl q′))))
+
   LS-compl : ∀ {h h′} → (∀ q → Borel (Lvl h′ q)) → (∀ x → h x ⊕ h′ x ≈ 1#) → ∀ q → Borel (Lvl h q)
   LS-compl {h} {h′} b e q = resp e′ (⋃ cells)
     where
       cells : ∀ k → Borel (λ c → (q < enumQ k) × (Lvl h′ (1Q + - enumQ k) c → ⊥))
       cells k = inter₂ (borel-prop (q < enumQ k)) (compl (b (1Q + - enumQ k)))
 
-      contra : ∀ x k → q < enumQ k → (mem (h′ x) (1Q + - enumQ k) → ⊥) → (mem (h x) q → ⊥) → ⊥
-      contra x k q<ek nm no = go (ap (proj₂ (e x)) s s<1)
-        where
-          s : Q
-          s = 1Q + - (enumQ k + - q)
-          s<1 : s < 1Q
-          s<1 = ≃-<ʳ (solve 1 (λ d → (con 1Q :+ :- d) :+ d := con 1Q) ≃-refl (enumQ k + - q))
-                     (lt-add {s} {enumQ k + - q} (pos-diff q<ek))
-          go : Σ Q (λ r → Σ Q (λ t → mem (h x) r × mem (h′ x) t × s ≤ r + t)) → ⊥
-          go (r , t , mr , mt , le) = <-irrefl ≃-refl (≤-<-trans le r+t<s)
-            where
-              r<q : r < q
-              r<q with ≤-or-> q r
-              ... | inj₁ q≤r = ⊥-elim (no (down (h x) q≤r mr))
-              ... | inj₂ lt = lt
-              t<u : t < 1Q + - enumQ k
-              t<u with ≤-or-> (1Q + - enumQ k) t
-              ... | inj₁ u≤t = ⊥-elim (nm (down (h′ x) u≤t mt))
-              ... | inj₂ lt = lt
-              r+t<s : r + t < s
-              r+t<s = ≃-<ʳ (solve 2 (λ q ek → q :+ (con 1Q :+ :- ek) := con 1Q :+ :- (ek :+ :- q)) ≃-refl q (enumQ k))
-                           (+-mono-< r<q t<u)
-
       fwd : ∀ x → Σ ℕ (λ k → (q < enumQ k) × (mem (h′ x) (1Q + - enumQ k) → ⊥)) → mem (h x) q
       fwd x (k , q<ek , nm) with lem (mem (h x) q)
       ... | inj₁ yes = yes
-      ... | inj₂ no = ⊥-elim (contra x k q<ek nm no)
-
-      bwd : ∀ x → mem (h x) q → Σ ℕ (λ k → (q < enumQ k) × (mem (h′ x) (1Q + - enumQ k) → ⊥))
-      bwd x m with open′ (h x) m
-      ... | q′ , q<q′ , mq′ with enumQ-surj q′
-      ... | k , p = k , ≡.subst (q <_) (≡.sym p) q<q′ , λ m′ →
-          <-irrefl ≃-refl (ap (proj₁ (e x)) 1Q (q′ , 1Q + - q′ , mq′ ,
-            ≡.subst (λ z → mem (h′ x) (1Q + - z)) p m′ ,
-            ≤-≃ (≃-sym (solve 1 (λ u → u :+ (con 1Q :+ :- u) := con 1Q) ≃-refl q′))))
+      ... | inj₂ no = ⊥-elim (compl-contra {h} {h′} e q x k q<ek nm no)
 
       e′ : (λ c → Σ ℕ (λ k → (q < enumQ k) × (Lvl h′ (1Q + - enumQ k) c → ⊥))) ≐ Lvl h q
-      e′ c = fwd (lift c) , bwd (lift c)
+      e′ c = fwd (lift c) , compl-bwd {h} {h′} e q (lift c)
 
   -- every measurable function has Borel level sets
   LS : ∀ {h} → Fun h → ∀ q → Borel (Lvl h q)

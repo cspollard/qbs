@@ -78,7 +78,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.ExpansionCons` | 68 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 328 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
-| `QBS.Analysis.Fun` | 242 |  | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
+| `QBS.Analysis.Fun` | 241 |  | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 108 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
 | `QBS.Analysis.HalfOrder` | 66 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
 | `QBS.Analysis.Indicators` | 182 | lem | Indicator functions of Borel sets (classically decided), and the measure of a disjoint union as the supremum of the partial sums. |
@@ -87,9 +87,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.JParam` | 76 | lem | The unbounded integral `J` against push-forwards and against measures that agree on `Fun`, and parametric measurability of `r ↦ J (g r) (s ↦ φ (merge r s))` for a kernel `g`. |
 | `QBS.Analysis.JSum` | 112 | lem | The unbounded integral of countable sums and mixtures: `J (∑ aₙ) = ∑ J aₙ` (monotone convergence along the partial sums) and `J (∑ cₙ μₙ) = ∑ cₙ J μₙ`, and the geometric series `∑ hp (n+1) = 1`. |
 | `QBS.Analysis.Lebesgue` | 101 | lem | The integral of threshold-measurable functions R → [0,∞] (lower cuts) against a measure: `J m φ` is the unbounded integral `Iinf` of `Analysis/Unbounded`, with `FunInf φ` obtained from `Meas φ` (`Analysis/Meas`, `Anal... |
-| `QBS.Analysis.LevelSets` | 159 | lem | The strict level sets {x \| q < h x} of a measurable function h : R → [0,1] (values lower cuts) are Borel, by induction on the derivation that h is measurable. |
-| `QBS.Analysis.LowerInverse` | 235 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
-| `QBS.Analysis.LowerReals` | 424 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
+| `QBS.Analysis.LevelSets` | 162 | lem | The strict level sets {x \| q < h x} of a measurable function h : R → [0,1] (values lower cuts) are Borel, by induction on the derivation that h is measurable. |
+| `QBS.Analysis.LowerInverse` | 250 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
+| `QBS.Analysis.LowerReals` | 420 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
 | `QBS.Analysis.LowerRealsArch` | 187 | lem | The `Arch` structure (a half, tolerances 2⁻ⁿ, Archimedean closure, order cancellation, tails) on the extended non-negative reals as lower cuts of the rationals. |
 | `QBS.Analysis.LowerRealsMin` | 104 | lem | The minimum of two lower cuts is their intersection: the `Min` structure on the extended non-negative reals as lower cuts of the rationals. |
 | `QBS.Analysis.Meas` | 118 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |

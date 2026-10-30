@@ -66,11 +66,32 @@ twice-≤ {x} {y} h with ≤-or-> x y
 ... | inj₁ le = le
 ... | inj₂ lt = ⊥-elim (<-irrefl ≃-refl (<-≤-trans (+-mono-< lt lt) h))
 
+-- 4ε ≤ s + ε gives ε ≤ s
+eps-le : ∀ {ε s} → 0Q < ε → ((ε + ε) + (ε + ε)) ≤ s + ε → ε ≤ s
+eps-le {ε} {s} 0<ε h4′ with ≤-or-> ε s
+... | inj₁ le = le
+... | inj₂ s<ε = ⊥-elim (<-irrefl ≃-refl (<-≤-trans (<-≤-trans (+-mono-<-≤ s<ε (≤-refl {ε})) εε≤4ε) h4′))
+  where
+    0<εε : 0Q < ε + ε
+    0<εε = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<ε 0<ε)
+    εε≤4ε : ε + ε ≤ (ε + ε) + (ε + ε)
+    εε≤4ε = ≤-trans (≤-≃ (≃-sym (+-identityʳ (ε + ε)))) (+-mono-≤ (≤-refl {ε + ε}) (<-≤ 0<εε))
+
+-- q (s + 2ε) ≤ q′ s from q ≤ 1 and 2ε ≤ (q′ − q) s
+combine : ∀ {q q′ s ε} → 0Q ≤ ε + ε → q ≤ 1Q → ε + ε ≤ (q′ + - q) * s → q * (s + (ε + ε)) ≤ q′ * s
+combine {q} {q′} {s} {ε} 0≤εε q≤1 m3 =
+  ≤-trans (≤-≃ (*-distribˡ-+ q s (ε + ε))) (≤-trans (+-mono-≤ (≤-refl {q * s}) (≤-trans m2 m3)) (≤-≃ m4))
+  where
+    m2 : q * (ε + ε) ≤ ε + ε
+    m2 = ≤-trans (*-mono-≤-nnʳ 0≤εε q≤1) (≤-≃ (*-identityˡ (ε + ε)))
+    m4 : q * s + (q′ + - q) * s ≃ q′ * s
+    m4 = ≃-trans (≃-sym (*-distribʳ-+ s q (q′ + - q))) (*-cong (add-sub q q′) (≃-refl {s}))
+
 -- the choice of the approximation scale: 4ε ≤ δ s₀ makes `s` close enough to the boundary
 gap : ∀ {q q′ s₀ s ε} → 0Q ≤ q → q < q′ → q′ < 1Q → 0Q < s₀ → 0Q < ε →
   ((ε + ε) + (ε + ε)) ≤ (q′ + - q) * s₀ → s₀ ≤ s + ε →
   (0Q < s) × (q * (s + (ε + ε)) ≤ q′ * s)
-gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , main
+gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , combine {q} {q′} {s} {ε} (<-≤ 0<εε) (<-≤ (<-trans q<q′ q′<1)) m3
   where
     δ = q′ + - q
     0<δ : 0Q < δ
@@ -80,33 +101,17 @@ gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , mai
             (≤-trans (+-mono-≤ (≤-refl {δ}) 0≤q) (≤-trans (≤-≃ (sub-add q′ q)) (<-≤ q′<1)))
     δs₀≤s₀ : δ * s₀ ≤ s₀
     δs₀≤s₀ = ≤-trans (*-mono-≤-nnʳ (<-≤ 0<s₀) δ≤1) (≤-≃ (*-identityˡ s₀))
-    -- 4ε ≤ s₀ ≤ s + ε, so 3ε ≤ s and 0 < s
-    h4′ : ((ε + ε) + (ε + ε)) ≤ s + ε
-    h4′ = ≤-trans h4 (≤-trans δs₀≤s₀ hs)
     0<εε : 0Q < ε + ε
     0<εε = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<ε 0<ε)
+    -- 4ε ≤ s₀ ≤ s + ε, so ε ≤ s and 0 < s
     ε≤s : ε ≤ s
-    ε≤s with ≤-or-> ε s
-    ... | inj₁ le = le
-    ... | inj₂ s<ε = ⊥-elim (<-irrefl ≃-refl (<-≤-trans (<-≤-trans (+-mono-<-≤ s<ε (≤-refl {ε})) εε≤4ε) h4′))
-      where
-        εε≤4ε : ε + ε ≤ (ε + ε) + (ε + ε)
-        εε≤4ε = ≤-trans (≤-≃ (≃-sym (+-identityʳ (ε + ε)))) (+-mono-≤ (≤-refl {ε + ε}) (<-≤ 0<εε))
+    ε≤s = eps-le 0<ε (≤-trans h4 (≤-trans δs₀≤s₀ hs))
     0<s : 0Q < s
     0<s = <-≤-trans 0<ε ε≤s
     s₀≤ss : s₀ ≤ s + s
     s₀≤ss = ≤-trans hs (+-mono-≤ (≤-refl {s}) ε≤s)
     m3 : ε + ε ≤ δ * s
     m3 = twice-≤ (≤-trans h4 (≤-trans (*-mono-≤-nn (<-≤ 0<δ) s₀≤ss) (≤-≃ (*-distribˡ-+ δ s s))))
-    q≤1 : q ≤ 1Q
-    q≤1 = <-≤ (<-trans q<q′ q′<1)
-    m2 : q * (ε + ε) ≤ ε + ε
-    m2 = ≤-trans (*-mono-≤-nnʳ (<-≤ 0<εε) q≤1) (≤-≃ (*-identityˡ (ε + ε)))
-    m4 : q * s + δ * s ≃ q′ * s
-    m4 = ≃-trans (≃-sym (*-distribʳ-+ s q δ)) (*-cong (add-sub q q′) (≃-refl {s}))
-    main : q * (s + (ε + ε)) ≤ q′ * s
-    main = ≤-trans (≤-≃ (*-distribˡ-+ q s (ε + ε)))
-             (≤-trans (+-mono-≤ (≤-refl {q * s}) (≤-trans m2 m3)) (≤-≃ m4))
 
 -- `q ≤ r s` from `r ρ ≃ q′` and `q ρ ≤ q′ s`.  A standalone lemma: the `with` on `≤-or->` used to sit in the
 -- local context of `InvClassical.inv-prop` and took 14 s there.
@@ -171,6 +176,60 @@ module InvClassical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       final′ : M ≤ rk
       final′ = ≤-trans (≤-≃ (≃-sym (ringM M))) (≤-trans (+-mono-≤ (≤-refl {b₀}) hk) hrk)
 
+  four : Q
+  four = (1Q + 1Q) + (1Q + 1Q)
+
+  0<four : 0Q < four
+  0<four = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< (≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<1 0<1)) (≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<1 0<1)))
+
+  -- a rational scale `s` in `c`, nearly maximal, with `ρ = s + 2ε` outside `c` and `q ρ ≤ q′ s`
+  pick : ∀ c {s₀ ρ₀ q q′} → 0Q < s₀ → mem c s₀ → (∀ r → mem c r → r < ρ₀) → 0Q ≤ q → q < q′ → q′ < 1Q →
+    Σ Q λ s → Σ Q λ ρ → (0Q < s) × (0Q < ρ) × (mem c ρ → ⊥) × mem c s × (q * ρ ≤ q′ * s)
+  pick c {s₀} {ρ₀} {q} {q′} 0<s₀ ms₀ bd 0≤q q<q′ q′<1 with inv 0<four
+  ... | t₄ , ht₄ = s , ρ , 0<s , 0<ρ , nmρ , ms , qρ≤q′s
+    where
+      δ = q′ + - q
+      0<δ = pos-diff q<q′
+      X = δ * s₀
+      0<X = *-pos 0<δ 0<s₀
+      0<t₄ = pos-of-inverse 0<four ht₄
+      ε = X * t₄
+      0<ε = *-pos 0<X 0<t₄
+      h4 : (ε + ε) + (ε + ε) ≤ X
+      h4 = ≤-≃ (≃-trans (solve 1 (λ e → (e :+ e) :+ (e :+ e) := e :* ((con 1Q :+ con 1Q) :+ (con 1Q :+ con 1Q))) ≃-refl ε)
+                  (≃-trans (≃-trans (*-assoc X t₄ four) (*-cong (≃-refl {X}) ht₄)) (P.*-identityʳ X)))
+      nsup = near-sup′ c ρ₀ bd 0<ε
+      s = proj₁ nsup
+      ms = proj₁ (proj₂ nsup)
+      hs = proj₂ (proj₂ nsup)
+      gp = gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 (hs s₀ ms₀)
+      0<s = proj₁ gp
+      qρ≤q′s = proj₂ gp
+      ρ = s + (ε + ε)
+      0<εε : 0Q < ε + ε
+      0<εε = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<ε 0<ε)
+      0<ρ : 0Q < ρ
+      0<ρ = <-≤-trans 0<s (≤-trans (≤-≃ (≃-sym (+-identityʳ s))) (+-mono-≤ (≤-refl {s}) (<-≤ 0<εε)))
+      nmρ : mem c ρ → ⊥
+      nmρ mρ = <-irrefl ≃-refl (<-≤-trans (+-mono-≤-< (≤-refl {s}) (lt-add {ε} {ε} 0<ε)) (hs ρ mρ))
+
+  -- from `s ∈ c`, `ρ ∉ c` and `q ρ ≤ q′ s` with q < q′ < 1: q = (q′/ρ)·s with 1/ρ ∈ c⁻¹
+  assemble : ∀ c {q q′} → 0Q ≤ q → q < q′ → q′ < 1Q →
+    (Σ Q λ s → Σ Q λ ρ → (0Q < s) × (0Q < ρ) × (mem c ρ → ⊥) × mem c s × (q * ρ ≤ q′ * s)) → mem (invC c ⊗ c) q
+  assemble c {q} {q′} 0≤q q<q′ q′<1 (s , ρ , 0<s , 0<ρ , nmρ , ms , qρ≤q′s) with inv 0<ρ
+  ... | t , ht = inj₂ (q′ * t , s , 0<r , 0<s , inj₂ (ρ , 0<ρ , nmρ , rρ<1) , ms , q≤rs)
+    where
+      0<q′ = ≤-<-trans 0≤q q<q′
+      0<t = pos-of-inverse 0<ρ ht
+      0<r : 0Q < q′ * t
+      0<r = *-pos 0<q′ 0<t
+      rρ : (q′ * t) * ρ ≃ q′
+      rρ = ≃-trans (*-assoc q′ t ρ) (≃-trans (*-cong (≃-refl {q′}) ht) (P.*-identityʳ q′))
+      rρ<1 : (q′ * t) * ρ < 1Q
+      rρ<1 = ≃-<ˡ (≃-sym rρ) q′<1
+      q≤rs : q ≤ (q′ * t) * s
+      q≤rs = le-of-scaled {q} {q′ * t} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s
+
   -- c⁻¹ · c ≥ 1 for a positive finite cut
   inv-mul-⊒ : ∀ c → Σ Q (λ s₀ → 0Q < s₀ × mem c s₀) → Σ Q (λ ρ₀ → mem c ρ₀ → ⊥) → oneC ⊑ invC c ⊗ c
   inv-mul-⊒ c (s₀ , 0<s₀ , ms₀) (ρ₀ , nm₀) = mk⊑ go
@@ -180,55 +239,11 @@ module InvClassical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       ... | inj₁ le = ⊥-elim (nm₀ (down c le mr))
       ... | inj₂ lt = lt
 
-      four : Q
-      four = (1Q + 1Q) + (1Q + 1Q)
-
-      0<four : 0Q < four
-      0<four = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< (≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<1 0<1)) (≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<1 0<1)))
-
       go : ∀ q → q < 1Q → mem (invC c ⊗ c) q
       go q q<1 with neg-or-nonneg q
       ... | inj₁ q<0 = inj₁ q<0
       ... | inj₂ 0≤q with dense q<1
-      ... | q′ , q<q′ , q′<1 with inv 0<four
-      ... | t₄ , ht₄ = inj₂ (q′ * t , s , 0<r , 0<s , inj₂ (ρ , 0<ρ , nmρ , rρ<1) , ms , q≤rs)
-        where
-          0<q′ = ≤-<-trans 0≤q q<q′
-          δ = q′ + - q
-          0<δ = pos-diff q<q′
-          X = δ * s₀
-          0<X = *-pos 0<δ 0<s₀
-          0<t₄ = pos-of-inverse 0<four ht₄
-          ε = X * t₄
-          0<ε = *-pos 0<X 0<t₄
-          h4 : (ε + ε) + (ε + ε) ≤ X
-          h4 = ≤-≃ (≃-trans (solve 1 (λ e → (e :+ e) :+ (e :+ e) := e :* ((con 1Q :+ con 1Q) :+ (con 1Q :+ con 1Q))) ≃-refl ε)
-                      (≃-trans (≃-trans (*-assoc X t₄ four) (*-cong (≃-refl {X}) ht₄)) (P.*-identityʳ X)))
-          nsup = near-sup′ c ρ₀ bd 0<ε
-          s = proj₁ nsup
-          ms = proj₁ (proj₂ nsup)
-          hs = proj₂ (proj₂ nsup)
-          gp = gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 (hs s₀ ms₀)
-          0<s = proj₁ gp
-          qρ≤q′s = proj₂ gp
-          ρ = s + (ε + ε)
-          0<εε : 0Q < ε + ε
-          0<εε = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<ε 0<ε)
-          0<ρ : 0Q < ρ
-          0<ρ = <-≤-trans 0<s (≤-trans (≤-≃ (≃-sym (+-identityʳ s))) (+-mono-≤ (≤-refl {s}) (<-≤ 0<εε)))
-          nmρ : mem c ρ → ⊥
-          nmρ mρ = <-irrefl ≃-refl (<-≤-trans (+-mono-≤-< (≤-refl {s}) (lt-add {ε} {ε} 0<ε)) (hs ρ mρ))
-          t = proj₁ (inv 0<ρ)
-          ht = proj₂ (inv 0<ρ)
-          0<t = pos-of-inverse 0<ρ ht
-          0<r : 0Q < q′ * t
-          0<r = *-pos 0<q′ 0<t
-          rρ : (q′ * t) * ρ ≃ q′
-          rρ = ≃-trans (*-assoc q′ t ρ) (≃-trans (*-cong (≃-refl {q′}) ht) (P.*-identityʳ q′))
-          rρ<1 : (q′ * t) * ρ < 1Q
-          rρ<1 = ≃-<ˡ (≃-sym rρ) q′<1
-          q≤rs : q ≤ (q′ * t) * s
-          q≤rs = le-of-scaled {q} {q′ * t} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s
+      ... | q′ , q<q′ , q′<1 = assemble c 0≤q q<q′ q′<1 (pick c {s₀} {ρ₀} {q} {q′} 0<s₀ ms₀ bd 0≤q q<q′ q′<1)
 
   inv-mul : ∀ c → Σ Q (λ s₀ → 0Q < s₀ × mem c s₀) → Σ Q (λ ρ₀ → mem c ρ₀ → ⊥) → invC c ⊗ c ≋ oneC
   inv-mul c hs hρ = inv-mul-⊑ c , inv-mul-⊒ c hs hρ

@@ -200,51 +200,47 @@ slack x y {q} {r} {w} mr 0<r mw 0<w h =
   let w′ , w<w′ , mw′ = open′ y mw
   in r * w′ , inj₂ (r , w′ , 0<r , <-trans 0<w w<w′ , mr , mw′ , ≤-refl) , ≤-<-trans h (*-mono-<-pos 0<r w<w′)
 
-⊗-distribˡ : ∀ x y z → x ⊗ (y ⊕ z) ≋ (x ⊗ y) ⊕ (x ⊗ z)
-⊗-distribˡ x y z = mk⊑ fwd , mk⊑ bwd
-  where
-    fwd : ∀ q → mem (x ⊗ (y ⊕ z)) q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q
-    fwd q (inj₁ lt) = let a , b , a<0 , b<0 , h = split-neg lt in a , b , inj₁ a<0 , inj₁ b<0 , h
-    fwd q (inj₂ (r , w , 0<r , 0<w , mr , (s₁ , s₂ , m₁ , m₂ , hw) , h)) with pos-or-nonpos s₁ | pos-or-nonpos s₂
-    ... | inj₁ 0<s₁ | inj₁ 0<s₂ =
-      r * s₁ , r * s₂ , inj₂ (r , s₁ , 0<r , 0<s₁ , mr , m₁ , ≤-refl) , inj₂ (r , s₂ , 0<r , 0<s₂ , mr , m₂ , ≤-refl) ,
-      ≤-trans h (≤-trans (*-mono-≤-nn (<-≤ 0<r) hw) (≤-≃ (*-distribˡ-+ r s₁ s₂)))
-    ... | inj₁ 0<s₁ | inj₂ s₂≤0 =
-      let w≤s₁ = ≤-trans hw (≤-trans (+-mono-≤ (≤-refl {s₁}) s₂≤0) (≤-≃ (+-identityʳ s₁)))
-          b , mb , q<b = slack x y mr 0<r (down y w≤s₁ m₁) 0<w h
-      in b , q + - b , mb , inj₁ (neg-diff q<b) , ≤-≃ (≃-sym (add-sub b q))
-    ... | inj₂ s₁≤0 | inj₁ 0<s₂ =
-      let w≤s₂ = ≤-trans hw (≤-trans (+-mono-≤ s₁≤0 (≤-refl {s₂})) (≤-≃ (+-identityˡ s₂)))
-          b , mb , q<b = slack x z mr 0<r (down z w≤s₂ m₂) 0<w h
-      in q + - b , b , inj₁ (neg-diff q<b) , mb , ≤-≃ (≃-sym (sub-add q b))
-    ... | inj₂ s₁≤0 | inj₂ s₂≤0 =
-      ⊥-elim (<-irrefl ≃-refl (<-≤-trans 0<w (≤-trans hw (≤-trans (+-mono-≤ s₁≤0 s₂≤0) (≤-≃ (+-identityˡ 0Q))))))
+⊗-distrib-fwd : ∀ x y z q → mem (x ⊗ (y ⊕ z)) q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q
+⊗-distrib-fwd x y z q (inj₁ lt) = let a , b , a<0 , b<0 , h = split-neg lt in a , b , inj₁ a<0 , inj₁ b<0 , h
+⊗-distrib-fwd x y z q (inj₂ (r , w , 0<r , 0<w , mr , (s₁ , s₂ , m₁ , m₂ , hw) , h)) with pos-or-nonpos s₁ | pos-or-nonpos s₂
+... | inj₁ 0<s₁ | inj₁ 0<s₂ =
+  r * s₁ , r * s₂ , inj₂ (r , s₁ , 0<r , 0<s₁ , mr , m₁ , ≤-refl) , inj₂ (r , s₂ , 0<r , 0<s₂ , mr , m₂ , ≤-refl) ,
+  ≤-trans h (≤-trans (*-mono-≤-nn (<-≤ 0<r) hw) (≤-≃ (*-distribˡ-+ r s₁ s₂)))
+... | inj₁ 0<s₁ | inj₂ s₂≤0 =
+  let w≤s₁ = ≤-trans hw (≤-trans (+-mono-≤ (≤-refl {s₁}) s₂≤0) (≤-≃ (+-identityʳ s₁)))
+      b , mb , q<b = slack x y mr 0<r (down y w≤s₁ m₁) 0<w h
+  in b , q + - b , mb , inj₁ (neg-diff q<b) , ≤-≃ (≃-sym (add-sub b q))
+... | inj₂ s₁≤0 | inj₁ 0<s₂ =
+  let w≤s₂ = ≤-trans hw (≤-trans (+-mono-≤ s₁≤0 (≤-refl {s₂})) (≤-≃ (+-identityˡ s₂)))
+      b , mb , q<b = slack x z mr 0<r (down z w≤s₂ m₂) 0<w h
+  in q + - b , b , inj₁ (neg-diff q<b) , mb , ≤-≃ (≃-sym (sub-add q b))
+... | inj₂ s₁≤0 | inj₂ s₂≤0 =
+  ⊥-elim (<-irrefl ≃-refl (<-≤-trans 0<w (≤-trans hw (≤-trans (+-mono-≤ s₁≤0 s₂≤0) (≤-≃ (+-identityˡ 0Q))))))
 
-    bwd : ∀ q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q → mem (x ⊗ (y ⊕ z)) q
-    bwd q (a , b , inj₁ a<0 , inj₁ b<0 , h) =
-      inj₁ (≤-<-trans h (≃-<ʳ (+-identityˡ 0Q) (+-mono-< a<0 b<0)))
-    bwd q (a , b , inj₁ a<0 , inj₂ (r , s , 0<r , 0<s , mr , ms , hb) , h) =
-      inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inr y z) s ms ,
-        <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityˡ b) (+-mono-<-≤ a<0 (≤-refl {b})))) hb))
-    bwd q (a , b , inj₂ (r , s , 0<r , 0<s , mr , ms , ha) , inj₁ b<0 , h) =
-      inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inl y z) s ms ,
-        <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityʳ a) (+-mono-≤-< (≤-refl {a}) b<0))) ha))
-    bwd q (a , b , inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , m₁ , ha) , inj₂ (r₂ , s₂ , 0<r₂ , 0<s₂ , mr₂ , m₂ , hb) , h)
-      with total r₁ r₂
-    ... | inj₁ le = both r₂ mr₂ 0<r₂ le ≤-refl
-      where
-        both : ∀ r → mem x r → 0Q < r → r₁ ≤ r → r₂ ≤ r → mem (x ⊗ (y ⊕ z)) q
-        both r mr 0<r le₁ le₂ = inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<s₁ 0<s₂) , mr ,
-          (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
-          ≤-trans h (≤-trans (+-mono-≤ ha hb) (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) le₁) (*-mono-≤-nnʳ (<-≤ 0<s₂) le₂))
-            (≤-≃ (≃-sym (*-distribˡ-+ r s₁ s₂))))))
-    ... | inj₂ le = both r₁ mr₁ 0<r₁ ≤-refl le
-      where
-        both : ∀ r → mem x r → 0Q < r → r₁ ≤ r → r₂ ≤ r → mem (x ⊗ (y ⊕ z)) q
-        both r mr 0<r le₁ le₂ = inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<s₁ 0<s₂) , mr ,
-          (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
-          ≤-trans h (≤-trans (+-mono-≤ ha hb) (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) le₁) (*-mono-≤-nnʳ (<-≤ 0<s₂) le₂))
-            (≤-≃ (≃-sym (*-distribˡ-+ r s₁ s₂))))))
+-- two positive products r₁ s₁ and r₂ s₂ are dominated by a single r ≥ r₁, r₂: a + b ≤ r (s₁ + s₂)
+both-r : ∀ x y z {q a b r r₁ r₂ s₁ s₂} → mem x r → 0Q < r → r₁ ≤ r → r₂ ≤ r → 0Q < s₁ → 0Q < s₂ →
+  mem y s₁ → mem z s₂ → a ≤ r₁ * s₁ → b ≤ r₂ * s₂ → q ≤ a + b → mem (x ⊗ (y ⊕ z)) q
+both-r x y z {q} {a} {b} {r} {r₁} {r₂} {s₁} {s₂} mr 0<r le₁ le₂ 0<s₁ 0<s₂ m₁ m₂ ha hb h =
+  inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<s₁ 0<s₂) , mr , (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
+    ≤-trans h (≤-trans (+-mono-≤ ha hb) (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) le₁) (*-mono-≤-nnʳ (<-≤ 0<s₂) le₂))
+      (≤-≃ (≃-sym (*-distribˡ-+ r s₁ s₂))))))
+
+⊗-distrib-bwd : ∀ x y z q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q → mem (x ⊗ (y ⊕ z)) q
+⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₁ b<0 , h) =
+  inj₁ (≤-<-trans h (≃-<ʳ (+-identityˡ 0Q) (+-mono-< a<0 b<0)))
+⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₂ (r , s , 0<r , 0<s , mr , ms , hb) , h) =
+  inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inr y z) s ms ,
+    <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityˡ b) (+-mono-<-≤ a<0 (≤-refl {b})))) hb))
+⊗-distrib-bwd x y z q (a , b , inj₂ (r , s , 0<r , 0<s , mr , ms , ha) , inj₁ b<0 , h) =
+  inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inl y z) s ms ,
+    <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityʳ a) (+-mono-≤-< (≤-refl {a}) b<0))) ha))
+⊗-distrib-bwd x y z q (a , b , inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , m₁ , ha) , inj₂ (r₂ , s₂ , 0<r₂ , 0<s₂ , mr₂ , m₂ , hb) , h)
+  with total r₁ r₂
+... | inj₁ le = both-r x y z {q} {a} {b} {r₂} {r₁} {r₂} {s₁} {s₂} mr₂ 0<r₂ le ≤-refl 0<s₁ 0<s₂ m₁ m₂ ha hb h
+... | inj₂ le = both-r x y z {q} {a} {b} {r₁} {r₁} {r₂} {s₁} {s₂} mr₁ 0<r₁ ≤-refl le 0<s₁ 0<s₂ m₁ m₂ ha hb h
+
+⊗-distribˡ : ∀ x y z → x ⊗ (y ⊕ z) ≋ (x ⊗ y) ⊕ (x ⊗ z)
+⊗-distribˡ x y z = mk⊑ (⊗-distrib-fwd x y z) , mk⊑ (⊗-distrib-bwd x y z)
 
 ⊗-distribʳ : ∀ x y z → (y ⊕ z) ⊗ x ≋ (y ⊗ x) ⊕ (z ⊗ x)
 ⊗-distribʳ x y z = ≋-trans (⊗-comm (y ⊕ z) x) (≋-trans (⊗-distribˡ x y z) (⊕-cong (⊗-comm x y) (⊗-comm x z)))

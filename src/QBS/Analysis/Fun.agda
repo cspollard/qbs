@@ -112,45 +112,44 @@ module Measurable (A : OmegaSemiring (suc zero)) where
       (λ x nnv → dec′ x (cmask-in x) (λ nv → ⊥-elim (nnv nv)))
       (λ x → dec′ x (λ v → ≤-resp (sym (cmask-in x v)) refl 0-least) (λ nv → ≤-resp (sym (cmask-out x nv)) refl ≤-refl))
 
+    -- masking commutes with each way of building a function
+    mask-≤1 : ∀ h → (∀ x → h x ≤ 1#) → ∀ x → mask h x ≤ 1#
+    mask-≤1 h b x = dec′ x (λ v → ≤-resp (sym (mask-in h x v)) refl (b x))
+                           (λ nv → ≤-resp (sym (mask-out h x nv)) refl 0-least)
+
+    mask-+ : ∀ {h h₁ h₂} → (∀ x → h x ≈ h₁ x + h₂ x) → ∀ x → mask h x ≈ mask h₁ x + mask h₂ x
+    mask-+ {h} {h₁} {h₂} q x = dec′ x
+      (λ v → trans (mask-in h x v) (trans (q x) (+-cong (sym (mask-in h₁ x v)) (sym (mask-in h₂ x v)))))
+      (λ nv → trans (mask-out h x nv) (sym (trans (+-cong (mask-out h₁ x nv) (mask-out h₂ x nv)) (+-identityˡ 0#))))
+
+    mask-inc : ∀ (hs : ℕ → R → ∣A∣) → (∀ x → Increasing (λ n → hs n x)) → ∀ x → Increasing (λ n → mask (hs n) x)
+    mask-inc hs inc x n = dec′ x
+      (λ v → ≤-resp (sym (mask-in (hs n) x v)) (sym (mask-in (hs (suc′ n)) x v)) (inc x n))
+      (λ nv → ≤-resp (sym (mask-out (hs n) x nv)) (sym (mask-out (hs (suc′ n)) x nv)) ≤-refl)
+
+    mask-⨆ : ∀ {h} (hs : ℕ → R → ∣A∣) (inc : ∀ x → Increasing (λ n → hs n x)) →
+      (∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) → ∀ x → mask h x ≈ ⨆ (λ n → mask (hs n) x) (mask-inc hs inc x)
+    mask-⨆ {h} hs inc q x = dec′ x
+      (λ v → trans (mask-in h x v) (trans (q x) (⨆-cong (inc x) (mask-inc hs inc x) (λ n → sym (mask-in (hs n) x v)))))
+      (λ nv → trans (mask-out h x nv)
+                (sym (trans (⨆-cong (mask-inc hs inc x) (λ _ → ≤-refl) (λ n → mask-out (hs n) x nv))
+                            (⨆-const 0# (λ _ → ≤-refl)))))
+
+    mask-compl : ∀ {h h′} → (∀ x → h x + h′ x ≈ 1#) → ∀ x → mask h x + (mask h′ x + cmask x) ≈ 1#
+    mask-compl {h} {h′} q x = dec′ x
+      (λ v → trans (+-cong (mask-in h x v) (+-cong (mask-in h′ x v) (cmask-in x v))) (trans (+-cong refl (+-identityʳ _)) (q x)))
+      (λ nv → trans (+-cong (mask-out h x nv) (+-cong (mask-out h′ x nv) (cmask-out x nv)))
+                (trans (+-cong refl (+-identityˡ 1#)) (+-identityˡ 1#)))
+
     Fun-mask : ∀ {h} → Fun h → Fun (mask h)
     Fun-mask (ind {U} {h} c c≤1 bU e₀ e₁ b) = ind c c≤1 (inter₂ bU bV)
       (λ x (u , v) → trans (mask-in h x v) (e₀ x u))
       (λ x n → dec′ x (λ v → trans (mask-in h x v) (e₁ x (λ u → n (u , v)))) (mask-out h x))
-      (λ x → dec′ x (λ v → ≤-resp (sym (mask-in h x v)) refl (b x))
-                    (λ nv → ≤-resp (sym (mask-out h x nv)) refl 0-least))
-    Fun-mask (sumF {h} {h₁} {h₂} f₁ f₂ q b) = sumF (Fun-mask f₁) (Fun-mask f₂) pw bd
-      where
-        bd : ∀ x → mask h x ≤ 1#
-        bd x = dec′ x (λ v → ≤-resp (sym (mask-in h x v)) refl (b x))
-                      (λ nv → ≤-resp (sym (mask-out h x nv)) refl 0-least)
-        pw : ∀ x → mask h x ≈ mask h₁ x + mask h₂ x
-        pw x = dec′ x
-          (λ v → trans (mask-in h x v)
-                   (trans (q x) (+-cong (sym (mask-in h₁ x v)) (sym (mask-in h₂ x v)))))
-          (λ nv → trans (mask-out h x nv)
-                    (sym (trans (+-cong (mask-out h₁ x nv) (mask-out h₂ x nv)) (+-identityˡ 0#))))
-    Fun-mask (supF {h} hs fs inc q) = supF (λ n → mask (hs n)) (λ n → Fun-mask (fs n)) inc′ eq
-      where
-        inc′ : ∀ x → Increasing (λ n → mask (hs n) x)
-        inc′ x n = dec′ x
-          (λ v → ≤-resp (sym (mask-in (hs n) x v)) (sym (mask-in (hs (suc′ n)) x v)) (inc x n))
-          (λ nv → ≤-resp (sym (mask-out (hs n) x nv)) (sym (mask-out (hs (suc′ n)) x nv)) ≤-refl)
-        eq : ∀ x → mask h x ≈ ⨆ (λ n → mask (hs n) x) (inc′ x)
-        eq x = dec′ x
-          (λ v → trans (mask-in h x v)
-                   (trans (q x) (⨆-cong (inc x) (inc′ x) (λ n → sym (mask-in (hs n) x v)))))
-          (λ nv → trans (mask-out h x nv)
-                    (sym (trans (⨆-cong (inc′ x) (λ _ → ≤-refl) (λ n → mask-out (hs n) x nv))
-                                (⨆-const 0# (λ _ → ≤-refl)))))
+      (mask-≤1 h b)
+    Fun-mask (sumF {h} {h₁} {h₂} f₁ f₂ q b) = sumF (Fun-mask f₁) (Fun-mask f₂) (mask-+ q) (mask-≤1 h b)
+    Fun-mask (supF hs fs inc q) = supF (λ n → mask (hs n)) (λ n → Fun-mask (fs n)) (mask-inc hs inc) (mask-⨆ hs inc q)
     Fun-mask (complF {h} {h′} f q) =
-      complF (sumF (Fun-mask f) Fun-cmask (λ x → refl) (λ x → ≤-trans ≤-+ʳ (≤-reflexive (trans (+-comm _ _) (pw x))))) pw
-      where
-        pw : ∀ x → mask h x + (mask h′ x + cmask x) ≈ 1#
-        pw x = dec′ x
-          (λ v → trans (+-cong (mask-in h x v) (+-cong (mask-in h′ x v) (cmask-in x v)))
-                   (trans (+-cong refl (+-identityʳ _)) (q x)))
-          (λ nv → trans (+-cong (mask-out h x nv) (+-cong (mask-out h′ x nv) (cmask-out x nv)))
-                    (trans (+-cong refl (+-identityˡ 1#)) (+-identityˡ 1#)))
+      complF (sumF (Fun-mask f) Fun-cmask (λ x → refl) (λ x → ≤-trans ≤-+ʳ (≤-reflexive (trans (+-comm _ _) (mask-compl q x))))) (mask-compl q)
 
   ----------------------------------------------------------------------------
   -- gluing along a measurable countable partition
