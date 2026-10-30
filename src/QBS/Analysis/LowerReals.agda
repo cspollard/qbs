@@ -399,16 +399,18 @@ cutSemiring = record
 
 LowerRealsOmega : (∀ (P : Set) → P ⊎ (P → ⊥)) → OmegaSemiring (L.suc L.zero)
 LowerRealsOmega lem = record
-  { commutativeSemiring = cutSemiring
-  ; _≤_ = _⊑_
-  ; ≤-reflexive = proj₁
-  ; ≤-trans = ⊑-trans
-  ; ≤-antisym = _,_
-  ; 0-least = 0-least
-  ; ≤-+ʳ = λ {a} {b} → ⊕-inl a b
-  ; +-mono = ⊕-mono
-  ; *-mono = λ c → ⊗-mono ⊑-refl
-  ; complement = λ {c} h → complC c h , complement-ok c h
+  { ordered = record
+        { commutativeSemiring = cutSemiring
+      ; _≤_ = _⊑_
+      ; ≤-reflexive = proj₁
+      ; ≤-trans = ⊑-trans
+      ; ≤-antisym = _,_
+      ; 0-least = 0-least
+      ; ≤-+ʳ = λ {a} {b} → ⊕-inl a b
+      ; +-mono = ⊕-mono
+      ; *-mono = λ c → ⊗-mono ⊑-refl
+      ; complement = λ {c} h → complC c h , complement-ok c h
+        }
   ; ⨆ = λ c _ → unionC c
   ; ⨆-ub = λ c _ n → union-ub c n
   ; ⨆-lub = λ c _ le → union-lub c le

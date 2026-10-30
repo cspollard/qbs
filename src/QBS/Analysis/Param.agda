@@ -160,10 +160,12 @@ module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
     param-sets : ∀ {U} → Borel U → DP U
     param-sets = dynkin DP DP-resp DP-cyl DP-compl DP-disj
 
-    -- from sets to functions
-    PF : ∀ {h} (fh : Fun h) →
-      Fun (λ r → I (g r) (λ s → h (mergeR r s)) (Fun-pre fh (m₁ (lower r))))
-    PF {h} (ind {U} {k} c c≤1 bU e₀ e₁ b) = Fun-ext (λ r → sym (iscale r)) (Fun-scale c c≤1 φ)
+    -- from sets to functions: the integral against the kernel of a measurable function is measurable in the parameter
+    PFT : ∀ {h} → Fun h → Set₁
+    PFT {h} fh = Fun (λ r → I (g r) (λ s → h (mergeR r s)) (Fun-pre fh (m₁ (lower r))))
+
+    PF-ind : ∀ {U k} (c : ∣A∣) (c≤1 : c ≤ 1#) (bU : Borel U) e₀ e₁ b → PFT (ind {U} {k} c c≤1 bU e₀ e₁ b)
+    PF-ind {U} {k} c c≤1 bU e₀ e₁ b = Fun-ext (λ r → sym (iscale r)) (Fun-scale c c≤1 φ)
       where
         φ : Fun (Φ bU)
         φ with param-sets bU
@@ -175,24 +177,35 @@ module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
           (λ nu → trans (e₁ _ nu) (sym (trans (*-cong refl (χ-out (Sec U (lower r)) s nu)) (zeroʳ c))))
         iscale : ∀ r → I (g r) (λ s → k (mergeR r s)) (Fun-pre fk (m₁ (lower r))) ≈ c * Φ bU r
         iscale r = I-scale (g r) c (Fun-χ (Bsec bU (lower r))) (Fun-pre fk (m₁ (lower r))) (pw r)
-    PF (sumF {h} {h₁} {h₂} f₁ f₂ q b) =
-      sumF (PF f₁) (PF f₂)
+    PF-sum : ∀ {h h₁ h₂} (f₁ : Fun h₁) (f₂ : Fun h₂) q b → PFT f₁ → PFT f₂ → PFT (sumF {h} f₁ f₂ q b)
+    PF-sum {h} f₁ f₂ q b p₁ p₂ =
+      sumF p₁ p₂
         (λ r → I-add (g r) (Fun-pre (sumF f₁ f₂ q b) (m₁ (lower r)))
                  (Fun-pre f₁ (m₁ (lower r))) (Fun-pre f₂ (m₁ (lower r)))
                  (λ s → q (mergeR r s)))
         (λ r → I-≤1 (g r) _)
-    PF (supF {h} hs fs inc q) =
+
+    PF-sup : ∀ {h} (hs : ℕ → R → ∣A∣) (fs : ∀ n → Fun (hs n)) inc q → (∀ n → PFT (fs n)) → PFT (supF {h} hs fs inc q)
+    PF-sup {h} hs fs inc q ps =
       supF (λ n r → I (g r) (λ s → hs n (mergeR r s)) (Fun-pre (fs n) (m₁ (lower r))))
-        (λ n → PF (fs n))
+        ps
         (λ r n → I-mono (g r) _ _ (λ s → inc (mergeR r s) n))
         (λ r → I-sup (g r) (λ n s → hs n (mergeR r s)) (λ n → Fun-pre (fs n) (m₁ (lower r)))
                  (λ s → inc (mergeR r s)) (Fun-pre (supF hs fs inc q) (m₁ (lower r)))
                  (λ s → q (mergeR r s)))
-    PF (complF {h} {h′} f q) =
-      Fun-co (PF f)
+
+    PF-compl : ∀ {h h′} (f : Fun h′) q → PFT f → PFT (complF {h} f q)
+    PF-compl {h} {h′} f q p =
+      Fun-co p
         (λ r → I-mono (g r) (Fun-pre f (m₁ (lower r))) (Fun-const 1# ≤-refl) (λ s → Fun-≤1 f (mergeR r s)))
         (λ r → sym (I-add (g r) (Fun-const 1# ≤-refl) (Fun-pre (complF f q) (m₁ (lower r)))
                       (Fun-pre f (m₁ (lower r))) (λ s → sym (q (mergeR r s)))))
+
+    PF : ∀ {h} (fh : Fun h) → PFT fh
+    PF (ind c c≤1 bU e₀ e₁ b) = PF-ind c c≤1 bU e₀ e₁ b
+    PF (sumF f₁ f₂ q b) = PF-sum f₁ f₂ q b (PF f₁) (PF f₂)
+    PF (supF hs fs inc q) = PF-sup hs fs inc q (λ n → PF (fs n))
+    PF (complF f q) = PF-compl f q (PF f)
 
   -- push the parameter into the section: the kernel r ↦ (merge r)_* g(r)
   pushMerge : (R → Measure) → R → Measure

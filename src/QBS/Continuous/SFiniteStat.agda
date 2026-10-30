@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 -- The s-finite measure monad `TM` over the continuous model is a model of
 -- `StatisticalInterface` (soft conditioning).  Each field points at the lemma that will discharge it:

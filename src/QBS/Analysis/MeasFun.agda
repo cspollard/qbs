@@ -140,32 +140,33 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     W : ℕ → Pred
     W N c = mem (h (lift c)) (enumQ N) × (enumQ N ≤ best N (lift c) → ⊥)
 
+    -- the two set identities used below
+    BB-eq : ∀ N s → (λ c → (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c)))) ≐ (λ c → s < best (suc N) (lift c))
+    BB-eq N s c = fwd , bwd
+      where
+        fwd : (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c))) → s < best (suc N) (lift c)
+        fwd (inj₁ ((p , nle) , lt)) = ≡.subst (s <_) (≡.sym (pW N (lift c) p nle)) lt
+        fwd (inj₂ (nw , lt)) = ≡.subst (s <_) (≡.sym (pnW N (lift c) nw)) lt
+        bwd : s < best (suc N) (lift c) → (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c)))
+        bwd lt with lem (W N c)
+        ... | inj₁ w@(p , nle) = inj₁ (w , ≡.subst (s <_) (pW N (lift c) p nle) lt)
+        ... | inj₂ nw = inj₂ (nw , ≡.subst (s <_) (pnW N (lift c) nw) lt)
+
+    bGE-eq : ∀ N t → (λ c → ∀ ρ → ρ < t → ρ < best N (lift c)) ≐ (λ c → t ≤ best N (lift c))
+    bGE-eq N t c = fwd , (λ le ρ ρ<t → <-≤-trans ρ<t le)
+      where
+        fwd : (∀ ρ → ρ < t → ρ < best N (lift c)) → t ≤ best N (lift c)
+        fwd f with ≤-or-> t (best N (lift c))
+        ... | inj₁ le = le
+        ... | inj₂ b<t = let ρ , b<ρ , ρ<t = dense b<t in ⊥-elim (<-irrefl ≃-refl (<-trans b<ρ (f ρ ρ<t)))
+
     mutual
       BB : ∀ N s → Borel (λ c → s < best N (lift c))
       BB zero s = borel-prop (s < 0ℚᵘ)
-      BB (suc N) s = resp e (union₂ (inter₂ (bW N) (borel-prop (s < enumQ N))) (inter₂ (compl (bW N)) (BB N s)))
-        where
-          e : (λ c → (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c)))) ≐ (λ c → s < best (suc N) (lift c))
-          e c = fwd , bwd
-            where
-              fwd : (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c))) → s < best (suc N) (lift c)
-              fwd (inj₁ ((p , nle) , lt)) = ≡.subst (s <_) (≡.sym (pW N (lift c) p nle)) lt
-              fwd (inj₂ (nw , lt)) = ≡.subst (s <_) (≡.sym (pnW N (lift c) nw)) lt
-              bwd : s < best (suc N) (lift c) → (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c)))
-              bwd lt with lem (W N c)
-              ... | inj₁ w@(p , nle) = inj₁ (w , ≡.subst (s <_) (pW N (lift c) p nle) lt)
-              ... | inj₂ nw = inj₂ (nw , ≡.subst (s <_) (pnW N (lift c) nw) lt)
+      BB (suc N) s = resp (BB-eq N s) (union₂ (inter₂ (bW N) (borel-prop (s < enumQ N))) (inter₂ (compl (bW N)) (BB N s)))
 
       bGE : ∀ N t → Borel (λ c → t ≤ best N (lift c))
-      bGE N t = resp e (all-enum (λ ρ c → ρ < t → ρ < best N (lift c)) (λ ρ → imp-borel (ρ < t) (BB N ρ)))
-        where
-          e : (λ c → ∀ ρ → ρ < t → ρ < best N (lift c)) ≐ (λ c → t ≤ best N (lift c))
-          e c = fwd , (λ le ρ ρ<t → <-≤-trans ρ<t le)
-            where
-              fwd : (∀ ρ → ρ < t → ρ < best N (lift c)) → t ≤ best N (lift c)
-              fwd f with ≤-or-> t (best N (lift c))
-              ... | inj₁ le = le
-              ... | inj₂ b<t = let ρ , b<ρ , ρ<t = dense b<t in ⊥-elim (<-irrefl ≃-refl (<-trans b<ρ (f ρ ρ<t)))
+      bGE N t = resp (bGE-eq N t) (all-enum (λ ρ c → ρ < t → ρ < best N (lift c)) (λ ρ → imp-borel (ρ < t) (BB N ρ)))
 
       bW : ∀ N → Borel (W N)
       bW N = inter₂ (mh (enumQ N)) (compl (bGE N (enumQ N)))

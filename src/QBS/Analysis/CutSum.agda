@@ -302,11 +302,37 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
       Mem-down (*-mono-≤-nn (<-≤ 0<r) (≤-trans le (≤-trans (+-mono-≤ ρ≤0 (≤-refl {q′})) (≤-≃ (+-identityˡ q′)))))
         (Mem-mono (λ j → ⊗-mono ⊑-refl (step-below ex gz j)) (dist1 mg 0<r mr))
 
+    -- the witnesses for `q` in `x ⊗ f`: `q` is negative, or `q ≤ R * σ` with `R` in `x` and `σ` in `f`
+    DW : ∀ {I : Set₁} → (I → Cut) → ℚᵘ → Set₁
+    DW f q = q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))
+
+    -- one step of `dist2`: combine the witness for the rest (coordinate `i` killed) with the one for `x ⊗ f i`
+    dist2-go : ∀ {I : Set₁} (f : I → Cut) (i : I) {q q′ ρ : ℚᵘ} → q ≤ ρ + q′ →
+      DW (killP (λ j → i ≡ j) f) q′ → mem (x ⊗ f i) ρ → DW f q
+    dist2-go f i le (inj₁ q′<0) (inj₁ ρ<0) = inj₁ (≤-<-trans le (neg-add ρ<0 q′<0))
+    dist2-go f i le (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₁ ρ<0) =
+      inj₂ (R , σ , 0<R , mR , 0<σ , Mem-mono (killP-⊑ (λ j → i ≡ j) f) mσ , ≤-trans le (≤-trans (add-neg-le′ ρ<0) le′))
+    dist2-go f i le (inj₁ q′<0) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) =
+      inj₂ (r₁ , s₁ , 0<r₁ , mr₁ , 0<s₁ , Mem-single ms₁ , ≤-trans le (≤-trans (add-neg-le q′<0) le₁))
+    dist2-go f i le (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) with total r₁ R
+    ... | inj₁ r₁≤R =
+      inj₂ (R , s₁ + σ , 0<R , mR , pos-add 0<s₁ 0<σ
+           , m-step i s₁ (killP (λ j → i ≡ j) f) ms₁ (λ j _ → killP-⊑ (λ j → i ≡ j) f j) (killP-on (λ j → i ≡ j) f refl) mσ ≤-refl
+           , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
+               (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) r₁≤R) (≤-refl {R * σ}))
+                        (≤-≃ (≃-sym (*-distribˡ-+ R s₁ σ))))))
+    ... | inj₂ R≤r₁ =
+      inj₂ (r₁ , s₁ + σ , 0<r₁ , mr₁ , pos-add 0<s₁ 0<σ
+           , m-step i s₁ (killP (λ j → i ≡ j) f) ms₁ (λ j _ → killP-⊑ (λ j → i ≡ j) f j) (killP-on (λ j → i ≡ j) f refl) mσ ≤-refl
+           , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
+               (≤-trans (+-mono-≤ (≤-refl {r₁ * s₁}) (*-mono-≤-nnʳ (<-≤ 0<σ) R≤r₁))
+                        (≤-≃ (≃-sym (*-distribˡ-+ r₁ s₁ σ))))))
+
     dist2 : ∀ {I : Set₁} {h f : I → Cut} {q} → (∀ i → h i ⊑ x ⊗ f i) → Mem h q →
-      q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))
+      DW f q
     dist2 H (m-neg lt) = inj₁ lt
     dist2 {f = f} H (m-step {q = q} {q′ = q′} i ρ g mρ ex gz mg le) =
-      go (dist2 H′ mg) (ap (H i) ρ mρ)
+      dist2-go f i le (dist2 H′ mg) (ap (H i) ρ mρ)
       where
         P : _ → Set₁
         P = λ j → i ≡ j
@@ -315,28 +341,6 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
         H′ j with dec≡ i j
         ... | yes refl = ⊑-trans gz 0-least
         ... | no ne = ⊑-trans (ex j ne) (⊑-trans (H j) (⊗-mono ⊑-refl (killP-off P f ne)))
-
-        go : (q′ < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f′ σ × q′ ≤ R * σ))) →
-             mem (x ⊗ f i) ρ →
-             q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))
-        go (inj₁ q′<0) (inj₁ ρ<0) = inj₁ (≤-<-trans le (neg-add ρ<0 q′<0))
-        go (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₁ ρ<0) =
-          inj₂ (R , σ , 0<R , mR , 0<σ , Mem-mono (killP-⊑ P f) mσ , ≤-trans le (≤-trans (add-neg-le′ ρ<0) le′))
-        go (inj₁ q′<0) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) =
-          inj₂ (r₁ , s₁ , 0<r₁ , mr₁ , 0<s₁ , Mem-single ms₁ , ≤-trans le (≤-trans (add-neg-le q′<0) le₁))
-        go (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) with total r₁ R
-        ... | inj₁ r₁≤R =
-          inj₂ (R , s₁ + σ , 0<R , mR , pos-add 0<s₁ 0<σ
-               , m-step i s₁ f′ ms₁ (λ j _ → killP-⊑ P f j) (killP-on P f refl) mσ ≤-refl
-               , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
-                   (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) r₁≤R) (≤-refl {R * σ}))
-                            (≤-≃ (≃-sym (*-distribˡ-+ R s₁ σ))))))
-        ... | inj₂ R≤r₁ =
-          inj₂ (r₁ , s₁ + σ , 0<r₁ , mr₁ , pos-add 0<s₁ 0<σ
-               , m-step i s₁ f′ ms₁ (λ j _ → killP-⊑ P f j) (killP-on P f refl) mσ ≤-refl
-               , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
-                   (≤-trans (+-mono-≤ (≤-refl {r₁ * s₁}) (*-mono-≤-nnʳ (<-≤ 0<σ) R≤r₁))
-                            (≤-≃ (≃-sym (*-distribˡ-+ r₁ s₁ σ))))))
 
   -- ∑ is homogeneous
   sum-distribˡ : ∀ {I : Set₁} (x : Cut) (f : I → Cut) → x ⊗ sumC f ≋ sumC (λ i → x ⊗ f i)
@@ -349,8 +353,7 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
       bwd : sumC (λ i → x ⊗ f i) ⊑ x ⊗ sumC f
       bwd = mk⊑ (λ q d → go (dist2 (λ i → ⊑-refl) (sum⇒Mem d)))
         where
-          go : ∀ {q} → (q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))) →
-               mem (x ⊗ sumC f) q
+          go : ∀ {q} → DW f q → mem (x ⊗ sumC f) q
           go (inj₁ lt) = inj₁ lt
           go (inj₂ (R , σ , 0<R , mx , 0<σ , mσ , le)) = inj₂ (R , σ , 0<R , 0<σ , mx , Mem⇒sum mσ , le)
 

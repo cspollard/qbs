@@ -102,44 +102,55 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   ι-unit {X} x h = J-cong (dirac r₀) {ψ {X} (ιPre {X} (C.ηPre {X} x)) h} {ψ {X} (C.ηPre {XW X} (1# , x)) h}
     (mψ {X} (ιPre {X} (C.ηPre {X} x)) h) (mψ {X} (C.ηPre {XW X} (1# , x)) h) (λ r → refl)
 
-  ι-mult : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) →
-    ∫ᴹ {U} (ιPre {U} (C.joinPre {U} q)) h
-      ≈ ∫ᴹ {U} (joinPre {U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q))) h
-  ι-mult {U} q h = trans
-    (J-bind (m q) K Kok {Ψ} mΨ MJ)
-    (trans (J-cong (m q) MJ (mψ {TQ U} ιq (∫ᶠ {U} h)) pwr)
-           (sym (∫ᴹ-join {U} ιq h)))
+  -- the r-th section of the merged kernel in `ι-mult`, as an element of `Pre U`
+  ι-kp : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) → R₁ → C.Pre U
+  ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {α q} (α-random q)) r) (sec-random {U} (C.Wit.a {U} {α q} (α-random q)) r)
+    (C.Wit.g {U} {α q} (α-random q) r) (C.Wit.g-pr {U} {α q} (α-random q) r)
+
+  -- pointwise in the outer parameter r: the merged kernel integrates ψ of the join to ψ of the pushed-forward ι q
+  ι-mult-pw : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) (r : R₁) →
+    J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h) (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
+      ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
+  ι-mult-pw {U} q h r = trans
+    (J-push {mergeR r} (measurable-merge₁ (lower r)) (gq r) {Ψ} mΨ (mΨ∘merge r))
+    (trans
+      (J-cong (gq r) {λ s → Ψ (mergeR r s)} {ψ {U} (kq r) h} (mΨ∘merge r) (mψ {U} (kq r) h)
+         (λ s → *-cong refl (Func.cong (map h) (Func.cong (map a₀) (merge-evens r s , merge-odds r s)))))
+      (trans (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q r)) (kq r) (ι-cong {U} {α q r} {ι-kp q r} (C.Wit.w-eq {U} {α q} (α-random q) r)) h))
+             (sym (*-identityˡ _))))
     where
-      wq : C.Wit {U} (α q)
-      wq = α-random q
-
-      gq = C.Wit.g {U} {α q} wq
-      a₀ = C.Wit.a {U} {α q} wq
-      K = P₁.pushMerge gq
-      Kok = P₁.KernelOk-pushMerge {gq} (C.Wit.g-ok {U} {α q} wq)
+      gq : R₁ → Measure
+      gq = C.Wit.g {U} {α q} (α-random q)
+      a₀ : C.Joint U
+      a₀ = C.Wit.a {U} {α q} (α-random q)
+      Ψ : R₁ → ∣A∣
       Ψ = ψ {U} (ιPre {U} (C.joinPre {U} q)) h
+      mΨ : Meas Ψ
       mΨ = mψ {U} (ιPre {U} (C.joinPre {U} q)) h
-      MJ = Meas-J K Kok {Ψ} mΨ
-      ιq = ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)
-
-      -- the r-th section of the merged kernel, as an element of `Pre U`
-      kp : R₁ → C.Pre U
-      kp r = mk {U} (sec {U} a₀ r) (sec-random {U} a₀ r) (gq r) (C.Wit.g-pr {U} {α q} wq r)
 
       kq : R₁ → Pre (XW U)
-      kq r = ιPre {U} (kp r)
+      kq r = ιPre {U} (ι-kp q r)
 
       mΨ∘merge : ∀ r → Meas (λ s → Ψ (mergeR r s))
       mΨ∘merge r = Meas-pre {Ψ} {mergeR r} mΨ (measurable-merge₁ (lower r))
 
-      pwr : ∀ r → J (K r) Ψ mΨ ≈ ψ {TQ U} ιq (∫ᶠ {U} h) r
-      pwr r = trans
-        (J-push {mergeR r} (measurable-merge₁ (lower r)) (gq r) {Ψ} mΨ (mΨ∘merge r))
-        (trans
-          (J-cong (gq r) {λ s → Ψ (mergeR r s)} {ψ {U} (kq r) h} (mΨ∘merge r) (mψ {U} (kq r) h)
-             (λ s → *-cong refl (Func.cong (map h) (Func.cong (map a₀) (merge-evens r s , merge-odds r s)))))
-          (trans (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q r)) (kq r) (ι-cong {U} {α q r} {kp r} (C.Wit.w-eq {U} {α q} wq r)) h))
-                 (sym (*-identityˡ _))))
+  ι-mult : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) →
+    ∫ᴹ {U} (ιPre {U} (C.joinPre {U} q)) h
+      ≈ ∫ᴹ {U} (joinPre {U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q))) h
+  ι-mult {U} q h = trans
+    (J-bind (m q) (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)))
+       (P₁.KernelOk-pushMerge {C.Wit.g {U} {α q} (α-random q)} (C.Wit.g-ok {U} {α q} (α-random q)))
+       {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
+       (Meas-J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)))
+          (P₁.KernelOk-pushMerge {C.Wit.g {U} {α q} (α-random q)} (C.Wit.g-ok {U} {α q} (α-random q)))
+          {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)))
+    (trans (J-cong (m q)
+              (Meas-J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)))
+                (P₁.KernelOk-pushMerge {C.Wit.g {U} {α q} (α-random q)} (C.Wit.g-ok {U} {α q} (α-random q)))
+                {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h))
+              (mψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h))
+              (ι-mult-pw q h))
+           (sym (∫ᴹ-join {U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) h)))
 
   ι-strong : ∀ {A B : QBS S} (a : ∣ A ∣) (p : C.Pre B) (h : Hom S (_×Q_ S A B) WQ) →
     ∫ᴹ {_×Q_ S A B} (ιPre {_×Q_ S A B} (CS.σPre {A} {B} (a , p))) h

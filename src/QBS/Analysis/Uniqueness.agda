@@ -73,9 +73,9 @@ module Uniqueness (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
     ... | bU′ , p = trans (I-cong μ (λ x → refl) (Fun-χ bU) (Fun-χ bU′))
                       (trans p (I-cong ν (λ x → refl) (Fun-χ bU′) (Fun-χ bU)))
 
-    -- from sets to functions
-    agree-fun : ∀ {h} (f : Fun h) → I μ h f ≈ I ν h f
-    agree-fun (ind {U} {h} c c≤1 bU e₀ e₁ b) =
+    -- from sets to functions, one lemma per constructor of `Fun`
+    agree-ind : ∀ {U h} (c : ∣A∣) (c≤1 : c ≤ 1#) (bU : Borel U) e₀ e₁ b → I μ h (ind c c≤1 bU e₀ e₁ b) ≈ I ν h (ind c c≤1 bU e₀ e₁ b)
+    agree-ind {U} {h} c c≤1 bU e₀ e₁ b =
       trans (I-scale μ c (Fun-χ bU) f′ pw)
         (trans (*-cong refl (agree-borel bU)) (sym (I-scale ν c (Fun-χ bU) f′ pw)))
       where
@@ -84,19 +84,33 @@ module Uniqueness (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
         pw x = case {U (lower x)}
           (λ u → trans (e₀ x u) (sym (trans (*-cong refl (χ-in U x u)) (*-identityʳ c))))
           (λ nu → trans (e₁ x nu) (sym (trans (*-cong refl (χ-out U x nu)) (zeroʳ c))))
-    agree-fun (sumF {h} {h₁} {h₂} f₁ f₂ q b) =
+
+    agree-sum : ∀ {h h₁ h₂} (f₁ : Fun h₁) (f₂ : Fun h₂) q b →
+      I μ h₁ f₁ ≈ I ν h₁ f₁ → I μ h₂ f₂ ≈ I ν h₂ f₂ → I μ h (sumF f₁ f₂ q b) ≈ I ν h (sumF f₁ f₂ q b)
+    agree-sum f₁ f₂ q b a₁ a₂ =
       trans (I-add μ (sumF f₁ f₂ q b) f₁ f₂ q)
-        (trans (+-cong (agree-fun f₁) (agree-fun f₂)) (sym (I-add ν (sumF f₁ f₂ q b) f₁ f₂ q)))
-    agree-fun (supF {h} hs fs inc q) =
+        (trans (+-cong a₁ a₂) (sym (I-add ν (sumF f₁ f₂ q b) f₁ f₂ q)))
+
+    agree-sup : ∀ {h} (hs : ℕ → R₁ → ∣A∣) (fs : ∀ n → Fun (hs n)) inc q →
+      (∀ n → I μ (hs n) (fs n) ≈ I ν (hs n) (fs n)) → I μ h (supF hs fs inc q) ≈ I ν h (supF hs fs inc q)
+    agree-sup hs fs inc q as =
       trans (I-sup μ hs fs inc (supF hs fs inc q) q)
-        (trans (⨆-cong _ _ (λ n → agree-fun (fs n))) (sym (I-sup ν hs fs inc (supF hs fs inc q) q)))
-    agree-fun (complF {h} {h′} f q) =
+        (trans (⨆-cong _ _ as) (sym (I-sup ν hs fs inc (supF hs fs inc q) q)))
+
+    agree-compl : ∀ {h h′} (f : Fun h′) q → I μ h′ f ≈ I ν h′ f → I μ h (complF f q) ≈ I ν h (complF f q)
+    agree-compl {h} {h′} f q af =
       cancel (I-≤1 μ f)
         (trans (+-comm (I μ h′ f) (I μ h hf))
           (trans (total μ)
             (trans masses
-              (sym (trans (+-cong (agree-fun f) refl) (trans (+-comm (I ν h′ f) (I ν h hf)) (total ν)))))))
+              (sym (trans (+-cong af refl) (trans (+-comm (I ν h′ f) (I ν h hf)) (total ν)))))))
       where
         hf = complF f q
         total : ∀ (m : Measure) → I m h hf + I m h′ f ≈ mass m
         total m = sym (I-add m (Fun-const 1# ≤-refl) hf f (λ y → sym (q y)))
+
+    agree-fun : ∀ {h} (f : Fun h) → I μ h f ≈ I ν h f
+    agree-fun (ind c c≤1 bU e₀ e₁ b) = agree-ind c c≤1 bU e₀ e₁ b
+    agree-fun (sumF f₁ f₂ q b) = agree-sum f₁ f₂ q b (agree-fun f₁) (agree-fun f₂)
+    agree-fun (supF hs fs inc q) = agree-sup hs fs inc q (λ n → agree-fun (fs n))
+    agree-fun (complF f q) = agree-compl f q (agree-fun f)

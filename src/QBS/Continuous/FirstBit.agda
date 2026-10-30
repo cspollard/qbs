@@ -124,7 +124,9 @@ module FirstBit (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
     I fairCoin (λ x → χ C (consR b x)) (Fun-pre {h = χ C} {f = consR b} (Fun-χ (Cyl-borel c)) (measurable-cons b))
       ≈ μ0 (proj₁ (cyl→tree (pullCyl b c)))
   term b {C} c = trans
-    (I-cong fairCoin {h = λ x → χ C (consR b x)} {h′ = χ (λ x → C (cons b x))} (χ-pre b C) (Fun-pre {h = χ C} {f = consR b} (Fun-χ (Cyl-borel c)) (measurable-cons b)) (Fun-χ (Cyl-borel (pullCyl b c))))
+    (I-cong fairCoin {h = λ x → χ C (consR b x)} {h′ = χ (λ x → C (cons b x))} (χ-pre b C)
+       (Fun-pre {h = χ C} {f = consR b} (Fun-χ (Cyl-borel c)) (measurable-cons b))
+       (Fun-χ (Cyl-borel (pullCyl b c))))
     (fairCoin-cyl (pullCyl b c))
 
   -- the children of the tree of a cylinder are the trees of its preimages
