@@ -23,7 +23,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Axiom.Extensionality.Propositional using (Extensionality)
@@ -160,6 +160,69 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
                                       (∫ᴹ-map {X} {TQ Y} (ks n) t (∫ᶠ {Y} f)))))
           (sym (∫ᴹ-sum {Y} (λ n → joinPre {Y} (mapM {X} {TQ Y} (ks n) t)) f)))))
 
+  ----------------------------------------------------------------------------
+  -- scaled laws, at global elements
+
+  scaledLaws-global : ∀ {X : QBS S} (t : Hom S (1Q S) (TQ X)) →
+    Σ (ℕ → Hom S (Probes.ℛQ S) X) λ a →
+    Σ (ℕ → Hom S (1Q S) WQ) λ w →
+    Σ (ℕ → Σ Measure IsProb) λ μ →
+      ∀ (pt : ∣ 1Q S ∣) (f : Hom S X WQ) →
+        ∫ᴹ {X} (map t ⟨$⟩ pt) f ≈ ∫ᴹ {X} (sumPre {X} (λ n → scalePre {X} (map (w n) ⟨$⟩ tt) (ιPre {X} (lawPre (a n) (μ n))))) f
+  scaledEq : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) →
+    ∫ᴹ {X} p f ≈ ∫ᴹ {X} (sumPre {X} (λ n → scalePre {X} (proj₁ (proj₂ (scaledLawsPre {X} p)) n)
+      (ιPre {X} (lawPre (proj₁ (scaledLawsPre {X} p) n) (proj₁ (proj₂ (proj₂ (scaledLawsPre {X} p))) n))))) f
+  scaledEq {X} p f = trans (proj₂ (proj₂ (proj₂ (scaledLawsPre {X} p))) f)
+    (sym (∫ᴹ-sum {X} (λ n → scalePre {X} (proj₁ (proj₂ (scaledLawsPre {X} p)) n)
+      (ιPre {X} (lawPre (proj₁ (scaledLawsPre {X} p) n) (proj₁ (proj₂ (proj₂ (scaledLawsPre {X} p))) n)))) f))
+
+  scaledLaws-global {X} t = proj₁ (scaledLawsPre {X} (map t ⟨$⟩ tt)) ,
+    (λ n → constW {1Q S} (proj₁ (proj₂ (scaledLawsPre {X} (map t ⟨$⟩ tt))) n)) ,
+    proj₁ (proj₂ (proj₂ (scaledLawsPre {X} (map t ⟨$⟩ tt)))) ,
+    (λ pt f → scaledEq {X} (map t ⟨$⟩ tt) f)
+
+  massZero : ∀ {X : QBS S} (x : Hom S (1Q S) X) → massP {X} (mapM {1Q S} {X} x (scorePre 0#)) ≈ 0#
+  massZero {X} x = trans (∫ᴹ-map {1Q S} {X} x (scorePre 0#) (constW {X} 1#))
+    (trans (∫ᴹ-score 0# (_∘H_ S {1Q S} {X} {WQ} (constW {X} 1#) x)) (zeroˡ _))
+
+  normZeroGlobal : ∀ {X : QBS S} (x : Hom S (1Q S) X) →
+    Setoid._≈_ (Carrier (_+Q_ S (C.TQ X) (1Q S)))
+      (normC′ {X} (mapM {1Q S} {X} x (scorePre 0#)) (invDec (massP {X} (mapM {1Q S} {X} x (scorePre 0#))))) (inj₂ tt)
+  normZeroGlobal {X} x = normZero {X} (mapM {1Q S} {X} x (scorePre 0#)) (massZero {X} x)
+    (invDec (massP {X} (mapM {1Q S} {X} x (scorePre 0#))))
+
+  normScaleGlobal : ∀ {X : QBS S} (c d : Cut) → c * d ≈ 1# → (p : Pre (XW X)) →
+    Setoid._≈_ (Carrier (_+Q_ S (C.TQ X) (1Q S)))
+      (normC′ {X} (scalePre {X} c p) (invDec (massP {X} (scalePre {X} c p)))) (normC′ {X} p (invDec (massP {X} p)))
+  normScaleGlobal {X} c d cd p = normScale {X} c d cd p (invDec (massP {X} (scalePre {X} c p))) (invDec (massP {X} p))
+
+  ----------------------------------------------------------------------------
+  -- bridge lemmas for the scaling fields, stated at the category-theoretic form of each field
+  -- (unifying `scale-*-lem _ f` against the field type unfolded the weights and ran out of memory)
+
+  scaleOneG : ∀ {X : QBS S} (t : Hom S (1Q S) (TQ X)) (pt : ∣ 1Q S ∣) (f : Hom S X WQ) →
+    ∫ᴹ {X} (map (scaleM {X} oneW t) ⟨$⟩ pt) f ≈ ∫ᴹ {X} (map t ⟨$⟩ pt) f
+  scaleOneG {X} t pt f = scale-one-lem {X} (map t ⟨$⟩ pt) f
+
+  scaleMulG : ∀ {X : QBS S} (a b : Hom S (1Q S) WQ) (t : Hom S (1Q S) (TQ X)) (pt : ∣ 1Q S ∣) (f : Hom S X WQ) →
+    ∫ᴹ {X} (map (scaleM {X} (_∘H_ S {1Q S} {_×Q_ S WQ WQ} {WQ} mulW (pairQ S {1Q S} {WQ} {WQ} a b)) t) ⟨$⟩ pt) f
+      ≈ ∫ᴹ {X} (map (scaleM {X} a (scaleM {X} b t)) ⟨$⟩ pt) f
+  scaleMulG {X} a b t pt f = scale-mul-lem {X} (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (map t ⟨$⟩ pt) f
+
+  scaleSumG : ∀ {X : QBS S} (a : Hom S (1Q S) WQ) (ts : ℕ → Hom S (1Q S) (TQ X)) (pt : ∣ 1Q S ∣) (f : Hom S X WQ) →
+    ∫ᴹ {X} (map (scaleM {X} a (sumM {X} ts)) ⟨$⟩ pt) f ≈ ∫ᴹ {X} (map (sumM {X} (λ n → scaleM {X} a (ts n))) ⟨$⟩ pt) f
+  scaleSumG {X} a ts pt f = scale-sum-lem {X} (map a ⟨$⟩ pt) (λ n → map (ts n) ⟨$⟩ pt) f
+
+  scaleNatG : ∀ {X Y : QBS S} (f : Hom S X Y) (a : Hom S (1Q S) WQ) (t : Hom S (1Q S) (TQ X)) (pt : ∣ 1Q S ∣) (g : Hom S Y WQ) →
+    ∫ᴹ {Y} (map (_∘H_ S {1Q S} {TQ X} {TQ Y} (Functor.F₁ TF f) (scaleM {X} a t)) ⟨$⟩ pt) g
+      ≈ ∫ᴹ {Y} (map (scaleM {Y} a (_∘H_ S {1Q S} {TQ X} {TQ Y} (Functor.F₁ TF f) t)) ⟨$⟩ pt) g
+  scaleNatG {X} {Y} f a t pt g = scale-nat-lem {X} {Y} f (map a ⟨$⟩ pt) (map t ⟨$⟩ pt) g
+
+  scaleJoinG : ∀ {X : QBS S} (a : Hom S (1Q S) WQ) (t : Hom S (1Q S) (TQ (TQ X))) (pt : ∣ 1Q S ∣) (f : Hom S X WQ) →
+    ∫ᴹ {X} (map (_∘H_ S {1Q S} {TQ (TQ X)} {TQ X} (NaturalTransformation.η (Monad.μ TM) X) (scaleM {TQ X} a t)) ⟨$⟩ pt) f
+      ≈ ∫ᴹ {X} (map (scaleM {X} a (_∘H_ S {1Q S} {TQ (TQ X)} {TQ X} (NaturalTransformation.η (Monad.μ TM) X) t)) ⟨$⟩ pt) f
+  scaleJoinG {X} a t pt f = scale-join-lem {X} (map a ⟨$⟩ pt) (map t ⟨$⟩ pt) f
+
   continuousStat : StatisticalInterface (L.suc L.zero) (QBSCat S) (Probes.ℛQ S) (cartesianClosed S)
     CP.continuousProb (Cocartesian.Cocartesian.coproducts (cocartesian S))
   continuousStat = record
@@ -181,20 +244,20 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
     ; score-mul = λ a b pt h → scoreMulPre (map a ⟨$⟩ pt) b h
     ; sumM = sumM
     ; scaleM = scaleM
-    ; scale-one = λ t pt f → scale-one-lem _ f
-    ; scale-mul = λ a b t pt f → scale-mul-lem _ _ _ f
+    ; scale-one = λ {X} t pt f → scaleOneG {X} t pt f
+    ; scale-mul = λ {X} a b t pt f → scaleMulG {X} a b t pt f
     ; scale-return = λ a x pt f → scaleReturnPre (map a ⟨$⟩ pt) x f
-    ; scale-sum = λ a ts pt f → scale-sum-lem _ _ f
+    ; scale-sum = λ {X} a ts pt f → scaleSumG {X} a ts pt f
     ; sum-nat = λ f ts pt g → sum-nat-lem f _ g
     ; sum-join = λ ts pt f → sum-join-lem _ f
-    ; scale-nat = λ f a t pt g → scale-nat-lem f _ _ g
-    ; scale-join = λ a t pt f → scale-join-lem _ _ f
+    ; scale-nat = λ {X} {Y} f a t pt g → scaleNatG {X} {Y} f a t pt g
+    ; scale-join = λ {X} a t pt f → scaleJoinG {X} a t pt f
     ; sumK = sumK
     ; sumK-point = λ ks x pt f → sumK-pointPre ks (map x ⟨$⟩ pt) f
     ; bind-sumK = λ ks t pt f → bindSumKPre ks (map t ⟨$⟩ pt) f
-    ; scaled-laws = λ t → ?                     -- scaledLawsPre (Decomp), lifted to global elements
+    ; scaled-laws = λ t → scaledLaws-global t
     ; normalize = normH
-    ; normalize-prob = λ X p → ?                -- normProb
-    ; normalize-zero = λ x pt → ?               -- normZero
-    ; normalize-scale = λ a b hab t pt → ?      -- normScale
+    ; normalize-prob = λ X p → normProb {X} p (invDec (massP {X} (ιPre {X} p)))
+    ; normalize-zero = λ x pt → normZeroGlobal x
+    ; normalize-scale = λ a b hab t pt → normScaleGlobal (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
     }

@@ -458,13 +458,11 @@ witnesses `abstract`.
 
 ## Not done
 
-- The s-finite measure monad (`StatisticalInterface`) for the continuous model: the monad `TM`, its
-  strength, commutativity, the inclusion of Prob, `score`/`zero` and the pre-measure laws of `scaleM`/`sumM`/`sumK`
-  exist.  Skeleton modules with holes (`make progress` accepts them, `make check` does not):
-  `Continuous/SFiniteDecomp` (`scaled-laws`), `Continuous/SFiniteNorm` (`normalize`), and the assembled
-  `Continuous/SFiniteStat` (`continuousStat`).
+- (done) The s-finite measure monad: `Continuous/SFiniteStat.continuousStat` is a complete
+  `StatisticalInterface` for the continuous model (`TM`, strength, commutativity, `score`, `scaleM`/`sumM`/`sumK`,
+  `scaled-laws` via `SFiniteDecomp`, `normalize` via `SFiniteNorm`).  `make check` is strict and passes.
 - Higher moments of the uniform distribution (the CDF is done).
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.
-- The CI workflow has not been run (it runs `make`, which will fail until the skeleton holes are filled; use `make progress` meanwhile).
+- The CI workflow has not been run (it runs `make`, which should now pass).
