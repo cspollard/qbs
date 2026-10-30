@@ -6,3 +6,20 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wenkokke/setup-agda@v2
+        with:
+          agda-version: 2.7.0.1
+      - name: libraries
+        run: |
+          git clone --depth 1 --branch v2.3 https://github.com/agda/agda-stdlib "$HOME/agda-stdlib"
+          git clone https://github.com/agda/agda-categories "$HOME/agda-categories"
+          git -C "$HOME/agda-categories" checkout c2e7c13e
+          mkdir -p "$HOME/.agda"
+          echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
+          echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
+      - run: make check
