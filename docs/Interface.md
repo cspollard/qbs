@@ -8,7 +8,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 
 ### `QBS.Core`
 - `idH` — `idH S {X}`: the identity morphism (`S` explicit).
-- `RandomSource` — the sample space "reals" `R` with measurable endomorphisms and partitions `R → ℕ`.
+- `RandomSource` — the sample space "reals" `R` with measurable endomorphisms and partitions `R → ℕ`, assembled from `Measurability` (`R`, `Meas` and its closure), `Partitions` (`Idx`, gluing) and `NatPairing` (`pair`/`unpair`) plus `idx-glue`; their fields are re-exported.
 - `QBS` — a quasi-Borel space: a setoid `Carrier` with `Random` elements `R → X`, closed under constants, precomposition, gluing.
 - `Hom` — a setoid map `map` preserving random elements (`map-random`).
 
@@ -21,7 +21,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 - `ℛQ` — the probe object, the space of random sources; random elements of `X` correspond to morphisms `ℛQ ⇒ X`.
 
 ### `QBS.Probability`
-- `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`.
+- `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`, assembled from the monad (`ProbMonad`), `ProbLaws` and `Fubini` (fields re-exported).
 - `Measure` — the type of probability measures on `ℛ`; `law a μ : ⊤ ⇒ T X` is the distribution of a probe `a : ℛ ⇒ X` under `μ`.
 - `law-return`, `law-map`, `law-pre`, `law-surjective` — the axioms linking `law` to the monad; `tensor`, `kernel`, `law-join` — the Fubini axioms.
 

@@ -54,18 +54,20 @@ private
 
 cantorSource : RandomSource (suc zero)
 cantorSource = record
-  { R = R₁
-  ; Meas = λ f → Measurable (down f)
-  ; Idx = λ i → Partition (downℕ i)
-  ; meas-id = measurable-id
-  ; meas-∘ = λ mf mg → measurable-∘ mg mf
-  ; meas-ext = λ e mf → measurable-ext (λ x → cong lower (e (lift x))) mf
-  ; meas-const = λ r → measurable-const (lower r)
-  ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ j} {λ k → down (f k)} pj mf
-  ; idx-const = λ n k → borel-eq n k
-  ; idx-pre = λ {i} {f} pi mf k → preimage mf (pi k)
-  ; pair = pair
-  ; unpair = unpair
-  ; unpair-pair = unpair-pair
+  { measurable = record
+    { R = R₁
+    ; Meas = λ f → Measurable (down f)
+    ; meas-id = measurable-id
+    ; meas-∘ = λ mf mg → measurable-∘ mg mf
+    ; meas-ext = λ e mf → measurable-ext (λ x → cong lower (e (lift x))) mf
+    ; meas-const = λ r → measurable-const (lower r)
+    }
+  ; partitions = record
+    { Idx = λ i → Partition (downℕ i)
+    ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ j} {λ k → down (f k)} pj mf
+    ; idx-const = λ n k → borel-eq n k
+    ; idx-pre = λ {i} {f} pi mf k → preimage mf (pi k)
+    }
+  ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
   ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ j) (λ n → downℕ (i n)) pj pi
   }

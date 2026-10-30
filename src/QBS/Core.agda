@@ -16,26 +16,49 @@ open import Data.Product.Base using (_×_; _,_)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 
--- The parameters of the theory: a "random source" R (the reals) together with
--- the measurable maps R → R and the measurable countable partitions of R.
-record RandomSource (ℓ : Level) : Set (suc ℓ) where
+-- The parameters of the theory: a "random source" R (the reals) together with the measurable maps
+-- R → R, the measurable countable partitions of R, and a pairing of ℕ.  Three small pieces make up
+-- a `RandomSource`; all their fields are re-exported by it.
+
+-- the reals and their measurable endomorphisms: closed under identity, composition, extensionality, constants
+record Measurability (ℓ : Level) : Set (suc ℓ) where
   field
     R : Set ℓ
     Meas : (R → R) → Set ℓ
-    -- measurable index functions R → ℕ (i.e. measurable countable partitions)
-    Idx : (R → ℕ) → Set ℓ
     meas-id : Meas id
     meas-∘ : ∀ {f g} → Meas f → Meas g → Meas (f ∘ g)
     meas-ext : ∀ {f g} → (∀ r → f r ≡ g r) → Meas f → Meas g
     meas-const : ∀ r → Meas (const r)
-    -- measurable functions glue along measurable partitions
+
+-- measurable index functions R → ℕ (i.e. measurable countable partitions), along which measurable
+-- functions glue
+record Partitions {ℓ} (M : Measurability ℓ) : Set (suc ℓ) where
+  open Measurability M
+  field
+    Idx : (R → ℕ) → Set ℓ
     meas-glue : ∀ {j} {f : ℕ → R → R} → Idx j → (∀ n → Meas (f n)) → Meas (λ r → f (j r) r)
     idx-const : ∀ n → Idx (const n)
     idx-pre : ∀ {i f} → Idx i → Meas f → Idx (i ∘ f)
-    -- a bijection ℕ × ℕ ≅ ℕ, under which indices glue
+
+-- a bijection ℕ × ℕ ≅ ℕ
+record NatPairing : Set where
+  field
     pair : ℕ → ℕ → ℕ
     unpair : ℕ → ℕ × ℕ
     unpair-pair : ∀ n m → unpair (pair n m) ≡ (n , m)
+
+record RandomSource (ℓ : Level) : Set (suc ℓ) where
+  field
+    measurable : Measurability ℓ
+  open Measurability measurable public
+  field
+    partitions : Partitions measurable
+  open Partitions partitions public
+  field
+    pairing : NatPairing
+  open NatPairing pairing public
+  field
+    -- indices glue under the pairing
     idx-glue : ∀ {j} {i : ℕ → R → ℕ} → Idx j → (∀ n → Idx (i n)) →
       Idx (λ r → pair (j r) (i (j r) r))
 

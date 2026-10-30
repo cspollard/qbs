@@ -84,10 +84,9 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
           }
       }
 
-  discreteProb : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)
-  discreteProb = record
-    { commutativeMonad = commutativeMonad
-    ; Measure = Σ (R → ∣A∣) Ok
+  discreteProbLaws : ProbLaws ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) commutativeMonad
+  discreteProbLaws = record
+    { Measure = Σ (R → ∣A∣) Ok
     ; pushforward = λ m (μ , ok) → push (λ r → map m ⟨$⟩ r) μ , ok-push _ ok
     ; law = lawH
     ; law-resp = λ e m _ f → ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (Func.cong f (e r)))
@@ -100,7 +99,11 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ tt
         in probe S (α-random p) , (μ p , μ-ok p) , (λ pt f → Setoid.refl Aˢ)
-    ; split = record
+    }
+
+  discreteProbFubini : Fubini ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) commutativeMonad discreteProbLaws
+  discreteProbFubini = record
+    { split = record
         { from = record
             { map = record { to = λ r → ιR r , ρR r ; cong = λ { ≡.refl → ≡.refl , ≡.refl } }
             ; map-random = λ _ → tt , tt }
@@ -127,4 +130,11 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
           (Setoid.trans Aˢ (∑-cong (λ s → sym (∑-scale (μ s) _)))
             (Setoid.trans Aˢ (∑-cong (λ s → ∑-cong (λ m → sym (*-assoc (μ s) (ν m) _))))
               (Setoid.sym Aˢ (cantor (λ a b → (μ a * ν b) * (f ⟨$⟩ (map γ ⟨$⟩ (a , b))))))))
+    }
+
+  discreteProb : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)
+  discreteProb = record
+    { commutativeMonad = commutativeMonad
+    ; laws = discreteProbLaws
+    ; fubini = discreteProbFubini
     }
