@@ -1,3 +1,4 @@
 name: qbs
 depend: standard-library agda-categories
 include: src
+flags: --lossy-unification

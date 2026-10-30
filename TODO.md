@@ -83,6 +83,13 @@ explicit `proj₁`/`proj₂` plus a separate lemma.  Check wall time under load 
 
 ## Compile time: audit, profiling and improvement strategy
 
+**`--lossy-unification` library-wide (2026-10-30).** `qbs.agda-lib` now has `flags: --lossy-unification` (sound; it only
+makes unification of `f a₁…aₙ =?= f b₁…bₙ` try the arguments first).  Per-module wall time, before → after: `SFiniteStrong`
+193 s → 5 s, `JSum` 140 s → 4 s, `SFiniteMonad` 102 s → 5 s, `Density` 77 s → 4 s, `JParam` 61 s → 4 s, `Tonelli` 50 s → 3 s,
+`Lebesgue` 50 s → 4 s, `Continuous.ProbInstance` 50 s → 4 s, `StatInstance` 38 s → 9 s, `Model.ProbInstance` 24 s → 4 s.
+It is also what made `SFiniteStat` check (minutes → seconds).  The one fallout: `SFiniteStrong.strength-assoc` needed an explicit
+implicit argument (`∫ᴹ-σ {_×Q_ S A B}`), because the lossy solution of a bare `_` picked the wrong side.
+
 **Refactoring long proofs (2026-10-30).** Splitting declarations into named lemmas is free when each lemma has its own
 signature. Three things made it slow, all avoided by the fixes: (1) `with f args` where the result is a nested `Σ`
 and the goal is `mem (c ⊗ d) q` (`LowerInverse.go`: 3 s → 9 s; fix: pass the `Σ` to a lemma that pattern-matches on it

@@ -169,7 +169,7 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
                 (sym (trans (∫ᴹ-σ {A} {B} a (joinPre P) g) (∫ᴹ-join P (fixH {A} {B} a g)))))))
     ; strength-assoc = λ {A} {B} {C} ((x , y) , q) h →
         trans (∫ᴹ-map _ (σPre {_} {C} ((x , y) , q)) h)
-          (trans (∫ᴹ-σ {_} {C} (x , y) q _)
+          (trans (∫ᴹ-σ {_×Q_ S A B} {C} (x , y) q _)
             (trans (∫ᴹ-cong q (λ z → refl))
               (sym (trans (∫ᴹ-σ {A} {_} x (σPre {B} {C} (y , q)) h) (∫ᴹ-σ {B} {C} y q (fixH {A} {_} x h))))))
     }
