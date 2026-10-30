@@ -14,7 +14,7 @@ module QBS.Inference.Sampler where
 
 open import Algebra.Bundles using (CommutativeRing)
 open import Data.Empty using (⊥)
-open import Data.Nat.Base using (ℕ)
+open import Data.Nat.Base using (ℕ; _<_)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -33,6 +33,8 @@ open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
+open import QBS.Analysis.Omega using (module OmegaSemiring)
+open import QBS.Analysis.Variance using (module Variance)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.FairCoin
@@ -49,11 +51,12 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   open RandomSource S using () renaming (meas-id to measId)
   open Continuous A (lemOf lem₁) funext probClass using (Pre; mk; TQ; _≈ᵖ_; Joint; sec-random; rand-irrel)
   open Pre
-  open Bounded A using (Sg; _≃_; ≃-refl; _+S_; _*S_)
-  open SignedIntegral (lemOf lem₁) using (E)
+  open Bounded A using (Sg; _≃_; ≃-refl; ≃-trans; _+S_; _*S_; *S-cong)
+  open SignedIntegral (lemOf lem₁) using (E; E-cong)
+  open Variance (lemOf lem₁) using (_*SF_[_])
   open BoundedRing (lemOf lem₁) using (BSF; boundedRing; E-B)
   open SignedTests (lemOf lem₁) using (STest; pullback)
-  open CoinCoords lem₁ funext using (coordSF; coordSF-bdd)
+  open CoinCoords lem₁ funext using (coordSF; coordSF-bdd; E-coord; E-indep)
   open CoinIndep lem₁ using (fairCoin-prob)
   open FairCoin lem₁ using (fairCoin)
   module F = Frequentist lem₁
@@ -104,7 +107,21 @@ module Sampler (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
     -- the iid sample has the moments the frequentist layer asks for: the mean and second moment of each coordinate
     -- (`CoinCoords.E-coord`, the coordinates are measure preserving) and uncorrelatedness (`CoinCoords.E-indep`)
     iid-moments : SingleMoments → F.Moments (iidExperiment s g) μ σ²
-    iid-moments sm = ?
+    iid-moments sm = record
+      { mean = λ θ i → ≃-trans {E (coordSF i (f θ))} {E (f θ)} {μ θ} (E-coord i (f θ)) (SingleMoments.mean sm θ)
+      ; second = λ θ i → ≃-trans {E (coordSF i (f θ) *SF coordSF i (f θ) [ coordSF-bdd i (f θ) (bf θ) ])}
+          {E (f θ *SF f θ [ bf θ ])} {σ² θ +S (μ θ *S μ θ)}
+          (≃-trans {_} {E (coordSF i (f θ *SF f θ [ bf θ ]))} {_}
+            (E-cong {fairCoin} {coordSF i (f θ) *SF coordSF i (f θ) [ coordSF-bdd i (f θ) (bf θ) ]} {coordSF i (f θ *SF f θ [ bf θ ])}
+              (λ x → OmegaSemiring.refl A))
+            (E-coord i (f θ *SF f θ [ bf θ ])))
+          (SingleMoments.second sm θ)
+      ; uncorr = λ θ i j h → ≃-trans {_} {E (f θ) *S E (f θ)} {μ θ *S μ θ} (E-indep i j h (f θ) (f θ) (bf θ))
+          (*S-cong {E (f θ)} {μ θ} {E (f θ)} {μ θ} (SingleMoments.mean sm θ) (SingleMoments.mean sm θ))
+      }
+      where
+      f = λ θ → proj₁ (single s g θ)
+      bf = λ θ → proj₂ (single s g θ)
 
     -- Sₙ / n is unbiased for μ, and (n Qₙ − Sₙ²) / (n² − n) for σ², for every sampler with these single-draw moments
     sampler-mean-unbiased : (sm : SingleMoments) → ∀ n →
