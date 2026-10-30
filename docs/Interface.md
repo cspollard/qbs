@@ -83,11 +83,12 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Analysis.Meas`, `QBS.Analysis.Lebesgue`
 - `Meas` — threshold measurability of `[0,∞]`-valued functions; `Lebesgue`: `J m φ` — the integral of a `Meas` function (unbounded).
 
-### `QBS.Analysis.Signed`, `QBS.Analysis.SignedOmega`, `QBS.Analysis.SignedIntegral`
+### `QBS.Analysis.Signed`, `QBS.Analysis.SignedOmega`, `QBS.Analysis.SignedIntegral`, `QBS.Analysis.Variance`
 Signed values and signed integrals (plan 2, step 1). No cancellation or classical principle in `Signed`.
 - `SubSemiring` (`Signed`) — a subsemiring of "finite" elements; `Signed` — `module Signed R F`: the ring of differences of finite elements (Grothendieck construction).
 - `Sg` — a signed value `pos − neg` with finite parts; `_≃_` equality (`p + n′ + k ≈ p′ + n + k` for finite `k`); `_+S_`, `_*S_`, `-S_`, `0S`, `1S`, `ι` (embedding), `signedRing` (a `CommutativeRing`), `ι-+`, `ι-*`.
 - `Bounded` (`SignedOmega`) — `module Bounded A`: finite = bounded by a natural number (`Bnd`, `nat`); re-exports `Signed` at that subsemiring.
+- `Var pm f b`, `var-formula` (`Variance`) — variance `E[(f−E f)²]` of a bounded signed function, and `Var f ≃ E[f²] − (E f)²` (`_*SF_[_]` multiplies bounded signed functions).
 - `SF m` (`SignedIntegral`) — a signed integrable function against `m`: measurable parts `f⁺`, `f⁻` with bounded integrals; `E` — its signed integral; `_≈SF_`, `E-cong`.
 - `_+SF_`, `E-+` — sum and additivity; `-SF_`, `E-neg`; `scaleSF`, `E-scale` — scaling by a signed constant; `constSF`, `E-const`, `J-const` — constants against a probability measure.
 
@@ -100,11 +101,12 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem funext`) — the complete `StatisticalInterface` for the continuous model.
 
-### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁ funext`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
 - `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
+- `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).
 
 ## Examples and generic calculations
 
