@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- SKELETON (holes).  Every s-finite measure is a countable sum of scaled laws of probability
+-- Every s-finite measure is a countable sum of scaled laws of probability
 -- measures: the `scaled-laws` field of `StatisticalInterface`.
 --
 -- A measure `[α, m, w]` is split along the level sets `Bₙ = {r | n ≤ w r < n+1}` of its weight.
@@ -8,8 +8,6 @@
 -- sub-probability measure of mass `cₙ`; classically either `cₙ` is invertible (then `μₙ = cₙ⁻¹ νₙ`
 -- is a probability measure) or `cₙ ≈ 0` (then any `μₙ` works with weight 0).  The scaled constant is
 -- `(n+1)·cₙ`, and the probe is `x ∘ α`.
-
--- Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`.
 
 module QBS.Continuous.SFiniteDecomp where
 

@@ -3,6 +3,21 @@
 An extrinsic formalisation of the category **QBS** (Heunen, Kammar, Staton, Vákár,
 [*A Convenient Category for Higher-Order Probability Theory*](https://arxiv.org/abs/1701.02547)).
 
+## Documentation
+
+| Read | For |
+|---|---|
+| [docs/Guide.md](docs/Guide.md) | task-oriented tour: which model to use, write a program, condition, continuous integrals, what is missing |
+| [docs/Interface.md](docs/Interface.md) | the public names, by module, with one-line meanings |
+| [docs/Architecture.md](docs/Architecture.md) | layers, dependencies, hypotheses, compile time, where to add things |
+| [docs/Modules.md](docs/Modules.md) | one line for each of the 121 modules (generated) |
+| [docs/Classical.md](docs/Classical.md), [docs/ConstructiveLit.md](docs/ConstructiveLit.md) | where `lem`/`funext` are used; literature for a constructive version |
+| [plans/](plans/) | plans: documentation, uniform-distribution moments and estimators, Bayesian and frequentist inference |
+| [TODO.md](TODO.md) | open work |
+
+`make doccheck` keeps these in step with the code (header comments, module index, excerpts, listed names).
+The sections below are the construction history, layer by layer.
+
 ## Library
 
 `qbs.agda-lib` (name `qbs`, depends on `standard-library` and `agda-categories`; sources in `src/`, modules
@@ -439,7 +454,7 @@ measures `[α, m, w]` with `m` a probability measure and `w : R → [0,∞]` a `
 Decision: truncation by `2⁻ᵏ` needs only halves, so no division by naturals; a dyadic scale is also
 what makes the approximations `[0,1]`-valued, as `Fun` and `I-scale` require.
 
-## The s-finite monad (in progress)
+## The s-finite monad
 
 A measure on `X` is a pre-measure on `W × X` (`W = [0,∞]` with `Meas` as its random elements,
 `Continuous/Weights`): a probe `α : R → W × X` and a probability measure `m`. The weighted integral
@@ -465,4 +480,4 @@ witnesses `abstract`.
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.
-- The CI workflow has not been run (it runs `make`, which should now pass).
+- Signed values, higher moments, iid products, Gaussian, statistical models and estimators: see `plans/`.

@@ -12,6 +12,9 @@
 #                      html/ (from the progress overlay, so skeleton modules with holes are included), then
 #                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
 #                      only serves.
+#   make doccheck      check the docs against the code (scripts/doccheck.py): every module has a header comment,
+#                      docs/Modules.md is current (regenerate with scripts/modindex.py), docs/Interface.md names exist,
+#                      verbatim excerpts in docs/*.md are still in the sources.  Needs no Agda.
 #   make clean         delete the Agda interfaces (_build/) and the logs, for a from-scratch check.
 #   make profile       typecheck from scratch with `--profile=modules` (one mode per run in Agda 2.7) and write
 #                      per-module/per-definition timings to profile/ (see TODO.md, "Compile time").
@@ -36,10 +39,12 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: check progress html serve report clean all-interfaces profile profile-tree
+.PHONY: doccheck check progress html serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
+doccheck:
+	@python3 scripts/doccheck.py
 check:
 	@$(MAKE) --no-print-directory report MODE=strict
 progress:

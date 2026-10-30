@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`.
 module QBS.Exponential where
 
 open import Level using (Level; suc)

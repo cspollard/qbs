@@ -1,5 +1,9 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`.
+-- Fields: weights (W, mulW, oneW, zeroW + laws); measures (commutative strong monad M ⊇ Prob); zero measure,
+-- `score : W ⇒ M 1`; countable sums/scaling and `sumK` (s-finiteness, bind linear in the kernel);
+-- `normalize : M X ⇒ Prob X + 1`.  Instances: `Model/StatInstance` (discrete), `Continuous/SFiniteStat`.
 module QBS.Statistical where
 
 open import Level using (Level; suc; _⊔_)

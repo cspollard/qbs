@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X.
 module QBS.Probes where
 
 open import Level using (Level; suc)

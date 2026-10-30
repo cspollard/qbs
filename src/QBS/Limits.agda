@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`).
 module QBS.Limits where
 
 open import Level using (Level; suc; _⊔_; Lift; lift)

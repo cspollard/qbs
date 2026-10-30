@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal).
 module QBS.Category where
 
 open import Level using (suc)

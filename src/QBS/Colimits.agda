@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`).
 module QBS.Colimits where
 
 open import Level using (Level; suc; Lift; lift)

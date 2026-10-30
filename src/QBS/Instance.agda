@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. statistical) monad as a hypothesis.
 module QBS.Instance where
 
 open import Level using (Level; suc)

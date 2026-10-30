@@ -24,6 +24,8 @@ jobs:
           mkdir -p "$HOME/.agda"
           echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
           echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
+      - name: docs match the code
+        run: make doccheck
       - run: make check
       - name: show failing logs
         if: failure()

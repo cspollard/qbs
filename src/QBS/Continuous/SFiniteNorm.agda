@@ -1,14 +1,12 @@
 {-# OPTIONS --safe --without-K #-}
 
--- SKELETON (holes).  Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws.
+-- Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws.
 --
 -- The mass `∫ᴹ p 1` of `[α, m, w]` is a lower real in `[0, ∞]`; classically it is either invertible
 -- (finite and positive, `Analysis/LowerInverse`) or not (zero or infinite).  Invertible: normalise by
 -- the inverse, which is again a pre-measure `[α, m, w/mass]`, here with `w` rebuilt to a probability
 -- by pushing the weight into the measure (`Continuous/SFiniteDecomp.normM` on the level pieces).  Not
 -- invertible: fail (`inj₂ tt`); the degenerate infinite-mass case is left unspecified by the interface.
-
--- Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`.
 
 module QBS.Continuous.SFiniteNorm where
 

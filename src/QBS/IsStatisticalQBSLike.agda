@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation).
 module QBS.IsStatisticalQBSLike where
 
 open import Level using (suc; _⊔_)

@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits).
 module QBS.Complete where
 
 open import Level using (Level; suc; _⊔_; Lift; lift; lower)

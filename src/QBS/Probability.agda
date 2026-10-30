@@ -1,5 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ.
+-- A commutative strong monad of probability measures, `law a μ` (the distribution of a probe) with its axioms,
+-- and the bind (Fubini) axioms over a splitting ℛ ≅ ℛ × ℛ.  A hypothesis until a concrete model supplies it.
 module QBS.Probability where
 
 open import Level using (Level; suc; _⊔_)

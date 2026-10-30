@@ -1,0 +1,111 @@
+# Public interface
+
+The names a user imports, with the module they live in and one line of meaning. Types are shown where short; open the
+module for the rest. `scripts/doccheck.py` verifies that every module path below exists and every name still
+occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X Y` morphisms in `QBSCat S`.
+
+## Abstract layer
+
+### `QBS.Core`
+- `idH` — `idH S {X}`: the identity morphism (`S` explicit).
+- `RandomSource` — the sample space "reals" `R` with measurable endomorphisms and partitions `R → ℕ`.
+- `QBS` — a quasi-Borel space: a setoid `Carrier` with `Random` elements `R → X`, closed under constants, precomposition, gluing.
+- `Hom` — a setoid map `map` preserving random elements (`map-random`).
+
+### `QBS.Category`, `QBS.Limits`, `QBS.Colimits`, `QBS.Complete`, `QBS.Exponential`
+- `QBSCat` — `QBSCat S`, the category (agda-categories `Category`).
+- `QBS.Exponential`: `cartesianClosed` — `CartesianClosed (QBSCat S)`; `QBS.Limits`: terminal object and products; `QBS.Colimits`: coproducts.
+- `QBS.Complete`: `countableProduct`, `countableCoproduct` — indexed products and coproducts.
+
+### `QBS.Probes`
+- `ℛQ` — the probe object, the space of random sources; random elements of `X` correspond to morphisms `ℛQ ⇒ X`.
+
+### `QBS.Probability`
+- `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`.
+- `Measure` — the type of probability measures on `ℛ`; `law a μ : ⊤ ⇒ T X` is the distribution of a probe `a : ℛ ⇒ X` under `μ`.
+- `law-return`, `law-map`, `law-pre`, `law-surjective` — the axioms linking `law` to the monad; `tensor`, `kernel`, `law-join` — the Fubini axioms.
+
+### `QBS.Statistical`
+`StatisticalInterface` (34 fields) on top of a `ProbabilityInterface`. Field groups:
+- weights: `W`, `mulW`, `oneW`, `zeroW`, and `mul-assoc`, `mul-comm`, `mul-one`, `mul-zero`.
+- measures: `commutativeMonad` (the measure monad `M`), `inclusion` (Prob into `M`), `inclusion-strong`.
+- conditioning: `zero` (zero measure), `score : W ⇒ M 1`, `score-zero`, `score-mul`, `zero-bind`.
+- s-finiteness: `sumM`, `scaleM`, `sumK` and their laws (`scale-one`, `scale-mul`, `scale-sum`, `sum-nat`, `sum-join`, `scale-nat`, `scale-join`, `sumK-point`, `bind-sumK`), and `scaled-laws` (every measure is a countable sum of scaled laws).
+- normalisation: `normalize : ∀ X → M X ⇒ Prob X + 1`, `normalize-prob`, `normalize-zero`, `normalize-scale`.
+
+### `QBS.StatisticalLemmas`
+- `bind-sum`, `bind-scale` — bind preserves countable sums and scaling of the measure argument.
+
+### `QBS.IsQBSLike`, `QBS.IsStatisticalQBSLike`, `QBS.Instance`
+- `IsQBSLike`, `IsStatisticalQBSLike` — the minimal structure for probability, resp. soft conditioning.
+- `isQBSLike S P`, `isStatisticalQBSLike S P St` — package any random source with a (hypothesised) monad.
+
+## Discrete model
+
+### `QBS.Model.Semiring`
+- `CompleteSemiring` — a commutative semiring with countable sums `∑` (fields `_+_`, `_*_`, `0#`, `1#`, `∑`).
+- `NormalizableSemiring` — a complete semiring with inverses for normalisation (`complete` is the underlying semiring).
+
+### `QBS.Model.Monad`
+- `Measures` — `module Measures A K`: measures over `A` of weight class `K`.
+- `Pre` — a discrete pre-measure: probe `α`, weights `μ`, proof `μ-ok`; `mk` builds one.
+- `∫` — `∫ p f`: the expectation `∑ r. μ r * f (α r)`.
+- `ηPre`, `mapPre`, `joinPre`, `∫-η`, `∫-join` — unit, map, join and their integral rules.
+
+### `QBS.Model.WeightClasses`
+- `probClass`, `allClass` — total mass 1 / arbitrary weights; `QBS.Model.SubProb`: `subClass` — total mass ≤ 1.
+
+### `QBS.Model.Discrete`, `QBS.Model.StatInstance`
+- `discreteStatisticalQBSLike` — `NormalizableSemiring → IsStatisticalQBSLike`, the discrete model.
+- `discreteStat` (`StatInstance`) — its `StatisticalInterface`, with `normalize`.
+
+### Concrete semirings: `QBS.Model.BoolSemiring`, `QBS.Model.ViterbiSemiring`, `QBS.Model.AdditiveSemiring`, `QBS.Model.AdditiveModel`, `QBS.Model.BoolModel`, `QBS.Model.ViterbiModel`
+- `boolComplete`, `additiveComplete`, `additiveNormalizable` — complete / normalisable semirings (Boolean, additive `[0,∞]`); models `QBS.Model.BoolModel`, `ViterbiModel`, `AdditiveModel` (`additiveStatisticalQBSLike`).
+
+## Continuous model
+
+### `QBS.Borel.Source`
+- `cantorSource` — Cantor space `2^ℕ` as a `RandomSource`.
+
+### `QBS.Continuous.Sample`, `QBS.Analysis.CoinIntegral`, `QBS.Analysis.Omega`
+- `UnitInterval` (`Sample`) — `module UnitInterval A`: the unit interval as a QBS `AQ`; `S` — the Cantor random source used by the continuous model.
+- `lemOf` (`CoinIntegral`) — turns `lem₁` into the `lem` the lower-cut construction needs; `LowerRealsOmega (lemOf lem₁)` is the value semiring.
+- `OmegaSemiring` (`Omega`) — the value-semiring record (`_≈_`, `1#`, order, suprema).
+
+### `QBS.Analysis.Measure`, `QBS.Analysis.Fun`
+- `Integration` (`Measure`) — `module Integration A`: `probClass` (probability measures of the continuous model; not the discrete `WeightClasses.probClass`).
+- `Measure` — a sub-probability measure as a Daniell functional on measurable functions; `IsProb` — total mass 1.
+- `Fun` — the inductive class of measurable `[0,1]`-valued functions on Cantor space.
+
+### `QBS.Analysis.CoinIntegral`, `QBS.Continuous.FairCoin`
+- `fairCoin` — the fair-coin measure on Cantor space; `fairCoin-cyl` — its value on cylinders.
+
+### `QBS.Analysis.Meas`, `QBS.Analysis.Lebesgue`
+- `Meas` — threshold measurability of `[0,∞]`-valued functions; `Lebesgue`: `J m φ` — the integral of a `Meas` function (unbounded).
+
+### `QBS.Continuous.Monad`, `QBS.Continuous.ProbInstance`, `QBS.Continuous.SubProb`, `QBS.Continuous.RealModel`
+- `Continuous` (`Monad`) — `module Continuous A lem funext K` (value semiring, `lem`, `funext`, measure class such as `Integration.probClass`): the probability monad: `Pre`, `mk`, `∫`, `joinPre`, `∫-join`.
+- `ContinuousProb` (`ProbInstance`) — it is a `ProbabilityInterface`; `continuousQBSLike`; `RealModel`: `realQBSLike`.
+- `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
+
+### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
+- `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
+- `continuousStat` (`SFiniteStat`, `module SFiniteStat lem funext`) — the complete `StatisticalInterface` for the continuous model.
+
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+- `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
+- `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁ funext`).
+- `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
+
+## Examples and generic calculations
+
+### `QBS.Example.Program`
+- `Programs` — `Prog`, `pure`, `_>>=_`, `_>>_`, `test`, `∫-pure`, `∫-bind` for `do`-notation programs.
+- `Flip` — `flip`, `∫-flip`, `∫-flip->>=`, `both`, `∫-both`; `BoolDemo` — the Boolean instance.
+
+### `QBS.Example.Recipes`, `QBS.Example.Conditioning`, `QBS.Example.HardConditioning`, `QBS.Example.Bayes`, `QBS.Example.Probability`
+- `reject`, `guard`, `∫-guard` — rejection in programs.
+- `condition`, `∫-condition`, `condition-split` — conditioning as a measure transformer; total expectation.
+- `posteriorU`, `evidence`, `posterior`, `bayes` — Bayes' rule.
+- `isTrue`, `flip-mean`, `UniformSetup` (`QBS.Example.Recipes`) — checked copy-and-paste set-ups: the Bernoulli coin (module `Bernoulli`) and the uniform distribution (`uniform`, `∫`, `AQ`, `half` in scope).
+- `Calculation` — `both-true`, `both-mass`: real-valued probabilities; `Additive` — its additive `[0,∞]` instance.

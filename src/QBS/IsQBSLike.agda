@@ -1,5 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`.
 module QBS.IsQBSLike where
 
 open import Level using (Level; suc; _⊔_)

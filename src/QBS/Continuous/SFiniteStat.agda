@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- SKELETON (holes).  The s-finite measure monad `TM` over the continuous model is a model of
+-- The s-finite measure monad `TM` over the continuous model is a model of
 -- `StatisticalInterface` (soft conditioning).  Each field points at the lemma that will discharge it:
 --   weights            Continuous/Weights (semiring laws of [0,∞])
 --   commutativeMonad   SFiniteMonad (TM), SFiniteStrong (strength), SFiniteCommute (Fubini)

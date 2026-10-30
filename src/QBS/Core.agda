@@ -1,5 +1,9 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Quasi-Borel spaces over an abstract random source.
+--   RandomSource S : the "reals" R (a type with measurable endomorphisms and countable partitions R → ℕ).
+--   QBS S          : a setoid with a set of random elements R → X, closed under constants, precomposition, gluing.
+--   Hom X Y        : setoid maps preserving random elements.   Also identity and composition.
 module QBS.Core where
 
 open import Level using (Level; suc)
