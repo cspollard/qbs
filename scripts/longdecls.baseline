@@ -1,10 +1,6 @@
 # Known long declarations tolerated by 'make longcheck' (scripts/longdecls.py); each is a candidate for splitting into named lemmas.
 # Remove a line once the declaration is shortened; do not add new ones without a reason.
 QBS.Model.SubProb.subBind
-QBS.Continuous.SFiniteIncl.ι-mult-pw
-QBS.Analysis.LowerInverse.gap
-QBS.Analysis.LevelSets.compl-contra
-QBS.Analysis.CoinSimple.∫-mono
 QBS.Continuous.SFiniteMonad.stepC
 QBS.Analysis.Variance.neg4
 QBS.Statistical.scale-mul
@@ -47,6 +43,7 @@ QBS.Analysis.Tonelli.J-bind
 QBS.Analysis.Series.inj-subsum
 QBS.Analysis.Regular.meas-≤
 QBS.Analysis.Mixture.mix-sup
+QBS.Analysis.LevelSets.compl-contra
 QBS.Continuous.UniformVariance.pp-eq
 QBS.Analysis.SignedIntegral.E-scale
 QBS.Analysis.Fun.Fun-mask

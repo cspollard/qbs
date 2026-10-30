@@ -87,6 +87,20 @@ combine {q} {q′} {s} {ε} 0≤εε q≤1 m3 =
     m4 : q * s + (q′ + - q) * s ≃ q′ * s
     m4 = ≃-trans (≃-sym (*-distribʳ-+ s q (q′ + - q))) (*-cong (add-sub q q′) (≃-refl {s}))
 
+-- the gap `q′ − q` between two rationals in [0, 1) is at most 1
+gap-δ≤1 : ∀ {q q′} → 0ℚᵘ ≤ q → q′ < 1ℚᵘ → (q′ + - q) ≤ 1ℚᵘ
+gap-δ≤1 {q} {q′} 0≤q q′<1 =
+  ≤-trans (≤-≃ (≃-sym (+-identityʳ (q′ + - q))))
+    (≤-trans (+-mono-≤ (≤-refl {q′ + - q}) 0≤q) (≤-trans (≤-≃ (sub-add q′ q)) (<-≤ q′<1)))
+
+-- 4ε ≤ δ s₀ and s₀ ≤ s + ε force ε ≤ s, hence 0 < s
+gap-pos : ∀ {δ s₀ s ε} → 0ℚᵘ < s₀ → 0ℚᵘ < ε → δ ≤ 1ℚᵘ → 0ℚᵘ ≤ δ →
+  ((ε + ε) + (ε + ε)) ≤ δ * s₀ → s₀ ≤ s + ε → ε ≤ s
+gap-pos {δ} {s₀} 0<s₀ 0<ε δ≤1 0≤δ h4 hs = eps-le 0<ε (≤-trans h4 (≤-trans δs₀≤s₀ hs))
+  where
+    δs₀≤s₀ : δ * s₀ ≤ s₀
+    δs₀≤s₀ = ≤-trans (*-mono-≤-nnʳ (<-≤ 0<s₀) δ≤1) (≤-≃ (*-identityˡ s₀))
+
 -- the choice of the approximation scale: 4ε ≤ δ s₀ makes `s` close enough to the boundary
 gap : ∀ {q q′ s₀ s ε} → 0ℚᵘ ≤ q → q < q′ → q′ < 1ℚᵘ → 0ℚᵘ < s₀ → 0ℚᵘ < ε →
   ((ε + ε) + (ε + ε)) ≤ (q′ + - q) * s₀ → s₀ ≤ s + ε →
@@ -96,16 +110,10 @@ gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , com
     δ = q′ + - q
     0<δ : 0ℚᵘ < δ
     0<δ = pos-diff q<q′
-    δ≤1 : δ ≤ 1ℚᵘ
-    δ≤1 = ≤-trans (≤-≃ (≃-sym (+-identityʳ δ)))
-            (≤-trans (+-mono-≤ (≤-refl {δ}) 0≤q) (≤-trans (≤-≃ (sub-add q′ q)) (<-≤ q′<1)))
-    δs₀≤s₀ : δ * s₀ ≤ s₀
-    δs₀≤s₀ = ≤-trans (*-mono-≤-nnʳ (<-≤ 0<s₀) δ≤1) (≤-≃ (*-identityˡ s₀))
     0<εε : 0ℚᵘ < ε + ε
     0<εε = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<ε 0<ε)
-    -- 4ε ≤ s₀ ≤ s + ε, so ε ≤ s and 0 < s
     ε≤s : ε ≤ s
-    ε≤s = eps-le 0<ε (≤-trans h4 (≤-trans δs₀≤s₀ hs))
+    ε≤s = gap-pos 0<s₀ 0<ε (gap-δ≤1 0≤q q′<1) (<-≤ 0<δ) h4 hs
     0<s : 0ℚᵘ < s
     0<s = <-≤-trans 0<ε ε≤s
     s₀≤ss : s₀ ≤ s + s

@@ -107,32 +107,45 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {α q} (α-random q)) r) (sec-random {U} (C.Wit.a {U} {α q} (α-random q)) r)
     (C.Wit.g {U} {α q} (α-random q) r) (C.Wit.g-pr {U} {α q} (α-random q) r)
 
+  -- the data of `ι-mult-pw`: the outer kernel `gq`, the joint probe `a₀`, the integrand `Ψ` and the r-th section `kq r`
+  module IMult {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) where
+    gq : R₁ → Measure
+    gq = C.Wit.g {U} {α q} (α-random q)
+    a₀ : C.Joint U
+    a₀ = C.Wit.a {U} {α q} (α-random q)
+    Ψ : R₁ → ∣A∣
+    Ψ = ψ {U} (ιPre {U} (C.joinPre {U} q)) h
+    mΨ : Meas Ψ
+    mΨ = mψ {U} (ιPre {U} (C.joinPre {U} q)) h
+
+    kq : R₁ → Pre (XW U)
+    kq r = ιPre {U} (ι-kp q r)
+
+    mΨ∘merge : ∀ r → Meas (λ s → Ψ (mergeR r s))
+    mΨ∘merge r = Meas-pre {Ψ} {mergeR r} mΨ (measurable-merge₁ (lower r))
+
+    -- 1. push the merged measure back along `mergeR r`
+    step-push : ∀ r → J (P₁.pushMerge gq r) Ψ mΨ ≈ J (gq r) (λ s → Ψ (mergeR r s)) (mΨ∘merge r)
+    step-push r = J-push {mergeR r} (measurable-merge₁ (lower r)) (gq r) {Ψ} mΨ (mΨ∘merge r)
+
+    -- 2. the section of the joined probe is the r-th section `kq r`
+    step-section : ∀ r → J (gq r) (λ s → Ψ (mergeR r s)) (mΨ∘merge r) ≈ J (gq r) (ψ {U} (kq r) h) (mψ {U} (kq r) h)
+    step-section r = J-cong (gq r) {λ s → Ψ (mergeR r s)} {ψ {U} (kq r) h} (mΨ∘merge r) (mψ {U} (kq r) h)
+      (λ s → *-cong refl (Func.cong (map h) (Func.cong (map a₀) (merge-evens r s , merge-odds r s))))
+
+    -- 3. that section integrates to the r-th value of the pushed-forward `ι q`
+    step-kernel : ∀ r → J (gq r) (ψ {U} (kq r) h) (mψ {U} (kq r) h)
+      ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
+    step-kernel r = trans
+      (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q r)) (kq r) (ι-cong {U} {α q r} {ι-kp q r} (C.Wit.w-eq {U} {α q} (α-random q) r)) h))
+      (sym (*-identityˡ _))
+
   -- pointwise in the outer parameter r: the merged kernel integrates ψ of the join to ψ of the pushed-forward ι q
   ι-mult-pw : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) (r : R₁) →
     J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h) (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
       ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
-  ι-mult-pw {U} q h r = trans
-    (J-push {mergeR r} (measurable-merge₁ (lower r)) (gq r) {Ψ} mΨ (mΨ∘merge r))
-    (trans
-      (J-cong (gq r) {λ s → Ψ (mergeR r s)} {ψ {U} (kq r) h} (mΨ∘merge r) (mψ {U} (kq r) h)
-         (λ s → *-cong refl (Func.cong (map h) (Func.cong (map a₀) (merge-evens r s , merge-odds r s)))))
-      (trans (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q r)) (kq r) (ι-cong {U} {α q r} {ι-kp q r} (C.Wit.w-eq {U} {α q} (α-random q) r)) h))
-             (sym (*-identityˡ _))))
-    where
-      gq : R₁ → Measure
-      gq = C.Wit.g {U} {α q} (α-random q)
-      a₀ : C.Joint U
-      a₀ = C.Wit.a {U} {α q} (α-random q)
-      Ψ : R₁ → ∣A∣
-      Ψ = ψ {U} (ιPre {U} (C.joinPre {U} q)) h
-      mΨ : Meas Ψ
-      mΨ = mψ {U} (ιPre {U} (C.joinPre {U} q)) h
-
-      kq : R₁ → Pre (XW U)
-      kq r = ιPre {U} (ι-kp q r)
-
-      mΨ∘merge : ∀ r → Meas (λ s → Ψ (mergeR r s))
-      mΨ∘merge r = Meas-pre {Ψ} {mergeR r} mΨ (measurable-merge₁ (lower r))
+  ι-mult-pw {U} q h r = trans (step-push r) (trans (step-section r) (step-kernel r))
+    where open IMult {U} q h
 
   ι-mult : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) →
     ∫ᴹ {U} (ιPre {U} (C.joinPre {U} q)) h
