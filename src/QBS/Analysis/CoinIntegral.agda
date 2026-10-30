@@ -18,9 +18,9 @@ open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import Data.Rational.Unnormalised.Base using (_<_)
-open import Data.Rational.Unnormalised.Base using () renaming (_*_ to _*Q_; _+_ to _+Q_; _≤_ to _≤Q_; _≃_ to _≃Q_)
+open import Data.Rational.Unnormalised.Base using () renaming (_*_ to _*ᵘ_; _+_ to _+ᵘ_; _≤_ to _≤ᵘ_; _≃_ to _≃ᵘ_)
 import QBS.Analysis.RationalLemmas as RL
-open RL using (Q; 0Q; 1Q; dense; ≤-<-trans)
+open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Measure using (Disjoint)
@@ -42,7 +42,7 @@ open Cut
 open _⊑_
 
 -- a pure rational estimate used for scaling
-smallprod : ∀ {N tk tn r y q : Q} → 0Q < N → 0Q < y → r < N → y ≤Q tk → N *Q tk < tn → q ≤Q r *Q y → q < tn
+smallprod : ∀ {N tk tn r y q : ℚᵘ} → 0ℚᵘ < N → 0ℚᵘ < y → r < N → y ≤ᵘ tk → N *ᵘ tk < tn → q ≤ᵘ r *ᵘ y → q < tn
 smallprod {N} 0<N 0<y r<N y≤tk Ntk<tn le =
   RL.≤-<-trans le (RL.<-trans (RL.<-≤-trans (RL.*-mono-<-posʳ 0<y r<N) (RL.*-mono-≤-nn (RL.<-≤ 0<N) y≤tk)) Ntk<tn)
 
@@ -86,13 +86,13 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
   Minor : (R₁ → Cut) → Sf → Set₁
   Minor h s = ∀ i x → V s i x → ρ s i ⊑ h (lift x)
 
-  Lmem : (R₁ → Cut) → Q → Set₁
+  Lmem : (R₁ → Cut) → ℚᵘ → Set₁
   Lmem h q = Σ Sf (λ s → Minor h s × mem (∫ s) q)
 
   -- the integral of h: the supremum of the integrals of the simple functions below it
   L : (R₁ → Cut) → Cut
   L h = record
-    { mem = λ q → q < 0Q ⊎ (dec (Lmem h q) ≡ true)
+    { mem = λ q → q < 0ℚᵘ ⊎ (dec (Lmem h q) ≡ true)
     ; down = λ { le (inj₁ lt) → inj₁ (≤-<-trans le lt)
                ; le (inj₂ e) → let s , mn , m = from-true e in inj₂ (dec-true (s , mn , down (∫ s) le m)) }
     ; open′ = λ { (inj₁ lt) → let r , a , b = dense lt in r , a , inj₁ b
@@ -201,34 +201,34 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
 
     -- c below a rational N: the grid argument
     module Fin (LV : ∀ q → Borel (Lvl h q)) (bd : ∀ x → h x ≤ 1#)
-               (N : Q) (0<N : 0Q < N) (cN : c ≤ rC N) where
-      ν : Q
+               (N : ℚᵘ) (0<N : 0ℚᵘ < N) (cN : c ≤ rC N) where
+      ν : ℚᵘ
       ν = proj₁ (RL.inv 0<N)
 
-      νN : ν *Q N ≃Q 1Q
+      νN : ν *ᵘ N ≃ᵘ 1ℚᵘ
       νN = proj₂ (RL.inv 0<N)
 
-      0<ν : 0Q < ν
+      0<ν : 0ℚᵘ < ν
       0<ν with RL.pos-or-nonpos ν
       ... | inj₁ p = p
       ... | inj₂ np = ⊥-elim (RL.<-irrefl RL.≃-refl (RL.<-≤-trans RL.0<1
           (RL.≤-resp νN (RL.*-zeroˡ N) (RL.*-mono-≤-nnʳ (RL.<-≤ 0<N) np))))
 
-      below : ∀ (r : Q) → 0Q < r → mem (rC N) r → r < N
+      below : ∀ (r : ℚᵘ) → 0ℚᵘ < r → mem (rC N) r → r < N
       below r 0<r (inj₁ lt) = lt
       below r 0<r (inj₂ lt) = ⊥-elim (RL.<-irrefl RL.≃-refl (RL.<-trans 0<r lt))
 
-      below′ : ∀ (k : ℕ) (y : Q) → 0Q < y → mem (rC (tp k)) y → y < tp k
+      below′ : ∀ (k : ℕ) (y : ℚᵘ) → 0ℚᵘ < y → mem (rC (tp k)) y → y < tp k
       below′ k y 0<y (inj₁ lt) = lt
       below′ k y 0<y (inj₂ lt) = ⊥-elim (RL.<-irrefl RL.≃-refl (RL.<-trans 0<y lt))
 
-      Ntk : ∀ n (k : ℕ) → tp k < ν *Q tp n → N *Q tp k < tp n
+      Ntk : ∀ n (k : ℕ) → tp k < ν *ᵘ tp n → N *ᵘ tp k < tp n
       Ntk n k tk<δ = RL.≃-<ʳ (RL.≃-trans (RL.≃-sym (RL.*-assoc N ν (tp n)))
                                (RL.≃-trans (RL.*-cong (RL.*-comm N ν) RL.≃-refl)
                                  (RL.≃-trans (RL.*-cong νN RL.≃-refl) (RL.*-identityˡ (tp n)))))
                             (RL.*-mono-<-pos 0<N tk<δ)
 
-      tol-le : ∀ n (k : ℕ) → tp k < ν *Q tp n → c * rC (tp k) ≤ hpC n
+      tol-le : ∀ n (k : ℕ) → tp k < ν *ᵘ tp n → c * rC (tp k) ≤ hpC n
       tol-le n k tk<δ = mk⊑ go
         where
           go : ∀ q → mem (c * rC (tp k)) q → q < tp n
@@ -238,7 +238,7 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
               (RL.<-≤ (below′ k y 0<y my)) (Ntk n k tk<δ) le
 
       tol : ∀ n → Σ ℕ (λ k → c * rC (tp k) ≤ hpC n)
-      tol n with tp-small (ν *Q tp n) (RL.*-pos 0<ν (tp-pos n))
+      tol n with tp-small (ν *ᵘ tp n) (RL.*-pos 0<ν (tp-pos n))
       ... | k , tk<δ = k , tol-le n k tk<δ
 
       -- a point of the a-th grid cell
@@ -273,22 +273,22 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
 
     -- c above every rational: h must vanish
     module Inf (bd′ : ∀ x → h′ x ≤ 1#) (allc : ∀ q → mem c q) where
-      nat-pos : ∀ k → 0Q < RL.nat (suc k)
+      nat-pos : ∀ k → 0ℚᵘ < RL.nat (suc k)
       nat-pos k = RL.≃-<ʳ (RL.≃-sym (RL.nat-suc k))
-        (RL.≃-<ˡ (RL.+-identityˡ 0Q) (RL.+-mono-≤-< (nat-nonneg k) RL.0<1))
+        (RL.≃-<ˡ (RL.+-identityˡ 0ℚᵘ) (RL.+-mono-≤-< (nat-nonneg k) RL.0<1))
 
-      clash′ : ∀ (x : R₁) (q′ : Q) → 0Q < q′ → mem (h x) q′ → ∀ (k : ℕ) → 1Q ≤Q RL.nat k *Q q′ → ⊥
-      clash′ x q′ 0<q′ m′ k 1≤ = RL.<-irrefl RL.≃-refl (ap (bd′ x) 1Q (ap (proj₂ (e x)) 1Q (inj₂ w)))
+      clash′ : ∀ (x : R₁) (q′ : ℚᵘ) → 0ℚᵘ < q′ → mem (h x) q′ → ∀ (k : ℕ) → 1ℚᵘ ≤ᵘ RL.nat k *ᵘ q′ → ⊥
+      clash′ x q′ 0<q′ m′ k 1≤ = RL.<-irrefl RL.≃-refl (ap (bd′ x) 1ℚᵘ (ap (proj₂ (e x)) 1ℚᵘ (inj₂ w)))
         where
-          le1 : 1Q ≤Q RL.nat (suc k) *Q q′
+          le1 : 1ℚᵘ ≤ᵘ RL.nat (suc k) *ᵘ q′
           le1 = RL.≤-trans 1≤ (RL.*-mono-≤-nnʳ (RL.<-≤ 0<q′) (nat-mono′ {k} {suc k} (Data.Nat.Base.≤′-step Data.Nat.Base.≤′-refl)))
-          w : Σ Q (λ r → Σ Q (λ t → 0Q < r × 0Q < t × mem c r × mem (h x) t × 1Q ≤Q r *Q t))
+          w : Σ ℚᵘ (λ r → Σ ℚᵘ (λ t → 0ℚᵘ < r × 0ℚᵘ < t × mem c r × mem (h x) t × 1ℚᵘ ≤ᵘ r *ᵘ t))
           w = RL.nat (suc k) , q′ , nat-pos k , 0<q′ , allc (RL.nat (suc k)) , m′ , le1
 
-      clash : ∀ (x : R₁) (q′ : Q) → 0Q < q′ → mem (h x) q′ → ⊥
-      clash x q′ 0<q′ m′ = clash′ x q′ 0<q′ m′ (proj₁ (RL.arch 1Q {q′} 0<q′)) (proj₂ (RL.arch 1Q {q′} 0<q′))
+      clash : ∀ (x : R₁) (q′ : ℚᵘ) → 0ℚᵘ < q′ → mem (h x) q′ → ⊥
+      clash x q′ 0<q′ m′ = clash′ x q′ 0<q′ m′ (proj₁ (RL.arch 1ℚᵘ {q′} 0<q′)) (proj₂ (RL.arch 1ℚᵘ {q′} 0<q′))
 
-      nonpos : ∀ x q → mem (h x) q → (q < 0Q ⊎ 0Q ≤Q q) → mem 0# q
+      nonpos : ∀ x q → mem (h x) q → (q < 0ℚᵘ ⊎ 0ℚᵘ ≤ᵘ q) → mem 0# q
       nonpos x q m (inj₁ lt) = lt
       nonpos x q m (inj₂ 0≤q) = ⊥-elim (clash x (proj₁ (open′ (h x) m)) (RL.≤-<-trans 0≤q (proj₁ (proj₂ (open′ (h x) m)))) (proj₂ (proj₂ (open′ (h x) m))))
 
@@ -305,16 +305,16 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
       scale≤ : L h′ ≤ c * L h
       scale≤ = ≤-trans L≤0 0-least
 
-    cle : ∀ (q0 N : Q) → 0Q < N → q0 ≤Q N → (mem c q0 → ⊥) → c ≤ rC N
+    cle : ∀ (q0 N : ℚᵘ) → 0ℚᵘ < N → q0 ≤ᵘ N → (mem c q0 → ⊥) → c ≤ rC N
     cle q0 N 0<N q0≤N nm = mk⊑ λ s m → inj₁ (go s m (RL.≤-or-> N s))
       where
-        go : ∀ s → mem c s → (N ≤Q s ⊎ s < N) → s < N
+        go : ∀ s → mem c s → (N ≤ᵘ s ⊎ s < N) → s < N
         go s m (inj₁ N≤s) = ⊥-elim (nm (down c (RL.≤-trans q0≤N N≤s) m))
         go s m (inj₂ lt) = lt
 
-    scale≤-fin : (LV : ∀ q → Borel (Lvl h q)) (bd : ∀ x → h x ≤ 1#) (q0 : Q) → (mem c q0 → ⊥) →
-      (q0 ≤Q 1Q ⊎ 1Q < q0) → L h′ ≤ c * L h
-    scale≤-fin LV bd q0 nm (inj₁ le) = Fin.scale≤ LV bd 1Q RL.0<1 (cle q0 1Q RL.0<1 le nm)
+    scale≤-fin : (LV : ∀ q → Borel (Lvl h q)) (bd : ∀ x → h x ≤ 1#) (q0 : ℚᵘ) → (mem c q0 → ⊥) →
+      (q0 ≤ᵘ 1ℚᵘ ⊎ 1ℚᵘ < q0) → L h′ ≤ c * L h
+    scale≤-fin LV bd q0 nm (inj₁ le) = Fin.scale≤ LV bd 1ℚᵘ RL.0<1 (cle q0 1ℚᵘ RL.0<1 le nm)
     scale≤-fin LV bd q0 nm (inj₂ lt) = Fin.scale≤ LV bd q0 (RL.<-trans RL.0<1 lt) (cle q0 q0 (RL.<-trans RL.0<1 lt) RL.≤-refl nm)
 
     allc-from : (∀ k → mem c (enumQ k)) → ∀ q → mem c q
@@ -326,7 +326,7 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
 
     scale≤-dec : (LV : ∀ q → Borel (Lvl h q)) (bd : ∀ x → h x ≤ 1#) (bd′ : ∀ x → h′ x ≤ 1#) →
       (Σ ℕ (λ k → mem c (enumQ k) → ⊥) ⊎ (Σ ℕ (λ k → mem c (enumQ k) → ⊥) → ⊥)) → L h′ ≤ c * L h
-    scale≤-dec LV bd bd′ (inj₁ (k , nm)) = scale≤-fin LV bd (enumQ k) nm (RL.≤-or-> (enumQ k) 1Q)
+    scale≤-dec LV bd bd′ (inj₁ (k , nm)) = scale≤-fin LV bd (enumQ k) nm (RL.≤-or-> (enumQ k) 1ℚᵘ)
     scale≤-dec LV bd bd′ (inj₂ nn) = Inf.scale≤ bd′ (allc-from (λ k → memk k nn ((lemOf lem₁) (mem c (enumQ k)))))
 
     L-scale : (LV : ∀ q → Borel (Lvl h q)) (bd : ∀ x → h x ≤ 1#) (bd′ : ∀ x → h′ x ≤ 1#) → L h′ ≈ c * L h
@@ -335,7 +335,7 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
   ----------------------------------------------------------------------------
   -- monotone convergence
 
-  rC-zero : rC 0Q ≈ 0#
+  rC-zero : rC 0ℚᵘ ≈ 0#
   rC-zero = mk⊑ (λ { s (inj₁ lt) → lt ; s (inj₂ lt) → lt }) , mk⊑ (λ s lt → inj₁ lt)
 
   incL′ : (hs : ℕ → R₁ → Cut) → (∀ x → Increasing (λ n → hs n x)) → Increasing (λ n → L (hs n))

@@ -112,7 +112,7 @@ module _ (lem : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
 
   sumC : {I : Set ℓ₁} → (I → Cut) → Cut
   sumC {I} f = record
-    { mem = λ q → q < 0Q ⊎ (dec (Σ I (λ i → mem (f i) q)) ≡ true)
+    { mem = λ q → q < 0ℚᵘ ⊎ (dec (Σ I (λ i → mem (f i) q)) ≡ true)
     ; down = λ { le (inj₁ lt) → inj₁ (≤-<-trans le lt)
                ; le (inj₂ e) → let (i , m) = from-true e in inj₂ (dec-true (i , down (f i) le m)) }
     ; open′ = λ { (inj₁ lt) → let r , q<r , r<0 = dense lt in r , q<r , inj₁ r<0
@@ -182,5 +182,5 @@ module _ (lem : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
     { complete = viterbiComplete
     ; invertible? = λ m → case lem (Σ Cut (λ n → m ⊗ n ≋ oneC)) of λ
         { (inj₁ p) → inj₁ p ; (inj₂ no) → inj₂ (λ n e → no (n , e)) }
-    ; nontrivial = λ e → lift⊥ (<-irrefl ≃-refl (ap (proj₂ e) 0Q 0<1))
+    ; nontrivial = λ e → lift⊥ (<-irrefl ≃-refl (ap (proj₂ e) 0ℚᵘ 0<1))
     }

@@ -52,14 +52,14 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   nat-mono-suc k = ≤-trans (≤-≃ (≃-sym (+-identityʳ (nat k))))
     (≤-trans (+-mono-≤ (≤-refl {nat k}) (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc k))))
 
-  nat-0≤ : ∀ j → 0Q ≤ nat j
+  nat-0≤ : ∀ j → 0ℚᵘ ≤ nat j
   nat-0≤ ℕ.zero = ≤-refl
   nat-0≤ (ℕ.suc j) = ≤-trans (nat-0≤ j) (nat-mono-suc j)
 
   nat-mono : ∀ {k j} → k ℕ.≤ j → nat k ≤ nat j
   nat-mono {ℕ.zero} {j} ℕ.z≤n = nat-0≤ j
   nat-mono {ℕ.suc k} {ℕ.suc j} (ℕ.s≤s h) =
-    ≤-trans (≤-≃ (nat-suc k)) (≤-trans (+-mono-≤ (nat-mono h) (≤-refl {1Q})) (≤-≃ (≃-sym (nat-suc j))))
+    ≤-trans (≤-≃ (nat-suc k)) (≤-trans (+-mono-≤ (nat-mono h) (≤-refl {1ℚᵘ})) (≤-≃ (≃-sym (nat-suc j))))
 
   -- every weight with all `nat k` below it is ∞
   all⇒inf : ∀ w → (∀ k → mem w (nat k)) → w ≋ infC
@@ -67,10 +67,10 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     let k , qk = nat-bound q in down w qk (h k))
 
   -- a weight not above 0 is 0
-  nonpos⇒zero : ∀ w → (mem w 0Q → ⊥) → w ≋ zeroC
+  nonpos⇒zero : ∀ w → (mem w 0ℚᵘ → ⊥) → w ≋ zeroC
   nonpos⇒zero w h = mk⊑ (λ q mq → case-lt q mq) , mk⊑ (λ q q<0 → neg w q<0)
     where
-      case-lt : ∀ q → mem w q → q < 0Q
+      case-lt : ∀ q → mem w q → q < 0ℚᵘ
       case-lt q mq with neg-or-nonneg q
       ... | inj₁ q<0 = q<0
       ... | inj₂ 0≤q = ⊥-elim (h (down w 0≤q mq))
@@ -89,7 +89,7 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       ... | inj₂ n = ⊥-elim (no (k , n))
 
   -- the first failure
-  find : ∀ w → mem w 0Q → ∀ k → (mem w (nat k) → ⊥) → Σ ℕ (λ j → mem w (nat j) × (mem w (nat (ℕ.suc j)) → ⊥))
+  find : ∀ w → mem w 0ℚᵘ → ∀ k → (mem w (nat k) → ⊥) → Σ ℕ (λ j → mem w (nat j) × (mem w (nat (ℕ.suc j)) → ⊥))
   find w m0 ℕ.zero nk = ⊥-elim (nk m0)
   find w m0 (ℕ.suc k) nk with lem (mem w (nat k))
   ... | inj₁ yes = k , yes , nk
@@ -98,7 +98,7 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   piece-of : ∀ w → Σ ℕ (λ n → InPiece n w) ⊎ (w ≋ zeroC)
   piece-of w with lem (∀ k → mem w (nat k))
   ... | inj₁ all = inj₁ (ℕ.zero , all)
-  ... | inj₂ notAll with lem (mem w 0Q)
+  ... | inj₂ notAll with lem (mem w 0ℚᵘ)
   ...   | inj₂ n0 = inj₂ (nonpos⇒zero w n0)
   ...   | inj₁ m0 with not-all⇒ex w notAll
   ...     | k₁ , nk₁ with find w m0 k₁ nk₁
@@ -142,8 +142,8 @@ module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
                      (sym (trans (*ᴬ-cong w0 (refl {g})) (zeroˡ g)))
     where
       noPiece : ∀ n → InPiece n w → ⊥
-      noPiece ℕ.zero all = <-irrefl ≃-refl (ap (proj₁ w0) 0Q (all ℕ.zero))
-      noPiece (ℕ.suc k) (mk , _) = <-irrefl ≃-refl (ap (proj₁ w0) 0Q (down w (nat-0≤ k) mk))
+      noPiece ℕ.zero all = <-irrefl ≃-refl (ap (proj₁ w0) 0ℚᵘ (all ℕ.zero))
+      noPiece (ℕ.suc k) (mk , _) = <-irrefl ≃-refl (ap (proj₁ w0) 0ℚᵘ (down w (nat-0≤ k) mk))
       zeros : ∀ n → κ n * ((χs n * fac n w) * g) ≈ 0#
       zeros n with hχ n
       ... | inj₁ (inn , _) = ⊥-elim (noPiece n inn)

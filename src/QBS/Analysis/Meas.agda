@@ -38,14 +38,14 @@ module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ----------------------------------------------------------------------------
   -- countable quantification over the rationals
 
-  pair-enum : ∀ (P : Q → Q → Pred) → (∀ ρ σ → Borel (P ρ σ)) →
-    Borel (λ c → Σ Q (λ ρ → Σ Q (λ σ → P ρ σ c)))
+  pair-enum : ∀ (P : ℚᵘ → ℚᵘ → Pred) → (∀ ρ σ → Borel (P ρ σ)) →
+    Borel (λ c → Σ ℚᵘ (λ ρ → Σ ℚᵘ (λ σ → P ρ σ c)))
   pair-enum P bP = resp e (⋃ (λ k → bP (r k) (s k)))
     where
-      r s : ℕ → Q
+      r s : ℕ → ℚᵘ
       r k = enumQ (proj₁ (unpair k))
       s k = enumQ (proj₂ (unpair k))
-      e : (λ c → Σ ℕ (λ k → P (r k) (s k) c)) ≐ (λ c → Σ Q (λ ρ → Σ Q (λ σ → P ρ σ c)))
+      e : (λ c → Σ ℕ (λ k → P (r k) (s k) c)) ≐ (λ c → Σ ℚᵘ (λ ρ → Σ ℚᵘ (λ σ → P ρ σ c)))
       e c = (λ { (k , p) → r k , s k , p })
           , (λ { (ρ , σ , p) →
               let k₁ , p₁ = enumQ-surj ρ
@@ -56,14 +56,14 @@ module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
                                (≡.cong₂ _,_ p₁ p₂)
               in pair k₁ k₂ , ≡.subst (λ pr → P (proj₁ pr) (proj₂ pr) c) (≡.sym eq) p })
 
-  ex-enum : ∀ (P : Q → Pred) → (∀ ρ → Borel (P ρ)) → Borel (λ c → Σ Q (λ ρ → P ρ c))
+  ex-enum : ∀ (P : ℚᵘ → Pred) → (∀ ρ → Borel (P ρ)) → Borel (λ c → Σ ℚᵘ (λ ρ → P ρ c))
   ex-enum P bP = resp e (⋃ (λ k → bP (enumQ k)))
     where
-      e : (λ c → Σ ℕ (λ k → P (enumQ k) c)) ≐ (λ c → Σ Q (λ ρ → P ρ c))
+      e : (λ c → Σ ℕ (λ k → P (enumQ k) c)) ≐ (λ c → Σ ℚᵘ (λ ρ → P ρ c))
       e c = (λ { (k , p) → enumQ k , p })
           , (λ { (ρ , p) → case enumQ-surj ρ of λ { (k , ≡.refl) → k , p } })
 
-  all-enum : ∀ (P : Q → Pred) → (∀ ρ → Borel (P ρ)) → Borel (λ c → ∀ ρ → P ρ c)
+  all-enum : ∀ (P : ℚᵘ → Pred) → (∀ ρ → Borel (P ρ)) → Borel (λ c → ∀ ρ → P ρ c)
   all-enum P bP = resp e (⋂ (λ k → bP (enumQ k)))
     where
       e : (λ c → ∀ k → P (enumQ k) c) ≐ (λ c → ∀ ρ → P ρ c)
@@ -91,9 +91,9 @@ module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   Meas-⊗ : ∀ {h₁ h₂} → Meas h₁ → Meas h₂ → Meas (λ x → h₁ x ⊗ h₂ x)
   Meas-⊗ {h₁} {h₂} b₁ b₂ q =
-    union₂ (borel-prop (q < 0Q))
-      (pair-enum (λ ρ σ c → (0Q < ρ) × ((0Q < σ) × (Lvl h₁ ρ c × (Lvl h₂ σ c × (q ≤ ρ * σ)))))
-        (λ ρ σ → inter₂ (borel-prop (0Q < ρ)) (inter₂ (borel-prop (0Q < σ))
+    union₂ (borel-prop (q < 0ℚᵘ))
+      (pair-enum (λ ρ σ c → (0ℚᵘ < ρ) × ((0ℚᵘ < σ) × (Lvl h₁ ρ c × (Lvl h₂ σ c × (q ≤ ρ * σ)))))
+        (λ ρ σ → inter₂ (borel-prop (0ℚᵘ < ρ)) (inter₂ (borel-prop (0ℚᵘ < σ))
                    (inter₂ (b₁ ρ) (inter₂ (b₂ σ) (borel-prop (q ≤ ρ * σ)))))))
 
   Meas-⊓ : ∀ {h₁ h₂} → Meas h₁ → Meas h₂ → Meas (λ x → h₁ x ⊓ h₂ x)

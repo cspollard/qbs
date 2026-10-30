@@ -58,7 +58,7 @@ module Threshold (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- comparison with ½ is total
   tot-half : ∀ t → t ⊑ halfC ⊎ halfC ⊑ t
-  tot-half t with lem (Σ Q (λ q → mem t q × ((q < hf) → ⊥)))
+  tot-half t with lem (Σ ℚᵘ (λ q → mem t q × ((q < hf) → ⊥)))
   ... | inj₂ none = inj₁ (mk⊑ λ q m → dec q m (lem (q < hf)))
     where dec : ∀ q → mem t q → (q < hf) ⊎ ((q < hf) → ⊥) → q < hf
           dec q m (inj₁ lt) = lt
@@ -69,4 +69,4 @@ module Threshold (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
           hf≤q (inj₂ lt) = ⊥-elim (nlt lt)
 
   half≰0 : halfC ⊑ zeroC → ⊥
-  half≰0 h = <-irrefl ≃-refl (ap h 0Q 0<hf)
+  half≰0 h = <-irrefl ≃-refl (ap h 0ℚᵘ 0<hf)

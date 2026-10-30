@@ -73,5 +73,5 @@ module _ (lem₁ : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
     { complete = additiveComplete
     ; invertible? = λ m → case lem₁ (Σ Cut (λ n → m ⊗ n ≋ oneC)) of λ
         { (inj₁ p) → inj₁ p ; (inj₂ no) → inj₂ (λ n e → no (n , e)) }
-    ; nontrivial = λ e → lift⊥ (<-irrefl ≃-refl (ap (proj₂ e) 0Q 0<1))
+    ; nontrivial = λ e → lift⊥ (<-irrefl ≃-refl (ap (proj₂ e) 0ℚᵘ 0<1))
     }

@@ -30,9 +30,9 @@ open Cut
 open _⊑_
 
 -- the cut of a rational: everything strictly below r (and the negatives)
-ratC : Q → Cut
+ratC : ℚᵘ → Cut
 ratC r = record
-  { mem = λ s → (s < r) ⊎ (s < 0Q)
+  { mem = λ s → (s < r) ⊎ (s < 0ℚᵘ)
   ; down = λ { le (inj₁ p<r) → inj₁ (≤-<-trans le p<r) ; le (inj₂ p<0) → inj₂ (≤-<-trans le p<0) }
   ; open′ = λ { (inj₁ p<r) → let t , p<t , t<r = dense p<r in t , p<t , inj₁ t<r
               ; (inj₂ p<0) → let t , p<t , t<0 = dense p<0 in t , p<t , inj₂ t<0 }
@@ -43,7 +43,7 @@ ratC-mono : ∀ {r r′} → r ≤ r′ → ratC r ⊑ ratC r′
 ratC-mono le = mk⊑ (λ { s (inj₁ s<r) → inj₁ (<-≤-trans s<r le) ; s (inj₂ s<0) → inj₂ s<0 })
 
 -- the candidate q replaces the running maximum b when it is a point of h x above b
-pickQ : ∀ (q b : Q) {P : Set} → (P ⊎ (P → ⊥)) → (q ≤ b ⊎ b < q) → Q
+pickQ : ∀ (q b : ℚᵘ) {P : Set} → (P ⊎ (P → ⊥)) → (q ≤ b ⊎ b < q) → ℚᵘ
 pickQ q b (inj₁ _) (inj₂ _) = q
 pickQ q b _ _ = b
 
@@ -85,7 +85,7 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   module _ (h : R₁ → Cut) (bd : ∀ x → h x ⊑ oneC) (mh : Meas h) where
 
     -- the running maximum of the enumerated rationals below h x
-    best : ℕ → R₁ → Q
+    best : ℕ → R₁ → ℚᵘ
 
     sel : ∀ N x → mem (h x) (enumQ N) ⊎ (mem (h x) (enumQ N) → ⊥)
     sel N x = lem (mem (h x) (enumQ N))
@@ -93,7 +93,7 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     cmp : ∀ N x → enumQ N ≤ best N x ⊎ best N x < enumQ N
     cmp N x = ≤-or-> (enumQ N) (best N x)
 
-    best zero x = 0Q
+    best zero x = 0ℚᵘ
     best (suc N) x = pickQ (enumQ N) (best N x) (sel N x) (cmp N x)
 
     best-≥ : ∀ N x → best N x ≤ best (suc N) x
@@ -142,7 +142,7 @@ module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
     mutual
       BB : ∀ N s → Borel (λ c → s < best N (lift c))
-      BB zero s = borel-prop (s < 0Q)
+      BB zero s = borel-prop (s < 0ℚᵘ)
       BB (suc N) s = resp e (union₂ (inter₂ (bW N) (borel-prop (s < enumQ N))) (inter₂ (compl (bW N)) (BB N s)))
         where
           e : (λ c → (W N c × (s < enumQ N)) ⊎ ((W N c → ⊥) × (s < best N (lift c)))) ≐ (λ c → s < best (suc N) (lift c))

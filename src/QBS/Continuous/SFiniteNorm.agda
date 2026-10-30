@@ -121,15 +121,15 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
 
   -- rational-level (Set) conditions for invertibility: a positive member and a non-member
   PosC FinC : Cut → Set
-  PosC m = Σ RL.Q (λ s → RL.0Q RL.<Q s × memC m s)
-  FinC m = Σ RL.Q (λ ρ → memC m ρ → ⊥)
+  PosC m = Σ RL.ℚᵘ (λ s → RL.0ℚᵘ RL.<ᵘ s × memC m s)
+  FinC m = Σ RL.ℚᵘ (λ ρ → memC m ρ → ⊥)
 
   -- an inverse pair has positive members on both sides
   inv-pos : ∀ m n → m * n ≈ 1# →
-    Σ RL.Q (λ a → Σ RL.Q (λ b → RL.0Q RL.<Q a × RL.0Q RL.<Q b × memC m a × memC n b))
+    Σ RL.ℚᵘ (λ a → Σ RL.ℚᵘ (λ b → RL.0ℚᵘ RL.<ᵘ a × RL.0ℚᵘ RL.<ᵘ b × memC m a × memC n b))
   inv-pos m n h = go (RL.dense RL.0<1)
     where
-      go : Σ RL.Q (λ r → RL.0Q RL.<Q r × r RL.<Q RL.1Q) → _
+      go : Σ RL.ℚᵘ (λ r → RL.0ℚᵘ RL.<ᵘ r × r RL.<ᵘ RL.1ℚᵘ) → _
       go (r , 0<r , r<1) = cs (apC (proj₂ h) r r<1)
         where
           cs : memC (m LR.⊗ n) r → _
@@ -140,7 +140,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   inv-fin m n h with lem (FinC m)
   ... | inj₁ f = f
   ... | inj₂ nof with inv-pos m n h
-  ... | a , b , 0<a , 0<b , ma , mb = ⊥-elim (RL.<-irrefl RL.≃-refl (apC (proj₁ h) RL.1Q one-mem))
+  ... | a , b , 0<a , 0<b , ma , mb = ⊥-elim (RL.<-irrefl RL.≃-refl (apC (proj₁ h) RL.1ℚᵘ one-mem))
     where
       all : ∀ ρ → memC m ρ
       all ρ with lem (memC m ρ)
@@ -148,7 +148,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
       ... | inj₂ no = ⊥-elim (nof (ρ , no))
       t = proj₁ (RL.inv 0<b)
       ht = proj₂ (RL.inv 0<b)
-      one-mem : memC (m LR.⊗ n) RL.1Q
+      one-mem : memC (m LR.⊗ n) RL.1ℚᵘ
       one-mem = inj₂ (t , b , LI.pos-of-inverse 0<b ht , 0<b , all t , mb , RL.≤-≃ (RL.≃-sym ht))
 
   invDec′ : ∀ m → (PosC m × FinC m) ⊎ ((PosC m × FinC m) → ⊥) → InvDec m
@@ -222,7 +222,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   zero≉one : 0# ≈ 1# → ⊥
   zero≉one h = go (RL.dense RL.0<1)
     where
-      go : Σ RL.Q (λ r → RL.0Q RL.<Q r × r RL.<Q RL.1Q) → ⊥
+      go : Σ RL.ℚᵘ (λ r → RL.0ℚᵘ RL.<ᵘ r × r RL.<ᵘ RL.1ℚᵘ) → ⊥
       go (r , 0<r , r<1) = RL.<-irrefl RL.≃-refl (RL.<-trans 0<r (apC (proj₂ h) r r<1))
 
   ----------------------------------------------------------------------------
@@ -324,7 +324,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
       M r = massP {X} (β r)
 
       bPF : Borel (λ (c : Cantor) → PosC (M (L.lift c)) × FinC (M (L.lift c)))
-      bPF = inter₂ (ex-enum (λ s c → RL.0Q RL.<Q s × Lvl M s c) (λ s → inter₂ (borel-prop _) (massP-Meas {X} {β} w s)))
+      bPF = inter₂ (ex-enum (λ s c → RL.0ℚᵘ RL.<ᵘ s × Lvl M s c) (λ s → inter₂ (borel-prop _) (massP-Meas {X} {β} w s)))
                    (ex-enum (λ ρ c → Lvl M ρ c → ⊥) (λ ρ → compl (massP-Meas {X} {β} w ρ)))
 
       idx : ∀ k → Borel (λ (c : Cantor) → caseIdx {X} (β (L.lift c)) ≡.≡ k)
@@ -338,8 +338,8 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
 
   invOf-Meas : ∀ {f : R₁ → Cut} → Meas f → Meas (λ r → invOf (f r))
   invOf-Meas {f} mf q =
-    union₂ (borel-prop (q RL.<Q RL.0Q))
-      (ex-enum (λ ρ c → RL.0Q RL.<Q ρ × ((memC (f (L.lift c)) ρ → ⊥) × (q ℚ.* ρ) RL.<Q RL.1Q))
+    union₂ (borel-prop (q RL.<ᵘ RL.0ℚᵘ))
+      (ex-enum (λ ρ c → RL.0ℚᵘ RL.<ᵘ ρ × ((memC (f (L.lift c)) ρ → ⊥) × (q ℚ.* ρ) RL.<ᵘ RL.1ℚᵘ))
         (λ ρ → inter₂ (borel-prop _) (inter₂ (compl (mf ρ)) (borel-prop _))))
 
   -- on the invertible case, the normalised family is a random element of C.TQ X:

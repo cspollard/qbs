@@ -45,7 +45,7 @@ big x y c {q} mx mc =
   where
     pick : ∀ w → q < w → mem (x ⊓ c) w → mem ((x ⊓ c) ⊕ (y ⊓ c)) q
     pick w q<w mw = w , q + - w , mw , (neg y n , neg c n) , ≤-≃ (≃-sym (add-sub w q))
-      where n : q + - w < 0Q
+      where n : q + - w < 0ℚᵘ
             n = neg-diff q<w
 
 -- min (a + b, c) ≤ min (a, c) + min (b, c)
@@ -58,22 +58,22 @@ add-⊓ a b c = mk⊑ (λ q ((r , s , mr , ms , le) , mc) →
       ; (inj₂ s<q) → r , s , (mr , down c (<-≤ r<q) mc) , (ms , down c (<-≤ s<q) mc) , le } })
 
 -- the powers of two as rationals and as cuts
-ntwo : ℕ → Q
-ntwo zero = 1Q
+ntwo : ℕ → ℚᵘ
+ntwo zero = 1ℚᵘ
 ntwo (suc k) = ntwo k + ntwo k
 
-ntwo-pos : ∀ k → 0Q < ntwo k
+ntwo-pos : ∀ k → 0ℚᵘ < ntwo k
 ntwo-pos zero = 0<1
 ntwo-pos (suc k) = pos+ (ntwo-pos k) (ntwo-pos k)
 
-ntwo-≥1 : ∀ k → 1Q ≤ ntwo k
+ntwo-≥1 : ∀ k → 1ℚᵘ ≤ ntwo k
 ntwo-≥1 zero = ≤-refl
 ntwo-≥1 (suc k) = ≤-trans (ntwo-≥1 k) (≤-+ʳ′ (ntwo k) (ntwo k) (<-≤ (ntwo-pos k)))
 
 nat-lt : ∀ k → nat k < ntwo k
 nat-lt zero = 0<1
 nat-lt (suc k) = ≃-<ˡ (≃-sym (nat-suc k))
-  (<-≤-trans (+-mono-<-≤ (nat-lt k) (≤-refl {1Q})) (+-mono-≤ (≤-refl {ntwo k}) (ntwo-≥1 k)))
+  (<-≤-trans (+-mono-<-≤ (nat-lt k) (≤-refl {1ℚᵘ})) (+-mono-≤ (≤-refl {ntwo k}) (ntwo-≥1 k)))
 
 ntwo-big : ∀ q → Σ ℕ (λ k → q < ntwo k)
 ntwo-big q with nat-bound q

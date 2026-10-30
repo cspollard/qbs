@@ -15,10 +15,10 @@ open import QBS.Analysis.RationalLemmas
 
 record Cut : Set₁ where
   field
-    mem : Q → Set
+    mem : ℚᵘ → Set
     down : ∀ {p q} → q ≤ p → mem p → mem q
-    open′ : ∀ {p} → mem p → Σ Q (λ q → p < q × mem q)
-    neg : ∀ {p} → p < 0Q → mem p
+    open′ : ∀ {p} → mem p → Σ ℚᵘ (λ q → p < q × mem q)
+    neg : ∀ {p} → p < 0ℚᵘ → mem p
 open Cut
 
 infix 4 _⊑_ _≋_
@@ -53,19 +53,19 @@ x ≋ y = x ⊑ y × y ⊑ x
 
 zeroC oneC infC : Cut
 zeroC = record
-  { mem = _< 0Q
+  { mem = _< 0ℚᵘ
   ; down = λ le lt → ≤-<-trans le lt
   ; open′ = λ lt → dense lt
   ; neg = λ lt → lt }
 oneC = record
-  { mem = _< 1Q
+  { mem = _< 1ℚᵘ
   ; down = λ le lt → ≤-<-trans le lt
   ; open′ = λ lt → dense lt
   ; neg = λ lt → <-trans lt 0<1 }
 infC = record
   { mem = λ _ → ⊤
   ; down = λ _ _ → tt
-  ; open′ = λ {p} _ → p + 1Q , ≃-<ˡ (+-identityʳ p) (+-mono-≤-< (≤-refl {p}) 0<1) , tt
+  ; open′ = λ {p} _ → p + 1ℚᵘ , ≃-<ˡ (+-identityʳ p) (+-mono-≤-< (≤-refl {p}) 0<1) , tt
   ; neg = λ _ → tt }
 
 ----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ infixl 7 _⊗_
 
 _⊕_ : Cut → Cut → Cut
 x ⊕ y = record
-  { mem = λ q → Σ Q (λ r → Σ Q (λ s → mem x r × mem y s × q ≤ r + s))
+  { mem = λ q → Σ ℚᵘ (λ r → Σ ℚᵘ (λ s → mem x r × mem y s × q ≤ r + s))
   ; down = λ le (r , s , mr , ms , h) → r , s , mr , ms , ≤-trans le h
   ; open′ = λ (r , s , mr , ms , h) →
       let r′ , r<r′ , mr′ = open′ x mr
@@ -85,7 +85,7 @@ x ⊕ y = record
 
 _⊗_ : Cut → Cut → Cut
 x ⊗ y = record
-  { mem = λ q → q < 0Q ⊎ Σ Q (λ r → Σ Q (λ s → 0Q < r × 0Q < s × mem x r × mem y s × q ≤ r * s))
+  { mem = λ q → q < 0ℚᵘ ⊎ Σ ℚᵘ (λ r → Σ ℚᵘ (λ s → 0ℚᵘ < r × 0ℚᵘ < s × mem x r × mem y s × q ≤ r * s))
   ; down = λ { le (inj₁ lt) → inj₁ (≤-<-trans le lt)
              ; le (inj₂ (r , s , p , p′ , mr , ms , h)) → inj₂ (r , s , p , p′ , mr , ms , ≤-trans le h) }
   ; open′ = λ { (inj₁ lt) → let r , q<r , r<0 = dense lt in r , q<r , inj₁ r<0
@@ -162,7 +162,7 @@ x ⊗ y = record
 ⊗-zeroˡ : ∀ x → zeroC ⊗ x ≋ zeroC
 ⊗-zeroˡ x = mk⊑ fwd , mk⊑ (λ q lt → inj₁ lt)
   where
-    fwd : ∀ q → mem (zeroC ⊗ x) q → q < 0Q
+    fwd : ∀ q → mem (zeroC ⊗ x) q → q < 0ℚᵘ
     fwd q (inj₁ lt) = lt
     fwd q (inj₂ (r , s , 0<r , 0<s , r<0 , ms , h)) = ⊥-elim (<-irrefl ≃-refl (<-trans r<0 0<r))
 
@@ -194,8 +194,8 @@ x ⊗ y = record
       in inj₂ (r , q′ , 0<r , ≤-<-trans 0≤q q<q′ , r<1 , mq′ , h)
 
 -- a witness slightly above, for strict inequalities
-slack : ∀ x y {q r w} → mem x r → 0Q < r → mem y w → 0Q < w → q ≤ r * w →
-  Σ Q (λ b → mem (x ⊗ y) b × q < b)
+slack : ∀ x y {q r w} → mem x r → 0ℚᵘ < r → mem y w → 0ℚᵘ < w → q ≤ r * w →
+  Σ ℚᵘ (λ b → mem (x ⊗ y) b × q < b)
 slack x y {q} {r} {w} mr 0<r mw 0<w h =
   let w′ , w<w′ , mw′ = open′ y mw
   in r * w′ , inj₂ (r , w′ , 0<r , <-trans 0<w w<w′ , mr , mw′ , ≤-refl) , ≤-<-trans h (*-mono-<-pos 0<r w<w′)
@@ -215,19 +215,19 @@ slack x y {q} {r} {w} mr 0<r mw 0<w h =
       b , mb , q<b = slack x z mr 0<r (down z w≤s₂ m₂) 0<w h
   in q + - b , b , inj₁ (neg-diff q<b) , mb , ≤-≃ (≃-sym (sub-add q b))
 ... | inj₂ s₁≤0 | inj₂ s₂≤0 =
-  ⊥-elim (<-irrefl ≃-refl (<-≤-trans 0<w (≤-trans hw (≤-trans (+-mono-≤ s₁≤0 s₂≤0) (≤-≃ (+-identityˡ 0Q))))))
+  ⊥-elim (<-irrefl ≃-refl (<-≤-trans 0<w (≤-trans hw (≤-trans (+-mono-≤ s₁≤0 s₂≤0) (≤-≃ (+-identityˡ 0ℚᵘ))))))
 
 -- two positive products r₁ s₁ and r₂ s₂ are dominated by a single r ≥ r₁, r₂: a + b ≤ r (s₁ + s₂)
-both-r : ∀ x y z {q a b r r₁ r₂ s₁ s₂} → mem x r → 0Q < r → r₁ ≤ r → r₂ ≤ r → 0Q < s₁ → 0Q < s₂ →
+both-r : ∀ x y z {q a b r r₁ r₂ s₁ s₂} → mem x r → 0ℚᵘ < r → r₁ ≤ r → r₂ ≤ r → 0ℚᵘ < s₁ → 0ℚᵘ < s₂ →
   mem y s₁ → mem z s₂ → a ≤ r₁ * s₁ → b ≤ r₂ * s₂ → q ≤ a + b → mem (x ⊗ (y ⊕ z)) q
 both-r x y z {q} {a} {b} {r} {r₁} {r₂} {s₁} {s₂} mr 0<r le₁ le₂ 0<s₁ 0<s₂ m₁ m₂ ha hb h =
-  inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<s₁ 0<s₂) , mr , (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
+  inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<s₁ 0<s₂) , mr , (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
     ≤-trans h (≤-trans (+-mono-≤ ha hb) (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) le₁) (*-mono-≤-nnʳ (<-≤ 0<s₂) le₂))
       (≤-≃ (≃-sym (*-distribˡ-+ r s₁ s₂))))))
 
 ⊗-distrib-bwd : ∀ x y z q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q → mem (x ⊗ (y ⊕ z)) q
 ⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₁ b<0 , h) =
-  inj₁ (≤-<-trans h (≃-<ʳ (+-identityˡ 0Q) (+-mono-< a<0 b<0)))
+  inj₁ (≤-<-trans h (≃-<ʳ (+-identityˡ 0ℚᵘ) (+-mono-< a<0 b<0)))
 ⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₂ (r , s , 0<r , 0<s , mr , ms , hb) , h) =
   inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inr y z) s ms ,
     <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityˡ b) (+-mono-<-≤ a<0 (≤-refl {b})))) hb))
@@ -287,20 +287,20 @@ open import Data.Rational.Unnormalised.Base using (_+_)
 module Classical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- a bounded cut has an element within ε of its supremum
-  near-sup : ∀ c {ε} → c ⊑ oneC → 0Q < ε →
-    Σ Q (λ r → mem c r × (∀ r′ → mem c r′ → r′ ≤ r + ε))
-  near-sup c {ε} bd 0<ε with lem (Σ Q (λ r → mem c r × (∀ r′ → mem c r′ → r′ ≤ r + ε)))
+  near-sup : ∀ c {ε} → c ⊑ oneC → 0ℚᵘ < ε →
+    Σ ℚᵘ (λ r → mem c r × (∀ r′ → mem c r′ → r′ ≤ r + ε))
+  near-sup c {ε} bd 0<ε with lem (Σ ℚᵘ (λ r → mem c r × (∀ r′ → mem c r′ → r′ ≤ r + ε)))
   ... | inj₁ yes = yes
   ... | inj₂ no = ⊥-elim (<-irrefl ≃-refl (<-≤-trans (ap bd rk mrk) final))
     where
-      b₀ : Q
-      b₀ = 0Q + - 1Q
+      b₀ : ℚᵘ
+      b₀ = 0ℚᵘ + - 1ℚᵘ
 
-      b₀<0 : b₀ < 0Q
+      b₀<0 : b₀ < 0ℚᵘ
       b₀<0 = neg-diff 0<1
 
-      step : ∀ r → mem c r → Σ Q (λ r′ → mem c r′ × r + ε < r′)
-      step r mr with lem (Σ Q (λ r′ → mem c r′ × r + ε < r′))
+      step : ∀ r → mem c r → Σ ℚᵘ (λ r′ → mem c r′ × r + ε < r′)
+      step r mr with lem (Σ ℚᵘ (λ r′ → mem c r′ × r + ε < r′))
       ... | inj₁ yes = yes
       ... | inj₂ none = ⊥-elim (no (r , mr , λ r′ m′ → help r′ m′ (≤-or-> r′ (r + ε))))
         where
@@ -308,7 +308,7 @@ module Classical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
           help r′ m′ (inj₁ le) = le
           help r′ m′ (inj₂ lt) = ⊥-elim (none (r′ , m′ , lt))
 
-      iter : ∀ n → Σ Q (λ r → mem c r × b₀ + nat n * ε ≤ r)
+      iter : ∀ n → Σ ℚᵘ (λ r → mem c r × b₀ + nat n * ε ≤ r)
       iter zero = b₀ , neg c b₀<0 ,
         ≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (*-zeroˡ ε)) (+-identityʳ b₀))
       iter (suc n) with iter n
@@ -317,41 +317,41 @@ module Classical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (nat-suc* n ε)) (ring₇ b₀ (nat n * ε) ε)))
           (<-≤ (≤-<-trans (+-mono-≤ h (≤-refl {ε})) lt))
 
-      k = proj₁ (arch (1Q + 1Q) 0<ε)
-      hk = proj₂ (arch (1Q + 1Q) 0<ε)
+      k = proj₁ (arch (1ℚᵘ + 1ℚᵘ) 0<ε)
+      hk = proj₂ (arch (1ℚᵘ + 1ℚᵘ) 0<ε)
 
       rk = proj₁ (iter k)
       mrk = proj₁ (proj₂ (iter k))
       hrk = proj₂ (proj₂ (iter k))
 
-      final : 1Q ≤ rk
-      final = ≤-trans (≤-≃ (≃-sym (ring₆ 1Q))) (≤-trans (+-mono-≤ (≤-refl {b₀}) hk) hrk)
+      final : 1ℚᵘ ≤ rk
+      final = ≤-trans (≤-≃ (≃-sym (ring₆ 1ℚᵘ))) (≤-trans (+-mono-≤ (≤-refl {b₀}) hk) hrk)
 
   -- the complement 1 − c of a cut below 1
   complC : ∀ c → c ⊑ oneC → Cut
   complC c bd = record
-    { mem = λ q → Σ Q (λ ε → 0Q < ε × (∀ r → mem c r → r + (q + ε) ≤ 1Q))
+    { mem = λ q → Σ ℚᵘ (λ ε → 0ℚᵘ < ε × (∀ r → mem c r → r + (q + ε) ≤ 1ℚᵘ))
     ; down = λ le (ε , 0<ε , h) →
         ε , 0<ε , (λ r m → ≤-trans (+-mono-≤ (≤-refl {r}) (+-mono-≤ le (≤-refl {ε}))) (h r m))
     ; open′ = λ {q} (ε , 0<ε , h) →
         let δ , 0<δ , δ<ε = dense 0<ε
         in q + δ , lt-add 0<δ , ε + - δ , pos-diff δ<ε , (λ r m → ≤-trans (≤-≃ (ring₂ r q δ ε)) (h r m))
     ; neg = λ {q} q<0 →
-        0Q + - q , neg-pos q<0 , (λ r m → ≤-trans (≤-≃ (ring₁ r q)) (<-≤ (ap bd r m))) }
+        0ℚᵘ + - q , neg-pos q<0 , (λ r m → ≤-trans (≤-≃ (ring₁ r q)) (<-≤ (ap bd r m))) }
 
   complement-ok : ∀ c (bd : c ⊑ oneC) → c ⊕ complC c bd ≋ oneC
   complement-ok c bd = mk⊑ fwd , mk⊑ bwd
     where
-      fwd : ∀ q → mem (c ⊕ complC c bd) q → q < 1Q
+      fwd : ∀ q → mem (c ⊕ complC c bd) q → q < 1ℚᵘ
       fwd q (r , s , mr , (ε , 0<ε , h) , le) =
         ≤-<-trans le (<-≤-trans (+-mono-≤-< (≤-refl {r}) (lt-add 0<ε)) (h r mr))
-      bwd : ∀ q → q < 1Q → mem (c ⊕ complC c bd) q
+      bwd : ∀ q → q < 1ℚᵘ → mem (c ⊕ complC c bd) q
       bwd q q<1 =
-        let η = 1Q + - q
+        let η = 1ℚᵘ + - q
             δ , 0<δ , δ<η = dense (pos-diff q<1)
             r , mr , hr = near-sup c bd 0<δ
         in r , q + - r , mr ,
-           (η + - δ , pos-diff δ<η , λ r′ m′ → ≤-trans (+-mono-≤ (hr r′ m′) (≤-refl {(q + - r) + (η + - δ)})) (≤-≃ (ring₃ r δ q 1Q))) ,
+           (η + - δ , pos-diff δ<η , λ r′ m′ → ≤-trans (+-mono-≤ (hr r′ m′) (≤-refl {(q + - r) + (η + - δ)})) (≤-≃ (ring₃ r δ q 1ℚᵘ))) ,
            ≤-≃ (≃-sym (add-sub r q))
 
   cancel-⊑ : ∀ {a x y} → a ⊑ oneC → a ⊕ x ⊑ a ⊕ y → x ⊑ y

@@ -22,9 +22,9 @@ open import QBS.Analysis.LowerReals
 open Cut
 open _⊑_
 
-data Mem {I : Set₁} : (I → Cut) → Q → Set₁ where
-  m-neg : ∀ {f q} → q < 0Q → Mem f q
-  m-step : ∀ {f q q′} (i : I) (r : Q) (g : I → Cut) → mem (f i) r →
+data Mem {I : Set₁} : (I → Cut) → ℚᵘ → Set₁ where
+  m-neg : ∀ {f q} → q < 0ℚᵘ → Mem f q
+  m-step : ∀ {f q q′} (i : I) (r : ℚᵘ) (g : I → Cut) → mem (f i) r →
     (∀ j → (i ≡ j → ⊥) → g j ⊑ f j) → g i ⊑ zeroC → Mem g q′ → q ≤ r + q′ → Mem f q
 
 module Basic {I : Set₁} where
@@ -38,7 +38,7 @@ module Basic {I : Set₁} where
   Mem-down le (m-neg lt) = m-neg (≤-<-trans le lt)
   Mem-down le (m-step i r g mr ex gz mg le′) = m-step i r g mr ex gz mg (≤-trans le le′)
 
-  Mem-open : ∀ {f : I → Cut} {p} → Mem f p → Σ Q (λ p′ → p < p′ × Mem f p′)
+  Mem-open : ∀ {f : I → Cut} {p} → Mem f p → Σ ℚᵘ (λ p′ → p < p′ × Mem f p′)
   Mem-open (m-neg lt) = let p′ , p<p′ , p′<0 = dense lt in p′ , p<p′ , m-neg p′<0
   Mem-open (m-step {f} {q′ = q′} i r g mr ex gz mg le) =
     let r′ , r<r′ , mr′ = open′ (f i) mr
@@ -49,16 +49,16 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open Basic
 
 private
-  add-neg-le : ∀ {r q′} → q′ < 0Q → r + q′ ≤ r
+  add-neg-le : ∀ {r q′} → q′ < 0ℚᵘ → r + q′ ≤ r
   add-neg-le {r} lt = ≤-trans (+-mono-≤ (≤-refl {r}) (<-≤ lt)) (≤-≃ (+-identityʳ r))
 
-  add-neg-le′ : ∀ {a b} → a < 0Q → a + b ≤ b
+  add-neg-le′ : ∀ {a b} → a < 0ℚᵘ → a + b ≤ b
   add-neg-le′ {a} {b} lt = ≤-trans (+-mono-≤ (<-≤ lt) (≤-refl {b})) (≤-≃ (+-identityˡ b))
 
 ----------------------------------------------------------------------------
 -- the empty index set and the one-point index set
 
-Mem-empty : ∀ {f : E⊥.⊥ {L.suc L.zero} → Cut} {q} → Mem f q → q < 0Q
+Mem-empty : ∀ {f : E⊥.⊥ {L.suc L.zero} → Cut} {q} → Mem f q → q < 0ℚᵘ
 Mem-empty (m-neg lt) = lt
 Mem-empty (m-step () r g mr ex gz mg le)
 
@@ -112,7 +112,7 @@ module Sum {I J : Set₁} where
       ex′ (inj₂ j) _ = ⊑-refl
 
   split : ∀ {f : I ⊎ J → Cut} {q} → Mem f q →
-    Σ Q (λ a → Σ Q (λ b → Mem (λ i → f (inj₁ i)) a × Mem (λ j → f (inj₂ j)) b × q ≤ a + b))
+    Σ ℚᵘ (λ a → Σ ℚᵘ (λ b → Mem (λ i → f (inj₁ i)) a × Mem (λ j → f (inj₂ j)) b × q ≤ a + b))
   split (m-neg lt) = let a , b , a<0 , b<0 , le = split-neg lt in a , b , m-neg a<0 , m-neg b<0 , le
   split {f} (m-step {q′ = q′} (inj₁ i) r g mr ex gz mg le) =
     let a , b , ma , mb , le′ = split mg
@@ -246,7 +246,7 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
 
   -- peel one index off a sum: Σ g = (a ∈ g i₀) + (the rest, with i₀ killed)
   split1 : ∀ {I : Set₁} {g : I → Cut} {q} → Mem g q → ∀ (i₀ : I) →
-    Σ Q (λ a → Σ Q (λ b → mem (g i₀) a × Mem (killP (λ j → i₀ ≡ j) g) b × q ≤ a + b))
+    Σ ℚᵘ (λ a → Σ ℚᵘ (λ b → mem (g i₀) a × Mem (killP (λ j → i₀ ≡ j) g) b × q ≤ a + b))
   split1 {g = g} (m-neg lt) i₀ =
     let a , b , a<0 , b<0 , le = split-neg lt in a , b , neg (g i₀) a<0 , m-neg b<0 , le
   split1 {g = g} (m-step {q′ = q′} i r g′ mr ex gz mg le) i₀ with dec≡ i₀ i
@@ -275,21 +275,21 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   -- multiplication distributes over sums
 
   private
-    neg-mul : ∀ {r s} → 0Q < r → s < 0Q → r * s < 0Q
+    neg-mul : ∀ {r s} → 0ℚᵘ < r → s < 0ℚᵘ → r * s < 0ℚᵘ
     neg-mul {r} 0<r s<0 = ≃-<ʳ (P.*-zeroʳ r) (*-mono-<-pos 0<r s<0)
 
-    pos-add : ∀ {a b} → 0Q < a → 0Q < b → 0Q < a + b
-    pos-add 0<a 0<b = ≃-<ˡ (+-identityˡ 0Q) (+-mono-< 0<a 0<b)
+    pos-add : ∀ {a b} → 0ℚᵘ < a → 0ℚᵘ < b → 0ℚᵘ < a + b
+    pos-add 0<a 0<b = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<a 0<b)
 
-    neg-add : ∀ {a b} → a < 0Q → b < 0Q → a + b < 0Q
-    neg-add a<0 b<0 = ≃-<ʳ (+-identityˡ 0Q) (+-mono-< a<0 b<0)
+    neg-add : ∀ {a b} → a < 0ℚᵘ → b < 0ℚᵘ → a + b < 0ℚᵘ
+    neg-add a<0 b<0 = ≃-<ʳ (+-identityˡ 0ℚᵘ) (+-mono-< a<0 b<0)
 
     ⊗-zeroʳ : ∀ x → x ⊗ zeroC ⊑ zeroC
     ⊗-zeroʳ x = ⊑-trans (proj₁ (⊗-comm x zeroC)) (proj₁ (⊗-zeroˡ x))
 
   module Dist (x : Cut) where
 
-    dist1 : ∀ {I : Set₁} {f : I → Cut} {s} → Mem f s → ∀ {r} → 0Q < r → mem x r →
+    dist1 : ∀ {I : Set₁} {f : I → Cut} {s} → Mem f s → ∀ {r} → 0ℚᵘ < r → mem x r →
       Mem (λ i → x ⊗ f i) (r * s)
     dist1 (m-neg lt) 0<r mr = m-neg (neg-mul 0<r lt)
     dist1 {f = f} (m-step {q = s} {q′ = q′} i ρ g mρ ex gz mg le) {r} 0<r mr with pos-or-nonpos ρ
@@ -303,7 +303,7 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
         (Mem-mono (λ j → ⊗-mono ⊑-refl (step-below ex gz j)) (dist1 mg 0<r mr))
 
     dist2 : ∀ {I : Set₁} {h f : I → Cut} {q} → (∀ i → h i ⊑ x ⊗ f i) → Mem h q →
-      q < 0Q ⊎ Σ Q (λ R → Σ Q (λ σ → 0Q < R × mem x R × 0Q < σ × Mem f σ × q ≤ R * σ))
+      q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))
     dist2 H (m-neg lt) = inj₁ lt
     dist2 {f = f} H (m-step {q = q} {q′ = q′} i ρ g mρ ex gz mg le) =
       go (dist2 H′ mg) (ap (H i) ρ mρ)
@@ -316,9 +316,9 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
         ... | yes refl = ⊑-trans gz 0-least
         ... | no ne = ⊑-trans (ex j ne) (⊑-trans (H j) (⊗-mono ⊑-refl (killP-off P f ne)))
 
-        go : (q′ < 0Q ⊎ Σ Q (λ R → Σ Q (λ σ → 0Q < R × mem x R × 0Q < σ × Mem f′ σ × q′ ≤ R * σ))) →
+        go : (q′ < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f′ σ × q′ ≤ R * σ))) →
              mem (x ⊗ f i) ρ →
-             q < 0Q ⊎ Σ Q (λ R → Σ Q (λ σ → 0Q < R × mem x R × 0Q < σ × Mem f σ × q ≤ R * σ))
+             q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))
         go (inj₁ q′<0) (inj₁ ρ<0) = inj₁ (≤-<-trans le (neg-add ρ<0 q′<0))
         go (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₁ ρ<0) =
           inj₂ (R , σ , 0<R , mR , 0<σ , Mem-mono (killP-⊑ P f) mσ , ≤-trans le (≤-trans (add-neg-le′ ρ<0) le′))
@@ -349,7 +349,7 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
       bwd : sumC (λ i → x ⊗ f i) ⊑ x ⊗ sumC f
       bwd = mk⊑ (λ q d → go (dist2 (λ i → ⊑-refl) (sum⇒Mem d)))
         where
-          go : ∀ {q} → (q < 0Q ⊎ Σ Q (λ R → Σ Q (λ σ → 0Q < R × mem x R × 0Q < σ × Mem f σ × q ≤ R * σ))) →
+          go : ∀ {q} → (q < 0ℚᵘ ⊎ Σ ℚᵘ (λ R → Σ ℚᵘ (λ σ → 0ℚᵘ < R × mem x R × 0ℚᵘ < σ × Mem f σ × q ≤ R * σ))) →
                mem (x ⊗ sumC f) q
           go (inj₁ lt) = inj₁ lt
           go (inj₂ (R , σ , 0<R , mx , 0<σ , mσ , le)) = inj₂ (R , σ , 0<R , 0<σ , mx , Mem⇒sum mσ , le)
@@ -395,7 +395,7 @@ module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
       Mem-down (≤-trans (+-mono-≤ le (≤-refl {q′})) (≤-trans (+-mono-≤ (≤-trans (+-mono-≤ (<-≤ r<0) (≤-refl {ρ′})) (≤-≃ (+-identityˡ ρ′))) (≤-refl {q′})) (≤-refl {ρ′ + q′})))
         (row-add mH′ F F′ hH′ hF dj′ mF′)
       where
-        r<0 : r < 0Q
+        r<0 : r < 0ℚᵘ
         r<0 = ap Hj≤0 r mr
         hH′ : ∀ j′ → H′ j′ ⊑ F (i₀ , j′)
         hH′ j′ = ⊑-trans (step-below ex gz j′) (hH j′)

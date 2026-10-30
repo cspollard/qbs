@@ -39,9 +39,9 @@ open _⊑_
 ----------------------------------------------------------------------------
 -- rational constants as cuts
 
-rC : Q → Cut
+rC : ℚᵘ → Cut
 rC r = record
-  { mem = λ s → s < r ⊎ s < 0Q
+  { mem = λ s → s < r ⊎ s < 0ℚᵘ
   ; down = λ { le (inj₁ lt) → inj₁ (≤-<-trans le lt) ; le (inj₂ lt) → inj₂ (≤-<-trans le lt) }
   ; open′ = λ { (inj₁ lt) → let t , a , b = dense lt in t , a , inj₁ b
               ; (inj₂ lt) → let t , a , b = dense lt in t , a , inj₂ b }
@@ -71,7 +71,7 @@ rC-add-⊑ a b = mk⊑ go
 ----------------------------------------------------------------------------
 -- the grid points
 
-th : ℕ → ℕ → Q
+th : ℕ → ℕ → ℚᵘ
 th k a = nat a * tp k
 
 th-suc : ∀ k a → th k (suc a) ≃ th k a + tp k
@@ -80,12 +80,12 @@ th-suc k a = ≃-trans (nat-suc* a (tp k)) ≃-refl
 nat-mono′ : ∀ {a b} → a ℕ.≤′ b → nat a ≤ nat b
 nat-mono′ ℕ.≤′-refl = ≤-refl
 nat-mono′ {a} (ℕ.≤′-step {b} le) = ≤-trans (nat-mono′ le)
-  (≤-trans (≤-+ʳ′ (nat b) 1Q (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc b))))
+  (≤-trans (≤-+ʳ′ (nat b) 1ℚᵘ (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc b))))
 
 th-mono : ∀ k {a b} → a ℕ.≤′ b → th k a ≤ th k b
 th-mono k le = *-mono-≤-nnʳ (<-≤ (tp-pos k)) (nat-mono′ le)
 
-th-zero : ∀ k → th k 0 ≃ 0Q
+th-zero : ∀ k → th k 0 ≃ 0ℚᵘ
 th-zero k = *-zeroˡ (tp k)
 
 rC-th-suc : ∀ k a → rC (th k (suc a)) ⊑ rC (th k a) ⊕ rC (tp k)
@@ -132,7 +132,7 @@ module Grid (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure lem
 
     -- some grid point is above h x
     above : Σ ℕ (λ N → ∀ x → T (suc N) x → ⊥)
-    above with arch 1Q {tp k} (tp-pos k)
+    above with arch 1ℚᵘ {tp k} (tp-pos k)
     ... | N , one≤ = N , λ x t →
       <-irrefl ≃-refl (<-≤-trans (ap (bd (lift x)) (th k (suc N)) t)
         (≤-trans one≤ (th-mono k (ℕₚ.≤⇒≤′ (ℕₚ.n≤1+n N)))))

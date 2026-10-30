@@ -159,7 +159,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   -- the cut `P ∧ c`: `c` if `P` holds and `0` otherwise
   chi : Set → Cut → Cut
   chi P c = record
-    { mem = λ q → q ℚ.< RL.0Q ⊎ (P × memC c q)
+    { mem = λ q → q ℚ.< RL.0ℚᵘ ⊎ (P × memC c q)
     ; down = λ { le (inj₁ lt) → inj₁ (RL.≤-<-trans le lt) ; le (inj₂ (pp , m)) → inj₂ (pp , downC c le m) }
     ; open′ = λ { (inj₁ lt) → let r , q<r , r<0 = RL.dense lt in r , q<r , inj₁ r<0
                 ; (inj₂ (pp , m)) → let r , q<r , mr = openC c m in r , q<r , inj₂ (pp , mr) }
@@ -172,7 +172,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   chi-false c np = mk⊑ (λ q → λ { (inj₁ lt) → lt ; (inj₂ (pp , _)) → ⊥-elim (np pp) }) , mk⊑ (λ q lt → inj₁ lt)
 
   Meas-chi : ∀ {U : R₁ → Set} {g} → Borel (λ c → U (lift c)) → Meas g → Meas (λ x → chi (U x) (g x))
-  Meas-chi bU mg q = union₂ (borel-prop (q ℚ.< RL.0Q)) (inter₂ bU (mg q))
+  Meas-chi bU mg q = union₂ (borel-prop (q ℚ.< RL.0ℚᵘ)) (inter₂ bU (mg q))
 
   -- the weight of a pre-measure
   wt : ∀ {X : QBS S} → Pre (XW X) → R₁ → Cut
@@ -182,10 +182,10 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   wt-Meas p = proj₁ (α-random p)
 
   -- the bands: index 0 is `{w = ∞}` (weight ∞), index k+1 is `{k < w ≤ k+1}` (weight k+1)
-  posNat : ∀ k → RL.0Q ℚ.< RL.nat (ℕ.suc k)
+  posNat : ∀ k → RL.0ℚᵘ ℚ.< RL.nat (ℕ.suc k)
   posNat k = RL.≃-<ʳ (RL.≃-sym (RL.nat-suc k))
-    (RL.<-≤-trans RL.0<1 (RL.≤-trans (RL.≤-≃ (RL.≃-sym (RL.+-identityˡ RL.1Q)))
-       (RL.+-mono-≤ (nat-nonneg k) (RL.≤-refl {RL.1Q}))))
+    (RL.<-≤-trans RL.0<1 (RL.≤-trans (RL.≤-≃ (RL.≃-sym (RL.+-identityˡ RL.1ℚᵘ)))
+       (RL.+-mono-≤ (nat-nonneg k) (RL.≤-refl {RL.1ℚᵘ}))))
 
   cK : ℕ → Cut
   cK k = qC (RL.nat (ℕ.suc k)) (posNat k)
@@ -237,7 +237,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   nat-mono : ∀ {j k} → j ℕ.≤ k → RL.nat j ℚ.≤ RL.nat k
   nat-mono {k = k} ℕ.z≤n = nat-nonneg k
   nat-mono (ℕ.s≤s le) = RL.≤-resp (RL.≃-sym (RL.nat-suc _)) (RL.≃-sym (RL.nat-suc _))
-    (RL.+-mono-≤ (nat-mono le) (RL.≤-refl {RL.1Q}))
+    (RL.+-mono-≤ (nat-mono le) (RL.≤-refl {RL.1ℚᵘ}))
 
   band-unique : ∀ w {j k} → bandS w j → bandS w k → j ≡.≡ k
   band-unique w {j} {k} (mj , nj) (mk′ , nk) with ℕP.<-cmp j k
@@ -255,12 +255,12 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   ... | inj₁ mK = K , mK , nK
   ... | inj₂ nmK = find-band w K m0 nmK
 
-  bands-case : ∀ w → infS w ⊎ ((memC w RL.0Q → ⊥) ⊎ Σ ℕ (bandS w))
+  bands-case : ∀ w → infS w ⊎ ((memC w RL.0ℚᵘ → ⊥) ⊎ Σ ℕ (bandS w))
   bands-case w with lem (infS w)
   ... | inj₁ inf = inj₁ inf
-  ... | inj₂ ninf with lem (memC w RL.0Q)
+  ... | inj₂ ninf with lem (memC w RL.0ℚᵘ)
   ... | inj₂ nz = inj₂ (inj₁ nz)
-  ... | inj₁ m0 with lem (Σ RL.Q (λ ρ → memC w ρ → ⊥))
+  ... | inj₁ m0 with lem (Σ RL.ℚᵘ (λ ρ → memC w ρ → ⊥))
   ... | inj₁ (ρ , nρ) = inj₂ (inj₂ (find-band w (proj₁ (RL.nat-bound ρ)) m0
         (λ m → nρ (downC w (proj₂ (RL.nat-bound ρ)) m))))
   ... | inj₂ nex = ⊥-elim (ninf (λ q → dec q (lem (memC w q))))
@@ -281,16 +281,16 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   bandTerm : Cut → Cut → ℕ → Cut
   bandTerm w c n = (bandW n * densW w n) * c
 
-  bands-zero : ∀ w c → (memC w RL.0Q → ⊥) → w * c ≈ ∑ᶠ (bandTerm w c)
+  bands-zero : ∀ w c → (memC w RL.0ℚᵘ → ⊥) → w * c ≈ ∑ᶠ (bandTerm w c)
   bands-zero w c nz = trans w0 (sym (∑ᶠ-zero t0))
     where
       w0 : w * c ≈ 0#
-      w0 = trans (*-cong ((mk⊑ (λ q m → go q m (RL.≤-or-> RL.0Q q))) , mk⊑ (λ q lt → negC w lt)) refl) (zeroˡ c)
-        where go : ∀ q → memC w q → RL.0Q ℚ.≤ q ⊎ q ℚ.< RL.0Q → q ℚ.< RL.0Q
+      w0 = trans (*-cong ((mk⊑ (λ q m → go q m (RL.≤-or-> RL.0ℚᵘ q))) , mk⊑ (λ q lt → negC w lt)) refl) (zeroˡ c)
+        where go : ∀ q → memC w q → RL.0ℚᵘ ℚ.≤ q ⊎ q ℚ.< RL.0ℚᵘ → q ℚ.< RL.0ℚᵘ
               go q m (inj₁ le) = ⊥-elim (nz (downC w le m))
               go q m (inj₂ lt) = lt
       d0 : ∀ n → densW w n ≈ 0#
-      d0 ℕ.zero = chi-false _ (λ inf → nz (inf RL.0Q))
+      d0 ℕ.zero = chi-false _ (λ inf → nz (inf RL.0ℚᵘ))
       d0 (ℕ.suc k) = chi-false _ (λ b → nz (downC w (nat-nonneg k) (proj₁ b)))
       t0 : ∀ n → bandTerm w c n ≈ 0#
       t0 n = trans (*-cong (trans (*-cong refl (d0 n)) (zeroʳ _)) refl) (zeroˡ c)
@@ -363,15 +363,15 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   pieceMass p n = massM (pieceMeasure p n)
 
   Pos : Cut → Set
-  Pos c = Σ RL.Q (λ s → RL.0Q ℚ.< s × memC c s)
+  Pos c = Σ RL.ℚᵘ (λ s → RL.0ℚᵘ ℚ.< s × memC c s)
 
   massM≤1 : ∀ ν → massM ν ≤ 1#
   massM≤1 ν = Measure.I-sub ν (Fun-const 1# ≤-refl)
 
   notPos-zero : ∀ c → (Pos c → ⊥) → c ≈ 0#
-  notPos-zero c np = mk⊑ (λ q m → go m (RL.≤-or-> RL.0Q q)) , mk⊑ (λ q lt → negC c lt)
+  notPos-zero c np = mk⊑ (λ q m → go m (RL.≤-or-> RL.0ℚᵘ q)) , mk⊑ (λ q lt → negC c lt)
     where
-      go : ∀ {q} → memC c q → RL.0Q ℚ.≤ q ⊎ q ℚ.< RL.0Q → q ℚ.< RL.0Q
+      go : ∀ {q} → memC c q → RL.0ℚᵘ ℚ.≤ q ⊎ q ℚ.< RL.0ℚᵘ → q ℚ.< RL.0ℚᵘ
       go m (inj₂ lt) = lt
       go {q} m (inj₁ le) with openC c m
       ... | q′ , q<q′ , mq′ = ⊥-elim (np (q′ , RL.≤-<-trans le q<q′ , mq′))
@@ -379,7 +379,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   -- the normalised measure when the mass is positive (`1/mass`), a dummy probability measure otherwise
   mass-inv : ∀ ν → Pos (massM ν) → massM ν * invC (massM ν) ≈ 1#
   mass-inv ν pos = trans (*-comm _ _) (InvClassical.inv-mul lem (massM ν) pos
-    (RL.1Q , λ m → RL.<-irrefl RL.≃-refl (_⊑_.ap (massM≤1 ν) RL.1Q m)))
+    (RL.1ℚᵘ , λ m → RL.<-irrefl RL.≃-refl (_⊑_.ap (massM≤1 ν) RL.1ℚᵘ m)))
 
   probOfCase : ∀ ν → Pos (massM ν) ⊎ (Pos (massM ν) → ⊥) → Σ Measure IsProb
   probOfCase ν (inj₁ pos) = normM ν (invC (massM ν)) (mass-inv ν pos)
