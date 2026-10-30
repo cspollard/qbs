@@ -7,8 +7,6 @@
 --     bounded signed values `Sg`, it has no boundedness requirement, so gluing is unproblematic.
 --   * `STest X`: a signed test on `X`, a pair of maps `X ⇒ CutQ` with a common natural bound; it stands for `pos − neg`.
 --   * `pullback g α pm`: the signed random variable `g ∘ α` on a probability space, for a random element `α`.
---
--- SKELETON: the declarations are in place; the proofs marked by holes are the plan's next steps.
 module QBS.Continuous.SignedTests where
 
 open import Data.Empty using (⊥)
@@ -29,12 +27,12 @@ open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Continuous.Sample using (S)
 
 module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
-  open Lebesgue lem using (A; J)
+  open Lebesgue lem using (A; J; J-mono)
   open Meas lem using (Meas; Meas-ext; Meas-const; Meas-pre; Meas-glue)
   open Integration A using (Measure; IsProb)
-  open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ) using (_≤_)
+  open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ) using (_≤_; ≤-trans; ≤-reflexive)
   open Bounded A using (nat; Bnd)
-  open SignedIntegral lem using (SF)
+  open SignedIntegral lem using (SF; J-const)
   open BoundedRing lem using (BSF)
 
   ----------------------------------------------------------------------------
@@ -44,10 +42,10 @@ module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   CutQ = record
     { Carrier = Aˢ
     ; Random = Meas
-    ; random-resp = λ e m → ?   -- `Meas-ext`
-    ; const-random = λ c → ?    -- `Meas-const`
-    ; pre-random = λ m mf → ?   -- `Meas-pre`
-    ; glue-random = λ pj α m → ?  -- `Meas-glue`
+    ; random-resp = λ e m → Meas-ext e m
+    ; const-random = λ c → Meas-const c
+    ; pre-random = λ m mf → Meas-pre m mf
+    ; glue-random = λ pj α m → Meas-glue pj m
     }
 
   ----------------------------------------------------------------------------
@@ -63,9 +61,21 @@ module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- a bounded measurable function has a bounded integral against a probability measure
   J-bounded : ∀ {m} → IsProb m → ∀ {h} (mh : Meas h) (N : ℕ) → (∀ x → h x ≤ nat N) → Bnd (J m h mh)
-  J-bounded pm mh N b = ?   -- monotonicity of `J` and `J-const`: J h ≤ J (const N) = N
+  J-bounded {m} pm {h} mh N b = N , ≤-trans (J-mono m mh (Meas-const (nat N)) b) (≤-reflexive (J-const pm (nat N)))
 
   -- the signed random variable g ∘ α, on a probability space, for a random element α
   pullback : ∀ {X : QBS S} (g : STest X) {α : R₁ → QBS.∣ X ∣} → QBS.Random X α →
     ∀ (m : Measure) (pm : IsProb m) → BSF m pm
-  pullback g r m pm = ?   -- f⁺ = pos ∘ α, f⁻ = neg ∘ α (measurable by `map-random`), integrals bounded by `J-bounded`
+  pullback g {α} r m pm = sf , STest.bound g , λ x → STest.pos-bdd g (α x) , STest.neg-bdd g (α x)
+    where
+    mp = Hom.map-random (STest.pos g) r
+    mn = Hom.map-random (STest.neg g) r
+    sf : SF m
+    sf = record
+      { f⁺ = λ x → Hom.map (STest.pos g) ⟨$⟩ α x
+      ; f⁻ = λ x → Hom.map (STest.neg g) ⟨$⟩ α x
+      ; f⁺-meas = mp
+      ; f⁻-meas = mn
+      ; f⁺-int = J-bounded pm mp (STest.bound g) (λ x → STest.pos-bdd g (α x))
+      ; f⁻-int = J-bounded pm mn (STest.bound g) (λ x → STest.neg-bdd g (α x))
+      }
