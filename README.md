@@ -403,6 +403,17 @@ expansion, the bit probability `P(rₖ = true) = ½` (`μ0-bitT`) and `Σ 2^{-(k
 Archimedean property; `Arch` now also records `hp 0 ≈ 1`). `Uniform.agda` restates it in the monad as
 `∫-uniform-id : ∫ uniform id ≈ half`.
 
+## Frequentist inference (layer 1)
+
+`Inference/Frequentist.agda` states the frequentist notions once: an `Experiment Θ` gives, for every parameter, a probability
+space and a sequence of observations in the ring of bounded signed random variables; a statistic is a ring `Term` in the
+observations (`sumT`, `sqT`, `ssT`), evaluated in any commutative ring (`Eval.eval`). `expect`, `bias`, `variance`, `mse`
+(through `meanSq`) use the signed expectation, and `ScaledUnbiased ex k τ t` (`E t = k τ`, division-free) is unbiasedness.
+Under the `Moments` hypotheses (mean μ, variance σ², uncorrelated), `sample-mean-unbiased` and `sample-variance-unbiased`
+instantiate the estimator theorem at every parameter. `Inference/UniformExperiment.agda` is the first instance: draws uniform
+on `[a, a + c]`, parameter `(a , c)`, with `sample-mean-unbiased` (for `a + c/2`) and `sample-variance-unbiased` (for `c² σ²`).
+The kernel form `Θ ⇒ M X` and the Bayesian half are the next stages of `plans/03-bayesian-frequentist.md`.
+
 ## Checked against the literature
 
 - Heunen–Kammar–Staton–Yang, [*A Convenient Category for Higher-Order Probability Theory*](https://arxiv.org/abs/1701.02547)

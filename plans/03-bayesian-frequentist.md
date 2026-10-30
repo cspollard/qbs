@@ -44,6 +44,8 @@ So the frequentist half comes in two layers:
 The Bayesian half (`Inference/Bayesian`) is independent of both layers until continuous data: it is stated for the discrete
 `Example/Bayes` first (prior, joint, evidence, posterior, sequential update, predictive), then `Pre`-based for Beta–Bernoulli.
 
+**Status:** 3a DONE (2026-10-30): `Inference/Frequentist` (all holes filled; ~35 s cold, 4 s warm) and `Inference/UniformExperiment` (the uniform-interval instance with `sample-mean-unbiased`, `sample-variance-unbiased`). Parameters live in `Set₁` because `Sg` does.
+
 ### Revised staging (supersedes the staging below where they differ)
 - 3a. `Inference/Frequentist` skeleton (declarations with holes), then definitions, then the generic theorems, then the uniform
   instance (`Inference/UniformExperiment`).  Each module compiles on its own in seconds; keep proofs short.
