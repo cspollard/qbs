@@ -83,6 +83,16 @@ explicit `proj₁`/`proj₂` plus a separate lemma.  Check wall time under load 
 
 ## Compile time: audit, profiling and improvement strategy
 
+**Refactoring long proofs (2026-10-30).** Splitting declarations into named lemmas is free when each lemma has its own
+signature. Three things made it slow, all avoided by the fixes: (1) `with f args` where the result is a nested `Σ`
+and the goal is `mem (c ⊗ d) q` (`LowerInverse.go`: 3 s → 9 s; fix: pass the `Σ` to a lemma that pattern-matches on it
+instead of using `with`); (2) leaving the implicit arguments of a lemma about rationals or signed values to
+unification (give them explicitly; `+`, `*` are not injective for unification); (3) binding `wmOf p`, `g (wmOf p)` and
+similar to local names in `SFinite.∫ᴹ-join` made the check run for more than five minutes (original 5.6 s), so that
+proof is still in `scripts/longdecls.baseline`; if retried, give each local a type signature or make them `abstract`.
+Compile times before and after were equal for `StatInstance` (30 s), `LowerReals`, `LevelSets`, `Unbounded`, `Fun`,
+`Restrict` and `SFiniteIncl`.
+
 **Finding (2026-10-26), `Continuous.SFiniteCommute` (never finished → 16 s).** The cost was *conversion at nested
 `TQ` types*: two terms of type `Hom`/`Pre` that differ only in spelling (e.g. `RS.τ {X} {Functor.F₀ TF Y}` vs
 `RS.τ {X} {TQ Y}`, or the same composite `_∘H_ S (∫ᶠ g) (σH X Y)` elaborated twice) are compared by

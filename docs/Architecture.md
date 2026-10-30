@@ -66,6 +66,13 @@ goals, passing implicit arguments that Agda could infer, `J`/`mapM`/`joinPre` no
 Tools: `make progress` (tolerates holes), `make profile`, `make profile-MODULE`.
 Plan the generic-then-instantiate pattern for new statistical results.
 
+Keep declarations short: `make longcheck` (`scripts/longdecls.py`) flags any declaration over 25 lines, 1500 characters
+or 160 columns (a record literal is measured by its largest field); `scripts/longdecls.baseline` lists the known long ones
+and a new one fails the check. Split by naming the pieces: lemmas with signatures stated in the notation of the
+interface (see `Laws` in `Model/StatInstance`), one lemma per constructor case of an induction (`Fun-mask`), and a
+named lemma for a witness step instead of a long `where` block (`pick` in `Analysis/LowerInverse`). Check the compile time
+of the module before and after (`agda --profile=definitions F`, deleting its `.agdai` first).
+
 ## Where to add things
 
 | New… | Put it in | Pattern to copy |

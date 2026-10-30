@@ -34,18 +34,40 @@ module Restrict (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P
     χ*≤1 : ∀ U {h : R → ∣A∣} → (∀ x → h x ≤ 1#) → ∀ x → χ U x * h x ≤ 1#
     χ*≤1 U b x = ≤-trans (*-mono (χ U x) (b x)) (≤-trans (≤-reflexive (*-identityʳ _)) (χ-≤1 U x))
 
+  private
+    -- the pieces of `Fun-χ·`, one per way of building a function
+    χ·-out : ∀ {U V : Cantor → Set} {h : R → ∣A∣} → (∀ x → (V (lower x) → ⊥) → h x ≈ 0#) →
+      ∀ x → (U (lower x) × V (lower x) → ⊥) → χ U x * h x ≈ 0#
+    χ·-out {U} {V} {h} e₁ x n with dichotomy U x
+    ... | inj₂ (nu , z) = trans (*-cong z refl) (zeroˡ _)
+    ... | inj₁ (u , o) = trans (*-cong o refl) (trans (*-identityˡ _) (e₁ x (λ v → n (u , v))))
+
+    χ·-compl-bnd : ∀ {U} {h′ : R → ∣A∣} → (∀ x → h′ x ≤ 1#) → ∀ x → χ (λ y → U y → ⊥) x + χ U x * h′ x ≤ 1#
+    χ·-compl-bnd {U} b x with dichotomy U x
+    ... | inj₁ (u , o) = ≤-resp (sym eq) refl (b x)
+      where eq = trans (+-cong (χ-out (λ y → U y → ⊥) x (λ nu → nu u)) (*-cong o refl))
+                       (trans (+-cong refl (*-identityˡ _)) (+-identityˡ _))
+    ... | inj₂ (n , z) = ≤-reflexive
+      (trans (+-cong (χ-in (λ y → U y → ⊥) x n) (*-cong z refl))
+             (trans (+-cong refl (zeroˡ _)) (+-identityʳ 1#)))
+
+    χ·-compl-pw : ∀ {U} {h h′ : R → ∣A∣} → (∀ x → h x + h′ x ≈ 1#) →
+      ∀ x → χ U x * h x + (χ (λ y → U y → ⊥) x + χ U x * h′ x) ≈ 1#
+    χ·-compl-pw {U} q x with dichotomy U x
+    ... | inj₁ (u , o) =
+      trans (+-cong (*-cong o refl) (+-cong (χ-out (λ y → U y → ⊥) x (λ nu → nu u)) (*-cong o refl)))
+        (trans (+-cong (*-identityˡ _) (trans (+-identityˡ _) (*-identityˡ _))) (q x))
+    ... | inj₂ (n , z) =
+      trans (+-cong (*-cong z refl) (+-cong (χ-in (λ y → U y → ⊥) x n) (*-cong z refl)))
+        (trans (+-cong (zeroˡ _) (+-cong refl (zeroˡ _))) (trans (+-identityˡ _) (+-identityʳ 1#)))
+
   -- measurable functions are closed under multiplication by an indicator
   Fun-χ· : ∀ {U h} → Borel U → Fun h → Fun (λ x → χ U x * h x)
   Fun-χ· {U} bU (ind {V} {h} c c≤1 bV e₀ e₁ b) =
     ind c c≤1 (inter₂ bU bV)
       (λ x (u , v) → trans (*-cong (χ-in U x u) (e₀ x v)) (*-identityˡ c))
-      (λ x n → case-out x n)
+      (χ·-out {U} {V} {h} e₁)
       (χ*≤1 U b)
-    where
-      case-out : ∀ x → (U (lower x) × V (lower x) → ⊥) → χ U x * h x ≈ 0#
-      case-out x n with dichotomy U x
-      ... | inj₂ (nu , z) = trans (*-cong z refl) (zeroˡ _)
-      ... | inj₁ (u , o) = trans (*-cong o refl) (trans (*-identityˡ _) (e₁ x (λ v → n (u , v))))
   Fun-χ· {U} bU (sumF {h} {h₁} {h₂} f₁ f₂ q b) =
     sumF (Fun-χ· bU f₁) (Fun-χ· bU f₂) (λ x → trans (*-cong refl (q x)) (distribˡ _ _ _)) (χ*≤1 U b)
   Fun-χ· {U} bU (supF {h} hs fs inc q) =
@@ -53,25 +75,8 @@ module Restrict (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P
       (λ x → trans (*-cong refl (q x)) (*-⨆ (χ U x) _ (inc x) (λ n → *-mono (χ U x) (inc x n))))
   Fun-χ· {U} bU (complF {h} {h′} f q) =
     complF {h′ = λ x → χ (λ y → U y → ⊥) x + χ U x * h′ x}
-      (sumF (Fun-χ (compl bU)) (Fun-χ· bU f) (λ x → refl) bnd)
-      pw
-    where
-      bnd : ∀ x → χ (λ y → U y → ⊥) x + χ U x * h′ x ≤ 1#
-      bnd x with dichotomy U x
-      ... | inj₁ (u , o) = ≤-resp (sym eq) refl (Fun-≤1 f x)
-        where eq = trans (+-cong (χ-out (λ y → U y → ⊥) x (λ nu → nu u)) (*-cong o refl))
-                         (trans (+-cong refl (*-identityˡ _)) (+-identityˡ _))
-      ... | inj₂ (n , z) = ≤-reflexive
-        (trans (+-cong (χ-in (λ y → U y → ⊥) x n) (*-cong z refl))
-               (trans (+-cong refl (zeroˡ _)) (+-identityʳ 1#)))
-      pw : ∀ x → χ U x * h x + (χ (λ y → U y → ⊥) x + χ U x * h′ x) ≈ 1#
-      pw x with dichotomy U x
-      ... | inj₁ (u , o) =
-        trans (+-cong (*-cong o refl) (+-cong (χ-out (λ y → U y → ⊥) x (λ nu → nu u)) (*-cong o refl)))
-          (trans (+-cong (*-identityˡ _) (trans (+-identityˡ _) (*-identityˡ _))) (q x))
-      ... | inj₂ (n , z) =
-        trans (+-cong (*-cong z refl) (+-cong (χ-in (λ y → U y → ⊥) x n) (*-cong z refl)))
-          (trans (+-cong (zeroˡ _) (+-cong refl (zeroˡ _))) (trans (+-identityˡ _) (+-identityʳ 1#)))
+      (sumF (Fun-χ (compl bU)) (Fun-χ· bU f) (λ x → refl) (χ·-compl-bnd {U} (Fun-≤1 f)))
+      (χ·-compl-pw {U} {h} {h′} q)
 
   private
     χ-mono : ∀ U {h h′ : R → ∣A∣} → (∀ x → h x ≤ h′ x) → ∀ x → χ U x * h x ≤ χ U x * h′ x

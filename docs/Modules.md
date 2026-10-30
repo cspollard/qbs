@@ -104,7 +104,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Pieces` | 151 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
 | `QBS.Analysis.RationalLemmas` | 259 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 311 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
-| `QBS.Analysis.Restrict` | 110 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
+| `QBS.Analysis.Restrict` | 115 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
 | `QBS.Analysis.Riesz` | 83 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |
 | `QBS.Analysis.SelfSimilar` | 154 |  | A self-similar distribution function is the identity. |
 | `QBS.Analysis.Series` | 456 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
@@ -134,7 +134,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFinite` | 336 | lem, funext | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 246 | lem, funext | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 453 | lem, funext | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
-| `QBS.Continuous.SFiniteIncl` | 205 | lem, funext | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
+| `QBS.Continuous.SFiniteIncl` | 202 | lem, funext | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
 | `QBS.Continuous.SFiniteMonad` | 282 | lem, funext | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 505 | lem, funext | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
 | `QBS.Continuous.SFiniteStat` | 264 | lem, funext | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |

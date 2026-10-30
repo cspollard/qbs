@@ -6,7 +6,6 @@ QBS.Analysis.MeasFun.mutual
 QBS.Analysis.Measure.probClass
 QBS.Analysis.Mixture.mix
 QBS.Analysis.Param.PF
-QBS.Analysis.Restrict.Fun-χ·
 QBS.Analysis.Uniqueness.agree-fun
 QBS.Analysis.Variance.x12-as-3
 QBS.Analysis.Variance.x12-as-4
