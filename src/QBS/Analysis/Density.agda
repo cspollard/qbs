@@ -45,14 +45,16 @@ module Density (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     (∀ x → h x ≈ ⨆ (λ n → hs n x) (inc x)) →
     d * J m (λ r → v r * h r) (Mvh {v} {h} mv f) ≈
       ⨆ (λ n → d * J m (λ r → v r * hs n r) (Mvh {v} {hs n} mv (fs n)))
-        (λ n → *-mono d (J-mono m (Mvh {v} {hs n} mv (fs n)) (Mvh {v} {hs (ℕ.suc n)} mv (fs (ℕ.suc n))) (λ r → *-mono (v r) (inc r n))))
+        (λ n → *-mono d
+            (J-mono m (Mvh {v} {hs n} mv (fs n)) (Mvh {v} {hs (ℕ.suc n)} mv (fs (ℕ.suc n))) (λ r → *-mono (v r) (inc r n))))
   densSup m v mv d {h} hs fs inc f e = trans
     (*-cong refl (J-⨆ m {λ r → v r * h r} (λ n r → v r * hs n r) (λ n → Mvh {v} {hs n} mv (fs n))
       (λ r n → *-mono (v r) (inc r n)) (Mvh {v} {h} mv f)
       (λ r → trans (*-cong refl (e r)) (*-⨆ (v r) (λ n → hs n r) (inc r) (λ n → *-mono (v r) (inc r n))))))
     (*-⨆ d (λ n → J m (λ r → v r * hs n r) (Mvh {v} {hs n} mv (fs n)))
        (λ n → J-mono m (Mvh {v} {hs n} mv (fs n)) (Mvh {v} {hs (ℕ.suc n)} mv (fs (ℕ.suc n))) (λ r → *-mono (v r) (inc r n)))
-       (λ n → *-mono d (J-mono m (Mvh {v} {hs n} mv (fs n)) (Mvh {v} {hs (ℕ.suc n)} mv (fs (ℕ.suc n))) (λ r → *-mono (v r) (inc r n)))))
+       (λ n → *-mono d
+           (J-mono m (Mvh {v} {hs n} mv (fs n)) (Mvh {v} {hs (ℕ.suc n)} mv (fs (ℕ.suc n))) (λ r → *-mono (v r) (inc r n)))))
 
   densM : ∀ (m : Measure) (v : R₁ → Cut) (mv : Meas v) (d : Cut) → d * J m v mv ≤ 1# → Measure
   densM m v mv d bd = record

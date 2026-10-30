@@ -161,7 +161,8 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
   pre-eq : ∀ {X : QBS S} {β : R → Pre X} {f : R → R} (w : Wit β) (mf : Measurable (down f)) r →
     _≈ᵖ_ {X} (β (f r)) (mk {X} (sec {X} (preJ {X} mf (a w)) r) (sec-random {X} (preJ {X} mf (a w)) r) (g w (f r)) (g-pr w (f r)))
   pre-eq {X} {β} {f} w mf r h = Setoid.trans Aˢ (w-eq w (f r) h)
-    (rand-irrel {X} {sec {X} (a w) (f r)} (sec-random {X} (a w) (f r)) (sec-random {X} (preJ {X} mf (a w)) r) (g w (f r)) (g-pr w (f r)) h)
+    (rand-irrel {X} {sec {X} (a w) (f r)} (sec-random {X} (a w) (f r)) (sec-random {X} (preJ {X} mf (a w)) r)
+        (g w (f r)) (g-pr w (f r)) h)
 
   glue-eq : ∀ {X : QBS S} {i : R → ℕ} (pi : Partition (downℕ i)) {β : ℕ → R → Pre X}
     (ws : ∀ n → Wit (β n)) r →

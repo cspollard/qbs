@@ -145,7 +145,8 @@ module BoundedRing (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     -- equal values pointwise: the cross sums agree, by cancelling the (bounded) witness
     ≈B⇒≈SF : ∀ {f g : BSF} → f ≈B g → proj₁ f ≈SF proj₁ g
     ≈B⇒≈SF {f} {g} e x with e x
-    ... | mk≃ k fk eq = cancel-bnd {k} {a} {b} fk (trans {k + a} {a + k} {k + b} (+-comm k a) (trans {a + k} {b + k} {k + b} eq (+-comm b k)))
+    ... | mk≃ k fk eq = cancel-bnd {k} {a} {b} fk
+        (trans {k + a} {a + k} {k + b} (+-comm k a) (trans {a + k} {b + k} {k + b} eq (+-comm b k)))
       where
         a = f⁺ (proj₁ f) x + f⁻ (proj₁ g) x
         b = f⁺ (proj₁ g) x + f⁻ (proj₁ f) x

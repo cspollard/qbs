@@ -123,7 +123,8 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
 
     gpr′ : ∀ r → IsProb (g′ r)
     gpr′ r = IsProb-bind {g w r} {gK r} {kgK r} (g-pr w r)
-      (λ s → IsProb-push {mergeR (oddsR (mergeR r s))} (measurable-merge₁ (lower (oddsR (mergeR r s)))) {g w₂ (mergeR r s)} (g-pr w₂ (mergeR r s)))
+      (λ s → IsProb-push {mergeR (oddsR (mergeR r s))} (measurable-merge₁ (lower (oddsR (mergeR r s))))
+          {g w₂ (mergeR r s)} (g-pr w₂ (mergeR r s)))
 
     a′ : Joint (XW X)
     a′ = record

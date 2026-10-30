@@ -188,7 +188,8 @@ module InvClassical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   four = (1ℚᵘ + 1ℚᵘ) + (1ℚᵘ + 1ℚᵘ)
 
   0<four : 0ℚᵘ < four
-  0<four = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)) (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)))
+  0<four = ≃-<ˡ (+-identityˡ 0ℚᵘ)
+      (+-mono-< (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)) (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)))
 
   -- a rational scale `s` in `c`, nearly maximal, with `ρ = s + 2ε` outside `c` and `q ρ ≤ q′ s`
   pick : ∀ c {s₀ ρ₀ q q′} → 0ℚᵘ < s₀ → mem c s₀ → (∀ r → mem c r → r < ρ₀) → 0ℚᵘ ≤ q → q < q′ → q′ < 1ℚᵘ →

@@ -81,7 +81,8 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
     where open SolveR using (_:+_; _:*_; _:=_)
 
   sq-S : ∀ a y → (a S.* y) S.* (a S.* y) S.≈ a S.* a S.* (y S.* y)
-  sq-S = SolveS.solve 2 (λ a y → (a SolveS.:* y) SolveS.:* (a SolveS.:* y) SolveS.:= a SolveS.:* a SolveS.:* (y SolveS.:* y)) S.refl
+  sq-S = SolveS.solve 2
+      (λ a y → (a SolveS.:* y) SolveS.:* (a SolveS.:* y) SolveS.:= a SolveS.:* a SolveS.:* (y SolveS.:* y)) S.refl
 
   -- (a q + a² m) + ((a m + a m) + (q + m)) = (a + 1) q + (a + 1)² m
   step-S : ∀ a q m → (a S.* q S.+ a S.* a S.* m) S.+ ((a S.* m S.+ a S.* m) S.+ (q S.+ m)) S.≈
@@ -92,7 +93,8 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
     where open SolveS using (_:+_; _:*_; _:=_; con)
 
   zero-S : ∀ q y → S.0# S.≈ S.0# S.* q S.+ S.0# S.* S.0# S.* y
-  zero-S = SolveS.solve 2 (λ q y → SolveS.con 0 SolveS.:= SolveS.con 0 SolveS.:* q SolveS.:+ SolveS.con 0 SolveS.:* SolveS.con 0 SolveS.:* y) S.refl
+  zero-S = SolveS.solve 2
+      (λ q y → SolveS.con 0 SolveS.:= SolveS.con 0 SolveS.:* q SolveS.:+ SolveS.con 0 SolveS.:* SolveS.con 0 SolveS.:* y) S.refl
 
   module _ {X : ℕ → R.Carrier} {μ σ² : S.Carrier} (M : Moments X μ σ²) where
     open Moments M
@@ -141,7 +143,8 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
     -- E (2 Sₙ Xₙ + Xₙ²) = 2 n μ² + (σ² + μ²)
     E-mid : ∀ n → E ((sumR X n R.* X n R.+ sumR X n R.* X n) R.+ X n R.* X n) S.≈ (natS n S.* m S.+ natS n S.* m) S.+ (σ² S.+ m)
     E-mid n = S.trans (E-+ (sumR X n R.* X n R.+ sumR X n R.* X n) (X n R.* X n))
-      (S.+-cong (S.trans (E-+ (sumR X n R.* X n) (sumR X n R.* X n)) (S.+-cong (E-cross n n ≤-refl) (E-cross n n ≤-refl))) (second n))
+      (S.+-cong (S.trans (E-+ (sumR X n R.* X n) (sumR X n R.* X n))
+          (S.+-cong (E-cross n n ≤-refl) (E-cross n n ≤-refl))) (second n))
 
     -- E Sₙ² = n σ² + n² μ²
     E-sum² : ∀ n → E (sumR X n R.* sumR X n) S.≈ natS n S.* σ² S.+ natS n S.* natS n S.* m

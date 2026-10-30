@@ -142,7 +142,8 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
 
   -- pointwise in the outer parameter r: the merged kernel integrates ψ of the join to ψ of the pushed-forward ι q
   ι-mult-pw : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) (r : R₁) →
-    J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h) (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
+    J (P₁.pushMerge (C.Wit.g {U} {α q} (α-random q)) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h)
+        (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
       ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
   ι-mult-pw {U} q h r = trans (step-push r) (trans (step-section r) (step-kernel r))
     where open IMult {U} q h
@@ -205,7 +206,8 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
         ; g-ok = constK (dirac r₀)
         ; g-pr = λ _ → IsProb-dirac r₀
         ; w-eq = λ r h → trans (∫ᴹ-score (γ r) h)
-            (sym (J-dirac r₀ {ψ {1Q S} (kerP {1Q S} (pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {WQ} {1Q S} (fstJ {WQ} γ mγ) (!Q S))
+            (sym (J-dirac r₀
+                {ψ {1Q S} (kerP {1Q S} (pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {WQ} {1Q S} (fstJ {WQ} γ mγ) (!Q S))
                                          (λ _ → dirac r₀) (λ _ → IsProb-dirac r₀) r) h}
                 (mψ {1Q S} (kerP {1Q S} (pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {WQ} {1Q S} (fstJ {WQ} γ mγ) (!Q S))
                               (λ _ → dirac r₀) (λ _ → IsProb-dirac r₀) r) h))) }

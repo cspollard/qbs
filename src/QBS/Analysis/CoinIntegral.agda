@@ -281,7 +281,8 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
       clash′ x q′ 0<q′ m′ k 1≤ = RL.<-irrefl RL.≃-refl (ap (bd′ x) 1ℚᵘ (ap (proj₂ (e x)) 1ℚᵘ (inj₂ w)))
         where
           le1 : 1ℚᵘ ≤ᵘ RL.nat (suc k) *ᵘ q′
-          le1 = RL.≤-trans 1≤ (RL.*-mono-≤-nnʳ (RL.<-≤ 0<q′) (nat-mono′ {k} {suc k} (Data.Nat.Base.≤′-step Data.Nat.Base.≤′-refl)))
+          le1 = RL.≤-trans 1≤
+              (RL.*-mono-≤-nnʳ (RL.<-≤ 0<q′) (nat-mono′ {k} {suc k} (Data.Nat.Base.≤′-step Data.Nat.Base.≤′-refl)))
           w : Σ ℚᵘ (λ r → Σ ℚᵘ (λ t → 0ℚᵘ < r × 0ℚᵘ < t × mem c r × mem (h x) t × 1ℚᵘ ≤ᵘ r *ᵘ t))
           w = RL.nat (suc k) , q′ , nat-pos k , 0<q′ , allc (RL.nat (suc k)) , m′ , le1
 
@@ -290,7 +291,8 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
 
       nonpos : ∀ x q → mem (h x) q → (q < 0ℚᵘ ⊎ 0ℚᵘ ≤ᵘ q) → mem 0# q
       nonpos x q m (inj₁ lt) = lt
-      nonpos x q m (inj₂ 0≤q) = ⊥-elim (clash x (proj₁ (open′ (h x) m)) (RL.≤-<-trans 0≤q (proj₁ (proj₂ (open′ (h x) m)))) (proj₂ (proj₂ (open′ (h x) m))))
+      nonpos x q m (inj₂ 0≤q) = ⊥-elim
+          (clash x (proj₁ (open′ (h x) m)) (RL.≤-<-trans 0≤q (proj₁ (proj₂ (open′ (h x) m)))) (proj₂ (proj₂ (open′ (h x) m))))
 
       zeroh : ∀ x → h x ≤ 0#
       zeroh x = mk⊑ λ q m → nonpos x q m (RL.neg-or-nonneg q)
@@ -376,10 +378,12 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
       where rC-cong-zero : rC (th k 0) ≈ 0#
             rC-cong-zero = trans (rC-cong (th-zero k)) rC-zero
     term≤ (suc a) = ≤-trans (≤-reflexive (trans (*-cong refl m≈) (*-⨆ (rC (th k (suc a))) (λ n → μ (bWc (suc a) n))
-                                                       (λ n → μ-mono (bWc (suc a) n) (bWc (suc a) (suc n)) (Wsub (suc a) n)) (incW (suc a)))))
+                                                       (λ n → μ-mono (bWc (suc a) n) (bWc (suc a) (suc n))
+                                                           (Wsub (suc a) n)) (incW (suc a)))))
                             ≤-refl
       where
-        m≈ : μ (gB k h LV bd (suc a)) ≈ ⨆ (λ n → μ (bWc (suc a) n)) (λ n → μ-mono (bWc (suc a) n) (bWc (suc a) (suc n)) (Wsub (suc a) n))
+        m≈ : μ (gB k h LV bd (suc a)) ≈ ⨆ (λ n → μ (bWc (suc a) n))
+            (λ n → μ-mono (bWc (suc a) n) (bWc (suc a) (suc n)) (Wsub (suc a) n))
         m≈ = trans (μ-resp (gB k h LV bd (suc a)) (⋃ (bWc (suc a))) (λ x → proj₂ (Wunion a x) , proj₁ (Wunion a x)))
                    (μ-cont (Wc (suc a)) (bWc (suc a)) (Wsub (suc a)))
 

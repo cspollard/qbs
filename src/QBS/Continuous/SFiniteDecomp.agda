@@ -209,7 +209,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   pieceDensity p n r = densW (wt p r) n
 
   pieceDensity-Meas : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) → Meas (pieceDensity p n)
-  pieceDensity-Meas p ℕ.zero = Meas-chi {λ x → infS (wt p x)} {λ _ → 1#} (all-enum (λ ρ c → Lvl (wt p) ρ c) (wt-Meas p)) (Meas-const 1#)
+  pieceDensity-Meas p ℕ.zero = Meas-chi {λ x → infS (wt p x)} {λ _ → 1#}
+      (all-enum (λ ρ c → Lvl (wt p) ρ c) (wt-Meas p)) (Meas-const 1#)
   pieceDensity-Meas p (ℕ.suc k) = Meas-chi {λ x → bandS (wt p x) k} {λ x → invC (cK k) * wt p x}
     (inter₂ (wt-Meas p (RL.nat k)) (compl (wt-Meas p (RL.nat (ℕ.suc k)))))
     (Meas-⊗ {λ _ → invC (cK k)} {wt p} (Meas-const (invC (cK k))) (wt-Meas p))
@@ -311,7 +312,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
     where
       other : ∀ n → (n ≡.≡ ℕ.suc k → ⊥) → bandTerm w c n ≈ 0#
       other ℕ.zero ne = trans (*-cong (trans (*-cong refl (chi-false _ (band-ninf w k b))) (zeroʳ _)) refl) (zeroˡ c)
-      other (ℕ.suc j) ne = trans (*-cong (trans (*-cong refl (chi-false _ (λ bj → ne (≡.cong ℕ.suc (band-unique w bj b))))) (zeroʳ _)) refl) (zeroˡ c)
+      other (ℕ.suc j) ne = trans
+          (*-cong (trans (*-cong refl (chi-false _ (λ bj → ne (≡.cong ℕ.suc (band-unique w bj b))))) (zeroʳ _)) refl) (zeroˡ c)
 
   bands-sum : ∀ w c → w * c ≈ ∑ᶠ (bandTerm w c)
   bands-sum w c with bands-case w
@@ -331,7 +333,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   pieceψ {X} p n f r = pieceDensity p n r * (map f ⟨$⟩ proj₂ (α p r))
 
   pieceψ-Meas : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → Meas (pieceψ {X} p n f)
-  pieceψ-Meas {X} p n f = Meas-⊗ {pieceDensity p n} {λ r → map f ⟨$⟩ proj₂ (α p r)} (pieceDensity-Meas p n) (map-random f (proj₂ (α-random p)))
+  pieceψ-Meas {X} p n f = Meas-⊗ {pieceDensity p n} {λ r → map f ⟨$⟩ proj₂ (α p r)} (pieceDensity-Meas p n)
+      (map-random f (proj₂ (α-random p)))
 
   -- the weighted n-th piece
   pieceTerm : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) (n : ℕ) → R₁ → Cut
@@ -399,7 +402,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
       ≈ J m (λ r → d r * φ r) (Meas-⊗ {d} {φ} md mφ)
   probCase-int m d md d≤1 {φ} mφ (inj₁ pos) =
     trans (*-cong refl (trans (J-dens ν (const 1#) (Meas-const 1#) n (normBd ν n h) mφ)
-                          (*-cong refl (trans (J-cong ν (Meas-⊗ {const 1#} {φ} (Meas-const 1#) mφ) mφ (λ r → *-identityˡ (φ r))) refl))))
+                          (*-cong refl (trans
+                              (J-cong ν (Meas-⊗ {const 1#} {φ} (Meas-const 1#) mφ) mφ (λ r → *-identityˡ (φ r))) refl))))
       (trans (sym (*-assoc _ _ _)) (trans (*-cong h refl) (trans (*-identityˡ _) (J-densityM m d md d≤1 mφ))))
     where
       ν = densityM m d md d≤1

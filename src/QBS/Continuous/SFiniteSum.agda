@@ -120,9 +120,11 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensio
                 (mψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f)))
         (∑ᶠ-cong term))
       where
-        term : ∀ n → hp (ℕ.suc n) * J (dirac (lift (pt n))) (ψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f)) (mψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f))
+        term : ∀ n → hp (ℕ.suc n) * J (dirac (lift (pt n))) (ψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f))
+            (mψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f))
                      ≈ ∫ᴹ {X} (ts n) f
-        term n = trans (*-cong refl (J-dirac (lift (pt n)) {ψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f)} (mψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f))))
+        term n = trans
+            (*-cong refl (J-dirac (lift (pt n)) {ψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f)} (mψ {TQ X} (sumFam {X} ts) (∫ᶠ {X} f))))
           (trans (Setoid.reflexive Aˢ (≡.cong (λ k → hp (ℕ.suc n) * (pw (ℕ.suc k) * ∫ᴹ {X} (ts k) f)) (lead-pt n)))
             (trans (sym (*-assoc (hp (ℕ.suc n)) (pw (ℕ.suc n)) (∫ᴹ {X} (ts n) f)))
               (trans (*-cong (hp-pw (ℕ.suc n)) refl) (*-identityˡ _))))

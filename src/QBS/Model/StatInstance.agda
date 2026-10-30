@@ -528,7 +528,8 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
     scaled-laws-law : ∀ {X} (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
       Σ (ℕ → ℛQ S ⇒ᵏ X) λ a → Σ (ℕ → 𝟙 ⇒ᵏ WQ) λ w → Σ (ℕ → ProbabilityInterface.Measure (discreteProb A)) λ μ →
-        t ≈ᵏ DM′.sumM (λ n → DS′.scaleM (w n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (a n) (μ n)))
+        t ≈ᵏ DM′.sumM
+            (λ n → DS′.scaleM (w n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (a n) (μ n)))
     -- a countable sum of global measures is, pointwise in the integrals, the sum of the pre-measures
     sumM-∫ : ∀ {X} (D : ℕ → 𝟙 ⇒ᵏ M.F.F₀ X) (fam : ℕ → Pre X) →
       (∀ n f → ∫ (map (D n) ⟨$⟩ tt) f ≈ ∫ (fam n) f) → ∀ f → ∫ (map (DM′.sumM D) ⟨$⟩ tt) f ≈ ∫ (sumP fam) f
@@ -543,7 +544,10 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
           μN = λ (n : ℕ) → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n)
           D = λ (n : ℕ) → DS′.scaleM (wN n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n))
       in aN , wN , μN
-       , (λ pt f → ~ (sumM-∫ D fam (λ n f′ → ~ scale-def (wN n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n)) tt f′) f
+       , (λ pt f → ~
+           (sumM-∫ D fam
+           (λ n f′ → ~ scale-def (wN n)
+           (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n)) tt f′) f
                       ⟫ ∫-sum fam f ⟫ ∑-cong (λ n → ∫-scale (μ p n) (lawA (lower n)) f
                                        ⟫ *-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))
 

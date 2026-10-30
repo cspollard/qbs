@@ -12,7 +12,8 @@ module QBS.Analysis.Signed where
 
 open import Level using (Level; _⊔_)
 open import Algebra.Bundles using (CommutativeSemiring; CommutativeRing)
-open import Algebra.Structures using (IsCommutativeRing; IsRing; IsAbelianGroup; IsGroup; IsMonoid; IsMagma; IsCommutativeMonoid; IsSemigroup)
+open import Algebra.Structures using
+    (IsCommutativeRing; IsRing; IsAbelianGroup; IsGroup; IsMonoid; IsMagma; IsCommutativeMonoid; IsSemigroup)
 open import Function.Base using (_$_)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
@@ -68,11 +69,13 @@ module Signed {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) wh
     (Is-+ (Is-+ (Is-+ f₁ f₂) (pos-fin y)) (neg-fin y))
     (begin
         pos x + neg z + (k₁ + k₂ + pos y + neg y)
-          ≈⟨ solve 6 (λ px nz k1 k2 py ny → px :+ nz :+ (k1 :+ k2 :+ py :+ ny) := (px :+ ny :+ k1) :+ (py :+ nz :+ k2)) refl (pos x) (neg z) k₁ k₂ (pos y) (neg y) ⟩
+          ≈⟨ solve 6 (λ px nz k1 k2 py ny → px :+ nz :+ (k1 :+ k2 :+ py :+ ny) := (px :+ ny :+ k1) :+
+              (py :+ nz :+ k2)) refl (pos x) (neg z) k₁ k₂ (pos y) (neg y) ⟩
         (pos x + neg y + k₁) + (pos y + neg z + k₂)
           ≈⟨ +-cong e₁ e₂ ⟩
         (pos y + neg x + k₁) + (pos z + neg y + k₂)
-          ≈⟨ solve 6 (λ py nx k1 pz ny k2 → (py :+ nx :+ k1) :+ (pz :+ ny :+ k2) := pz :+ nx :+ (k1 :+ k2 :+ py :+ ny)) refl (pos y) (neg x) k₁ (pos z) (neg y) k₂ ⟩
+          ≈⟨ solve 6 (λ py nx k1 pz ny k2 → (py :+ nx :+ k1) :+ (pz :+ ny :+ k2) := pz :+ nx :+
+              (k1 :+ k2 :+ py :+ ny)) refl (pos y) (neg x) k₁ (pos z) (neg y) k₂ ⟩
         pos z + neg x + (k₁ + k₂ + pos y + neg y) ∎)
 
   Sgˢ : Setoid (c ⊔ p) (c ⊔ ℓ ⊔ p)
@@ -107,11 +110,13 @@ module Signed {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) wh
   +S-cong : ∀ {x x′ y y′} → x ≃ x′ → y ≃ y′ → x +S y ≃ x′ +S y′
   +S-cong {x} {x′} {y} {y′} (mk≃ k₁ f₁ e₁) (mk≃ k₂ f₂ e₂) = mk≃ (k₁ + k₂) (Is-+ f₁ f₂) (begin
     (pos x + pos y) + (neg x′ + neg y′) + (k₁ + k₂)
-      ≈⟨ solve 6 (λ a b c d e f → (a :+ b) :+ (c :+ d) :+ (e :+ f) := (a :+ c :+ e) :+ (b :+ d :+ f)) refl (pos x) (pos y) (neg x′) (neg y′) k₁ k₂ ⟩
+      ≈⟨ solve 6 (λ a b c d e f → (a :+ b) :+ (c :+ d) :+ (e :+ f) := (a :+ c :+ e) :+ (b :+ d :+ f)) refl (pos x)
+          (pos y) (neg x′) (neg y′) k₁ k₂ ⟩
     (pos x + neg x′ + k₁) + (pos y + neg y′ + k₂)
       ≈⟨ +-cong e₁ e₂ ⟩
     (pos x′ + neg x + k₁) + (pos y′ + neg y + k₂)
-      ≈⟨ solve 6 (λ a b c d e f → (a :+ b :+ c) :+ (d :+ e :+ f) := (a :+ d) :+ (b :+ e) :+ (c :+ f)) refl (pos x′) (neg x) k₁ (pos y′) (neg y) k₂ ⟩
+      ≈⟨ solve 6 (λ a b c d e f → (a :+ b :+ c) :+ (d :+ e :+ f) := (a :+ d) :+ (b :+ e) :+ (c :+ f)) refl (pos x′)
+          (neg x) k₁ (pos y′) (neg y) k₂ ⟩
     (pos x′ + pos y′) + (neg x + neg y) + (k₁ + k₂) ∎)
 
   -S-cong : ∀ {x x′} → x ≃ x′ → -S x ≃ -S x′
@@ -165,13 +170,16 @@ module Signed {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) wh
       (px :+ py) :+ (ny :+ nx) :+ con 0 := (py :+ px) :+ (nx :+ ny) :+ con 0) refl (pos x) (neg x) (pos y) (neg y)
 
   +S-identityˡ : ∀ x → 0S +S x ≃ x
-  +S-identityˡ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (con 0 :+ px) :+ nx :+ con 0 := px :+ (con 0 :+ nx) :+ con 0) refl (pos x) (neg x)
+  +S-identityˡ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (con 0 :+ px) :+ nx :+ con 0 := px :+ (con 0 :+ nx) :+ con 0) refl
+      (pos x) (neg x)
 
   +S-inverseˡ : ∀ x → (-S x) +S x ≃ 0S
-  +S-inverseˡ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (nx :+ px) :+ con 0 :+ con 0 := con 0 :+ (px :+ nx) :+ con 0) refl (pos x) (neg x)
+  +S-inverseˡ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (nx :+ px) :+ con 0 :+ con 0 := con 0 :+ (px :+ nx) :+ con 0) refl
+      (pos x) (neg x)
 
   +S-inverseʳ : ∀ x → x +S (-S x) ≃ 0S
-  +S-inverseʳ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (px :+ nx) :+ con 0 :+ con 0 := con 0 :+ (nx :+ px) :+ con 0) refl (pos x) (neg x)
+  +S-inverseʳ x = mk≃ 0# Is-0 $ solve 2 (λ px nx → (px :+ nx) :+ con 0 :+ con 0 := con 0 :+ (nx :+ px) :+ con 0) refl
+      (pos x) (neg x)
 
   *S-assoc : ∀ x y z → (x *S y) *S z ≃ x *S (y *S z)
   *S-assoc x y z = mk≃ 0# Is-0 $ solve 6 (λ px nx py ny pz nz →

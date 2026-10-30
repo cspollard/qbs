@@ -63,8 +63,10 @@ module Simple (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure l
   cell-mono : ∀ s t → (∀ i j x → V s i x → V t j x → ρ s i ≤ ρ t j) → ∀ i j →
     ρ s i * cell s t i j ≤ ρ t j * cell s t i j
   cell-mono s t le i j with lem (Σ Cantor (λ x → V s i x × V t j x))
-  ... | inj₁ (x , a , b) = ≤-trans (≤-reflexive (*-comm _ _)) (≤-trans (*-mono (cell s t i j) (le i j x a b)) (≤-reflexive (*-comm _ _)))
-  ... | inj₂ none = ≤-trans (≤-reflexive (trans (*-cong refl z) (zeroʳ _))) (≤-trans 0-least (≤-reflexive (sym (trans (*-cong refl z) (zeroʳ _)))))
+  ... | inj₁ (x , a , b) = ≤-trans (≤-reflexive (*-comm _ _))
+      (≤-trans (*-mono (cell s t i j) (le i j x a b)) (≤-reflexive (*-comm _ _)))
+  ... | inj₂ none = ≤-trans (≤-reflexive (trans (*-cong refl z) (zeroʳ _)))
+      (≤-trans 0-least (≤-reflexive (sym (trans (*-cong refl z) (zeroʳ _)))))
     where z : cell s t i j ≈ 0#
           z = μ-null (inter₂ (bV s i) (bV t j)) (λ x (a , b) → none (x , a , b))
 

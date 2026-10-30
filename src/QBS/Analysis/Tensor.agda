@@ -52,7 +52,8 @@ module Tensor (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
 
   -- products of probability measures are probability measures
   IsProb-tensor₁ : ∀ m n → IsProb m → IsProb n → IsProb (tensor₁ m n)
-  IsProb-tensor₁ m n pm pn = IsProb-bind {m} {P₁.pushMerge (λ _ → n)} {kernel₁ n} pm (λ r → IsProb-push {P₁.mergeR r} (measurable-merge₁ (lower r)) {n} pn)
+  IsProb-tensor₁ m n pm pn = IsProb-bind {m} {P₁.pushMerge (λ _ → n)} {kernel₁ n} pm
+      (λ r → IsProb-push {P₁.mergeR r} (measurable-merge₁ (lower r)) {n} pn)
 
   module _ (m n : Measure) where
 

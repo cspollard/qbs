@@ -58,7 +58,8 @@ module SignedIntegral (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   f ≈SF g = ∀ x → f⁺ f x + f⁻ g x ≈ f⁺ g x + f⁻ f x
 
   -- the integral of the cross sums
-  cross : ∀ {m} (f g : SF m) → f ≈SF g → J m (f⁺ f) (f⁺-meas f) + J m (f⁻ g) (f⁻-meas g) ≈ J m (f⁺ g) (f⁺-meas g) + J m (f⁻ f) (f⁻-meas f)
+  cross : ∀ {m} (f g : SF m) → f ≈SF g → J m (f⁺ f) (f⁺-meas f) + J m (f⁻ g) (f⁻-meas g) ≈ J m (f⁺ g) (f⁺-meas g) + J
+      m (f⁻ f) (f⁻-meas f)
   cross {m} f g e = begin
     J m (f⁺ f) (f⁺-meas f) + J m (f⁻ g) (f⁻-meas g)                      ≈⟨ sym (J-add m (f⁺-meas f) (f⁻-meas g)) ⟩
     J m (λ x → f⁺ f x + f⁻ g x) (Meas-⊕ {f⁺ f} {f⁻ g} (f⁺-meas f) (f⁻-meas g))
@@ -135,9 +136,11 @@ module SignedIntegral (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { f⁺ = λ x → pos c * f⁺ f x + neg c * f⁻ f x
     ; f⁻ = λ x → pos c * f⁻ f x + neg c * f⁺ f x
     ; f⁺-meas = Meas-⊕ {λ x → pos c * f⁺ f x} {λ x → neg c * f⁻ f x}
-        (Meas-⊗ {λ _ → pos c} {f⁺ f} (Meas-const (pos c)) (f⁺-meas f)) (Meas-⊗ {λ _ → neg c} {f⁻ f} (Meas-const (neg c)) (f⁻-meas f))
+        (Meas-⊗ {λ _ → pos c} {f⁺ f} (Meas-const (pos c)) (f⁺-meas f))
+            (Meas-⊗ {λ _ → neg c} {f⁻ f} (Meas-const (neg c)) (f⁻-meas f))
     ; f⁻-meas = Meas-⊕ {λ x → pos c * f⁻ f x} {λ x → neg c * f⁺ f x}
-        (Meas-⊗ {λ _ → pos c} {f⁻ f} (Meas-const (pos c)) (f⁻-meas f)) (Meas-⊗ {λ _ → neg c} {f⁺ f} (Meas-const (neg c)) (f⁺-meas f))
+        (Meas-⊗ {λ _ → pos c} {f⁻ f} (Meas-const (pos c)) (f⁻-meas f))
+            (Meas-⊗ {λ _ → neg c} {f⁺ f} (Meas-const (neg c)) (f⁺-meas f))
     ; f⁺-int = bnd-resp (OmegaSemiring.sym A (J-lin m (pos c) (neg c) (f⁺-meas f) (f⁻-meas f)))
         (bnd-+ (bnd-* (pos-fin c) (f⁺-int f)) (bnd-* (neg-fin c) (f⁻-int f)))
     ; f⁻-int = bnd-resp (OmegaSemiring.sym A (J-lin m (pos c) (neg c) (f⁻-meas f) (f⁺-meas f)))
@@ -147,9 +150,11 @@ module SignedIntegral (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   E-scale : ∀ {m} (c : Sg) (f : SF m) → E (scaleSF c f) ≃ c *S E f
   E-scale {m} c f = mk≃ 0# (SubSemiring.Is-0 finite) (OmegaSemiring.trans A
     (+-+0 (J m _ (f⁺-meas (scaleSF c f))) (pos c * J m (f⁺ f) (f⁺-meas f) + neg c * J m (f⁻ f) (f⁻-meas f))
-          (pos c * J m (f⁻ f) (f⁻-meas f) + neg c * J m (f⁺ f) (f⁺-meas f)) (pos c * J m (f⁻ f) (f⁻-meas f) + neg c * J m (f⁺ f) (f⁺-meas f))
+          (pos c * J m (f⁻ f) (f⁻-meas f) + neg c * J m (f⁺ f) (f⁺-meas f))
+              (pos c * J m (f⁻ f) (f⁻-meas f) + neg c * J m (f⁺ f) (f⁺-meas f))
           (J-lin m (pos c) (neg c) (f⁺-meas f) (f⁻-meas f)) (OmegaSemiring.refl A))
-    (+-+0 (pos c * J m (f⁺ f) (f⁺-meas f) + neg c * J m (f⁻ f) (f⁻-meas f)) (pos c * J m (f⁺ f) (f⁺-meas f) + neg c * J m (f⁻ f) (f⁻-meas f))
+    (+-+0 (pos c * J m (f⁺ f) (f⁺-meas f) + neg c * J m (f⁻ f) (f⁻-meas f))
+        (pos c * J m (f⁺ f) (f⁺-meas f) + neg c * J m (f⁻ f) (f⁻-meas f))
           (pos c * J m (f⁻ f) (f⁻-meas f) + neg c * J m (f⁺ f) (f⁺-meas f)) (J m _ (f⁻-meas (scaleSF c f)))
           (OmegaSemiring.refl A) (OmegaSemiring.sym A (J-lin m (pos c) (neg c) (f⁻-meas f) (f⁺-meas f)))))
 
@@ -158,7 +163,8 @@ module SignedIntegral (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   J-const : ∀ {m} → IsProb m → ∀ a → J m (λ _ → a) (Meas-const a) ≈ a
   J-const {m} pm a = OmegaSemiring.trans A
-    (J-cong m (Meas-const a) (Meas-⊗ {λ _ → a} {λ _ → 1#} (Meas-const a) (Meas-const 1#)) (λ x → OmegaSemiring.sym A (*-identityʳ a)))
+    (J-cong m (Meas-const a) (Meas-⊗ {λ _ → a} {λ _ → 1#} (Meas-const a) (Meas-const 1#))
+        (λ x → OmegaSemiring.sym A (*-identityʳ a)))
     (OmegaSemiring.trans A (J-scale m a {λ _ → 1#} (Meas-const 1#))
       (OmegaSemiring.trans A (*-cong {a} {a} {J m (λ _ → 1#) (Meas-const 1#)} {1#} (OmegaSemiring.refl A)
          (OmegaSemiring.trans A (J-irrel m (Meas-const 1#) (LS (Fun-const 1# ≤-refl)))

@@ -74,7 +74,8 @@ module Uniqueness (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
                       (trans p (I-cong ν (λ x → refl) (Fun-χ bU′) (Fun-χ bU)))
 
     -- from sets to functions, one lemma per constructor of `Fun`
-    agree-ind : ∀ {U h} (c : ∣A∣) (c≤1 : c ≤ 1#) (bU : Borel U) e₀ e₁ b → I μ h (ind c c≤1 bU e₀ e₁ b) ≈ I ν h (ind c c≤1 bU e₀ e₁ b)
+    agree-ind : ∀ {U h} (c : ∣A∣) (c≤1 : c ≤ 1#) (bU : Borel U) e₀ e₁ b → I μ h (ind c c≤1 bU e₀ e₁ b) ≈ I ν h
+        (ind c c≤1 bU e₀ e₁ b)
     agree-ind {U} {h} c c≤1 bU e₀ e₁ b =
       trans (I-scale μ c (Fun-χ bU) f′ pw)
         (trans (*-cong refl (agree-borel bU)) (sym (I-scale ν c (Fun-χ bU) f′ pw)))

@@ -100,9 +100,11 @@ module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
                         k₁ , p₁ = enumQ-surj ρ
                         k₂ , p₂ = enumQ-surj σ
                         eq : (enumQ (proj₁ (unpair (pair k₁ k₂))) , enumQ (proj₂ (unpair (pair k₁ k₂)))) ≡ (ρ , σ)
-                        eq = ≡.trans (≡.cong₂ _,_ (≡.cong (λ u → enumQ (proj₁ u)) (unpair-pair k₁ k₂)) (≡.cong (λ u → enumQ (proj₂ u)) (unpair-pair k₁ k₂)))
+                        eq = ≡.trans (≡.cong₂ _,_ (≡.cong (λ u → enumQ (proj₁ u)) (unpair-pair k₁ k₂))
+                            (≡.cong (λ u → enumQ (proj₂ u)) (unpair-pair k₁ k₂)))
                                      (≡.cong₂ _,_ p₁ p₂)
-                    in pair k₁ k₂ , ≡.subst (λ pr → (q ≤ proj₁ pr + proj₂ pr) × (mem (h₁ (lift c)) (proj₁ pr) × mem (h₂ (lift c)) (proj₂ pr)))
+                    in pair k₁ k₂ , ≡.subst
+                        (λ pr → (q ≤ proj₁ pr + proj₂ pr) × (mem (h₁ (lift c)) (proj₁ pr) × mem (h₂ (lift c)) (proj₂ pr)))
                                             (≡.sym eq) (le , m₁ , m₂))
 
   -- a member of a cut lies below every non-member
