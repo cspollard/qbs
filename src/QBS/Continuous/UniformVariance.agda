@@ -53,7 +53,7 @@ module UniformVariance (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Arch R using (half) renaming (half+half to hh)
   open Expansion A half hh
   open HalfOrder A R using (half≤1)
-  open Arith (OmegaSemiring.commutativeSemiring A) finite using (x4; x12; var-arith)
+  open Arith (OmegaSemiring.commutativeSemiring A) finite using (x4; x12; x12-cong; var-arith)
 
   pm : IsProb fairCoin
   pm = I-const fairCoin L-one 1# ≤-refl
@@ -126,19 +126,21 @@ module UniformVariance (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
 
   mean-u : E u +S E u ≃ 1S
   mean-u = ≃-trans {E u +S E u} {ι fh +S ι fh} {1S} (+S-cong {E u} {ι fh} {E u} {ι fh} Eu Eu)
-    (≃-trans {ι fh +S ι fh} {ι (SubSemiring.Is-+ finite fh fh)} {1S} (≃-sym {ι (SubSemiring.Is-+ finite fh fh)} {ι fh +S ι fh} (ι-+ fh fh))
-      (ι-cong {half + half} {1#} (SubSemiring.Is-+ finite fh fh) (SubSemiring.Is-1 finite) hh))
+    (≃-trans {ι fh +S ι fh} {ι f2h} {1S} (≃-sym {ι f2h} {ι fh +S ι fh} (ι-+ fh fh))
+      (ι-cong {half + half} {1#} f2h (SubSemiring.Is-1 finite) hh))
+    where f2h = SubSemiring.Is-+ finite fh fh
 
   moment-u : (E uu +S E uu) +S E uu ≃ 1S
-  moment-u = ≃-trans (+S-cong {E uu +S E uu} {ι fm +S ι fm} {E uu} {ι fm} (+S-cong {E uu} {ι fm} {E uu} {ι fm} Euu Euu) Euu)
-    (≃-trans (≃-trans (+S-cong {ι fm +S ι fm} {ι (SubSemiring.Is-+ finite fm fm)} {ι fm} {ι fm} (≃-sym (ι-+ fm fm)) ≃-refl) (≃-sym (ι-+ (SubSemiring.Is-+ finite fm fm) fm)))
-             (ι-cong (SubSemiring.Is-+ finite (SubSemiring.Is-+ finite fm fm) fm) (SubSemiring.Is-1 finite) second-moment))
-
-  x4-cong : ∀ {x y} → x ≃ y → x4 x ≃ x4 y
-  x4-cong {x} {y} e = +S-cong {x +S x} {y +S y} {x +S x} {y +S y} (+S-cong {x} {y} {x} {y} e e) (+S-cong {x} {y} {x} {y} e e)
-
-  x12-cong : ∀ {x y} → x ≃ y → x12 x ≃ x12 y
-  x12-cong {x} {y} e = +S-cong {x4 x} {x4 y} {x4 x +S x4 x} {x4 y +S x4 y} (x4-cong e) (+S-cong {x4 x} {x4 y} {x4 x} {x4 y} (x4-cong e) (x4-cong e))
+  moment-u = ≃-trans {(E uu +S E uu) +S E uu} {(ι fm +S ι fm) +S ι fm} {1S}
+      (+S-cong {E uu +S E uu} {ι fm +S ι fm} {E uu} {ι fm} (+S-cong {E uu} {ι fm} {E uu} {ι fm} Euu Euu) Euu)
+    (≃-trans {(ι fm +S ι fm) +S ι fm} {ι f3m} {1S}
+      (≃-trans {(ι fm +S ι fm) +S ι fm} {ι f2m +S ι fm} {ι f3m}
+        (+S-cong {ι fm +S ι fm} {ι f2m} {ι fm} {ι fm} (≃-sym {ι f2m} {ι fm +S ι fm} (ι-+ fm fm)) ≃-refl)
+        (≃-sym {ι f3m} {ι f2m +S ι fm} (ι-+ f2m fm)))
+      (ι-cong {(m + m) + m} {1#} f3m (SubSemiring.Is-1 finite) second-moment))
+    where
+      f2m = SubSemiring.Is-+ finite fm fm
+      f3m = SubSemiring.Is-+ finite f2m fm
 
   var-gen : ∀ (V M μ : Sg) → V ≃ M +S (-S (μ *S μ)) → (M +S M) +S M ≃ 1S → μ +S μ ≃ 1S → x12 V ≃ 1S
   var-gen V M μ e mm mu = ≃-trans {x12 V} {x12 (M +S (-S (μ *S μ)))} {1S} (x12-cong {V} {M +S (-S (μ *S μ))} e) (var-arith M μ mm mu)

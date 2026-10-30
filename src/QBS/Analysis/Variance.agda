@@ -59,47 +59,62 @@ module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) whe
   x4 x = (x +S x) +S (x +S x)
   x12 x = x4 x +S (x4 x +S x4 x)
 
+  x4-cong : ∀ {x y} → x ≃ y → x4 x ≃ x4 y
+  x4-cong e = +S-cong (+S-cong e e) (+S-cong e e)
+
+  x12-cong : ∀ {x y} → x ≃ y → x12 x ≃ x12 y
+  x12-cong e = +S-cong (x4-cong e) (+S-cong (x4-cong e) (x4-cong e))
+
+  -- twelve copies of a sum, split
+  x12-+ : ∀ a b → x12 (a +S b) ≃ x12 a +S x12 b
+  x12-+ a b = solve 2 (λ a b → x12′ (a :+ b) := x12′ a :+ x12′ b) ≃-refl a b
+    where
+      x4′ x12′ : ∀ {n} → Polynomial n → Polynomial n
+      x4′ x = (x :+ x) :+ (x :+ x)
+      x12′ x = x4′ x :+ (x4′ x :+ x4′ x)
+
+  -- 12 M = 4 (3 M);  12 q = 3 (4 q)
+  x12-as-3 : ∀ x → x12 x ≃ (x4 x +S x4 x) +S x4 x
+  x12-as-3 x = solve 1 (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) := (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) :+ ((x :+ x) :+ (x :+ x))) ≃-refl x
+
+  x12-as-4 : ∀ x → x12 x ≃ x4 ((x +S x) +S x)
+  x12-as-4 x = solve 1 (λ x → ((x :+ x) :+ (x :+ x)) :+ (((x :+ x) :+ (x :+ x)) :+ ((x :+ x) :+ (x :+ x))) := (((x :+ x) :+ x) :+ ((x :+ x) :+ x)) :+ (((x :+ x) :+ x) :+ ((x :+ x) :+ x))) ≃-refl x
+
+  x4-0 : x4 0S ≃ 0S
+  x4-0 = ≃-trans (+S-cong (+S-identityˡ 0S) (+S-identityˡ 0S)) (+S-identityˡ 0S)
+
+  -- 4 N = 1 gives 4 (−N) + 1 = 0
+  neg4 : ∀ N → x4 N ≃ 1S → x4 (-S N) +S 1S ≃ 0S
+  neg4 N e = begin
+    x4 (-S N) +S 1S      ≈⟨ +S-cong ≃-refl (≃-sym e) ⟩
+    x4 (-S N) +S x4 N    ≈⟨ solve 2 (λ q N → ((q :+ q) :+ (q :+ q)) :+ ((N :+ N) :+ (N :+ N)) := ((q :+ N) :+ (q :+ N)) :+ ((q :+ N) :+ (q :+ N))) ≃-refl (-S N) N ⟩
+    x4 (-S N +S N)       ≈⟨ x4-cong (+S-inverseˡ N) ⟩
+    x4 0S                ≈⟨ x4-0 ⟩
+    0S ∎
+
+  -- 4·1 + 3r = 1 when r + 1 = 0
+  finish : ∀ r → r +S 1S ≃ 0S → x4 1S +S ((r +S r) +S r) ≃ 1S
+  finish r e = begin
+    x4 1S +S ((r +S r) +S r)
+      ≈⟨ solve 2 (λ r o → ((o :+ o) :+ (o :+ o)) :+ ((r :+ r) :+ r)
+                          := o :+ (((r :+ o) :+ (r :+ o)) :+ (r :+ o))) ≃-refl r 1S ⟩
+    1S +S (((r +S 1S) +S (r +S 1S)) +S (r +S 1S))
+                                            ≈⟨ +S-cong ≃-refl (+S-cong (+S-cong e e) e) ⟩
+    1S +S ((0S +S 0S) +S 0S)                ≈⟨ +S-cong ≃-refl (≃-trans (+S-cong (+S-identityˡ 0S) ≃-refl) (+S-identityˡ 0S)) ⟩
+    1S +S 0S                                ≈⟨ ≃-trans (+S-comm 1S 0S) (+S-identityˡ 1S) ⟩
+    1S ∎
+
   var-arith : ∀ M μ → (M +S M) +S M ≃ 1S → μ +S μ ≃ 1S → x12 (M +S (-S (μ *S μ))) ≃ 1S
   var-arith M μ hM hμ = begin
-    x12 (M +S q)
-      ≈⟨ solve 2 (λ M q → ((M :+ q) :+ (M :+ q)) :+ ((M :+ q) :+ (M :+ q)) :+ (((M :+ q) :+ (M :+ q)) :+ ((M :+ q) :+ (M :+ q)) :+ (((M :+ q) :+ (M :+ q)) :+ ((M :+ q) :+ (M :+ q))))
-                      := (((M :+ M) :+ M) :+ ((M :+ M) :+ M)) :+ (((M :+ M) :+ M) :+ ((M :+ M) :+ M)) :+ (((q :+ q) :+ (q :+ q)) :+ ((q :+ q) :+ (q :+ q)) :+ ((q :+ q) :+ (q :+ q)))) ≃-refl M q ⟩
-    x4 ((M +S M) +S M) +S ((r +S r) +S r)
-      ≈⟨ +S-cong {x4 ((M +S M) +S M)} {x4 1S} {(r +S r) +S r} {(r +S r) +S r}
-           (+S-cong {((M +S M) +S M) +S ((M +S M) +S M)} {1S +S 1S} {((M +S M) +S M) +S ((M +S M) +S M)} {1S +S 1S}
-              (+S-cong {(M +S M) +S M} {1S} {(M +S M) +S M} {1S} hM hM) (+S-cong {(M +S M) +S M} {1S} {(M +S M) +S M} {1S} hM hM)) ≃-refl ⟩
-    x4 1S +S ((r +S r) +S r)
-      ≈⟨ solve 2 (λ r o → ((o :+ o) :+ (o :+ o)) :+ ((r :+ r) :+ r) := o :+ (((r :+ o) :+ (r :+ o)) :+ (r :+ o))) ≃-refl r 1S ⟩
-    1S +S (((r +S 1S) +S (r +S 1S)) +S (r +S 1S))
-      ≈⟨ +S-cong {1S} {1S} {((r +S 1S) +S (r +S 1S)) +S (r +S 1S)} {(0S +S 0S) +S 0S} ≃-refl
-           (+S-cong {(r +S 1S) +S (r +S 1S)} {0S +S 0S} {r +S 1S} {0S} (+S-cong {r +S 1S} {0S} {r +S 1S} {0S} a3 a3) a3) ⟩
-    1S +S ((0S +S 0S) +S 0S)
-      ≈⟨ +S-cong {1S} {1S} {(0S +S 0S) +S 0S} {0S} ≃-refl
-           (≃-trans (+S-cong {0S +S 0S} {0S} {0S} {0S} (+S-identityˡ 0S) ≃-refl) (+S-identityˡ 0S)) ⟩
-    1S +S 0S
-      ≈⟨ ≃-trans (+S-comm 1S 0S) (+S-identityˡ 1S) ⟩
+    x12 (M +S (-S N))                              ≈⟨ x12-+ M (-S N) ⟩
+    x12 M +S x12 (-S N)                            ≈⟨ +S-cong (≃-trans (x12-as-4 M) (x4-cong hM)) (x12-as-3 (-S N)) ⟩
+    x4 1S +S ((x4 (-S N) +S x4 (-S N)) +S x4 (-S N))  ≈⟨ finish (x4 (-S N)) (neg4 N x4N) ⟩
     1S ∎
     where
       N = μ *S μ
-      q = -S N
-      r = x4 q
-      a1 : (μ +S μ) *S (μ +S μ) ≃ 1S
-      a1 = ≃-trans (*S-cong {μ +S μ} {1S} {μ +S μ} {1S} hμ hμ) (*S-identityˡ 1S)
-      a2 : (N +S N) +S (N +S N) ≃ 1S
-      a2 = ≃-trans (solve 1 (λ μ → (μ :* μ :+ μ :* μ) :+ (μ :* μ :+ μ :* μ) := (μ :+ μ) :* (μ :+ μ)) ≃-refl μ) a1
-      a3 : r +S 1S ≃ 0S
-      a3 = begin
-        r +S 1S
-          ≈⟨ +S-cong {r} {r} {1S} {(N +S N) +S (N +S N)} ≃-refl (≃-sym a2) ⟩
-        r +S ((N +S N) +S (N +S N))
-          ≈⟨ solve 2 (λ q N → ((q :+ q) :+ (q :+ q)) :+ ((N :+ N) :+ (N :+ N)) := ((q :+ N) :+ (q :+ N)) :+ ((q :+ N) :+ (q :+ N))) ≃-refl q N ⟩
-        ((q +S N) +S (q +S N)) +S ((q +S N) +S (q +S N))
-          ≈⟨ +S-cong {(q +S N) +S (q +S N)} {0S +S 0S} {(q +S N) +S (q +S N)} {0S +S 0S}
-               (+S-cong {q +S N} {0S} {q +S N} {0S} (+S-inverseˡ N) (+S-inverseˡ N))
-               (+S-cong {q +S N} {0S} {q +S N} {0S} (+S-inverseˡ N) (+S-inverseˡ N)) ⟩
-        (0S +S 0S) +S (0S +S 0S)
-          ≈⟨ ≃-trans (+S-cong {0S +S 0S} {0S} {0S +S 0S} {0S} (+S-identityˡ 0S) (+S-identityˡ 0S)) (+S-identityˡ 0S) ⟩
-        0S ∎
+      x4N : x4 N ≃ 1S
+      x4N = ≃-trans (solve 1 (λ μ → (μ :* μ :+ μ :* μ) :+ (μ :* μ :+ μ :* μ) := (μ :+ μ) :* (μ :+ μ)) ≃-refl μ)
+                    (≃-trans (*S-cong hμ hμ) (*S-identityˡ 1S))
 
 module Variance (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Lebesgue lem

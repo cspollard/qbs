@@ -73,8 +73,14 @@ module Alg {c ℓ} (S : CommutativeSemiring c ℓ) (half : CommutativeSemiring.C
       1# + m ∎
       where
         X = half * (half * half + ((half * half * half + half * half * half) + half * half * m)) + half * (half * half * m)
-        polyEq : (X + X) + (X + X) ≈ half * ((half + half) * (half + half)) + (half * ((half + half) * (half + half) * (half + half)) + (half + half) * (half + half) * (half + half) * m)
-        polyEq = solve 2 (λ h x → ((h :* ((h :* h) :+ (((h :* h) :* h :+ (h :* h) :* h) :+ (h :* h) :* x)) :+ h :* ((h :* h) :* x)) :+ (h :* ((h :* h) :+ (((h :* h) :* h :+ (h :* h) :* h) :+ (h :* h) :* x)) :+ h :* ((h :* h) :* x))) :+ ((h :* ((h :* h) :+ (((h :* h) :* h :+ (h :* h) :* h) :+ (h :* h) :* x)) :+ h :* ((h :* h) :* x)) :+ (h :* ((h :* h) :+ (((h :* h) :* h :+ (h :* h) :* h) :+ (h :* h) :* x)) :+ h :* ((h :* h) :* x))) := h :* ((h :+ h) :* (h :+ h)) :+ (h :* ((h :+ h) :* (h :+ h) :* (h :+ h)) :+ (h :+ h) :* (h :+ h) :* (h :+ h) :* x)) refl half m
+        polyEq : (X + X) + (X + X)
+          ≈ half * ((half + half) * (half + half))
+            + (half * ((half + half) * (half + half) * (half + half)) + (half + half) * (half + half) * (half + half) * m)
+        polyEq = solve 2 (λ h x → let X′ = h :* (h :* h :+ ((h :* h :* h :+ h :* h :* h) :+ h :* h :* x)) :+ h :* (h :* h :* x)
+                                  in (X′ :+ X′) :+ (X′ :+ X′)
+                                     := h :* ((h :+ h) :* (h :+ h))
+                                        :+ (h :* ((h :+ h) :* (h :+ h) :* (h :+ h)) :+ (h :+ h) :* (h :+ h) :* (h :+ h) :* x))
+                                refl half m
 
 
 module UniformMoment (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where

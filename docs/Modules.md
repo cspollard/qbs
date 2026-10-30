@@ -118,7 +118,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Unbounded` | 424 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
 | `QBS.Analysis.UnboundedLowerReals` | 16 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 103 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.Variance` | 222 | lem | Variance of a signed random variable (skeleton: holes first). |
+| `QBS.Analysis.Variance` | 237 | lem | Variance of a signed random variable (skeleton: holes first). |
 
 ## Continuous model
 
@@ -147,8 +147,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Uniform` | 42 | lem, funext | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 192 | lem, funext | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformMean` | 134 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½. |
-| `QBS.Continuous.UniformMoment` | 174 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
-| `QBS.Continuous.UniformVariance` | 149 | lem | The variance of the uniform distribution. |
+| `QBS.Continuous.UniformMoment` | 180 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
+| `QBS.Continuous.UniformVariance` | 151 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.Weights` | 56 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
 ## Examples

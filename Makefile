@@ -12,6 +12,8 @@
 #                      html/ (from the progress overlay, so skeleton modules with holes are included), then
 #                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
 #                      only serves.
+#   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
+#                      known offenders are listed in scripts/longdecls.baseline, anything new fails.  Needs no Agda.
 #   make doccheck      check the docs against the code (scripts/doccheck.py): every module has a header comment,
 #                      docs/Modules.md is current (regenerate with scripts/modindex.py), docs/Interface.md names exist,
 #                      verbatim excerpts in docs/*.md are still in the sources.  Needs no Agda.
@@ -39,10 +41,13 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: doccheck check progress html serve report clean all-interfaces profile profile-tree
+.PHONY: longcheck doccheck check progress html serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
+longcheck:
+	@python3 scripts/longdecls.py --check --top 0 >/dev/null
+
 doccheck:
 	@python3 scripts/doccheck.py
 check:

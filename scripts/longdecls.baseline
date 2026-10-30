@@ -1,0 +1,37 @@
+# Known long declarations tolerated by 'make longcheck' (scripts/longdecls.py); each is a candidate for splitting into named lemmas.
+# Remove a line once the declaration is shortened; do not add new ones without a reason.
+QBS.Analysis.CutSum.dist2
+QBS.Analysis.ExtNat.commSemiring
+QBS.Analysis.Fun.Fun-mask
+QBS.Analysis.Fun.Fun-scale
+QBS.Analysis.LevelSets.LS-compl
+QBS.Analysis.LowerInverse.gap
+QBS.Analysis.LowerInverse.inv-mul-⊒
+QBS.Analysis.LowerReals.⊗-distribˡ
+QBS.Analysis.MeasFun.mutual
+QBS.Analysis.Measure.probClass
+QBS.Analysis.Mixture.mix
+QBS.Analysis.MixtureN.mixN
+QBS.Analysis.Param.PF
+QBS.Analysis.Restrict.Fun-χ·
+QBS.Analysis.Unbounded.Iinf-add
+QBS.Analysis.Unbounded.Iinf-scale-fun
+QBS.Analysis.Uniqueness.agree-fun
+QBS.Analysis.Variance.x12-as-3
+QBS.Analysis.Variance.x12-as-4
+QBS.Continuous.CoinIndep.tree-split
+QBS.Continuous.FirstBit.term
+QBS.Continuous.Monad.glue-eq
+QBS.Continuous.Monad.TQ
+QBS.Continuous.ProbInstance.continuousProb
+QBS.Continuous.SFinite.∫ᴹ-join
+QBS.Continuous.SFiniteIncl.ι-mult
+QBS.Continuous.SFiniteStat.continuousStat
+QBS.Continuous.SFiniteStrong.σH
+QBS.Continuous.SFiniteStrong.strength
+QBS.Model.Monad.TQ
+QBS.Model.ProbInstance.discreteProb
+QBS.Model.StatInstance.discreteStat
+QBS.Model.Strong.σH
+QBS.Model.SubProb.subClass
+QBS.Model.ViterbiSemiring.viterbiComplete
