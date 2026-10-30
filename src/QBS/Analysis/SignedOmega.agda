@@ -16,20 +16,17 @@ module Bounded (A : OmegaSemiring (L.suc L.zero)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
 
+  open import Algebra.Properties.Semiring.Mult semiring using (_×_; ×-homo-+; idem-×-homo-*)
+
   -- the natural number n as an element of A
   nat : ℕ → ∣A∣
-  nat zero = 0#
-  nat (suc n) = 1# + nat n
+  nat n = n × 1#
 
   nat-+ : ∀ n m → nat (n ℕ.+ m) ≈ nat n + nat m
-  nat-+ zero m = sym (+-identityˡ (nat m))
-  nat-+ (suc n) m = trans (+-cong refl (nat-+ n m)) (sym (+-assoc 1# (nat n) (nat m)))
+  nat-+ n m = ×-homo-+ 1# n m
 
   nat-* : ∀ n m → nat (n ℕ.* m) ≈ nat n * nat m
-  nat-* zero m = sym (zeroˡ (nat m))
-  nat-* (suc n) m = trans (nat-+ m (n ℕ.* m))
-    (trans (+-cong (sym (*-identityˡ (nat m))) (nat-* n m))
-           (sym (distribʳ (nat m) 1# (nat n))))
+  nat-* n m = sym (idem-×-homo-* n m (*-identityˡ 1#))
 
   -- bounded by a natural number
   Bnd : ∣A∣ → Set (L.suc L.zero)

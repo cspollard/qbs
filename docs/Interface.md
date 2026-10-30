@@ -100,10 +100,11 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem funext`) — the complete `StatisticalInterface` for the continuous model.
 
-### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁ funext`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
+- `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
 
 ## Examples and generic calculations
 
