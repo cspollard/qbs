@@ -20,7 +20,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Limits` | 139 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
 | `QBS.Probability` | 59 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 43 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 116 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`. |
+| `QBS.Statistical` | 232 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `WeightMonoid`   weights W: a c... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 
 ## Discrete model
@@ -38,7 +38,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Pairing` | 68 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 131 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 44 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
-| `QBS.Model.StatInstance` | 552 |  | The discrete measure monad is a model of `StatisticalInterface`. |
+| `QBS.Model.StatInstance` | 576 |  | The discrete measure monad is a model of `StatisticalInterface`. |
 | `QBS.Model.Strong` | 170 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 72 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 118 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
@@ -141,7 +141,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteIncl` | 202 | lem, funext | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
 | `QBS.Continuous.SFiniteMonad` | 282 | lem, funext | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 505 | lem, funext | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
-| `QBS.Continuous.SFiniteStat` | 264 | lem, funext | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
+| `QBS.Continuous.SFiniteStat` | 184 | lem, funext | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
+| `QBS.Continuous.SFiniteStatBridge` | 291 | lem, funext | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
 | `QBS.Continuous.SFiniteStrong` | 180 | lem, funext | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 247 | lem, funext | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 166 | funext | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |

@@ -26,12 +26,12 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 - `law-return`, `law-map`, `law-pre`, `law-surjective` — the axioms linking `law` to the monad; `tensor`, `kernel`, `law-join` — the Fubini axioms.
 
 ### `QBS.Statistical`
-`StatisticalInterface` (34 fields) on top of a `ProbabilityInterface`. Field groups:
-- weights: `W`, `mulW`, `oneW`, `zeroW`, and `mul-assoc`, `mul-comm`, `mul-one`, `mul-zero`.
-- measures: `commutativeMonad` (the measure monad `M`), `inclusion` (Prob into `M`), `inclusion-strong`.
-- conditioning: `zero` (zero measure), `score : W ⇒ M 1`, `score-zero`, `score-mul`, `zero-bind`.
-- s-finiteness: `sumM`, `scaleM`, `sumK` and their laws (`scale-one`, `scale-mul`, `scale-sum`, `sum-nat`, `sum-join`, `scale-nat`, `scale-join`, `sumK-point`, `bind-sumK`), and `scaled-laws` (every measure is a countable sum of scaled laws).
-- normalisation: `normalize : ∀ X → M X ⇒ Prob X + 1`, `normalize-prob`, `normalize-zero`, `normalize-scale`.
+`StatisticalInterface` on top of a `ProbabilityInterface`, assembled from five small structures (their fields are re-exported, so `open StatisticalInterface St` still gives every name), plus `scaled-laws` (every measure is a countable sum of scaled laws):
+- `WeightMonoid` (`weights`): `W`, `mulW`, `oneW`, `zeroW`, and `mul-assoc`, `mul-comm`, `mul-one`, `mul-zero`.
+- `SubMonad` (`measures`): `commutativeMonad` (the measure monad `M`), `inclusion` (Prob into `M`), `inclusion-strong`.
+- `Score` (`scoring`): `zero` (zero measure), `score : W ⇒ M 1`, `score-zero`, `score-one`, `score-mul`, `zero-bind`.  It *defines* `scaleM a t = μ ∘ M t ∘ score ∘ a` and proves `scale-one`, `scale-mul`, `scale-return`, `scale-nat`, `scale-join`.
+- `CountableSums` (`sums`): `sumK` (sums of kernels), `sumK-point`, `bind-sumK`, `sum-nat`, `sum-join`; `sumM` is `sumK` on global measures.  `scale-sum` is derived from `bind-sumK`.
+- `Normalization` (`normalization`): `normalize : ∀ X → M X ⇒ Prob X + 1`, `normalize-prob`, `normalize-zero`, `normalize-scale`.
 
 ### `QBS.StatisticalLemmas`
 - `bind-sum`, `bind-scale` — bind preserves countable sums and scaling of the measure argument.

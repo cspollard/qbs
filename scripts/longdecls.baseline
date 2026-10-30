@@ -14,3 +14,4 @@ QBS.Continuous.FirstBit.term
 QBS.Continuous.Monad.glue-eq
 QBS.Continuous.SFinite.∫ᴹ-join
 QBS.Continuous.SFiniteIncl.ι-mult
+QBS.Analysis.Omega.OmegaSemiring
