@@ -11,8 +11,8 @@ A `record` is also flagged as a whole when it has too many fields or lines (a gi
 instantiate, read and extend: factor it into sub-records or parameterised pieces).
 
 Usage: scripts/longdecls.py [--lines N] [--chars N] [--width N] [--fields N] [--rlines N] [--top K] [--check] [--baseline FILE] [PATH...]
-  thresholds (defaults 25 lines / 1500 characters / 160 columns): a declaration is flagged when it exceeds any
-  --fields N / --rlines N   record thresholds (default 15 fields / 60 lines)
+  thresholds (defaults 18 lines / 1000 characters / 130 columns): a declaration is flagged when it exceeds any
+  --fields N / --rlines N   record thresholds (default 12 fields / 60 lines)
   --top K      only print the K worst (by score) declarations
   --check      exit 1 if a flagged declaration is not listed in the baseline (see below)
   --baseline   file with one `module.name` per line: known offenders that --check tolerates
@@ -107,9 +107,9 @@ def records(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--lines', type=int, default=25); ap.add_argument('--chars', type=int, default=1500)
-    ap.add_argument('--width', type=int, default=160); ap.add_argument('--top', type=int, default=0)
-    ap.add_argument('--fields', type=int, default=15); ap.add_argument('--rlines', type=int, default=60)
+    ap.add_argument('--lines', type=int, default=18); ap.add_argument('--chars', type=int, default=1000)
+    ap.add_argument('--width', type=int, default=130); ap.add_argument('--top', type=int, default=0)
+    ap.add_argument('--fields', type=int, default=12); ap.add_argument('--rlines', type=int, default=60)
     ap.add_argument('--check', action='store_true')
     ap.add_argument('--baseline', default=os.path.join(ROOT, 'scripts', 'longdecls.baseline'))
     ap.add_argument('paths', nargs='*')
