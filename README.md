@@ -400,7 +400,8 @@ over `LowerRealsOmega` and soft-conditions the uniform distribution: `softUnifor
 `u ~ U[0,1]`, weight the run by `u`) with `∫-softUniform` and its total mass `mass-softUniform = ½`.
 `UniformMean.agda` proves `E[u] = ½` (`mean`): monotone convergence over the partial sums of the binary
 expansion, the bit probability `P(rₖ = true) = ½` (`μ0-bitT`) and `Σ 2^{-(k+1)} = 1` (`geom-sum`, via the
-Archimedean property; `Arch` now also records `hp 0 ≈ 1`).
+Archimedean property; `Arch` now also records `hp 0 ≈ 1`). `Uniform.agda` restates it in the monad as
+`∫-uniform-id : ∫ uniform id ≈ half`.
 
 ## Checked against the literature
 
