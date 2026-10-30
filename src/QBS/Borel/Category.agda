@@ -22,14 +22,14 @@ import QBS.Exponential as E
 open import QBS.Borel.Source
 
 -- the category of quasi-Borel spaces over the Borel structure of Cantor space
-QBS : Category (suc (suc zero)) (suc zero) (suc zero)
-QBS = QBSCat cantorSource
+QBS-Cantor : Category (suc (suc zero)) (suc zero) (suc zero)
+QBS-Cantor = QBSCat cantorSource
 
-complete : Complete (suc zero) (suc zero) (suc zero) QBS
+complete : Complete (suc zero) (suc zero) (suc zero) QBS-Cantor
 complete = Cmp.complete cantorSource
 
-cocomplete : Cocomplete (suc zero) (suc zero) (suc zero) QBS
+cocomplete : Cocomplete (suc zero) (suc zero) (suc zero) QBS-Cantor
 cocomplete = Cmp.cocomplete cantorSource
 
-cartesianClosed : Canonical.CartesianClosed QBS
+cartesianClosed : Canonical.CartesianClosed QBS-Cantor
 cartesianClosed = E.cartesianClosed cantorSource
