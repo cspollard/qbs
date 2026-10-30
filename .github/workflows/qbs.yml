@@ -23,3 +23,11 @@ jobs:
           echo "$HOME/agda-stdlib/standard-library.agda-lib" >  "$HOME/.agda/libraries"
           echo "$HOME/agda-categories/agda-categories.agda-lib" >> "$HOME/.agda/libraries"
       - run: make check
+      - name: show failing logs
+        if: failure()
+        run: |
+          agda --version | head -1
+          for f in $(find _build/logs -name '*.log' -size +0 | sort | head -3); do
+            msg=$(head -c 1500 "$f" | python3 -c "import sys,urllib.parse;print(sys.stdin.read().replace('%','%25').replace('\r','%0D').replace('\n','%0A'))")
+            echo "::error title=$f::$msg"
+          done
