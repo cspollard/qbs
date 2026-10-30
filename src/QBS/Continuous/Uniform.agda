@@ -10,15 +10,18 @@ open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
 open import Axiom.Extensionality.Propositional using (Extensionality)
 
-open import QBS.Core using (QBS)
+open import QBS.Core using (QBS; idH)
+open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
+open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
+open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.BinaryExpansion
-open import QBS.Continuous.Sample using (module UnitInterval)
+open import QBS.Continuous.Sample using (module UnitInterval; S)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.FairCoin
 
@@ -39,3 +42,13 @@ module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   -- U[0,1]
   uniform : Pre AQ
   uniform = mk expansionProbe Fun-expansion fairCoin L-one
+
+  -- the mean: ∫ uniform id = ½, restating `UniformMean.mean` in the monad
+  open Integration A using (I-cong)
+  open Continuous A (lemOf lem₁) funext probClass using (∫)
+  open UniformMean lem₁ using (mean)
+  open OmegaSemiring A using (_≈_; refl; trans)
+
+  -- the mean: ∫ uniform id = ½, restating `UniformMean.mean` in the monad
+  ∫-uniform-id : ∫ uniform (idH S {AQ}) ≈ half
+  ∫-uniform-id = trans (I-cong fairCoin {h′ = expansion} (λ r → refl) Fun-expansion Fun-expansion) mean
