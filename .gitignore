@@ -5,3 +5,4 @@ profile/*
 !profile/summary.md
 build/
 html/
+lit/
