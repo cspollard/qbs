@@ -8,14 +8,18 @@ So the sources keep `--safe`, and `make progress` checks a copy of `src/` (in OU
   * every file that has holes (`scripts/holes.py`) gets `--allow-unsolved-metas` instead of `--safe`, and
   * every file that (transitively) imports such a file just loses `--safe`.
 
-Usage: progress-overlay.py SRC OUT      (also writes OUT/qbs.agda-lib).  Files are rewritten only when their
+Usage: progress-overlay.py SRC OUT      (SRC may be relative or absolute; the copy goes to OUT/src, and
+OUT/qbs.agda-lib is copied from the library file next to SRC).  Files are rewritten only when their
 content changes, so Agda and make keep their caches between runs."""
 import os
 import re
 import subprocess
 import sys
 
-src, out = sys.argv[1], sys.argv[2]
+src, out = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
+if out == src or out.startswith(src + os.sep) or src.startswith(out + os.sep):
+    sys.exit("OUT must be a directory separate from SRC (and not contain or lie inside it)")
+outsrc = os.path.join(out, "src")
 here = os.path.dirname(os.path.abspath(__file__))
 
 files = sorted(os.path.join(d, f) for d, _, fs in os.walk(src) for f in fs if f.endswith(".agda"))
@@ -64,16 +68,16 @@ for p in files:
         if new == text:
             sys.exit("no `--safe` OPTIONS pragma in %s" % p)
         text = new
-    dst = os.path.join(out, p)
+    dst = os.path.join(outsrc, os.path.relpath(p, src))
     keep.add(os.path.abspath(dst))
     write_if_changed(dst, text)
 
-for d, _, fs in os.walk(os.path.join(out, src)):
+for d, _, fs in os.walk(outsrc):
     for f in fs:
         if f.endswith(".agda") and os.path.abspath(os.path.join(d, f)) not in keep:
             os.remove(os.path.join(d, f))
 
-with open("qbs.agda-lib", encoding="utf-8") as f:
+with open(os.path.join(os.path.dirname(src), "qbs.agda-lib"), encoding="utf-8") as f:
     write_if_changed(os.path.join(out, "qbs.agda-lib"), f.read())
 
 print("progress overlay: %d files, %d with holes, %d without --safe" % (len(files), len(holey), len(unsafe)))
