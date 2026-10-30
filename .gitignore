@@ -6,3 +6,4 @@ profile/*
 build/
 html/
 lit/
+.claude/
