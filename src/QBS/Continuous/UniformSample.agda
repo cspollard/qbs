@@ -104,6 +104,14 @@ module UniformSample (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext :
   sample-mean-variance : ∀ n → x12 (VarS n) ≃ Est.natS n
   sample-mean-variance n = x12-scaled (VarS n) (Est.natS n) varU (VarS-eq n) variance
 
+  -- n² − n
+  nn : ℕ → Sg
+  nn n = Est.natS n *S Est.natS n +S (-S (Est.natS n))
+
+  -- E (n Qₙ − Sₙ²) = (n² − n) σ², for any moments
+  ESS-gen : ∀ {Y μ σ} → Est.Moments Y μ σ → ∀ n → E-B fairCoin pm (Est.SS Y n) ≃ nn n *S σ
+  ESS-gen M n = Est.E-SS M n
+
   -- E (n Qₙ − Sₙ²) = (n² − n) σ²
   ESS : ℕ → Sg
   ESS n = E-B fairCoin pm (Est.SS X n)

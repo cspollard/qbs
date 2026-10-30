@@ -342,6 +342,8 @@ signed values; the ring laws are those of `Sg`, and `BoundedCancel` cancels boun
 `Xᵢ = u ∘ coordᵢ` and `Sₙ = X₀ + … + X_{n−1}`, `Continuous/UniformSample` proves, without division:
 `E Sₙ + E Sₙ = n` (the sample mean is unbiased), `12 · Var Sₙ = n` (`Var x̄ = σ²/n`) and `12 · E (n Qₙ − Sₙ²) = n² − n`
 (`Qₙ = ΣXᵢ²`; the sample variance `(n Qₙ − Sₙ²)/(n(n−1))` is unbiased).
+`Continuous/UniformInterval` transfers this to `Yᵢ = a + c·Xᵢ` (the interval [a, a + c]) with `Estimator.Affine`
+(`E Tₙ + E Tₙ = n(a + a + c)`, `12 · Var Tₙ = n c²`, `12 · E (n Qₙ − Tₙ²) = (n² − n) c²`).
 
 ## Worked example (`Example/Program.agda`)
 
@@ -488,7 +490,7 @@ witnesses `abstract`.
 - (done) The s-finite measure monad: `Continuous/SFiniteStat.continuousStat` is a complete
   `StatisticalInterface` for the continuous model (`TM`, strength, commutativity, `score`, `scaleM`/`sumM`/`sumK`,
   `scaled-laws` via `SFiniteDecomp`, `normalize` via `SFiniteNorm`).  `make check` is strict and passes.
-- Other distributions (affine `[a,b]`, Gaussian: see `plans/`); the sample mean/variance statements are division-free.
+- Other distributions (Gaussian: see `plans/`); the sample mean/variance statements are division-free.
 - `restrictM` as a morphism of the continuous monad (like `scoreH`); disintegration along a
   continuous observation.
 - Riesz for sub-probability measures.

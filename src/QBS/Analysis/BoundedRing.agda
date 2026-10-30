@@ -155,3 +155,14 @@ module BoundedRing (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
     E-B-+ : ∀ f g → E-B (f +B g) ≃ E-B f +S E-B g
     E-B-+ (f , _) (g , _) = E-+ f g
+
+    -- constants: the embedding of signed values, with E (κ s) = s and E (κ s · x) = s · E x
+    κB : Sg → BSF
+    κB s = constSF {m} pm s , Bdd-const {m} pm s
+
+    E-κB : ∀ s → E-B (κB s) ≃ s
+    E-κB s = E-const {m} pm s
+
+    E-κB* : ∀ s x → E-B (κB s *B x) ≃ s *S E-B x
+    E-κB* s (f , bf) = ≃-trans {E (proj₁ (κB s *B (f , bf)))} {E (scaleSF s f)} {s *S E f}
+      (E-cong {m} {proj₁ (κB s *B (f , bf))} {scaleSF s f} (λ x → refl)) (E-scale s f)

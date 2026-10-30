@@ -198,3 +198,67 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
           (SolveS.solve 3 (λ a q m → a SolveS.:* (a SolveS.:* (q SolveS.:+ m)) SolveS.:= (a SolveS.:* a SolveS.:* q SolveS.:+ a SolveS.:* a SolveS.:* m)) S.refl a q m)
           (S.sym (S.trans (S.+-assoc _ _ _) (S.trans (S.+-cong S.refl (S.sym (S.+-assoc _ _ _)))
             (S.trans (S.+-cong S.refl (S.+-cong (S.-‿inverseˡ (a S.* q)) S.refl)) (S.+-cong S.refl (S.+-identityˡ _))))))
+
+  -- Affine images Yᵢ = a + c·Xᵢ, for a constant embedding κ with E (κ s) = s and E (κ s · x) = s · E x:
+  -- the moments become μ′ = a + c μ and σ′² = c² σ².
+  module Affine (κ : S.Carrier → R.Carrier)
+    (E-κ : ∀ s → E (κ s) S.≈ s) (E-κ* : ∀ s x → E (κ s R.* x) S.≈ s S.* E x) where
+
+    affine : (ℕ → R.Carrier) → S.Carrier → S.Carrier → ℕ → R.Carrier
+    affine X a c i = κ a R.+ κ c R.* X i
+
+    -- (a + c Xᵢ)(a + c Xⱼ) = a a + (a (c Xⱼ) + a (c Xᵢ)) + c (c (Xᵢ Xⱼ))
+    prod-R : ∀ ka kc x y → (ka R.+ kc R.* x) R.* (ka R.+ kc R.* y) R.≈
+             ka R.* ka R.+ (ka R.* (kc R.* y) R.+ ka R.* (kc R.* x)) R.+ kc R.* (kc R.* (x R.* y))
+    prod-R = SolveR.solve 4 (λ ka kc x y →
+      (ka :+ kc :* x) :* (ka :+ kc :* y) :=
+      ka :* ka :+ (ka :* (kc :* y) :+ ka :* (kc :* x)) :+ kc :* (kc :* (x :* y))) R.refl
+      where open SolveR using (_:+_; _:*_; _:=_)
+
+    -- E of that, in terms of E x, E y, E (x y)
+    E-prod : ∀ a c x y → E ((κ a R.+ κ c R.* x) R.* (κ a R.+ κ c R.* y)) S.≈
+             a S.* a S.+ (a S.* (c S.* E y) S.+ a S.* (c S.* E x)) S.+ c S.* (c S.* E (x R.* y))
+    E-prod a c x y = begin
+      E ((κ a R.+ κ c R.* x) R.* (κ a R.+ κ c R.* y))
+        ≈⟨ E-cong (prod-R (κ a) (κ c) x y) ⟩
+      E (κ a R.* κ a R.+ (κ a R.* (κ c R.* y) R.+ κ a R.* (κ c R.* x)) R.+ κ c R.* (κ c R.* (x R.* y)))
+        ≈⟨ E-+ _ _ ⟩
+      E (κ a R.* κ a R.+ (κ a R.* (κ c R.* y) R.+ κ a R.* (κ c R.* x))) S.+ E (κ c R.* (κ c R.* (x R.* y)))
+        ≈⟨ S.+-cong (E-+ _ _) (S.trans (E-κ* c _) (S.*-cong S.refl (E-κ* c _))) ⟩
+      (E (κ a R.* κ a) S.+ E (κ a R.* (κ c R.* y) R.+ κ a R.* (κ c R.* x))) S.+ c S.* (c S.* E (x R.* y))
+        ≈⟨ S.+-cong (S.+-cong (S.trans (E-κ* a _) (S.*-cong S.refl (E-κ a)))
+                      (S.trans (E-+ _ _) (S.+-cong (S.trans (E-κ* a _) (S.*-cong S.refl (E-κ* c y)))
+                                                   (S.trans (E-κ* a _) (S.*-cong S.refl (E-κ* c x)))))) S.refl ⟩
+      a S.* a S.+ (a S.* (c S.* E y) S.+ a S.* (c S.* E x)) S.+ c S.* (c S.* E (x R.* y)) ∎
+
+    E-affine : ∀ a c x → E (κ a R.+ κ c R.* x) S.≈ a S.+ c S.* E x
+    E-affine a c x = S.trans (E-+ _ _) (S.+-cong (E-κ a) (E-κ* c x))
+
+    arith-second : ∀ a c μ q → a S.* a S.+ (a S.* (c S.* μ) S.+ a S.* (c S.* μ)) S.+ c S.* (c S.* (q S.+ μ S.* μ)) S.≈
+                   c S.* c S.* q S.+ (a S.+ c S.* μ) S.* (a S.+ c S.* μ)
+    arith-second = SolveS.solve 4 (λ a c μ q →
+      a :* a :+ (a :* (c :* μ) :+ a :* (c :* μ)) :+ c :* (c :* (q :+ μ :* μ)) :=
+      c :* c :* q :+ (a :+ c :* μ) :* (a :+ c :* μ)) S.refl
+      where open SolveS using (_:+_; _:*_; _:=_)
+
+    arith-cross : ∀ a c μ → a S.* a S.+ (a S.* (c S.* μ) S.+ a S.* (c S.* μ)) S.+ c S.* (c S.* (μ S.* μ)) S.≈
+                  (a S.+ c S.* μ) S.* (a S.+ c S.* μ)
+    arith-cross = SolveS.solve 3 (λ a c μ →
+      a :* a :+ (a :* (c :* μ) :+ a :* (c :* μ)) :+ c :* (c :* (μ :* μ)) :=
+      (a :+ c :* μ) :* (a :+ c :* μ)) S.refl
+      where open SolveS using (_:+_; _:*_; _:=_)
+
+    affine-moments : ∀ {X μ σ²} → Moments X μ σ² → ∀ a c → Moments (affine X a c) (a S.+ c S.* μ) (c S.* c S.* σ²)
+    affine-moments {X} {μ} {σ²} M a c = record
+      { mean = λ i → S.trans (E-affine a c (X i)) (S.+-cong S.refl (S.*-cong S.refl (mean i)))
+      ; second = λ i → S.trans (E-prod a c (X i) (X i))
+          (S.trans (S.+-cong (S.+-cong S.refl (S.+-cong (S.*-cong S.refl (S.*-cong S.refl (mean i)))
+                                                         (S.*-cong S.refl (S.*-cong S.refl (mean i)))))
+                             (S.*-cong S.refl (S.*-cong S.refl (second i))))
+                   (arith-second a c μ σ²))
+      ; uncorr = λ i j h → S.trans (E-prod a c (X i) (X j))
+          (S.trans (S.+-cong (S.+-cong S.refl (S.+-cong (S.*-cong S.refl (S.*-cong S.refl (mean j)))
+                                                         (S.*-cong S.refl (S.*-cong S.refl (mean i)))))
+                             (S.*-cong S.refl (S.*-cong S.refl (uncorr i j h))))
+                   (arith-cross a c μ)) }
+      where open Moments M

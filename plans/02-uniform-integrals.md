@@ -20,7 +20,7 @@ Missing: signed values, subtraction, E[X²], n-fold products, linearity for sign
   `Continuous/CoinCoords` (coordinates of the coin: `J-coord`, `J-split`, `J-indep`, signed `E-indep`),
   `Continuous/UniformSample` (the uniform instance: `sample-mean-unbiased`, `sample-mean-variance`, `sample-variance`).
   Compile times: each module 3–12 s. Lessons: state lemmas over abstract variables, give implicit arguments of `Meas`-indexed lemmas explicitly (`Meas` is not injective), name intermediate `Sg` expressions (`VarS`, `ESS`) instead of repeating them in a type that is unified, and annotate implicit `Sg` arguments (`∀ {a b : Sg}`): unresolved ones make Agda unfold the cut semiring.
-- Step 5 (the affine instance on `[a,b]`) and the restatement `∫ uniform id ≈ half` remain.
+- **Step 5 DONE**: `Estimator.Affine` (moments of `a + c·Xᵢ`, from `E (κ s) = s` and `E (κ s · x) = s · E x`; `BoundedRing.κB`) and `Continuous/UniformInterval`. Only the restatement `∫ uniform id ≈ half` remains.
 
 ## Steps
 
