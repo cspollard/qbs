@@ -421,7 +421,10 @@ evidence): `sequential` (observing `w₁` then `w₂` is observing the product l
 `predictive-chain` (`Z(x₁) · P(x₂ | x₁) = Z(x₁, x₂)`, division-free through an inverse of the evidence). The Bernoulli model over
 a discrete set of parameters (`p θ + q θ = 1`) has `likSeq-counts` (the likelihood of a sequence is `p^s q^f`),
 `posterior-seq` (updating one observation at a time is updating with the sequence) and `posterior-exchangeable` (sequences
-with equal counts give equal posteriors), the sufficiency behind Beta–Bernoulli conjugacy.
+with equal counts give equal posteriors), the sufficiency behind Beta–Bernoulli conjugacy; `evidence-total` says the evidence is a distribution on the data
+(`Z(heads) + Z(tails)` is the prior's mass, using `p θ + q θ = 1`). `Inference/CoinBias.agda` is a worked example with numbers:
+fair or two-headed coin, one head observed, evidence `½·1 + ½·½`, unnormalised posterior masses `½` and `¼` (odds 2 : 1);
+`CoinBias.Additive` instantiates it at the semiring of lower reals.
 
 ## Checked against the literature
 

@@ -123,3 +123,12 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
             counts : ∀ θ → pow (p ⟨$⟩ θ) (successes xs) * pow (q ⟨$⟩ θ) (failures xs)
                            ≈ pow (p ⟨$⟩ θ) (successes ys) * pow (q ⟨$⟩ θ) (failures ys)
             counts θ rewrite hs | hf = refl
+
+    -- the evidence is a distribution on the data: Z(heads) + Z(tails) is the total mass of the prior, which is 1 for a
+    -- probability prior (this is where `p θ + q θ = 1` is used)
+    evidence-total : ∀ (prior : Pre Θ) → evidence N prior p + evidence N prior q ≈ ∫ prior one
+    evidence-total prior = trans (sym (∑-+ _ _))
+      (∑-cong (λ r → trans (sym (distribˡ _ _ _)) (*-cong refl (pq (MA.Pre.α prior r)))))
+
+    evidence-total-prob : ∀ (prior : Pre Θ) → ∫ prior one ≈ 1# → evidence N prior p + evidence N prior q ≈ 1#
+    evidence-total-prob prior h = trans (evidence-total prior) h
