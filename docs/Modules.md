@@ -14,6 +14,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Complete` | 182 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
 | `QBS.Core` | 82 |  | Quasi-Borel spaces over an abstract random source. |
 | `QBS.Exponential` | 134 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
+| `QBS.Inference.Bayesian` | 126 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.Frequentist` | 192 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.UniformExperiment` | 64 | lem, funext | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |

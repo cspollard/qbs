@@ -414,6 +414,15 @@ instantiate the estimator theorem at every parameter. `Inference/UniformExperime
 on `[a, a + c]`, parameter `(a , c)`, with `sample-mean-unbiased` (for `a + c/2`) and `sample-variance-unbiased` (for `c² σ²`).
 The kernel form `Θ ⇒ M X` and the Bayesian half are the next stages of `plans/03-bayesian-frequentist.md`.
 
+## Bayesian inference (discrete)
+
+`Inference/Bayesian.agda` builds on `Example/Bayes` (posterior = prior reweighted by the likelihood, normalised by the
+evidence): `sequential` (observing `w₁` then `w₂` is observing the product likelihood), `evidence-sequential`, and
+`predictive-chain` (`Z(x₁) · P(x₂ | x₁) = Z(x₁, x₂)`, division-free through an inverse of the evidence). The Bernoulli model over
+a discrete set of parameters (`p θ + q θ = 1`) has `likSeq-counts` (the likelihood of a sequence is `p^s q^f`),
+`posterior-seq` (updating one observation at a time is updating with the sequence) and `posterior-exchangeable` (sequences
+with equal counts give equal posteriors), the sufficiency behind Beta–Bernoulli conjugacy.
+
 ## Checked against the literature
 
 - Heunen–Kammar–Staton–Yang, [*A Convenient Category for Higher-Order Probability Theory*](https://arxiv.org/abs/1701.02547)

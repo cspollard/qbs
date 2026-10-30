@@ -46,6 +46,8 @@ The Bayesian half (`Inference/Bayesian`) is independent of both layers until con
 
 **Status:** 3a DONE (2026-10-30): `Inference/Frequentist` (all holes filled; ~35 s cold, 4 s warm) and `Inference/UniformExperiment` (the uniform-interval instance with `sample-mean-unbiased`, `sample-variance-unbiased`). Parameters live in `Set₁` because `Sg` does.
 
+**3b DONE (2026-10-30), first part:** `Inference/Bayesian` (discrete, generic in the normalisable semiring): `sequential`, `evidence-sequential`, `predictive-chain`, and the Bernoulli model with `likSeq-counts`, `posterior-seq`, `posterior-exchangeable`. Still to do in 3b: the joint `prior ⊗ likelihood` and the evidence as its marginal, a concrete finite-grid instance with numbers, and the side-by-side with the frequentist estimator on the same data (posterior mean versus sample mean).
+
 ### Revised staging (supersedes the staging below where they differ)
 - 3a. `Inference/Frequentist` skeleton (declarations with holes), then definitions, then the generic theorems, then the uniform
   instance (`Inference/UniformExperiment`).  Each module compiles on its own in seconds; keep proofs short.

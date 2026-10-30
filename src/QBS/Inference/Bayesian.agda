@@ -10,8 +10,6 @@
 --     only on the numbers of successes and failures (the sufficiency that makes Beta–Bernoulli conjugacy work).
 -- Everything is stated without division: normalisation appears only through an inverse `n` of the evidence, as in
 -- `Example/Bayes`.
---
--- SKELETON: the declarations are in place; the proofs marked by holes are the plan's next steps.
 module QBS.Inference.Bayesian where
 
 open import Level using (Level)
@@ -26,6 +24,7 @@ open ≡ using (_≡_)
 open import QBS.Core
 open import QBS.Model.DiscreteSource using (discreteSource)
 open import QBS.Model.Semiring
+open import QBS.Model.Sums
 open import QBS.Model.WeightClasses using (allClass; probClass)
 open import QBS.Model.Monad
 open import QBS.Example.Bayes using (posteriorU; evidence; _·_; posterior; bayes; bayes-numerator)
@@ -33,6 +32,7 @@ open import QBS.Example.Bayes using (posteriorU; evidence; _·_; posterior; baye
 module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
   A = NormalizableSemiring.complete N
   open CompleteSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
+  open Sums A
   module MA = Measures A (allClass A)
   open MA using (Pre; mk; ∫; _≈ᵖ_)
 
@@ -48,17 +48,20 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
 
     -- observing w₁ and then w₂ is observing the product likelihood
     sequential : posteriorU N (posteriorU N prior w₁) w₂ ≈ᵖ posteriorU N prior (_·_ N {X} w₁ w₂)
-    sequential f = {!!}
+    sequential f = trans (bayes-numerator N (posteriorU N prior w₁) w₂ f)
+      (trans (bayes-numerator N prior w₁ (_·_ N {X} w₂ f))
+        (trans (∑-cong (λ r → *-cong refl (sym (*-assoc _ _ _))))
+          (sym (bayes-numerator N prior (_·_ N {X} w₁ w₂) f))))
 
     -- the evidence is multiplicative: Z(x₁, x₂) = Z(x₁) · P(x₂ | x₁), with the unnormalised predictive Z(x₂ | x₁)
     evidence-sequential : evidence N (posteriorU N prior w₁) w₂ ≈ evidence N prior (_·_ N {X} w₁ w₂)
-    evidence-sequential = {!!}
+    evidence-sequential = bayes-numerator N prior w₁ w₂
 
     -- the posterior predictive of the next observation, given an inverse n of the evidence of the first
     -- (`Example/Bayes.posterior`): P(x₂ | x₁) = n · Z(x₁, x₂)
     predictive-chain : ∀ (n : ∣A∣) (h : evidence N prior w₁ * n ≈ 1#) →
       evidence N prior w₁ * (n * evidence N prior (_·_ N {X} w₁ w₂)) ≈ evidence N prior (_·_ N {X} w₁ w₂)
-    predictive-chain n h = {!!}
+    predictive-chain n h = trans (sym (*-assoc _ _ _)) (trans (*-cong h refl) (*-identityˡ _))
 
   ----------------------------------------------------------------------------
   -- the Bernoulli model over a discrete set of parameters
@@ -69,19 +72,31 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
 
     -- the likelihood of one observation, and of a sequence of independent observations
     lik : Bool → Func (QBS.Carrier Θ) Aˢ
-    lik b = {!!}   -- p if b, q otherwise
+    lik true = p
+    lik false = q
+
+    one : Func (QBS.Carrier Θ) Aˢ
+    one = record { to = λ _ → 1# ; cong = λ _ → refl }
 
     likSeq : List Bool → Func (QBS.Carrier Θ) Aˢ
-    likSeq xs = {!!}   -- the pointwise product of the likelihoods
+    likSeq [] = one
+    likSeq (b ∷ bs) = _·_ N {Θ} (lik b) (likSeq bs)
 
     -- the numbers of successes and failures
     successes failures : List Bool → ℕ
-    successes xs = {!!}
-    failures xs = {!!}
+    successes [] = 0
+    successes (true ∷ xs) = suc (successes xs)
+    successes (false ∷ xs) = successes xs
+    failures [] = 0
+    failures (true ∷ xs) = failures xs
+    failures (false ∷ xs) = suc (failures xs)
 
     -- the likelihood of a sequence is `p^s q^f`: it depends on the data only through the counts
     likSeq-counts : ∀ xs θ → (likSeq xs ⟨$⟩ θ) ≈ pow (p ⟨$⟩ θ) (successes xs) * pow (q ⟨$⟩ θ) (failures xs)
-    likSeq-counts xs θ = {!!}
+    likSeq-counts [] θ = sym (*-identityˡ 1#)
+    likSeq-counts (true ∷ xs) θ = trans (*-cong refl (likSeq-counts xs θ)) (sym (*-assoc _ _ _))
+    likSeq-counts (false ∷ xs) θ = trans (*-cong refl (likSeq-counts xs θ))
+      (trans (sym (*-assoc _ _ _)) (trans (*-cong (*-comm _ _) refl) (*-assoc _ _ _)))
 
     -- updating one observation at a time is updating with the sequence
     update : Pre Θ → List Bool → Pre Θ
@@ -90,9 +105,21 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
 
     posterior-seq : ∀ (prior : Pre Θ) xs →
       update prior xs ≈ᵖ posteriorU N prior (likSeq xs)
-    posterior-seq prior xs = {!!}
+    posterior-seq prior [] f = trans (∑-cong (λ r → refl))
+      (trans (∑-cong (λ r → *-cong refl (sym (*-identityˡ _)))) (sym (bayes-numerator N prior one f)))
+    posterior-seq prior (b ∷ bs) f = trans (posterior-seq (posteriorU N prior (lik b)) bs f)
+      (sequential prior (lik b) (likSeq bs) f)
 
     -- sequences with equal counts give equal posteriors
     posterior-exchangeable : ∀ (prior : Pre Θ) xs ys → successes xs ≡ successes ys → failures xs ≡ failures ys →
       posteriorU N prior (likSeq xs) ≈ᵖ posteriorU N prior (likSeq ys)
-    posterior-exchangeable prior xs ys hs hf = {!!}
+    posterior-exchangeable prior xs ys hs hf f = trans (bayes-numerator N prior (likSeq xs) f)
+      (trans (∑-cong (λ r → *-cong refl (*-cong (same (MA.Pre.α prior r)) refl)))
+        (sym (bayes-numerator N prior (likSeq ys) f)))
+      where
+        same : ∀ θ → (likSeq xs ⟨$⟩ θ) ≈ (likSeq ys ⟨$⟩ θ)
+        same θ = trans (likSeq-counts xs θ) (trans (counts θ) (sym (likSeq-counts ys θ)))
+          where
+            counts : ∀ θ → pow (p ⟨$⟩ θ) (successes xs) * pow (q ⟨$⟩ θ) (failures xs)
+                           ≈ pow (p ⟨$⟩ θ) (successes ys) * pow (q ⟨$⟩ θ) (failures ys)
+            counts θ rewrite hs | hf = refl
