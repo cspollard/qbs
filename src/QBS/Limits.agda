@@ -32,16 +32,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- Terminal object: every element is random.
   1Q : QBS S
-  1Q = record
-    { Carrier = setoid (⊤ {ℓ})
-    ; probes = record
-        { Random = λ _ → ⊤
-        ; random-resp = λ _ _ → tt
-        ; const-random = λ _ → tt
-        ; pre-random = λ _ _ → tt
-        }
-    ; glue-random = λ _ _ _ → tt
-    }
+  1Q = CodiscQ S (setoid (⊤ {ℓ}))
 
   !Q : ∀ {X} → Hom S X 1Q
   !Q = record { map = record { to = λ _ → tt ; cong = λ _ → refl } ; map-random = λ _ → tt }

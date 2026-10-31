@@ -71,35 +71,11 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ev-pre (inj₂ (b , _)) _ r = ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
 
   _+Q_ : QBS S → QBS S → QBS S
-  X +Q Y = record
-    { Carrier = ⊎S X Y
-    ; probes = record
-        { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
-            Σ (ℕ → Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (α ⟨$⟩ r) (ev X Y (c (i ⟨$⟩ r)) r)
-        ; random-resp = λ e (i , ii , c , q) →
-            i , ii , c , λ r → Setoid.trans (⊎S X Y) (Setoid.sym (⊎S X Y) (e r)) (q r)
-        ; const-random = λ where
-            (inj₁ a) → constₛ 0 , idx-const 0 , const (inj₁ (constₛ a , const-random X a)) ,
-                       λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
-            (inj₂ b) → constₛ 0 , idx-const 0 , const (inj₂ (constₛ b , const-random Y b)) ,
-                       λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
-        ; pre-random = λ {_} {f} (i , ii , c , q) m →
-            i ∘ₛ f , idx-pre ii m , (λ n → pre X Y (c n) m) ,
-            λ r → Setoid.trans (⊎S X Y) (q (f ⟨$⟩ r))
-                    (Setoid.sym (⊎S X Y) (ev-pre X Y (c (i ⟨$⟩ (f ⟨$⟩ r))) m r))
-        }
-    ; glue-random = λ {j} ij α p →
-        let i = λ n → proj₁ (p n)
-            c = λ n → proj₁ (proj₂ (proj₂ (p n)))
-            c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-        in refineₛ j i
-         , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
-         , c′
-         , λ r → subst (λ u → Setoid._≈_ (⊎S X Y) (α (j ⟨$⟩ r) ⟨$⟩ r) (ev X Y (c (proj₁ u) (proj₂ u)) r))
-                       (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
-                       (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
-    }
-
+  X +Q Y = GluedQBS S (⊎S X Y) (Piece X Y) (ev X Y) (pre X Y) (ev-pre X Y) pt
+    where
+      pt : ∀ z → Σ (Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (ev X Y c r) z
+      pt (inj₁ a) = inj₁ (constₛ a , const-random X a) , λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
+      pt (inj₂ b) = inj₂ (constₛ b , const-random Y b) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
 
   initial : Initial (QBSCat S)
   initial = record
@@ -178,31 +154,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
     -- Locally on a measurable countable partition, a random element of Y.
     CoeqQ : QBS S
-    CoeqQ = record
-      { Carrier = CoeqS
-      ; probes = record
-          { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
-              Σ (ℕ → Σ (Func Rˢ (Carrier Y)) (Random Y)) λ c →
-                ∀ r → Setoid._≈_ CoeqS (α ⟨$⟩ r) (proj₁ (c (i ⟨$⟩ r)) ⟨$⟩ r)
-          ; random-resp = λ e (i , ii , c , q) →
-              i , ii , c , λ r → Setoid.trans CoeqS (Setoid.sym CoeqS (e r)) (q r)
-          ; const-random = λ x →
-              constₛ 0 , idx-const 0 , const (constₛ x , const-random Y x) , λ _ → Setoid.refl CoeqS
-          ; pre-random = λ {_} {m} (i , ii , c , q) mm →
-              i ∘ₛ m , idx-pre ii mm , (λ n → proj₁ (c n) ∘ₛ m , pre-random Y (proj₂ (c n)) mm) ,
-              λ r → q (m ⟨$⟩ r)
-          }
-      ; glue-random = λ {j} ij α p →
-          let i = λ n → proj₁ (p n)
-              c = λ n → proj₁ (proj₂ (proj₂ (p n)))
-              c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in refineₛ j i
-           , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
-           , c′
-           , λ r → subst (λ u → Setoid._≈_ CoeqS (α (j ⟨$⟩ r) ⟨$⟩ r) (proj₁ (c (proj₁ u) (proj₂ u)) ⟨$⟩ r))
-                         (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
-                         (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
-      }
+    CoeqQ = GluedQBS S CoeqS (Σ (Func Rˢ (Carrier Y)) (Random Y)) (λ c r → proj₁ c ⟨$⟩ r)
+      (λ c m → proj₁ c ∘ₛ _ , pre-random Y (proj₂ c) m)
+      (λ _ _ _ → Setoid.refl CoeqS)
+      (λ x → (constₛ x , const-random Y x) , λ _ → Setoid.refl CoeqS)
 
     coeq-arr : Hom S Y CoeqQ
     coeq-arr = record

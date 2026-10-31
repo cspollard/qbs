@@ -50,16 +50,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
 
   -- the QBS of an Agda type: every function is a probe
   Disc : Set ℓ → QBS S
-  Disc T = record
-    { Carrier = setoid T
-    ; probes = record
-        { Random = λ _ → ⊤
-        ; random-resp = λ _ _ → tt
-        ; const-random = λ _ → tt
-        ; pre-random = λ _ _ → tt
-        }
-    ; glue-random = λ _ _ _ → tt
-    }
+  Disc T = CodiscQ S (setoid T)
 
   -- test functions on a type
   test : ∀ {T : Set ℓ} → (T → ∣A∣) → Func (setoid T) Aˢ

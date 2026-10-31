@@ -61,16 +61,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- The weights object: A itself, with every function random.
   WQ : QBS S
-  WQ = record
-    { Carrier = Aˢ
-    ; probes = record
-        { Random = λ _ → ⊤
-        ; random-resp = λ _ _ → tt
-        ; const-random = λ _ → tt
-        ; pre-random = λ _ _ → tt
-        }
-    ; glue-random = λ _ _ _ → tt
-    }
+  WQ = CodiscQ S Aˢ
 
   mulH : Hom S (_×Q_ S WQ WQ) WQ
   mulH = record
