@@ -29,35 +29,21 @@ open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Functional using (module Functional)
 
--- `fsum` (indicators) and `psum` (series) are the same partial sums.  Proved for an abstract
--- semiring: at the concrete lower cuts Agda unfolds the cuts and fails to solve constraints.
-module Bridge (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
-  open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Indicators A lem using (fsum)
-  open Series A using (psum)
-
-  fsum≈psum : ∀ a N → fsum a N ≈ psum a N
-  fsum≈psum a zero = refl
-  fsum≈psum a (suc N) = +-cong (fsum≈psum a N) refl
-
 module Riesz (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   private A = LowerRealsOmega (lemOf lem₁)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A using (Fun; Fun-const)
   open Integration A
-  open Indicators A (lemOf lem₁) using (χ; Fun-χ; χ-cong; χ-⊤; I-⋃; I-χ-⊥; fsum; fsum-inc)
+  open Indicators A (lemOf lem₁) using (χ; Fun-χ; χ-cong; χ-⊤; I-⋃; I-χ-⊥)
   open Series A using (∑ᶠ; psum; psum-inc)
   open Uniqueness A (lemOf lem₁) using (agree-fun)
-
-  open Bridge A (lemOf lem₁) using (fsum≈psum)
 
   -- a probability functional restricted to indicators is a Borel probability measure
   setFun : (m : Measure) → IsProb m → BM.BorelMeasure (lemOf lem₁)
   setFun m pm = record
     { μ = λ bU → I m (χ _) (Fun-χ bU)
     ; μ-resp = λ bU bV e → I-cong m (χ-cong e) (Fun-χ bU) (Fun-χ bV)
-    ; μ-⋃ = λ {V} bs dj → let a = λ n → I m (χ (V n)) (Fun-χ (bs n)) in trans (I-⋃ m bs dj)
-        (⨆-cong (fsum-inc a) (psum-inc a) (fsum≈psum a))
+    ; μ-⋃ = λ bs dj → I-⋃ m bs dj
     ; μ-⊤ = trans (I-cong m χ-⊤ (Fun-χ ⊤-borel) (Fun-const 1# ≤-refl)) pm
     ; μ-⊥ = I-χ-⊥ m ⊥-borel
     }

@@ -26,6 +26,7 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators
+open import QBS.Analysis.Series using (module Series)
 
 module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥))
              (m : Cantor → Cantor → Cantor) (m₁ : ∀ a → Measurable (m a))
@@ -34,6 +35,7 @@ module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
   open Measurable A
   open Integration A
   open Indicators A lem
+  open Series A using (psum; psum-inc)
   open SetoidReasoning setoid
   open Dynkin lem using (dynkin)
   private R = R₁
@@ -95,15 +97,15 @@ module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P �
              (λ r → I-χ-compl (g r) (Bsec bU (lower r)))
 
     DP-disj : ∀ {U : ℕ → Pred} → (∀ n → DP (U n)) → Disjoint U → DP (λ x → Σ ℕ (λ n → U n x))
-    DP-disj {U} ag dj = ⋃ bs , supF (λ N r → fsum (λ n → Φ (bs n) r) N)
-        (Fun-fsum (λ n → Φ (bs n)) (λ n → proj₂ (ag n)) bound)
-        (λ r → fsum-inc _)
+    DP-disj {U} ag dj = ⋃ bs , supF (λ N r → psum (λ n → Φ (bs n) r) N)
+        (Fun-psum (λ n → Φ (bs n)) (λ n → proj₂ (ag n)) bound)
+        (λ r → psum-inc _)
         (λ r → I-⋃ (g r) (λ n → Bsec (bs n) (lower r)) (djs (lower r)))
       where
         bs = λ n → proj₁ (ag n)
         djs : ∀ a → Disjoint (λ n → Sec (U n) a)
         djs a s i j ui uj = dj (m a s) i j ui uj
-        bound : ∀ N r → fsum (λ n → Φ (bs n) r) N ≤ 1#
+        bound : ∀ N r → psum (λ n → Φ (bs n) r) N ≤ 1#
         bound N r = ≤-resp (I-PS (g r) (λ n → Bsec (bs n) (lower r)) (djs (lower r)) N) refl
                       (I-≤1 (g r) (Fun-PS (λ n → Bsec (bs n) (lower r)) (djs (lower r)) N))
 

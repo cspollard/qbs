@@ -24,18 +24,16 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators
+open import QBS.Analysis.Series using (module Series)
 
 module Uniqueness (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
   open Integration A
   open Indicators A lem
+  open Series A using (psum; psum-cong)
   open SetoidReasoning setoid
   open Dynkin lem using (dynkin)
-
-  fsum-cong : ∀ {a b} → (∀ n → a n ≈ b n) → ∀ N → fsum a N ≈ fsum b N
-  fsum-cong e ℕ.zero = refl
-  fsum-cong e (ℕ.suc N) = +-cong (fsum-cong e N) (e N)
 
   module _ (μ ν : Measure) (masses : mass μ ≈ mass ν)
            (agree : ∀ {C} (c : Cyl C) → I μ (χ C) (Fun-χ (Cyl-borel c)) ≈ I ν (χ C) (Fun-χ (Cyl-borel c))) where
@@ -64,7 +62,7 @@ module Uniqueness (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
       Agree (λ x → Σ ℕ (λ n → U n x))
     Agree-disj {U} ag dj = ⋃ bs ,
       trans (I-⋃ μ bs dj)
-        (trans (⨆-cong _ _ (fsum-cong (λ n → proj₂ (ag n))))
+        (trans (⨆-cong _ _ (psum-cong (λ n → proj₂ (ag n))))
                (sym (I-⋃ ν bs dj)))
       where bs = λ n → proj₁ (ag n)
 

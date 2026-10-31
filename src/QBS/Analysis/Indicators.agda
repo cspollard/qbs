@@ -24,11 +24,13 @@ open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
+open import QBS.Analysis.Series using (module Series)
 
 module Indicators (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
   open Integration A
+  open Series A using (psum; psum-inc)
   open SetoidReasoning setoid
   private R = R₁
 
@@ -102,13 +104,6 @@ module Indicators (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
   ----------------------------------------------------------------------------
   -- partial sums
 
-  fsum : (ℕ → ∣A∣) → ℕ → ∣A∣
-  fsum a ℕ.zero = 0#
-  fsum a (ℕ.suc N) = fsum a N + a N
-
-  fsum-inc : ∀ a → Increasing (fsum a)
-  fsum-inc a N = ≤-+ʳ
-
   -- partial sums of indicators of a family of sets
   PS : (ℕ → Pred) → ℕ → R → ∣A∣
   PS V ℕ.zero x = 0#
@@ -159,7 +154,7 @@ module Indicators (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
                   (λ N _ → PS-null V x N (λ k _ vk → nu (k , vk))))))
 
   I-PS : ∀ (m : Measure) {V : ℕ → Pred} (bs : ∀ n → Borel (V n)) (dj : Disjoint V) N →
-    I m (PS V N) (Fun-PS bs dj N) ≈ fsum (λ n → I m (χ (V n)) (Fun-χ (bs n))) N
+    I m (PS V N) (Fun-PS bs dj N) ≈ psum (λ n → I m (χ (V n)) (Fun-χ (bs n))) N
   I-PS m bs dj ℕ.zero = trans (I-cong m (λ x → refl) (Fun-const 0# 0-least) (Fun-const 0# 0-least))
                           (trans (I-const-mass m 0# 0-least) (zeroˡ (mass m)))
   I-PS m {V} bs dj (ℕ.suc N) =
@@ -169,13 +164,13 @@ module Indicators (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ 
   -- the measure of a disjoint union is the supremum of the partial sums
   I-⋃ : ∀ (m : Measure) {V : ℕ → Pred} (bs : ∀ n → Borel (V n)) (dj : Disjoint V) →
     I m (χ (λ y → Σ ℕ (λ n → V n y))) (Fun-χ (⋃ bs))
-      ≈ ⨆ (λ N → fsum (λ n → I m (χ (V n)) (Fun-χ (bs n))) N) (fsum-inc _)
+      ≈ ⨆ (λ N → psum (λ n → I m (χ (V n)) (Fun-χ (bs n))) N) (psum-inc _)
   I-⋃ m {V} bs dj = trans
     (I-sup m (PS V) (Fun-PS bs dj) (PS-inc V) (Fun-χ (⋃ bs)) (PS-sup V dj))
     (⨆-cong _ _ (I-PS m bs dj))
 
   -- finite sums of measurable functions, given a bound
-  Fun-fsum : ∀ (φ : ℕ → R → ∣A∣) → (∀ n → Fun (φ n)) →
-    (∀ N x → fsum (λ n → φ n x) N ≤ 1#) → ∀ N → Fun (λ x → fsum (λ n → φ n x) N)
-  Fun-fsum φ fs b ℕ.zero = Fun-const 0# 0-least
-  Fun-fsum φ fs b (ℕ.suc N) = sumF (Fun-fsum φ fs b N) (fs N) (λ x → refl) (λ x → b (ℕ.suc N) x)
+  Fun-psum : ∀ (φ : ℕ → R → ∣A∣) → (∀ n → Fun (φ n)) →
+    (∀ N x → psum (λ n → φ n x) N ≤ 1#) → ∀ N → Fun (λ x → psum (λ n → φ n x) N)
+  Fun-psum φ fs b ℕ.zero = Fun-const 0# 0-least
+  Fun-psum φ fs b (ℕ.suc N) = sumF (Fun-psum φ fs b N) (fs N) (λ x → refl) (λ x → b (ℕ.suc N) x)
