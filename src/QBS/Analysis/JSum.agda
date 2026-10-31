@@ -19,7 +19,7 @@ open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
-open import QBS.Analysis.Archimedean using (Arch; module ArchLemmas)
+open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.SeriesSup using (module SeriesSup)
 open import QBS.Analysis.MixtureN using (module MixtureN)
@@ -37,8 +37,7 @@ module JSum (lem : LEM₀) where
   open SeriesSup A using (∑ᶠ-⨆)
   open MixtureN A using (mixN)
   module AR = Arch (lowerRealsArch lem)
-  open AR using (hp; hp-zero; hp-double; arch) public
-  open ArchLemmas (lowerRealsArch lem) using (geo)
+  open AR using (hp; hp-zero; hp-double; arch; geom; ∑hp≤1; ∑hp≈1) public
 
   ----------------------------------------------------------------------------
   -- measurability and integrals of countable sums
@@ -65,25 +64,6 @@ module JSum (lem : LEM₀) where
        (λ x → psum-inc (λ n → a n x)) (Meas-∑ a ma) (λ x → refl {∑ᶠ (λ n → a n x)}))
     (⨆-cong (λ N → J-mono m (Meas-psum a ma N) (Meas-psum a ma (ℕ.suc N)) (λ x → psum-inc (λ n → a n x) N))
       (psum-inc (λ n → J m (a n) (ma n))) (J-psum m a ma))
-
-  ----------------------------------------------------------------------------
-  -- the geometric series ∑ hp (n+1) = 1
-
-  hp-geo : ∀ N → psum (λ i → hp (ℕ.suc i)) N + hp N ≈ 1#
-  hp-geo N = trans (+-cong (psum-cong (λ i → OmegaSemiring.reflexive A (≡.cong hp (≡.sym (ℕ.+-identityʳ (ℕ.suc i))))) N)
-                           (OmegaSemiring.reflexive A (≡.cong hp (≡.sym (ℕ.+-identityʳ N)))))
-    (trans (geo 0 N) hp-zero)
-
-  ∑hp≤1 : ∑ᶠ (λ n → hp (ℕ.suc n)) ≤ 1#
-  ∑hp≤1 = ∑ᶠ-lub (λ N → ≤-trans {psum (λ i → hp (ℕ.suc i)) N} {psum (λ i → hp (ℕ.suc i)) N + hp N} {1#}
-    (OmegaSemiring.≤-+ʳ A {psum (λ i → hp (ℕ.suc i)) N} {hp N})
-        (≤-reflexive {psum (λ i → hp (ℕ.suc i)) N + hp N} {1#} (hp-geo N)))
-
-  ∑hp≈1 : ∑ᶠ (λ n → hp (ℕ.suc n)) ≈ 1#
-  ∑hp≈1 = ≤-antisym ∑hp≤1 (arch {1#} {∑ᶠ (λ n → hp (ℕ.suc n))} (λ n →
-    ≤-trans {1#} {psum (λ i → hp (ℕ.suc i)) n + hp n} {∑ᶠ (λ n → hp (ℕ.suc n)) + hp n}
-      (≤-reflexive {1#} {psum (λ i → hp (ℕ.suc i)) n + hp n} (sym (hp-geo n)))
-      (OmegaSemiring.+-mono A (psum≤∑ᶠ (λ i → hp (ℕ.suc i)) n) (OmegaSemiring.≤-refl A {hp n}))))
 
   ----------------------------------------------------------------------------
   -- the integral against a countable mixture
