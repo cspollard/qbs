@@ -130,4 +130,4 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 
 ### 3c status
 
-Done: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  Not done: `E-resp` (well-definedness of `E-at` on `TQ X`; dropped from the code, needs truncation and monotone convergence) and the validation instance `Inference/UniformSampler`.
+Done: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`.  Not done: `E-resp` (well-definedness of `E-at` on `TQ X`; dropped from the code, needs truncation and monotone convergence).
