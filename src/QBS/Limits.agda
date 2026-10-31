@@ -57,8 +57,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
     }
   _×Q_ X Y .QBS.glue-random = λ i α p →
-    random-cast X (λ _ → refl) (glue-random X i (λ n → proj₁ₛ ∘ₛ α n) (λ n → proj₁ (p n))) ,
-    random-cast Y (λ _ → refl) (glue-random Y i (λ n → proj₂ₛ ∘ₛ α n) (λ n → proj₂ (p n)))
+    random-glue-∘ X proj₁ₛ α (glue-random X i (λ n → proj₁ₛ ∘ₛ α n) (λ n → proj₁ (p n))) ,
+    random-glue-∘ Y proj₂ₛ α (glue-random Y i (λ n → proj₂ₛ ∘ₛ α n) (λ n → proj₂ (p n)))
 
   -- Equalizers: the subspace on which two maps agree.
   EqQ : ∀ {X Y} → Hom S X Y → Hom S X Y → QBS S
@@ -70,7 +70,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
         ; const-random = λ (x , _) → const-random X x
         ; pre-random = pre-random X
         }
-    ; glue-random = λ i α p → random-cast X (λ _ → refl) (glue-random X i (λ n → ι ∘ₛ α n) p)
+    ; glue-random = λ i α p → random-glue-∘ X ι α (glue-random X i (λ n → ι ∘ₛ α n) p)
     }
     where
       EqS : Setoid ℓ ℓ

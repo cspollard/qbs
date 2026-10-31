@@ -77,6 +77,11 @@ module _ {ℓ} (M : Measurability ℓ) where
     random-cast : ∀ {α β} → (∀ r → α ⟨$⟩ r ≡ β ⟨$⟩ r) → Random α → Random β
     random-cast e = random-resp (λ r → Setoid.reflexive X (e r))
 
+    -- gluing under a map g: glue (g ∘ αₙ) is g ∘ (glue α)
+    random-glue-∘ : ∀ {a b} {A : Setoid a b} {j : Func Rˢ ℕˢ} (g : Func A X) (α : ℕ → Func Rˢ A) →
+      Random (glueₛ j (λ n → g ∘ₛ α n)) → Random (g ∘ₛ glueₛ j α)
+    random-glue-∘ g α = random-cast (λ _ → refl)
+
   -- the measurable maps are the probes of R itself (the representable)
   measProbes : Probes Rˢ
   measProbes = record

@@ -59,7 +59,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           ; pre-random = λ p m i → pre-random (P i) (p i) m
           }
       ; glue-random = λ ij α p i →
-          random-cast (P i) (λ _ → refl) (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
+          random-glue-∘ (P i) (πₛ i) α (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
       }
 
     indexedProduct : IndexedProductOf (QBSCat S) P
