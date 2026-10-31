@@ -127,8 +127,10 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exte
     -- Φ at a merged pair of parameters
     Φ-merge : ∀ r r′ → Φ (mergeR r r′) ≈
       proj₁ (α s r) * (proj₁ (α t r′) * (map g ⟨$⟩ (proj₂ (α s r) , proj₂ (α t r′))))
-    Φ-merge r r′ = Setoid.reflexive Aˢ (≡.cong₂ (λ a b → proj₁ (α s a) * (proj₁ (α t b) *
-      (map g ⟨$⟩ (proj₂ (α s a) , proj₂ (α t b))))) (merge-evens r r′) (merge-odds r r′))
+    Φ-merge r r′ =
+      let cs = random-cong (XW X) (α-random s) (merge-evens r r′)
+          ct = random-cong (XW Y) (α-random t) (merge-odds r r′)
+      in *-cong (proj₁ cs) (*-cong (proj₁ ct) (Func.cong (map g) (proj₂ cs , proj₂ ct)))
 
     constH : ∀ {A B : QBS S} → ∣ B ∣ → Hom S A B
     constH {A} {B} b = record

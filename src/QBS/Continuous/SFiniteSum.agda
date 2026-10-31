@@ -24,7 +24,7 @@ open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ; !Q)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘)
+open import QBS.Borel.Core using (Measurable; measurable-∘; borel-≗)
 open import QBS.Borel.Source using (R₁; cantorSource; down)
 open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
 open import QBS.Analysis.Omega
@@ -208,7 +208,11 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensio
     aSum {X} {Y} ks {γ} rγ = record
       { map = record
           { to = λ p → pw (ℕ.suc (lead (lower (proj₂ p)))) , map (ks (lead (lower (proj₂ p)))) ⟨$⟩ γ (proj₁ p)
-          ; cong = λ { (≡.refl , ≡.refl) → refl , Setoid.refl (Carrier (TQ Y)) } }
+          ; cong = λ {p} {p′} (e₁ , e₂) →
+              let le = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower (proj₂ p)))) {lower (proj₂ p)} {lower (proj₂ p′)} (lower e₂)) ≡.refl)
+              in Setoid.reflexive Aˢ (≡.cong (λ n → pw (ℕ.suc n)) le)
+               , Setoid.trans (Carrier (TQ Y)) (Func.cong (map (ks (lead (lower (proj₂ p))))) (random-cong X rγ e₁))
+                   (Setoid.reflexive (Carrier (TQ Y)) (≡.cong (λ n → map (ks n) ⟨$⟩ γ (proj₁ p′)) le)) }
       ; map-random = λ {γ′} (m₁ , m₂) →
           Meas-pre {λ s → pw (ℕ.suc (lead (lower s)))} {λ x → proj₂ (γ′ x)}
             (Meas-glue {λ s → lead (lower s)} {λ k _ → pw (ℕ.suc k)} lead-partition (λ k → Meas-const (pw (ℕ.suc k)))) m₂
