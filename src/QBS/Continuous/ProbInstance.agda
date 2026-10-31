@@ -89,14 +89,12 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
     { Measure = PM
     ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) μ
         , IsProb-push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) {μ} pμ
-    ; law = lawH
-    ; law-resp = λ e (μ , _) _ f → I-cong μ (λ r → Func.cong (map f) (e r)) _ _
-    ; law-map = λ f a (μ , _) _ g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
-    ; law-pre = λ a m (μ , _) _ g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
-    ; law-return = λ {X} x (μ , pμ) pt f →
-        let c = proj₁ (map f ⟨$⟩ (map x ⟨$⟩ pt))
-            c≤1 = proj₂ (map f ⟨$⟩ (map x ⟨$⟩ pt))
-        in Setoid.sym Aˢ (Setoid.trans Aˢ (I-cong μ (λ _ → Setoid.refl Aˢ) _ (Fun-const c c≤1)) (I-const μ pμ c c≤1))
+    ; measure = lawH (idH S)
+    ; measure-push = λ m (μ , _) _ g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
+    ; measure-total = λ (μ , pμ) pt f →
+        let c = proj₁ (map f ⟨$⟩ pt)
+            c≤1 = proj₂ (map f ⟨$⟩ pt)
+        in Setoid.trans Aˢ (I-cong μ (λ _ → Setoid.refl Aˢ) _ (Fun-const c c≤1)) (I-const μ pμ c c≤1)
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ _
         in probe S (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)

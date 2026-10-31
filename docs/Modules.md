@@ -22,7 +22,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 139 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 83 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Probability` | 111 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 43 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
 | `QBS.Statistical` | 233 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
@@ -40,7 +40,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.DiscreteSource` | 46 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
 | `QBS.Model.Monad` | 301 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 68 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
-| `QBS.Model.ProbInstance` | 141 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
+| `QBS.Model.ProbInstance` | 139 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 44 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
 | `QBS.Model.StatInstance` | 580 |  | The discrete measure monad is a model of `StatisticalInterface`. |
 | `QBS.Model.Strong` | 170 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
@@ -137,7 +137,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FairCoin` | 55 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 155 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.Monad` | 400 | lem, funext | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
-| `QBS.Continuous.ProbInstance` | 136 | lem, funext | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
+| `QBS.Continuous.ProbInstance` | 134 | lem, funext | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.RealModel` | 23 | lem, funext | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
 | `QBS.Continuous.SFinite` | 345 | lem, funext | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 247 | lem, funext | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |

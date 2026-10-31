@@ -16,6 +16,7 @@ open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
 import Categories.Morphism as Morph
+import Categories.Morphism.Reasoning as MR
 
 -- a commutative monad on a cartesian closed category, for the symmetric monoidal structure of its products
 ProbMonad : ∀ {o h e} (C : Category o h e) → Canonical.CartesianClosed C → Set (o ⊔ h ⊔ e)
@@ -43,16 +44,43 @@ module _ {o h e} ℓ (C : Category o h e) (ℛ : Category.Obj C) (CC : Canonical
     field
       Measure : Set ℓ
       pushforward : (ℛ ⇒ ℛ) → Measure → Measure
-      law : ∀ {X} → (ℛ ⇒ X) → Measure → ⊤ ⇒ T.F.F₀ X
-      law-resp : ∀ {X} {a b : ℛ ⇒ X} → a ≈ b → ∀ μ → law a μ ≈ law b μ
-      -- laws are natural: functoriality is pushforward of laws
-      law-map : ∀ {X Y} (f : X ⇒ Y) (a : ℛ ⇒ X) μ → T.F.F₁ f ∘ law a μ ≈ law (f ∘ a) μ
+      -- a measure is a global element of the monad on ℛ; the law of a probe is its image
+      measure : Measure → ⊤ ⇒ T.F.F₀ ℛ
       -- reparametrising the source pushes the measure forward
-      law-pre : ∀ {X} (a : ℛ ⇒ X) (m : ℛ ⇒ ℛ) μ → law (a ∘ m) μ ≈ law a (pushforward m μ)
-      -- return is the law of a constant probe
-      law-return : ∀ {X} (x : ⊤ ⇒ X) μ → T.η.η X ∘ x ≈ law (x ∘ !) μ
-      -- every global element of the monad is a law
-      law-surjective : ∀ {X} (t : ⊤ ⇒ T.F.F₀ X) → Σ (ℛ ⇒ X) λ a → Σ Measure λ μ → law a μ ≈ t
+      measure-push : ∀ (m : ℛ ⇒ ℛ) μ → T.F.F₁ m ∘ measure μ ≈ measure (pushforward m μ)
+      -- measures are probability measures: total mass one
+      measure-total : ∀ μ → T.F.F₁ ! ∘ measure μ ≈ T.η.η ⊤
+      -- every global element of the monad is the law of a probe
+      law-surjective : ∀ {X} (t : ⊤ ⇒ T.F.F₀ X) → Σ (ℛ ⇒ X) λ a → Σ Measure λ μ → T.F.F₁ a ∘ measure μ ≈ t
+
+    -- the law `a μ` of a probe `a : ℛ ⇒ X` is the image of the measure under `T a`
+    law : ∀ {X} → (ℛ ⇒ X) → Measure → ⊤ ⇒ T.F.F₀ X
+    law a μ = T.F.F₁ a ∘ measure μ
+
+    open HomReasoning
+    open MR C
+
+    law-resp : ∀ {X} {a b : ℛ ⇒ X} → a ≈ b → ∀ μ → law a μ ≈ law b μ
+    law-resp a≈b μ = T.F.F-resp-≈ a≈b ⟩∘⟨refl
+
+    -- laws are natural: functoriality is pushforward of laws
+    law-map : ∀ {X Y} (f : X ⇒ Y) (a : ℛ ⇒ X) μ → T.F.F₁ f ∘ law a μ ≈ law (f ∘ a) μ
+    law-map f a μ = pullˡ (Equiv.sym T.F.homomorphism)
+
+    law-pre : ∀ {X} (a : ℛ ⇒ X) (m : ℛ ⇒ ℛ) μ → law (a ∘ m) μ ≈ law a (pushforward m μ)
+    law-pre a m μ = begin
+      T.F.F₁ (a ∘ m) ∘ measure μ           ≈⟨ T.F.homomorphism ⟩∘⟨refl ⟩
+      (T.F.F₁ a ∘ T.F.F₁ m) ∘ measure μ    ≈⟨ assoc ⟩
+      T.F.F₁ a ∘ T.F.F₁ m ∘ measure μ      ≈⟨ refl⟩∘⟨ measure-push m μ ⟩
+      T.F.F₁ a ∘ measure (pushforward m μ) ∎
+
+    -- return is the law of a constant probe
+    law-return : ∀ {X} (x : ⊤ ⇒ X) μ → T.η.η X ∘ x ≈ law (x ∘ !) μ
+    law-return x μ = begin
+      T.η.η _ ∘ x                          ≈⟨ Equiv.sym (T.η.sym-commute x) ⟩
+      T.F.F₁ x ∘ T.η.η ⊤                   ≈⟨ refl⟩∘⟨ Equiv.sym (measure-total μ) ⟩
+      T.F.F₁ x ∘ T.F.F₁ ! ∘ measure μ      ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
+      T.F.F₁ (x ∘ !) ∘ measure μ           ∎
 
   -- bind (Fubini): ℛ splits as ℛ × ℛ, and measures multiply
   record Fubini (cm : CommutativeMonad braided) (L : ProbLaws cm) : Set (o ⊔ h ⊔ e ⊔ suc ℓ) where

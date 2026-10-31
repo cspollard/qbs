@@ -88,14 +88,12 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
   discreteProbLaws = record
     { Measure = Σ (R → ∣A∣) Ok
     ; pushforward = λ m (μ , ok) → push (λ r → map m ⟨$⟩ r) μ , ok-push _ ok
-    ; law = lawH
-    ; law-resp = λ e m _ f → ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (Func.cong f (e r)))
-    ; law-map = λ f a m _ g → Setoid.refl Aˢ
-    ; law-pre = λ a m (μ , ok) _ g → Setoid.sym Aˢ (push-∑ (λ r → map m ⟨$⟩ r) μ (λ k → g ⟨$⟩ (map a ⟨$⟩ k)))
-    ; law-return = λ {X} x (μ , ok) pt f →
-        Setoid.trans Aˢ (∫-η {X} (map x ⟨$⟩ pt) f)
-          (Setoid.sym Aˢ (trans (sym (∑-distribʳ μ (f ⟨$⟩ (map x ⟨$⟩ pt))))
-            (trans (*-cong ok refl) (*-identityˡ _))))
+    ; measure = lawH (idH S)
+    ; measure-push = λ m (μ , ok) _ g → Setoid.sym Aˢ (push-∑ (λ r → map m ⟨$⟩ r) μ (λ k → g ⟨$⟩ k))
+    ; measure-total = λ (μ , ok) pt f →
+        Setoid.sym Aˢ (Setoid.trans Aˢ (∫-η {1Q S} pt f)
+          (Setoid.sym Aˢ (trans (sym (∑-distribʳ μ (f ⟨$⟩ pt)))
+            (trans (*-cong ok refl) (*-identityˡ _)))))
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ tt
         in probe S (α-random p) , (μ p , μ-ok p) , (λ pt f → Setoid.refl Aˢ)
