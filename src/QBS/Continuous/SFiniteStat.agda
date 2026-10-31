@@ -80,7 +80,7 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zeroâ)
+  open Weights lem using (WQ; mulW; constW; oneW; zero⇒)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -113,7 +113,7 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
     { W = WQ
     ; mulW = mulW
     ; oneW = oneW
-    ; zeroâ = zeroâ
+    ; zero⇒ = zero⇒
     ; mul-assoc = λ a b c z → *-assoc _ _ _
     ; mul-comm = λ a b z → *-comm _ _
     ; mul-one = λ a z → *-identityʳ _

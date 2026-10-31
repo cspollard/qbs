@@ -79,7 +79,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open Density lem using (densM; J-dens)
   open LevelSets lem using (LS; Lvl; borel-prop)
   open MeasFun lem using (Meas→Fun)
-  open Weights lem using (WQ; mulW; constW; oneW; zeroâ)
+  open Weights lem using (WQ; mulW; constW; oneW; zero⇒)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A

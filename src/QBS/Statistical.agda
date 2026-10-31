@@ -39,12 +39,12 @@ record CommutativeMonoidWithZero {o h e} (C : Category o h e) (CC : Canonical.Ca
   field
     W : Obj
     mulW : W × W ⇒ W
-    oneW zeroâ : ⊤ ⇒ W
+    oneW zero⇒ : ⊤ ⇒ W
     mul-assoc : ∀ {Z} (a b c : Z ⇒ W) →
       mulW ∘ ⟨ mulW ∘ ⟨ a , b ⟩ , c ⟩ ≈ mulW ∘ ⟨ a , mulW ∘ ⟨ b , c ⟩ ⟩
     mul-comm : ∀ {Z} (a b : Z ⇒ W) → mulW ∘ ⟨ a , b ⟩ ≈ mulW ∘ ⟨ b , a ⟩
     mul-one : ∀ {Z} (a : Z ⇒ W) → mulW ∘ ⟨ a , oneW ∘ ! ⟩ ≈ a
-    mul-zero : ∀ {Z} (a : Z ⇒ W) → mulW ∘ ⟨ a , zeroâ ∘ ! ⟩ ≈ zeroâ ∘ !
+    mul-zero : ∀ {Z} (a : Z ⇒ W) → mulW ∘ ⟨ a , zero⇒ ∘ ! ⟩ ≈ zero⇒ ∘ !
 
 -- A commutative strong monad M of measures containing the probability monad as a sub-monad.
 record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
@@ -83,7 +83,7 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
     zero : ⊤ ⇒ M.F.F₀ ⊤
     zero-bind : ∀ (k : ⊤ ⇒ M.F.F₀ ⊤) → M.μ.η ⊤ ∘ M.F.F₁ k ∘ zero ≈ zero
     score : W ⇒ M.F.F₀ ⊤
-    score-zero : score ∘ zeroâ ≈ zero
+    score-zero : score ∘ zero⇒ ≈ zero
     score-one : score ∘ oneW ≈ M.η.η ⊤
     score-mul : ∀ (a b : ⊤ ⇒ W) →
       score ∘ mulW ∘ ⟨ a , b ⟩ ≈ M.μ.η ⊤ ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a

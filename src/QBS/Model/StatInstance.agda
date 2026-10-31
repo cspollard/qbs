@@ -482,7 +482,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     { W = WQ
     ; mulW = mulH
     ; oneW = constH 1#
-    ; zeroâ = constH 0#
+    ; zero⇒ = constH 0#
     ; mul-assoc = λ a b c z → *-assoc _ _ _
     ; mul-comm = λ a b z → *-comm _ _
     ; mul-one = λ a z → *-identityʳ _
