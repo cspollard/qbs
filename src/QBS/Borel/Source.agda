@@ -14,9 +14,9 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; cong₂; subst)
 open import Relation.Binary.Bundles using (Setoid)
-open import Function.Bundles using (_⟨$⟩_)
+open import Function.Bundles using (Func; _⟨$⟩_)
 
-open import QBS.Core using (RandomSource)
+open import QBS.Core using (RandomSource; ℕˢ)
 open import QBS.Model.Pairing
 open import QBS.Borel.Core
 
@@ -65,6 +65,13 @@ R₁ˢ = record
       ; trans = λ e e′ → lift (λ n → trans (lower e n) (lower e′ n))
       }
   }
+
+-- measurable maps and partitions respect pointwise equality (Borel sets do), so they are setoid maps
+measₛ : (f : R₁ → R₁) → Measurable (down f) → Func R₁ˢ R₁ˢ
+measₛ f mf = record { to = f ; cong = λ e → lift (measurable-≗ {down f} mf (lower e)) }
+
+idxₛ : (i : R₁ → ℕ) → Partition (downℕ i) → Func R₁ˢ ℕˢ
+idxₛ i pi = record { to = i ; cong = λ {r} {r′} e → sym (proj₁ (borel-≗ (pi (i r)) {lower r} {lower r′} (lower e)) refl) }
 
 cantorSource : RandomSource (suc zero)
 cantorSource = record

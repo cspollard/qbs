@@ -8,9 +8,11 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 
 ### `QBS.Core`
 - `idH` — `idH S {X}`: the identity morphism (`S` explicit).
-- `RandomSource` — the sample space "reals" with measurable endomorphisms and partitions `R → ℕ`, assembled from `Measurability` (a setoid `Rˢ` with carrier `R` and equality `≈ᴿ`, `Meas`, its closure, and `meas-resp`: measurable maps respect `≈ᴿ`), `Partitions` (`Idx`, `idx-resp`, gluing) and `NatPairing` (`pair`/`unpair`) plus `idx-glue`; their fields are re-exported.
-- `QBS` — a quasi-Borel space: a setoid `Carrier` with `Random` elements `R → X`, closed under constants, precomposition, gluing, and respecting `≈ᴿ` (`random-cong`). The core never assumes `≡` on `R`: each source chooses its equality.
+- `RandomSource` — a one-object site: `Measurability` (a setoid `Rˢ` with carrier `R` and equality `≈ᴿ`, and `Meas`, a monoid of setoid maps `Func Rˢ Rˢ` closed under `≈` and containing the constants), `Partitions` (`Idx`, the probes of discrete `ℕˢ`, along which `Meas` glues: `meas-glue`) and `NatPairing` (`pair`/`unpair`) plus `idx-glue` (covers compose); their fields are re-exported.
+- `Probes` — `Probes M X`: a predicate `Random` on setoid maps `Func Rˢ X`, closed under `≈` (`random-resp`), constants and precomposition by `Meas`; `measProbes` is `Meas` itself (the representable); `random-cast` re-types a probe along pointwise `≡`.
+- `QBS` — a quasi-Borel space: a setoid `Carrier` with `probes` that glue along partitions (`glue-random`, the sheaf condition). The core never assumes `≡` on `R`: each source chooses its equality.
 - `Hom` — a setoid map `map` preserving random elements (`map-random`).
+- `glueₛ`, `constₛ`, `_∘ₛ_`, `ℕˢ` — gluing a family of setoid maps along an index map, constant maps, composition, discrete ℕ.
 
 ### `QBS.Category`, `QBS.Limits`, `QBS.Colimits`, `QBS.Complete`, `QBS.Exponential`
 - `QBSCat` — `QBSCat S`, the category (agda-categories `Category`).
@@ -66,6 +68,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 
 ### `QBS.Borel.Source`
 - `cantorSource` — Cantor space `2^ℕ` as a `RandomSource`.
+- `measₛ`, `idxₛ` — a measurable map or a partition as a setoid map (Borel sets respect pointwise equality).
 
 ### `QBS.Continuous.Sample`, `QBS.Analysis.CoinIntegral`, `QBS.Analysis.Omega`
 - `UnitInterval` (`Sample`) — `module UnitInterval A`: the unit interval as a QBS `AQ`; `S` — the Cantor random source used by the continuous model.

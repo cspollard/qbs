@@ -9,7 +9,8 @@ open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
 
-open import QBS.Core using (QBS; idH)
+open import Function.Bundles using (Func)
+open import QBS.Core using (QBS; idH; RandomSource)
 open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
@@ -35,8 +36,10 @@ module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Continuous A (lemOf lem₁) probClass using (Pre; mk)
 
   -- the binary-expansion probe, a random element of the unit interval
-  expansionProbe : R₁ → QBS.∣ AQ ∣
-  expansionProbe r = expansion r , expansion≤1 r
+  expansionProbe : Func (RandomSource.Rˢ S) (QBS.Carrier AQ)
+  expansionProbe = record
+    { to = λ r → expansion r , expansion≤1 r
+    ; cong = λ e → Measurable.Fun-resp A (lemOf lem₁) Fun-expansion (L.lower e) }
 
   -- U[0,1]
   uniform : Pre AQ

@@ -15,6 +15,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ; <_,_>ₛ)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -48,7 +49,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   module C = Continuous A lem probClass
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre
@@ -63,12 +64,12 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   -- the weighted integral
 
   ψ : ∀ {X : QBS S} → Pre (XW X) → Hom S X WQ → R₁ → Cut
-  ψ p f r = proj₁ (α p r) * (map f ⟨$⟩ proj₂ (α p r))
+  ψ p f r = proj₁ (α p ⟨$⟩ r) * (map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))
 
   abstract
     mψ : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) → Meas (ψ {X} p f)
-    mψ {X} p f = Meas-⊗ {λ r → proj₁ (α p r)} {λ r → map f ⟨$⟩ proj₂ (α p r)}
-      (proj₁ (α-random p)) (map-random f {λ r → proj₂ (α p r)} (proj₂ (α-random p)))
+    mψ {X} p f = Meas-⊗ {λ r → proj₁ (α p ⟨$⟩ r)} {λ r → map f ⟨$⟩ proj₂ (α p ⟨$⟩ r)}
+      (proj₁ (α-random p)) (map-random f {proj₂ₛ ∘ₛ α p} (proj₂ (α-random p)))
 
   ∫ᴹ : ∀ {X : QBS S} → Pre (XW X) → Hom S X WQ → Cut
   ∫ᴹ {X} p f = J (m p) (ψ {X} p f) (mψ {X} p f)
@@ -94,8 +95,8 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         { to = λ p → tr k (proj₁ p * (map f ⟨$⟩ proj₂ p)) , tr-≤1 k (proj₁ p * (map f ⟨$⟩ proj₂ p))
         ; cong = λ { (e₁ , e₂) → tr-cong k (*-cong e₁ (Func.cong (map f) e₂)) } }
     ; map-random = λ {γ} (m₁ , m₂) →
-        FunInf-Meas {λ r → proj₁ (γ r) * (map f ⟨$⟩ proj₂ (γ r))}
-          (Meas-⊗ {λ r → proj₁ (γ r)} {λ r → map f ⟨$⟩ proj₂ (γ r)} m₁ (map-random f {λ r → proj₂ (γ r)} m₂)) k
+        FunInf-Meas {λ r → proj₁ (γ ⟨$⟩ r) * (map f ⟨$⟩ proj₂ (γ ⟨$⟩ r))}
+          (Meas-⊗ {λ r → proj₁ (γ ⟨$⟩ r)} {λ r → map f ⟨$⟩ proj₂ (γ ⟨$⟩ r)} m₁ (map-random f {proj₂ₛ ∘ₛ γ} m₂)) k
     }
 
   -- the truncation witnesses are opaque: they only ever appear as arguments of `I`
@@ -106,7 +107,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   -- the integral of a truncation is the bounded integral of the truncated test function
   I-trH : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) k →
     I (m p) (λ x → tr k (ψ {X} p f x)) (FIψ {X} p f k) ≈ C.∫ {XW X} p (trH k f)
-  I-trH {X} p f k = I-cong (m p) {λ x → tr k (ψ {X} p f x)} {λ r → proj₁ (map (trH k f) ⟨$⟩ α p r)}
+  I-trH {X} p f k = I-cong (m p) {λ x → tr k (ψ {X} p f x)} {λ r → proj₁ (map (trH k f) ⟨$⟩ (α p ⟨$⟩ r))}
     (λ r → refl) (FIψ {X} p f k) (map-random (trH k f) {α p} (α-random p))
 
   -- bounded equality implies weighted equality
@@ -150,42 +151,45 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     TQ-const : ∀ {X : QBS S} (p : Pre (XW X)) → WitM {X} (const p)
     TQ-const {X} p = fromWit {X} (QBS.const-random (C.TQ (XW X)) p)
 
-    TQ-pre : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} {f : R₁ → R₁} → WitM {X} β → RandomSource.Meas S f → WitM {X} (β ∘ f)
+    TQ-pre : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} {f : Func Rˢ Rˢ} → WitM {X} β → RandomSource.Meas S f →
+      WitM {X} (λ r → β (f ⟨$⟩ r))
     TQ-pre {X} {β} {f} w mf = record
-      { a = preJ mf (a w)
-      ; g = λ r → g w (f r)
+      { a = preJ {f = f} mf (a w)
+      ; g = λ r → g w (f ⟨$⟩ r)
       ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
-      ; g-pr = λ r → g-pr w (f r)
-      ; w-eq = λ r h → trans (w-eq w (f r) h)
-          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a w) (g w) (g-pr w) (f r)) (kerP {X} (preJ mf (a w)) (λ r′ → g w (f r′)) (λ r′ → g-pr w (f r′)) r)
-             (C.rand-irrel {XW X} (sec-random (a w) (f r)) (sec-random (preJ mf (a w)) r) (g w (f r)) (g-pr w (f r))) h) }
+      ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
+      ; w-eq = λ r h → trans (w-eq w (f ⟨$⟩ r) h)
+          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a w) (g w) (g-pr w) (f ⟨$⟩ r))
+             (kerP {X} (preJ {f = f} mf (a w)) (λ r′ → g w (f ⟨$⟩ r′)) (λ r′ → g-pr w (f ⟨$⟩ r′)) r)
+             (C.mk-cong {XW X} (sec-random (a w) (f ⟨$⟩ r)) (sec-random (preJ {f = f} mf (a w)) r)
+                (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier (XW X)))) h) }
 
-    TQ-glue : ∀ {X : QBS S} {i : R₁ → ℕ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
-      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i r) r)
+    TQ-glue : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
+      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i ⟨$⟩ r) r)
     TQ-glue {X} {i} pi β ws = record
-      { a = glueJ pi (λ n → a (ws n))
-      ; g = λ r → g (ws (i r)) r
-      ; g-ok = λ {h} fh → Glue.Fun-glue i pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-      ; g-pr = λ r → g-pr (ws (i r)) r
-      ; w-eq = λ r h → trans (w-eq (ws (i r)) r h)
-          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a (ws (i r))) (g (ws (i r))) (g-pr (ws (i r))) r)
-             (kerP {X} (glueJ pi (λ n → a (ws n))) (λ r′ → g (ws (i r′)) r′) (λ r′ → g-pr (ws (i r′)) r′) r)
-             (C.mk-cong {XW X} (sec-random (a (ws (i r))) r) (sec-random (glueJ pi (λ n → a (ws n))) r)
-                (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
+      { a = glueJ {i = i} pi (λ n → a (ws n))
+      ; g = λ r → g (ws (i ⟨$⟩ r)) r
+      ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
+      ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
+      ; w-eq = λ r h → trans (w-eq (ws (i ⟨$⟩ r)) r h)
+          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a (ws (i ⟨$⟩ r))) (g (ws (i ⟨$⟩ r))) (g-pr (ws (i ⟨$⟩ r))) r)
+             (kerP {X} (glueJ {i = i} pi (λ n → a (ws n))) (λ r′ → g (ws (i ⟨$⟩ r′)) r′) (λ r′ → g-pr (ws (i ⟨$⟩ r′)) r′) r)
+             (C.mk-cong {XW X} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
+                (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
 
   -- the weighted test function of a joint probe at the merged parameter
   φJ : ∀ {X : QBS S} → Joint (XW X) → Hom S X WQ → R₁ → Cut
   φJ a f k = proj₁ (map a ⟨$⟩ (evensR k , oddsR k)) * (map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k)))
 
   -- a joint probe is random in the merged parameter
-  paJ : ∀ {X : QBS S} (a : Joint (XW X)) → Random (XW X) (λ k → map a ⟨$⟩ (evensR k , oddsR k))
-  paJ {X} a = map-random (_∘H_ S a fromH) {λ k → k} measId
+  paJ : ∀ {X : QBS S} (a : Joint (XW X)) → Random (XW X) (map (_∘H_ S a fromH))
+  paJ {X} a = Probes.unprobe S (_∘H_ S a fromH)
 
   abstract
     mφJ : ∀ {X : QBS S} (a : Joint (XW X)) (f : Hom S X WQ) → Meas (φJ {X} a f)
     mφJ {X} a f = Meas-⊗ {λ k → proj₁ (map a ⟨$⟩ (evensR k , oddsR k))}
       {λ k → map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k))}
-      (proj₁ (paJ {X} a)) (map-random f {λ k → proj₂ (map a ⟨$⟩ (evensR k , oddsR k))} (proj₂ (paJ {X} a)))
+      (proj₁ (paJ {X} a)) (map-random f {proj₂ₛ ∘ₛ map (_∘H_ S a fromH)} (proj₂ (paJ {X} a)))
 
   -- the integral of a measure given by a section of a joint probe, as a parametric integral
   secEq : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} (w : WitM {X} β) (f : Hom S X WQ) (r : R₁) →
@@ -207,12 +211,13 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   TQ : QBS S → QBS S
   TQ X .QBS.Carrier = PreMS X
-  TQ X .QBS.Random = WitM {X}
-  TQ X .QBS.random-resp = TQ-resp {X}
-  TQ X .QBS.random-cong {β} w e f = Meas-resp (∫ᴹ-Meas {X} {β} w f) (lower e)
-  TQ X .QBS.const-random p = TQ-const {X} p
-  TQ X .QBS.pre-random w mf = TQ-pre {X} w mf
-  TQ X .QBS.glue-random pi β ws = TQ-glue {X} pi β ws
+  TQ X .QBS.probes = record
+    { Random = λ β → WitM {X} (β ⟨$⟩_)
+    ; random-resp = TQ-resp {X}
+    ; const-random = λ p → TQ-const {X} p
+    ; pre-random = λ {β} {f} w mf → TQ-pre {X} {β ⟨$⟩_} {f} w mf
+    }
+  TQ X .QBS.glue-random {i} pi β ws = TQ-glue {X} {i} pi (λ n → β n ⟨$⟩_) ws
 
   ----------------------------------------------------------------------------
   -- functor action
@@ -237,7 +242,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         ; cong = λ {p} {q} e h → trans (∫ᴹ-map f p h) (trans (e (_∘H_ S h f)) (sym (∫ᴹ-map f q h))) }
     ; map-random = λ {β} w → record
         { a = _∘H_ S (fW f) (a w) ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
-        ; w-eq = λ r h → trans (∫ᴹ-map f (β r) h)
+        ; w-eq = λ r h → trans (∫ᴹ-map f (β ⟨$⟩ r) h)
             (trans (w-eq w r (_∘H_ S h f))
               (J-cong (g w r)
                 {ψ {X} (kerP {X} (a w) (g w) (g-pr w) r) (_∘H_ S h f)}
@@ -249,7 +254,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ∫ᴹ-cong : ∀ {X : QBS S} (p : Pre (XW X)) {f h : Hom S X WQ} →
     (∀ x → map f ⟨$⟩ x ≈ map h ⟨$⟩ x) → ∫ᴹ {X} p f ≈ ∫ᴹ {X} p h
   ∫ᴹ-cong {X} p {f} {h} e = J-cong (m p) {ψ {X} p f} {ψ {X} p h} (mψ {X} p f) (mψ {X} p h)
-    (λ r → *-cong refl (e (proj₂ (α p r))))
+    (λ r → *-cong refl (e (proj₂ (α p ⟨$⟩ r))))
 
   ----------------------------------------------------------------------------
   -- unit
@@ -260,7 +265,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         { to = λ x → C.ηPre {XW X} (1# , x)
         ; cong = λ {x} {y} e → ≈ᵖ⇒≈ᴹ {X} (C.ηPre {XW X} (1# , x)) (C.ηPre {XW X} (1# , y))
             (Func.cong (map (C.ηH (XW X))) {1# , x} {1# , y} (refl , e)) }
-    ; map-random = λ {γ} rγ → fromWit {X} (map-random (C.ηH (XW X)) {λ r → 1# , γ r} (Meas-const 1# , rγ))
+    ; map-random = λ {γ} rγ → fromWit {X} (map-random (C.ηH (XW X)) {< constₛ 1# , γ >ₛ} (Meas-const 1# , rγ))
     }
 
   ∫ᴹ-η : ∀ {X : QBS S} (x : ∣ X ∣) (f : Hom S X WQ) → ∫ᴹ {X} (C.ηPre {XW X} (1# , x)) f ≈ map f ⟨$⟩ x
@@ -273,26 +278,33 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ∫ᶠ : ∀ {X : QBS S} → Hom S X WQ → Hom S (TQ X) WQ
   ∫ᶠ {X} f = record
     { map = record { to = λ p → ∫ᴹ {X} p f ; cong = λ e → e f }
-    ; map-random = λ {β} w → ∫ᴹ-Meas {X} {β} w f
+    ; map-random = λ {β} w → ∫ᴹ-Meas {X} {β ⟨$⟩_} w f
     }
 
   ----------------------------------------------------------------------------
   -- join
 
   -- the weight and test function of a doubly weighted joint probe
-  wmOf : ∀ {X : QBS S} (p : Pre (XW (TQ X))) → WitM {X} (λ r → proj₂ (α p r))
+  wmOf : ∀ {X : QBS S} (p : Pre (XW (TQ X))) → WitM {X} (λ r → proj₂ (α p ⟨$⟩ r))
   wmOf p = proj₂ (α-random p)
 
   abstract
-    Ψ₂ : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (WM : WitM {X} (λ r → proj₂ (α p r))) → R₁ → R₁ → ∣ XW X ∣
-    Ψ₂ {X} p WM r s = proj₁ (α p r) * proj₁ (map (a WM) ⟨$⟩ (r , s)) , proj₂ (map (a WM) ⟨$⟩ (r , s))
+    Ψ₂ : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (WM : WitM {X} (λ r → proj₂ (α p ⟨$⟩ r))) → R₁ → R₁ → ∣ XW X ∣
+    Ψ₂ {X} p WM r s = proj₁ (α p ⟨$⟩ r) * proj₁ (map (a WM) ⟨$⟩ (r , s)) , proj₂ (map (a WM) ⟨$⟩ (r , s))
+
+    -- k ↦ Ψ₂ (evens k) (odds k), as a setoid map
+    Ψ₂ₛ : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (WM : WitM {X} (λ r → proj₂ (α p ⟨$⟩ r))) → Func Rˢ (Carrier (XW X))
+    Ψ₂ₛ {X} p WM = record
+      { to = λ k → Ψ₂ {X} p WM (evensR k) (oddsR k)
+      ; cong = λ e → *-cong (proj₁ (Func.cong (α p) (evensR-cong e))) (proj₁ (Func.cong (map (a WM)) (evensR-cong e , oddsR-cong e)))
+                   , proj₂ (Func.cong (map (a WM)) (evensR-cong e , oddsR-cong e)) }
 
     joinPre : ∀ {X : QBS S} → Pre (XW (TQ X)) → Pre (XW X)
-    joinPre {X} p = mk (λ k → Ψ₂ {X} p (wmOf {X} p) (evensR k) (oddsR k))
-      ( Meas-⊗ {λ k → proj₁ (α p (evensR k))} {λ k → proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (evensR k , oddsR k))}
-          (Meas-pre {λ r → proj₁ (α p r)} {evensR} (proj₁ (α-random p)) measurable-evens)
+    joinPre {X} p = mk (Ψ₂ₛ {X} p (wmOf {X} p))
+      ( Meas-⊗ {λ k → proj₁ (α p ⟨$⟩ evensR k)} {λ k → proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (evensR k , oddsR k))}
+          (Meas-pre {λ r → proj₁ (α p ⟨$⟩ r)} {evensR} (proj₁ (α-random p)) measurable-evens)
           (proj₁ (paJ {X} (a (wmOf {X} p))))
-      , proj₂ (paJ {X} (a (wmOf {X} p))))
+      , random-cast X (λ _ → ≡.refl) (proj₂ (paJ {X} (a (wmOf {X} p)))))
       (bind (m p) (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))))
       (IsProb-bind {m p} {P₁.pushMerge (g (wmOf {X} p))} {P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))} (ok p)
          (λ r → IsProb-push {mergeR r} (measurable-merge₁ (lower r)) {g (wmOf {X} p) r} (g-pr (wmOf {X} p) r)))
@@ -303,9 +315,9 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
     -- Tonelli: the integral of a join is the integral of the integrals
     ∫ᴹ-join-pt : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) (r s : R₁) → ψ {X} (joinPre {X} p) f (mergeR r s)
-                 ≈ proj₁ (α p r) * ψ {X} (joinKer {X} p r) f s
+                 ≈ proj₁ (α p ⟨$⟩ r) * ψ {X} (joinKer {X} p r) f s
     ∫ᴹ-join-pt {X} p f r s = trans
-      (*-cong (*-cong (proj₁ (random-cong (XW (TQ X)) (α-random p) (merge-evens r s)))
+      (*-cong (*-cong (proj₁ (Func.cong (α p) (merge-evens r s)))
                       (proj₁ (Func.cong (map (a (wmOf {X} p))) (merge-evens r s , merge-odds r s))))
               (Func.cong (map f) (proj₂ (Func.cong (map (a (wmOf {X} p))) (merge-evens r s , merge-odds r s)))))
       (*-assoc _ _ _)
@@ -320,12 +332,12 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
          (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r))))
       (trans
         (J-cong (g (wmOf {X} p) r) {λ s → ψ {X} (joinPre {X} p) f (mergeR r s)}
-           {λ s → proj₁ (α p r) * ψ {X} (joinKer {X} p r) f s}
+           {λ s → proj₁ (α p ⟨$⟩ r) * ψ {X} (joinKer {X} p r) f s}
            (Meas-pre {ψ {X} (joinPre {X} p) f} {mergeR r} (mψ {X} (joinPre {X} p) f) (measurable-merge₁ (lower r)))
-           (Meas-⊗ {λ _ → proj₁ (α p r)} {ψ {X} (joinKer {X} p r) f}
-              (Meas-const (proj₁ (α p r))) (mψ {X} (joinKer {X} p r) f))
+           (Meas-⊗ {λ _ → proj₁ (α p ⟨$⟩ r)} {ψ {X} (joinKer {X} p r) f}
+              (Meas-const (proj₁ (α p ⟨$⟩ r))) (mψ {X} (joinKer {X} p r) f))
            (λ s → ∫ᴹ-join-pt {X} p f r s))
-        (trans (J-scale (g (wmOf {X} p) r) (proj₁ (α p r)) {ψ {X} (joinKer {X} p r) f}
+        (trans (J-scale (g (wmOf {X} p) r) (proj₁ (α p ⟨$⟩ r)) {ψ {X} (joinKer {X} p r) f}
                   (mψ {X} (joinKer {X} p r) f))
           (*-cong refl (sym (w-eq (wmOf {X} p) r f)))))
 

@@ -27,8 +27,9 @@ open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ; !Q)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘; Cantor; Borel; compl; resp; union₂; inter₂; ⊥-borel)
-open import QBS.Borel.Source using (R₁; cantorSource; down)
+open import QBS.Borel.Core using (Measurable; measurable-∘; Cantor; Borel; compl; resp; union₂; inter₂; ⊥-borel; Partition)
+open import QBS.Borel.Source using (R₁; cantorSource; down; downℕ; idxₛ)
+open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ)
 open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
@@ -84,7 +85,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open SFiniteMonad lem
@@ -158,7 +159,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- the weight of a pre-measure, as a function on the parameter space
   wP : ∀ {X : QBS S} → Pre (XW X) → R₁ → Cut
-  wP p r = proj₁ (α p r)
+  wP p r = proj₁ (α p ⟨$⟩ r)
 
   mwP : ∀ {X : QBS S} (p : Pre (XW X)) → Meas (wP {X} p)
   mwP p = proj₁ (α-random p)
@@ -184,7 +185,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- normalisation of a measure of invertible massP: a probability pre-measure on X
   normPre : ∀ {X : QBS S} (p : Pre (XW X)) (n : Cut) → massP p * n ≈ 1# → C.Pre X
-  normPre {X} p n h = mk (λ r → proj₂ (α p r)) (proj₂ (α-random p)) (normMeas {X} p n h) (normMeas-prob {X} p n h)
+  normPre {X} p n h = mk (proj₂ₛ ∘ₛ α p) (proj₂ (α-random p)) (normMeas {X} p n h) (normMeas-prob {X} p n h)
 
   ∫-normPre : ∀ {X : QBS S} (p : Pre (XW X)) (n : Cut) (h : massP p * n ≈ 1#) (f : Hom S X WQ) →
     ∫ᴹ {X} (ιPre {X} (normPre p n h)) f ≈ n * ∫ᴹ {X} p f
@@ -312,11 +313,11 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- r ↦ massP (β r) is `Meas` (`∫ᶠ` is a test function on measures, so it preserves random families)
   massP-Meas : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β → Meas (λ r → massP (β r))
-  massP-Meas {X} {β} w = map-random (∫ᶠ {X} (oneF X)) {β} w
+  massP-Meas {X} {β} w = ∫ᴹ-Meas {X} {β} w (oneF X)
 
   -- measurability: {r | massP (β r) invertible} is Borel, since r ↦ massP (β r) is `Meas`
   -- (`Tonelli.Meas-J`) and 0 < m < ∞ is a countable union of intersections of threshold sets
-  caseIdx-Idx : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β → RandomSource.Idx S (λ r → caseIdx (β r))
+  caseIdx-Idx : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β → Partition (downℕ (λ r → caseIdx (β r)))
   caseIdx-Idx {X} {β} w = idx
     where
       M : R₁ → Cut
@@ -403,7 +404,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   normPre-random : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β →
     (inv : ∀ r → massP (β r) * invOf (massP (β r)) ≈ 1#) →
-    QBS.Random (C.TQ X) (λ r → normPre (β r) (invOf (massP (β r))) (inv r))
+    C.Wit {X} (λ r → normPre (β r) (invOf (massP (β r))) (inv r))
   normPre-random {X} {β} w inv = record
     { a = NormW.aN w inv ; g = NormW.gN w inv ; g-ok = NormW.g-ok-N w inv
     ; g-pr = NormW.gN-pr w inv ; w-eq = NormW.weqN w inv }
@@ -411,7 +412,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   -- gluing: on the invertible part normalise (`normPre-random` for a repaired family), elsewhere fail
   module NormGlue {X : QBS S} {β : R₁ → Pre (XW X)} (w : WitM {X} β) where
     x₀ : ∣ X ∣
-    x₀ = proj₂ (α (β r₀) r₀)
+    x₀ = proj₂ (α (β r₀) ⟨$⟩ r₀)
 
     -- a measure of mass 1, used where the mass is not invertible
     dummy : Pre (XW X)
@@ -429,7 +430,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     ws (ℕ.suc _) = TQ-const {X} dummy
 
     w̃ : WitM {X} (λ r → pick (caseIdx {X} (β r)) r)
-    w̃ = TQ-glue {X} {λ r → caseIdx {X} (β r)} (caseIdx-Idx {X} {β} w) pick ws
+    w̃ = TQ-glue {X} {idxₛ (λ r → caseIdx {X} (β r)) (caseIdx-Idx {X} {β} w)} (caseIdx-Idx {X} {β} w) pick ws
 
     inṽ-aux : ∀ r (d : InvDec (massP {X} (β r))) →
       massP {X} (pick (caseOf d) r) * invOf (massP {X} (pick (caseOf d) r)) ≈ 1#
@@ -445,7 +446,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     τ : R₁ → C.Pre X
     τ r = normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r)
 
-    τ-random : QBS.Random (C.TQ X)
+    τ-random : C.Wit {X}
         (λ r → normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r))
     τ-random = normPre-random {X} {λ r → pick (caseIdx {X} (β r)) r} w̃ inṽ
 
@@ -455,21 +456,24 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         (inṽ-aux r (inj₁ (n , h)))
 
     c : ℕ → Piece S (C.TQ X) (1Q S)
-    c ℕ.zero = inj₁ (τ , τ-random)
-    c (ℕ.suc _) = inj₂ ((λ _ → tt) , QBS.const-random (1Q S) tt)
+    c ℕ.zero = inj₁ (C.witₛ {X} τ-random , τ-random)
+    c (ℕ.suc _) = inj₂ (constₛ tt , QBS.const-random (1Q S) tt)
 
     pf-aux : ∀ r (d : InvDec (massP {X} (β r))) → invDec (massP {X} (β r)) ≡.≡ d →
       Setoid._≈_ (Carrier (_+Q_ S (C.TQ X) (1Q S))) (normC′ (β r) d) (ev S (C.TQ X) (1Q S) (c (caseOf d)) r)
     pf-aux r (inj₁ (n , h)) eq = ⊎ʳ.inj₁ (τ′-ok r (invDec (massP {X} (β r))) n h eq)
     pf-aux r (inj₂ _) eq = ⊎ʳ.inj₂ (Setoid.refl (Carrier (1Q S)))
 
-  normRandom : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β →
-    QBS.Random (_+Q_ S (C.TQ X) (1Q S)) (λ r → normC (β r))
-  normRandom {X} {β} w = (λ r → caseIdx {X} (β r)) , caseIdx-Idx {X} {β} w , NormGlue.c w ,
-    (λ r → NormGlue.pf-aux w r (invDec (massP {X} (β r))) ≡.refl)
+  normCₛ : ∀ {X : QBS S} → Func (Carrier (TQ X)) (Carrier (_+Q_ S (C.TQ X) (1Q S)))
+  normCₛ = record { to = normC ; cong = normC-cong }
+
+  normRandom : ∀ {X : QBS S} {β : Func Rˢ (Carrier (TQ X))} → WitM {X} (β ⟨$⟩_) →
+    QBS.Random (_+Q_ S (C.TQ X) (1Q S)) (normCₛ ∘ₛ β)
+  normRandom {X} {β} w = idxₛ (λ r → caseIdx {X} (β ⟨$⟩ r)) (caseIdx-Idx {X} {β ⟨$⟩_} w) , caseIdx-Idx {X} {β ⟨$⟩_} w ,
+    NormGlue.c w , (λ r → NormGlue.pf-aux w r (invDec (massP {X} (β ⟨$⟩ r))) ≡.refl)
 
   normH : ∀ X → Hom S (TQ X) (_+Q_ S (C.TQ X) (1Q S))
-  normH X = record { map = record { to = normC ; cong = normC-cong } ; map-random = normRandom }
+  normH X = record { map = normCₛ ; map-random = λ {β} → normRandom {X} {β} }
 
   -- the three laws
   normProb : ∀ {X : QBS S} (p : C.Pre X) (e : InvDec (massP (ιPre {X} p))) →

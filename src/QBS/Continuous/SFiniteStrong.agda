@@ -12,6 +12,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -53,7 +54,7 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open SFiniteMonad lem
@@ -68,12 +69,12 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { map = record
         { to = λ y → map f ⟨$⟩ (x , y)
         ; cong = λ e → Func.cong (map f) (Setoid.refl (Carrier X) , e) }
-    ; map-random = λ {γ} rγ → map-random f {λ r → x , γ r} (const-random X x , rγ)
+    ; map-random = λ {γ} rγ → map-random f {< constₛ x , γ >ₛ} (const-random X x , rγ)
     }
 
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (XW (_×Q_ S X Y))
-  σPre {X} {Y} (x , q) = mk (λ r → proj₁ (α q r) , (x , proj₂ (α q r)))
+  σPre {X} {Y} (x , q) = mk < proj₁ₛ ∘ₛ α q , < constₛ x , proj₂ₛ ∘ₛ α q >ₛ >ₛ
     (proj₁ (α-random q) , (const-random X x , proj₂ (α-random q))) (m q) (ok q)
 
   ∫ᴹ-σ : ∀ {X Y : QBS S} (x : ∣ X ∣) (q : Pre (XW Y)) (f : Hom S (_×Q_ S X Y) WQ) →
@@ -82,11 +83,11 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     (mψ {_×Q_ S X Y} (σPre {X} {Y} (x , q)) f) (mψ {Y} q (fixH {X} {Y} x f)) (λ r → refl)
 
   -- the joint probe of a random family `r ↦ (x r , q r)` with `q` given by a section witness
-  σJ : ∀ {X Y : QBS S} {β : R₁ → ∣ _×Q_ S X (TQ Y) ∣} → Random X (λ r → proj₁ (β r)) →
-    WitM {Y} (λ r → proj₂ (β r)) → Joint (XW (_×Q_ S X Y))
+  σJ : ∀ {X Y : QBS S} {β : Func Rˢ (Carrier (_×Q_ S X (TQ Y)))} → Random X (proj₁ₛ ∘ₛ β) →
+    WitM {Y} (λ r → proj₂ (β ⟨$⟩ r)) → Joint (XW (_×Q_ S X Y))
   σJ {X} {Y} {β} pb w = pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {WQ} {_×Q_ S X Y}
     (_∘H_ S (fstQ S {WQ} {Y}) (a w))
-    (pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {X} {Y} (fstJ {X} (λ r → proj₁ (β r)) pb)
+    (pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {X} {Y} (fstJ {X} (proj₁ₛ ∘ₛ β) pb)
        (_∘H_ S (sndQ S {WQ} {Y}) (a w)))
 
   σH : ∀ X Y → Hom S (_×Q_ S X (TQ Y)) (TQ (_×Q_ S X Y))
@@ -106,11 +107,11 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         ; g-ok = g-ok w
         ; g-pr = g-pr w
         ; w-eq = λ r f →
-            trans (∫ᴹ-σ {X} {Y} (proj₁ (β r)) (proj₂ (β r)) f)
-              (trans (w-eq w r (fixH {X} {Y} (proj₁ (β r)) f))
-                (J-cong (g w r) {ψ {Y} (kerP {Y} (a w) (g w) (g-pr w) r) (fixH {X} {Y} (proj₁ (β r)) f)}
+            trans (∫ᴹ-σ {X} {Y} (proj₁ (β ⟨$⟩ r)) (proj₂ (β ⟨$⟩ r)) f)
+              (trans (w-eq w r (fixH {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
+                (J-cong (g w r) {ψ {Y} (kerP {Y} (a w) (g w) (g-pr w) r) (fixH {X} {Y} (proj₁ (β ⟨$⟩ r)) f)}
                   {ψ {_×Q_ S X Y} (kerP {_×Q_ S X Y} (σJ {X} {Y} {β} pb w) (g w) (g-pr w) r) f}
-                  (mψ {Y} (kerP {Y} (a w) (g w) (g-pr w) r) (fixH {X} {Y} (proj₁ (β r)) f))
+                  (mψ {Y} (kerP {Y} (a w) (g w) (g-pr w) r) (fixH {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
                   (mψ {_×Q_ S X Y} (kerP {_×Q_ S X Y} (σJ {X} {Y} {β} pb w) (g w) (g-pr w) r) f)
                   (λ s → refl)))
         }

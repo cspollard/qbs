@@ -11,6 +11,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -50,7 +51,7 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
@@ -136,13 +137,19 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
       ; map-random = λ {γ} (m₁ , m₂) →
           let mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
               mτ = measurable-∘ m₂ measurable-odds
-              pr = map-random a₂ {λ x → mergeR (proj₁ (γ x)) (evensR (proj₂ (γ x))) , oddsR (proj₂ (γ x))} (mκ , mτ)
-          in Meas-⊗ {λ x → Ww (mergeR (proj₁ (γ x)) (evensR (proj₂ (γ x))))}
-                {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ x)) (evensR (proj₂ (γ x))) , oddsR (proj₂ (γ x))))}
-                (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ x)) (evensR (proj₂ (γ x)))} (proj₁ (paJ {TQ X} (a w))) mκ)
+              pr = map-random a₂ {reassoc ∘ₛ γ} (mκ , mτ)
+          in Meas-⊗ {λ x → Ww (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))))}
+                {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))) , oddsR (proj₂ (γ ⟨$⟩ x))))}
+                (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x)))} (proj₁ (paJ {TQ X} (a w))) mκ)
                 (proj₁ pr)
-           , proj₂ pr
+           , random-cast X (λ _ → ≡.refl) (proj₂ pr)
       }
+      where
+        -- (r , s) ↦ (merge r (evens s) , odds s)
+        reassoc : Func (Rˢ ×ₛ Rˢ) (Rˢ ×ₛ Rˢ)
+        reassoc = record
+          { to = λ p → mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p)
+          ; cong = λ (e₁ , e₂) → mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂ }
 
     -- the inner integral at the merged parameter, as a parametric function
     module Sec (f : Hom S X WQ) where
@@ -229,8 +236,8 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
         { to = joinPre {X}
         ; cong = λ {p} {q} e f → trans (∫ᴹ-join p f) (trans (e (∫ᶠ f)) (sym (∫ᴹ-join q f))) }
     ; map-random = λ {β} w → record
-        { a = JoinWit.a′ {X} {β} w ; g = JoinWit.g′ {X} {β} w ; g-ok = JoinWit.gok′ {X} {β} w
-        ; g-pr = JoinWit.gpr′ {X} {β} w ; w-eq = JoinWit.eq′ {X} {β} w }
+        { a = JoinWit.a′ {X} {β ⟨$⟩_} w ; g = JoinWit.g′ {X} {β ⟨$⟩_} w ; g-ok = JoinWit.gok′ {X} {β ⟨$⟩_} w
+        ; g-pr = JoinWit.gpr′ {X} {β ⟨$⟩_} w ; w-eq = JoinWit.eq′ {X} {β ⟨$⟩_} w }
     }
 
   -- the monad laws, stated so that the nested implicit arguments are inferred

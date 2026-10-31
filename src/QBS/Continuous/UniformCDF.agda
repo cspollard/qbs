@@ -43,6 +43,7 @@ open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Continuous.SubProb
 open import QBS.Continuous.SubModel using (module SubModel)
+open import QBS.Continuous.Uniform using (module Uniform)
 
 module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Daniell lem₁ using (L-one)
@@ -51,6 +52,7 @@ module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open UnitInterval A using (AQ)
   open ContinuousSub A (lemOf lem₁)
   open SubModel lem₁ using (uniformSub)
+  open Uniform lem₁ using (expansionProbe)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (half) renaming (half+half to hh)
   open Expansion A half hh using (expansion; expansion≤1; Fun-expansion)
@@ -91,7 +93,7 @@ module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
             (λ l q m → l q (ap (proj₂ e) q m))
             (λ l q m → l q (ap (proj₁ e) q m))
         }
-    ; map-random = λ {α} mα → Fun-ext (λ r → sym (ι-χ (λ r′ → proj₁ (α r′)) t r)) (Fun-χ (Below-borel mα t))
+    ; map-random = λ {α} mα → Fun-ext (λ r → sym (ι-χ (λ r′ → proj₁ (α ⟨$⟩ r′)) t r)) (Fun-χ (Below-borel mα t))
     }
 
   ----------------------------------------------------------------------------
@@ -186,5 +188,5 @@ module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
 
   cdf : ∀ (t : ∣A∣) → t ≤ OmegaSemiring.1# A → ∫ uniformSub (cdfTest t) ≈ t
   cdf t t≤1 = trans (I-cong fairCoin (λ r → ι-χ expansion t r)
-                      (Hom.map-random (cdfTest t) {λ r → expansion r , expansion≤1 r} Fun-expansion) (Fb t))
+                      (Hom.map-random (cdfTest t) {expansionProbe} Fun-expansion) (Fb t))
                     (selfSimilar F-cong F-mono F-1 FL ZL Z0 FR t t≤1)

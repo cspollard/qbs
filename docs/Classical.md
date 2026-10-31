@@ -140,8 +140,11 @@ This is propositional resizing in disguise. It does not use `lem₁` for its log
 Earlier versions needed `funext`: `R = ℕ → Bool` carried propositional equality, so the isomorphism
 `R ≅ R × R` (`split-merge`, `merge-evens`, `merge-odds`) was a `≡` of sequences. Now the random source carries
 a setoid on `R` (`RandomSource.Rˢ`), `cantorSource` uses pointwise equality (`Borel/Source.R₁ˢ`), and those
-three laws are pointwise proofs (`Continuous/Sample.agda`). Measurable functions respect pointwise-equal
-points (`Borel/Core.borel-≗`; `Analysis/Fun.Fun-resp` and `Analysis/Meas.Meas-resp`, which use `lem`).
+three laws are pointwise proofs (`Continuous/Sample.agda`). Random elements are setoid maps `Func Rˢ X`, so
+they carry their own congruence and the unit interval (`UnitInterval`) needs no `lem`. Where a probe is built
+from a raw function its congruence is proved there: Borel sets and measurable maps respect pointwise-equal
+points (`Borel/Core.borel-≗`, `Borel/Source.idxₛ`); `Analysis/Fun.Fun-resp` and `Continuous/Monad.Wit-cong`
+use `lem`.
 
 ## 4. Which uses are inherent and which are artifacts
 

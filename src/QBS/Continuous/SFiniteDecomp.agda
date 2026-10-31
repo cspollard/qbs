@@ -17,6 +17,7 @@ open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
+open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
@@ -89,7 +90,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Density lem using (densM; J-dens; J-null; Mvh)
   open LevelSets lem using (LS; Lvl; borel-prop)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open SFiniteMonad lem
@@ -174,7 +175,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- the weight of a pre-measure
   wt : ∀ {X : QBS S} → Pre (XW X) → R₁ → Cut
-  wt p r = proj₁ (α p r)
+  wt p r = proj₁ (α p ⟨$⟩ r)
 
   wt-Meas : ∀ {X : QBS S} (p : Pre (XW X)) → Meas (wt p)
   wt-Meas p = proj₁ (α-random p)
@@ -328,10 +329,10 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- the integrand of the n-th piece against a test function f
   pieceψ : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → R₁ → Cut
-  pieceψ {X} p n f r = pieceDensity p n r * (map f ⟨$⟩ proj₂ (α p r))
+  pieceψ {X} p n f r = pieceDensity p n r * (map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))
 
   pieceψ-Meas : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → Meas (pieceψ {X} p n f)
-  pieceψ-Meas {X} p n f = Meas-⊗ {pieceDensity p n} {λ r → map f ⟨$⟩ proj₂ (α p r)} (pieceDensity-Meas p n)
+  pieceψ-Meas {X} p n f = Meas-⊗ {pieceDensity p n} {λ r → map f ⟨$⟩ proj₂ (α p ⟨$⟩ r)} (pieceDensity-Meas p n)
       (map-random f (proj₂ (α-random p)))
 
   -- the weighted n-th piece
@@ -343,8 +344,8 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   ψ-pieces : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) r →
     ψ {X} p f r ≈ ∑ᶠ (λ n → pieceTerm {X} p f n r)
-  ψ-pieces {X} p f r = trans (pieces-sum p r (map f ⟨$⟩ proj₂ (α p r)))
-    (∑ᶠ-cong (λ n → *-assoc (bandW n) (pieceDensity p n r) (map f ⟨$⟩ proj₂ (α p r))))
+  ψ-pieces {X} p f r = trans (pieces-sum p r (map f ⟨$⟩ proj₂ (α p ⟨$⟩ r)))
+    (∑ᶠ-cong (λ n → *-assoc (bandW n) (pieceDensity p n r) (map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))))
 
   -- the integral splits over the pieces (pieces-sum, then J-∑ for the series)
   ∫ᴹ-pieces : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) →
@@ -356,7 +357,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- the probe of the X-component of `p`, as a morphism ℛ ⇒ X
   probeOf : ∀ {X : QBS S} → Pre (XW X) → Hom S (Probes.ℛQ S) X
-  probeOf p = Probes.probe S (proj₂ (α-random p))
+  probeOf {X} p = Probes.probe S {X} {proj₂ₛ ∘ₛ α p} (proj₂ (α-random p))
 
   -- the mass of a piece, and the piece as a probability measure (a fixed dummy when the mass is 0,
   -- `lem` decides which; `normM` otherwise)
@@ -420,7 +421,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- mass · (integral against the normalised piece) = integral against the piece; both sides vanish when the mass is 0
   pieceProb-int : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) →
-    pieceMass p n * J (proj₁ (pieceProb p n)) (λ r → map f ⟨$⟩ proj₂ (α p r))
+    pieceMass p n * J (proj₁ (pieceProb p n)) (λ r → map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))
       (map-random f (proj₂ (α-random p)))
     ≈ J (m p) (pieceψ {X} p n f) (pieceψ-Meas {X} p n f)
   pieceProb-int {X} p n f = probCase-int (m p) (pieceDensity p n) (pieceDensity-Meas p n) (pieceDensity≤1 p n)
@@ -431,7 +432,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
   -- the law of the probe `a` under a probability measure, as a pre-measure of the probability monad
   lawPre : ∀ {X : QBS S} → Hom S (Probes.ℛQ S) X → Σ Measure IsProb → C.Pre X
-  lawPre a (μ , pμ) = mk (λ r → map a ⟨$⟩ r) (Probes.unprobe S a) μ pμ
+  lawPre a (μ , pμ) = mk (map a) (Probes.unprobe S a) μ pμ
 
   -- the n-th scaled law
   decomp-term : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) →

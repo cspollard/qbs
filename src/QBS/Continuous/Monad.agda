@@ -173,6 +173,20 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     (mk-cong {X} (sec-random {X} (a (ws (i ⟨$⟩ r))) r) (sec-random {X} (glueJ {X} {i} pi (λ n → a (ws n))) r)
        (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier X)) h)
 
+  -- a random family of measures does not distinguish equal parameters, so it is a setoid map
+  Wit-cong : ∀ {X : QBS S} {β : R → Pre X} → Wit β → ∀ {r r′} → r R≈.≈ r′ → _≈ᵖ_ {X} (β r) (β r′)
+  Wit-cong {X} w {r} {r′} e f =
+    Setoid.trans Aˢ (w-eq w r f)
+      (Setoid.trans Aˢ
+        (mk-cong {X} (sec-random (a w) r) (sec-random (a w) r′) (g w r) (g-pr w r)
+           (λ s → Func.cong (map (a w)) (e , R≈.refl)) f)
+        (Setoid.trans Aˢ
+          (Fun-resp lem (g-ok w (map-random f (sec-random (a w) r′))) (lower e))
+          (Setoid.sym Aˢ (w-eq w r′ f))))
+
+  witₛ : ∀ {X : QBS S} {β : R → Pre X} → Wit β → Func Rˢ (PreS X)
+  witₛ {X} {β} w = record { to = β ; cong = Wit-cong {X} w }
+
   TQ : QBS S → QBS S
   TQ X = record
     { Carrier = PreS X

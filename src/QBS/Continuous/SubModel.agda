@@ -27,6 +27,7 @@ open import QBS.Continuous.Sample using (module UnitInterval; S)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Continuous.SubProb
+open import QBS.Continuous.Uniform using (module Uniform)
 
 module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   A = LowerRealsOmega (lemOf lem₁)
@@ -37,13 +38,14 @@ module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open ContinuousSub A (lemOf lem₁)
   open OmegaSemiring A using (_≈_; 1#; ≤-refl; refl; trans)
   open UniformMean lem₁ using (mean)
+  open Uniform lem₁ using (expansionProbe)
   open import QBS.Analysis.Fun using (module Measurable)
   open Measurable A using (Fun-const)
   open Integration A using (I-cong; I)
 
   -- U[0,1], as a sub-probability pre-measure (the fair coin is a probability measure)
   uniformSub : Pre AQ
-  uniformSub = mk (λ r → expansion r , expansion≤1 r) Fun-expansion fairCoin tt
+  uniformSub = mk expansionProbe Fun-expansion fairCoin tt
 
   -- draw u ~ U[0,1], then score the run by the likelihood u
   softUniform : Pre (1Q S)
@@ -62,4 +64,4 @@ module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   mass-softUniform : ∫ softUniform oneTest ≈ Arch.half (lowerRealsArch (lemOf lem₁))
   mass-softUniform = trans (∫-softUniform oneTest)
     (trans (I-cong fairCoin {h′ = expansion} (λ r → OmegaSemiring.*-identityʳ A (expansion r))
-      (Hom.map-random (_∘H_ S (∫ᶠ oneTest) scoreH) {λ r → expansion r , expansion≤1 r} Fun-expansion) Fun-expansion) mean)
+      (Hom.map-random (_∘H_ S (∫ᶠ oneTest) scoreH) {expansionProbe} Fun-expansion) Fun-expansion) mean)

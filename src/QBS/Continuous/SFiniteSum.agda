@@ -14,6 +14,7 @@ open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
@@ -60,7 +61,7 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open SFiniteMonad lem
@@ -77,20 +78,30 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   -- scaling by a weight
 
   scalePre : ∀ {X : QBS S} → ∣ WQ ∣ → Pre (XW X) → Pre (XW X)
-  scalePre {X} c p = mk (λ r → c * proj₁ (α p r) , proj₂ (α p r))
-    (Meas-⊗ {λ _ → c} {λ r → proj₁ (α p r)} (Meas-const c) (proj₁ (α-random p)) , proj₂ (α-random p))
+  scalePre {X} c p = mk (scaleₛ ∘ₛ α p)
+    (Meas-⊗ {λ _ → c} {λ r → proj₁ (α p ⟨$⟩ r)} (Meas-const c) (proj₁ (α-random p)) , proj₂ (α-random p))
     (m p) (ok p)
+    where
+      scaleₛ : Func (Carrier (XW X)) (Carrier (XW X))
+      scaleₛ = record { to = λ (w , x) → c * w , x ; cong = λ e → *-cong refl (proj₁ e) , proj₂ e }
 
   ∫ᴹ-scale : ∀ {X : QBS S} (c : ∣ WQ ∣) (p : Pre (XW X)) (f : Hom S X WQ) →
     ∫ᴹ {X} (scalePre {X} c p) f ≈ c * ∫ᴹ {X} p f
   ∫ᴹ-scale {X} c p f = trans
     (J-cong (m p) {ψ {X} (scalePre {X} c p) f} {λ r → c * ψ {X} p f r}
        (mψ {X} (scalePre {X} c p) f) (Meas-⊗ {λ _ → c} {ψ {X} p f} (Meas-const c) (mψ {X} p f))
-       (λ r → *-assoc c (proj₁ (α p r)) (map f ⟨$⟩ proj₂ (α p r))))
+       (λ r → *-assoc c (proj₁ (α p ⟨$⟩ r)) (map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))))
     (J-scale (m p) c {ψ {X} p f} (mψ {X} p f))
 
   ----------------------------------------------------------------------------
   -- countable sums
+
+  -- `lead` does not distinguish points that agree everywhere
+  lead-≗ : ∀ {x y : R₁} → x R≈.≈ y → lead (lower x) ≡.≡ lead (lower y)
+  lead-≗ {x} {y} e = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower x))) {lower x} {lower y} (lower e)) ≡.refl)
+
+  leadₛ : Func Rˢ ℕˢ
+  leadₛ = record { to = λ r → lead (lower r) ; cong = lead-≗ }
 
   -- the discrete probability measure with mass hp (n+1) at the point trueⁿ false false …
   νI : Measure
@@ -102,9 +113,9 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   abstract
     -- the random family r ↦ (2ⁿ⁺¹, tsₙ) with n = lead r, glued from constants
     sumFam : ∀ {X : QBS S} → (ℕ → Pre (XW X)) → Pre (XW (TQ X))
-    sumFam {X} ts = mk (λ r → pw (ℕ.suc (lead (lower r))) , ts (lead (lower r)))
+    sumFam {X} ts = mk (glueₛ leadₛ (λ n → constₛ (pw (ℕ.suc n) , ts n)))
       ( Meas-glue {λ r → lead (lower r)} {λ k _ → pw (ℕ.suc k)} lead-partition (λ k → Meas-const (pw (ℕ.suc k)))
-      , QBS.glue-random (TQ X) {λ r → lead (lower r)} lead-partition (λ n _ → ts n)
+      , QBS.glue-random (TQ X) {leadₛ} lead-partition (λ n → constₛ (ts n))
           (λ n → QBS.const-random (TQ X) (ts n)) )
       νI νI-prob
 
@@ -201,37 +212,33 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ----------------------------------------------------------------------------
   -- countable sums of kernels
 
-  -- `lead` does not distinguish points that agree everywhere
-  lead-≗ : ∀ {x y : R₁} → x R≈.≈ y → lead (lower x) ≡.≡ lead (lower y)
-  lead-≗ {x} {y} e = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower x))) {lower x} {lower y} (lower e)) ≡.refl)
-
   abstract
     -- the joint probe r , s ↦ (2ⁿ⁺¹, kₙ (γ r)) with n = lead s, for a random γ in X
-    aSum : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) {γ : R₁ → ∣ X ∣} → Random X γ → Joint (XW (TQ Y))
+    aSum : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) {γ : Func Rˢ (Carrier X)} → Random X γ → Joint (XW (TQ Y))
     aSum {X} {Y} ks {γ} rγ = record
       { map = record
-          { to = λ p → pw (ℕ.suc (lead (lower (proj₂ p)))) , map (ks (lead (lower (proj₂ p)))) ⟨$⟩ γ (proj₁ p)
+          { to = λ p → pw (ℕ.suc (lead (lower (proj₂ p)))) , map (ks (lead (lower (proj₂ p)))) ⟨$⟩ (γ ⟨$⟩ proj₁ p)
           ; cong = λ {p} {p′} (e₁ , e₂) →
               let le = lead-≗ e₂ ; T = Carrier (TQ Y)
               in Setoid.reflexive Aˢ (≡.cong (λ n → pw (ℕ.suc n)) le)
-               , Setoid.trans T (Func.cong (map (ks _)) (random-cong X rγ e₁))
-                   (Setoid.reflexive T (≡.cong (λ n → map (ks n) ⟨$⟩ γ (proj₁ p′)) le)) }
+               , Setoid.trans T (Func.cong (map (ks _)) (Func.cong γ e₁))
+                   (Setoid.reflexive T (≡.cong (λ n → map (ks n) ⟨$⟩ (γ ⟨$⟩ proj₁ p′)) le)) }
       ; map-random = λ {γ′} (m₁ , m₂) →
-          Meas-pre {λ s → pw (ℕ.suc (lead (lower s)))} {λ x → proj₂ (γ′ x)}
+          Meas-pre {λ s → pw (ℕ.suc (lead (lower s)))} {λ x → proj₂ (γ′ ⟨$⟩ x)}
             (Meas-glue {λ s → lead (lower s)} {λ k _ → pw (ℕ.suc k)} lead-partition (λ k → Meas-const (pw (ℕ.suc k)))) m₂
-          , QBS.glue-random (TQ Y) {λ x → lead (lower (proj₂ (γ′ x)))}
-              (RandomSource.idx-pre S {λ s → lead (lower s)} {λ x → proj₂ (γ′ x)} lead-partition m₂)
-              (λ n x → map (ks n) ⟨$⟩ γ (proj₁ (γ′ x)))
-              (λ n → map-random (ks n) {λ x → γ (proj₁ (γ′ x))} (QBS.pre-random X {γ} {λ x → proj₁ (γ′ x)} rγ m₁))
+          , QBS.glue-random (TQ Y) {leadₛ ∘ₛ proj₂ₛ ∘ₛ γ′}
+              (RandomSource.idx-pre S {leadₛ} {proj₂ₛ ∘ₛ γ′} lead-partition m₂)
+              (λ n → map (ks n) ∘ₛ γ ∘ₛ proj₁ₛ ∘ₛ γ′)
+              (λ n → map-random (ks n) {γ ∘ₛ proj₁ₛ ∘ₛ γ′} (QBS.pre-random X {γ} {proj₁ₛ ∘ₛ γ′} rγ m₁))
       }
 
-    sumFamW : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) {γ : R₁ → ∣ X ∣} (rγ : Random X γ) →
-      WitM {TQ Y} (λ r → sumFam {Y} (λ n → map (ks n) ⟨$⟩ γ r))
+    sumFamW : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) {γ : Func Rˢ (Carrier X)} (rγ : Random X γ) →
+      WitM {TQ Y} (λ r → sumFam {Y} (λ n → map (ks n) ⟨$⟩ (γ ⟨$⟩ r)))
     sumFamW {X} {Y} ks {γ} rγ = record
       { a = aSum ks rγ ; g = λ _ → νI ; g-ok = constK νI ; g-pr = λ _ → νI-prob
-      ; w-eq = λ r h → J-cong νI {ψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ γ r)) h}
+      ; w-eq = λ r h → J-cong νI {ψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ (γ ⟨$⟩ r))) h}
           {ψ {TQ Y} (kerP {TQ Y} (aSum ks rγ) (λ _ → νI) (λ _ → νI-prob) r) h}
-          (mψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ γ r)) h)
+          (mψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ (γ ⟨$⟩ r))) h)
           (mψ {TQ Y} (kerP {TQ Y} (aSum ks rγ) (λ _ → νI) (λ _ → νI-prob) r) h) (λ s → refl) }
 
     sumFamH : ∀ {X Y : QBS S} → (ℕ → Hom S X (TQ Y)) → Hom S X (TQ (TQ Y))
@@ -242,7 +249,7 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
               {ψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ x′)) F}
               (mψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ x)) F) (mψ {TQ Y} (sumFam {Y} (λ n → map (ks n) ⟨$⟩ x′)) F)
               (λ s → *-cong refl (Func.cong (map F) (Func.cong (map (ks (lead (lower s)))) e))) }
-      ; map-random = λ {γ} rγ → sumFamW ks rγ
+      ; map-random = λ {γ} rγ → sumFamW ks {γ} rγ
       }
 
     sumK : ∀ {X Y : QBS S} → (ℕ → Hom S X (TQ Y)) → Hom S X (TQ Y)

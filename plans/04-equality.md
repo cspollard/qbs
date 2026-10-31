@@ -154,3 +154,71 @@ canary modules, as for the `Probability` recast.
   the coproduct analogues for `I : Set`, so `Complete`/`Cocomplete` only ever see Set-indexed families.  A setoid-indexed
   `ΣQ` would need a transport `P i → P j` along `i ≈ j` with coherence, and would not be the object those interfaces ask
   for.  `≡` there is the identity type of the indexing set, which is what `Σ` equality is.
+
+## Stage 1 as first planned: probes are setoid maps (`probes-site` branch)
+
+Stage 1 shipped with raw functions plus `meas-resp`, `idx-resp` and `random-cong`.  The branch carries out the plan
+as written above: `Meas`, `Idx` and `Random` are predicates on `Func Rˢ _`, and the three fields disappear into
+`Func.cong`.  The shared shape is one record, `Probes M X` (closed under `≈`, constants, precomposition by `Meas`),
+so `Core` reads as a one-object site and its concrete sheaves: `Meas` is the representable (`measProbes`), `Idx`
+the probes of discrete `ℕˢ`, `idx-const`/`idx-pre`/`idx-glue` the coverage axioms, `meas-glue` subcanonicity, and
+`glue-random` the sheaf condition.
+
+* Witness records (`Continuous/Monad.Wit`, `SFinite.WitM`) stay indexed by the raw family; `TQ`'s `Random` is
+  `λ β → Wit (β ⟨$⟩_)`, so no lemma signature downstream changed.
+* Implicit `Func` arguments are not inferable from a `Meas`/`Idx`/`Random` proof (the predicate only sees `to`):
+  pass them, or use `Probes.unprobe` instead of `map-random h meas-id`.  Glued probes whose `cong` differs from the
+  expected one are re-typed with `random-cast X (λ _ → ≡.refl)`.
+* Gains: `UnitInterval` no longer takes `lem`, and the Cantor source no longer needs `measurable-≗`/`borel-≗` in
+  its record.  Probes built from raw functions get their `cong` once, where they are built: `Borel/Source.idxₛ`
+  (Borel-ness), `Continuous/Monad.Wit-cong` (via `Fun-resp lem`, as before) for the normalisation in `SFiniteNorm`,
+  and `Fun-resp` for `Uniform.expansionProbe`.
+
+### Further simplifications noticed during the sweep (not done)
+
+Ordered by payoff.  Each one swaps a local definition for a standard structure, or removes a repeated idiom.
+
+1. **`QBSCat` as an agda-categories `SubCategory` of `Setoids`.**  A `Hom` is a setoid map plus a property
+   (`map-random`) that is closed under `id` and `∘`.  That is exactly `Categories.Category.SubCategory.SubCat`:
+   take `U = Carrier`, `R f = ∀ {α} → Random X α → Random Y (f ∘ₛ α)`, `Rid = id`, and `_∘R_` = composition.
+   `Category.agda` would then get `assoc`/`identity`/`equiv`/`∘-resp-≈` for free.  It would also get the faithful
+   forgetful functor to `Setoids`, which is the "concrete" in concrete sheaf.  `_≈H_` would become
+   `Function.Relation.Binary.Setoid.Equality._≈_` on `map`.
+2. **`Measurability` as the same construction, with one object.**  `Meas` with `meas-id`/`meas-∘` is
+   `SubCat ⊤` of `Setoids` with `U _ = Rˢ`: the site's single-object category, i.e. a submonoid of
+   `Function.Relation.Binary.Setoid.Equality.setoid Rˢ Rˢ`.  `meas-ext` is the statement that `R` respects that
+   setoid.  `Probes M X` is then a subfunctor of `Hom(−, X)` restricted to that category: a sub-presheaf of the
+   representable, as the comment in `Core` already says in words.  Doing (1) and (2) together makes `probe`/`unprobe`
+   literally Yoneda in agda-categories terms.
+3. **Name the composite cover.**  `glueₛ j (λ n → pairₛ n ∘ₛ i n)` is written out four times (`Core.idx-glue`,
+   `Colimits` ×2, `Complete`).  A `refineₛ j i` in `Core` (the composite cover of `j` by the `i n`) would make
+   `idx-glue : Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)` read as the coverage axiom it is.
+4. **Remove the `random-cast X (λ _ → refl)` casts (22 sites, 11 files).**  Every one has a `refl` proof: the two
+   `Func`s share `to` and differ only in `cong`.  There are two root causes:
+   * Gluing under a projection.  `glue-random` returns `glueₛ i (λ n → g ∘ₛ α n)` where `g ∘ₛ glueₛ i α` is
+     wanted (`×Q`, `EqQ`, `ΠQ`, `glueRX`).  One naturality lemma, `random-glue-∘ : Random (glueₛ i (g ∘ₛ α n)) →
+     Random (g ∘ₛ glueₛ i α)`, stated once in `Core`, would replace them.
+   * The discrete model's `⇑` versus a composite (`Model/Monad`, `Strong`, `ProbInstance`, `StatInstance`).  These
+     would disappear if `Model` stored `Pre.α` as a `Func`, as `Continuous/Monad` now does, instead of a raw `α`
+     with `α-random : Random X (⇑ α)`.
+   The alternative is to index `Random` by `to` alone and keep `Func` only at the interface.  That would kill both
+   the casts and the "implicit `Func` is not inferable" pitfall, but it reintroduces a `cong` field.  It is worth
+   trying only if the two fixes above do not clear most sites.
+5. **One raw-function-to-`Func` constructor.**  `⇑` (`Model/Monad`, for `≡`-discrete `R`), `measₛ`/`idxₛ`
+   (`Borel/Source`) and `witₛ` (`Continuous/Monad`) all have the shape "`to` plus a proof that it respects `≈`".
+   `⇑` is the stdlib's `→-to-⟶`, which is deprecated with no `Func` successor.  So keep `⇑`, but move it to `Core`
+   next to `constₛ`.
+6. **`reassoc` is defined twice** (`Continuous/Monad`, `SFiniteMonad`): `(r , s) ↦ (merge r (evens s) , odds s)`.
+   Export it once from `Continuous/Sample`, next to `mergeR`/`evensR`/`oddsR`.
+7. **Witness indexing.**  `Wit β` is indexed by the raw family, while `Wit-cong`/`witₛ` show that every witness
+   already yields a `Func`.  Once (4) lands, try indexing `Wit`/`WitM` by `Func Rˢ (PreS X)`.  The earlier attempt
+   failed only because `C.PreS` and `PreMS` put different equalities on one carrier.  Indexing by the carrier map
+   `Func Rˢ (Carrier X)`, with `≈ᵖ` kept separate, may avoid that.
+8. **`Idx` is the probes of a discrete QBS.**  `Partitions` is `Probes M ℕˢ` plus gluing, which is `glue-random` for
+   the coproduct `∐ℕ 1`.  The circularity (a `QBS` needs `Idx`) prevents defining it as a QBS in `Core`.  But
+   `Colimits` could expose `ℕQ` with `probes = partitions` and `glue-random = idx-glue`-derived, so countable
+   coproducts and `idx-*` lemmas share one source.
+
+Kept local on purpose: `constₛ` (stdlib `Function.Construct.Constant.function` requires both setoids to have the same
+equality level, and `Rˢ`/carriers differ); `glueₛ` (no stdlib counterpart); setoid products are already the
+stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`, `swapₛ`, `_×-function_`).

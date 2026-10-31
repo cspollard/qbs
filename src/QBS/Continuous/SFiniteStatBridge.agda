@@ -119,7 +119,7 @@ module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ∫ᴹ-series {X} p g hs e = trans
     (J-cong (m p) {ψ {X} p g} {λ r → ∑ᶠ (λ n → ψ {X} p (hs n) r)} (mψ {X} p g)
        (Meas-∑ (λ n → ψ {X} p (hs n)) (λ n → mψ {X} p (hs n)))
-       (λ r → trans (*-cong refl (e (proj₂ (α p r)))) (∑ᶠ-scale (proj₁ (α p r)) (λ n → map (hs n) ⟨$⟩ proj₂ (α p r)))))
+       (λ r → trans (*-cong refl (e (proj₂ (α p ⟨$⟩ r)))) (∑ᶠ-scale (proj₁ (α p ⟨$⟩ r)) (λ n → map (hs n) ⟨$⟩ proj₂ (α p ⟨$⟩ r)))))
     (J-∑ (m p) (λ n → ψ {X} p (hs n)) (λ n → mψ {X} p (hs n)))
 
   kSum : ∀ {X Y : QBS S} → (ℕ → Hom S X (TQ Y)) → ℕ → Hom S (TQ Y) WQ → Hom S X WQ

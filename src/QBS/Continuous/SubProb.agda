@@ -71,11 +71,11 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) →
 
   -- failure: the zero measure (a run that is discarded)
   failPre : Pre (1Q S)
-  failPre = mk (λ _ → tt) tt zeroM tt
+  failPre = mk (constₛ tt) tt zeroM tt
 
   -- soft conditioning: weight the run by a likelihood w ∈ [0,1]
   scorePre : ∀ w → w ≤ 1# → Pre (1Q S)
-  scorePre w w≤1 = mk (λ _ → tt) tt (scaleM w w≤1 (dirac r₀)) tt
+  scorePre w w≤1 = mk (constₛ tt) tt (scaleM w w≤1 (dirac r₀)) tt
 
   ∫-score : ∀ w (w≤1 : w ≤ 1#) (f : Hom S (1Q S) AQ) → ∫ (scorePre w w≤1) f ≈ w * proj₁ (map f ⟨$⟩ tt)
   ∫-score w w≤1 f = refl
@@ -88,8 +88,8 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) →
         ; cong = λ {w} {w′} e f → *-cong e refl }
     ; map-random = λ {β} fβ → record
         { a = !Q S
-        ; g = λ r → scaleM (proj₁ (β r)) (proj₂ (β r)) (dirac r₀)
-        ; g-ok = λ {h} fh → Fun-ext (λ r → *-comm (h r₀) (proj₁ (β r)))
+        ; g = λ r → scaleM (proj₁ (β ⟨$⟩ r)) (proj₂ (β ⟨$⟩ r)) (dirac r₀)
+        ; g-ok = λ {h} fh → Fun-ext (λ r → *-comm (h r₀) (proj₁ (β ⟨$⟩ r)))
                               (Fun-scale (h r₀) (Fun-≤1 fh r₀) fβ)
         ; g-pr = λ _ → tt
         ; w-eq = λ r f → refl }

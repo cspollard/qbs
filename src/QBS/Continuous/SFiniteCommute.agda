@@ -11,6 +11,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -53,7 +54,7 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using () renaming (meas-id to measId)
+  open RandomSource S using (Rˢ) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open SFiniteMonad lem
@@ -93,7 +94,7 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { map = record
         { to = λ x → map f ⟨$⟩ (x , y)
         ; cong = λ e → Func.cong (map f) (e , Setoid.refl (Carrier Y)) }
-    ; map-random = λ {γ} rγ → map-random f {λ r → γ r , y} (rγ , const-random Y y)
+    ; map-random = λ {γ} rγ → map-random f {< γ , constₛ y >ₛ} (rγ , const-random Y y)
     }
 
   -- the right strength integrates the left component
@@ -109,26 +110,30 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   module Fub {X Y : QBS S} (s : Pre (XW X)) (t : Pre (XW Y)) (g : Hom S (_×Q_ S X Y) WQ) where
     -- the joint weighted integrand at the merged parameter
     Φ : R₁ → Cut
-    Φ u = proj₁ (α s (evensR u)) * (proj₁ (α t (oddsR u)) *
-            (map g ⟨$⟩ (proj₂ (α s (evensR u)) , proj₂ (α t (oddsR u)))))
+    Φ u = proj₁ (α s ⟨$⟩ (evensR u)) * (proj₁ (α t ⟨$⟩ (oddsR u)) *
+            (map g ⟨$⟩ (proj₂ (α s ⟨$⟩ (evensR u)) , proj₂ (α t ⟨$⟩ (oddsR u)))))
 
     abstract
       mΦ : Meas Φ
-      mΦ = Meas-⊗ {λ u → proj₁ (α s (evensR u))} {λ u → proj₁ (α t (oddsR u)) *
-              (map g ⟨$⟩ (proj₂ (α s (evensR u)) , proj₂ (α t (oddsR u))))}
-             (Meas-pre {λ r → proj₁ (α s r)} {evensR} (proj₁ (α-random s)) measurable-evens)
-             (Meas-⊗ {λ u → proj₁ (α t (oddsR u))} {λ u → map g ⟨$⟩ (proj₂ (α s (evensR u)) , proj₂ (α t (oddsR u)))}
-                (Meas-pre {λ r → proj₁ (α t r)} {oddsR} (proj₁ (α-random t)) measurable-odds)
-                (map-random g {λ u → proj₂ (α s (evensR u)) , proj₂ (α t (oddsR u))}
-                   (QBS.pre-random X {λ r → proj₂ (α s r)} {evensR} (proj₂ (α-random s)) measurable-evens ,
-                    QBS.pre-random Y {λ r → proj₂ (α t r)} {oddsR} (proj₂ (α-random t)) measurable-odds)))
+      mΦ = Meas-⊗ {λ u → proj₁ (α s ⟨$⟩ (evensR u))} {λ u → proj₁ (α t ⟨$⟩ (oddsR u)) *
+              (map g ⟨$⟩ (proj₂ (α s ⟨$⟩ (evensR u)) , proj₂ (α t ⟨$⟩ (oddsR u))))}
+             (Meas-pre {λ r → proj₁ (α s ⟨$⟩ r)} {evensR} (proj₁ (α-random s)) measurable-evens)
+             (Meas-⊗ {λ u → proj₁ (α t ⟨$⟩ (oddsR u))} {λ u → map g ⟨$⟩ (proj₂ (α s ⟨$⟩ (evensR u)) , proj₂ (α t ⟨$⟩ (oddsR u)))}
+                (Meas-pre {λ r → proj₁ (α t ⟨$⟩ r)} {oddsR} (proj₁ (α-random t)) measurable-odds)
+                (map-random g {< proj₂ₛ ∘ₛ α s ∘ₛ evensₛ , proj₂ₛ ∘ₛ α t ∘ₛ oddsₛ >ₛ}
+                   (QBS.pre-random X {proj₂ₛ ∘ₛ α s} {evensₛ} (proj₂ (α-random s)) measurable-evens ,
+                    QBS.pre-random Y {proj₂ₛ ∘ₛ α t} {oddsₛ} (proj₂ (α-random t)) measurable-odds)))
+        where
+          evensₛ oddsₛ : Func Rˢ Rˢ
+          evensₛ = proj₁ₛ ∘ₛ map fromH
+          oddsₛ = proj₂ₛ ∘ₛ map fromH
 
     -- Φ at a merged pair of parameters
     Φ-merge : ∀ r r′ → Φ (mergeR r r′) ≈
-      proj₁ (α s r) * (proj₁ (α t r′) * (map g ⟨$⟩ (proj₂ (α s r) , proj₂ (α t r′))))
+      proj₁ (α s ⟨$⟩ r) * (proj₁ (α t ⟨$⟩ r′) * (map g ⟨$⟩ (proj₂ (α s ⟨$⟩ r) , proj₂ (α t ⟨$⟩ r′))))
     Φ-merge r r′ =
-      let cs = random-cong (XW X) (α-random s) (merge-evens r r′)
-          ct = random-cong (XW Y) (α-random t) (merge-odds r r′)
+      let cs = Func.cong (α s) (merge-evens r r′)
+          ct = Func.cong (α t) (merge-odds r r′)
       in *-cong (proj₁ cs) (*-cong (proj₁ ct) (Func.cong (map g) (proj₂ cs , proj₂ ct)))
 
     constH : ∀ {A B : QBS S} → ∣ B ∣ → Hom S A B
@@ -150,23 +155,23 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
 
     pw₂ : ∀ r → ψ {Y} t Gs r ≈ J (m s) (λ k → Φ (P₂.mergeR r k))
       (Meas-pre {Φ} {P₂.mergeR r} mΦ (measurable-merge₂ (lower r)))
-    pw₂ r = trans (*-cong refl (τ-int {X} {Y} s (proj₂ (α t r)) g))
-      (trans (sym (J-scale (m s) (proj₁ (α t r)) {ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t r)) g)}
-                     (mψ {X} s (fixH₂ {X} {Y} (proj₂ (α t r)) g))))
-        (J-cong (m s) {λ k → proj₁ (α t r) * ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t r)) g) k} {λ k → Φ (P₂.mergeR r k)}
-          (Meas-⊗ {λ _ → proj₁ (α t r)} {ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t r)) g)}
-            (Meas-const (proj₁ (α t r))) (mψ {X} s (fixH₂ {X} {Y} (proj₂ (α t r)) g)))
+    pw₂ r = trans (*-cong refl (τ-int {X} {Y} s (proj₂ (α t ⟨$⟩ r)) g))
+      (trans (sym (J-scale (m s) (proj₁ (α t ⟨$⟩ r)) {ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t ⟨$⟩ r)) g)}
+                     (mψ {X} s (fixH₂ {X} {Y} (proj₂ (α t ⟨$⟩ r)) g))))
+        (J-cong (m s) {λ k → proj₁ (α t ⟨$⟩ r) * ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t ⟨$⟩ r)) g) k} {λ k → Φ (P₂.mergeR r k)}
+          (Meas-⊗ {λ _ → proj₁ (α t ⟨$⟩ r)} {ψ {X} s (fixH₂ {X} {Y} (proj₂ (α t ⟨$⟩ r)) g)}
+            (Meas-const (proj₁ (α t ⟨$⟩ r))) (mψ {X} s (fixH₂ {X} {Y} (proj₂ (α t ⟨$⟩ r)) g)))
           (Meas-pre {Φ} {P₂.mergeR r} mΦ (measurable-merge₂ (lower r)))
           (λ k → trans (swap3 _ _ _) (sym (Φ-merge k r)))))
 
     pw₁ : ∀ k → ψ {X} s Gt k ≈ J (m t) (λ r → Φ (P₁.mergeR k r))
       (Meas-pre {Φ} {P₁.mergeR k} mΦ (measurable-merge₁ (lower k)))
-    pw₁ k = trans (*-cong refl (∫ᴹ-σ {X} {Y} (proj₂ (α s k)) t g))
-      (trans (sym (J-scale (m t) (proj₁ (α s k)) {ψ {Y} t (fixH {X} {Y} (proj₂ (α s k)) g)}
-                     (mψ {Y} t (fixH {X} {Y} (proj₂ (α s k)) g))))
-        (J-cong (m t) {λ r → proj₁ (α s k) * ψ {Y} t (fixH {X} {Y} (proj₂ (α s k)) g) r} {λ r → Φ (P₁.mergeR k r)}
-          (Meas-⊗ {λ _ → proj₁ (α s k)} {ψ {Y} t (fixH {X} {Y} (proj₂ (α s k)) g)}
-            (Meas-const (proj₁ (α s k))) (mψ {Y} t (fixH {X} {Y} (proj₂ (α s k)) g)))
+    pw₁ k = trans (*-cong refl (∫ᴹ-σ {X} {Y} (proj₂ (α s ⟨$⟩ k)) t g))
+      (trans (sym (J-scale (m t) (proj₁ (α s ⟨$⟩ k)) {ψ {Y} t (fixH {X} {Y} (proj₂ (α s ⟨$⟩ k)) g)}
+                     (mψ {Y} t (fixH {X} {Y} (proj₂ (α s ⟨$⟩ k)) g))))
+        (J-cong (m t) {λ r → proj₁ (α s ⟨$⟩ k) * ψ {Y} t (fixH {X} {Y} (proj₂ (α s ⟨$⟩ k)) g) r} {λ r → Φ (P₁.mergeR k r)}
+          (Meas-⊗ {λ _ → proj₁ (α s ⟨$⟩ k)} {ψ {Y} t (fixH {X} {Y} (proj₂ (α s ⟨$⟩ k)) g)}
+            (Meas-const (proj₁ (α s ⟨$⟩ k))) (mψ {Y} t (fixH {X} {Y} (proj₂ (α s ⟨$⟩ k)) g)))
           (Meas-pre {Φ} {P₁.mergeR k} mΦ (measurable-merge₁ (lower k)))
           (λ r → sym (Φ-merge k r))))
 
