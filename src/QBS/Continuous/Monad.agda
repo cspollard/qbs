@@ -20,7 +20,6 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 import Function.Construct.Composition as Comp
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Functor; Endofunctor)
@@ -44,8 +43,7 @@ open import QBS.Analysis.Param
 open import QBS.Analysis.Tensor
 open import QBS.Continuous.Sample
 
-module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥))
-                  (funext : Extensionality L.zero L.zero) (K : Integration.MeasureClass A) where
+module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (K : Integration.MeasureClass A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Measurable A
   open Integration A

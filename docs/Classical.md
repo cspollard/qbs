@@ -1,7 +1,7 @@
 # Where the development is non-constructive
 
 A survey of the classical assumptions in `src/QBS`, taken from the source (greps for `lem`, `lem₁`,
-`lemOf`, `funext`, `Dec`, `invertible?`, plus reading the modules that use them). Paths are relative to
+`lemOf`, `Dec`, `invertible?`, plus reading the modules that use them). Paths are relative to
 `src/QBS/`.
 
 ## 1. How classical logic enters
@@ -13,10 +13,9 @@ instantiated inside Agda itself.
 
 | Parameter | Statement | Where |
 |---|---|---|
-| `lem` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules (with `funext`), mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
+| `lem` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules, mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
 | `lem₁` | the same at `Set₁` | 13 modules (`Analysis/CutSum`, `CoinIntegral`, `Functional`, `Riesz`, `Model/AdditiveSemiring`, `Continuous/FairCoin`, `Uniform*`, `CoinIndep`, `FirstBit`, `SubModel`, `Example/Probability`) |
 | `lemOf` | `lem₁ ⇒ lem` (by `Lift`) | `Analysis/CoinIntegral` |
-| `funext` | `Extensionality 0ℓ 0ℓ` | 19 modules, all in `Continuous/`; introduced in `Continuous/Sample.agda` (`module Split`) |
 | `NormalizableSemiring.invertible?` | a decision `(Σ n, m·n ≈ 1) ⊎ ¬(…)` as a record field | `Model/Semiring.agda:42`, consumed in `Model/StatInstance.agda` |
 | `dec` argument to `Mask` | a decision procedure for a Borel set | `Analysis/Fun.agda` (`module Mask`) |
 
@@ -38,7 +37,7 @@ Two points about the form of `lem`:
 
 ## 2. The part with no classical hypotheses
 
-Of 120 modules, 50 mention neither `lem` nor `funext`:
+Of 140 modules, about 50 do not mention `lem`:
 
 * the abstract layer: `Core`, `Category`, `Limits`, `Colimits`, `Complete`, `Exponential`, `Probes`,
   `Probability`, `Statistical`, `StatisticalLemmas`, `IsQBSLike`, `IsStatisticalQBSLike`, `Instance`;
@@ -136,12 +135,13 @@ This is propositional resizing in disguise. It does not use `lem₁` for its log
 (`Decidable⇒UIP`). This makes `(i , j) ≡ (i , j′) ⇒ j ≡ j′` hold (`ι-inj`), which `Reindex` and
 `sum-Σ` need. It is a way around not having K.
 
-### 3.8 Function extensionality
+### 3.8 Function extensionality (removed)
 
-`Continuous/Sample.agda`, `module Split funext`. The isomorphisms `R ≅ R × R` (`split-merge`,
-`merge-evens`, `merge-odds`) are propositional equalities of sequences `ℕ → Bool`, and the proofs go
-through `funext`. It propagates to every module of the continuous model (19 modules). `Borel/Merge.agda`
-deliberately avoids it by working pointwise.
+Earlier versions needed `funext`: `R = ℕ → Bool` carried propositional equality, so the isomorphism
+`R ≅ R × R` (`split-merge`, `merge-evens`, `merge-odds`) was a `≡` of sequences. Now the random source carries
+a setoid on `R` (`RandomSource.Rˢ`), `cantorSource` uses pointwise equality (`Borel/Source.R₁ˢ`), and those
+three laws are pointwise proofs (`Continuous/Sample.agda`). Measurable functions respect pointwise-equal
+points (`Borel/Core.borel-≗`; `Analysis/Fun.Fun-resp` and `Analysis/Meas.Meas-resp`, which use `lem`).
 
 ## 4. Which uses are inherent and which are artifacts
 
@@ -170,8 +170,6 @@ deliberately avoids it by working pointwise.
   explicit assumption of propositional resizing or an impredicative `Prop`. Alternatively, restrict the
   indexing to countable families (the `Series` module already does all the work for `ℕ`-indexed
   sums). The `Set₁` index is only needed for the discrete model's arbitrary index sets.
-* **`funext`.** It exists only because `R = ℕ → Bool` carries propositional equality. Making `R` a
-  setoid (pointwise equality on sequences), or stating `ℛ ≅ ℛ × ℛ` up to pointwise equality, removes it.
 * **Dynkin π–λ.** The `lem` uses are case splits on membership. Dynkin has a constructive proof for
   decidable π-systems and for the cylinder algebra (Bishop–Cheng style), but it would have to be
   restructured.
@@ -183,13 +181,12 @@ deliberately avoids it by working pointwise.
 ## 5. Where classicality comes in, as a dependency chain
 
 ```
-lem (Set), lem₁ (Set₁), funext
+lem (Set), lem₁ (Set₁)
   └─ LowerReals.Classical (near-sup)          → complement, cancel → LowerRealsOmega
   └─ Clopen.Fan (König, `choice`)             → OpenMeasure → Regular (Carathéodory) → CoinSets
   └─ PiLambda (Dynkin), Indicators, Meas      → Uniqueness, Param, Tensor (Fubini)
   └─ CutSum (resizing, UIP at Set₁)           → AdditiveSemiring, ViterbiSemiring
   └─ CoinIntegral / CoinGrid / CoinSimple     → Functional → Riesz
-  └─ Sample.Split (funext)                    → Continuous/Monad, Strong, ProbInstance, …
   └─ SFiniteNorm / SFiniteDecomp (invDec)     → SFiniteStat (`normalize`, `scaled-laws`)
 ```
 
@@ -199,10 +196,9 @@ instantiates them.
 
 ## 6. Suggested priorities, if we want less classical logic
 
-1. **`funext` (cheap).** Make `R` a setoid or use pointwise isomorphism laws.
-2. **Indicators.** Define `χ` as a lower real with no decision. This removes `lem` from many
+1. **Indicators.** Define `χ` as a lower real with no decision. This removes `lem` from many
    Borel-set case splits, though `Mask`, restriction and complements still need decisions.
-3. **Resizing.** Isolate the `Set₁ → Set` step (§3.6) and the `uip` step (§3.7) behind a named
+2. **Resizing.** Isolate the `Set₁ → Set` step (§3.6) and the `uip` step (§3.7) behind a named
    assumption, so that `lem₁` is no longer required for their sake.
 4. **Normalisation.** Replace the total `invertible?` field with a partial `normalize`, or an
    interface that takes a proof of `0 < mass < ∞`. Any `normalize` into `Prob X + 1` stays classical.

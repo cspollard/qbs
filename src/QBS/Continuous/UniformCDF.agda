@@ -15,7 +15,6 @@ open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Bool.Base using (true; false)
 open import Data.Product.Base using (_,_; proj₁; proj₂; _×_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 open import Level using (lift; lower)
 open import Function.Bundles using (_⟨$⟩_)
 
@@ -45,13 +44,13 @@ open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Continuous.SubProb
 open import QBS.Continuous.SubModel using (module SubModel)
 
-module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)
   open UnitInterval A (lemOf lem₁) using (AQ)
-  open ContinuousSub A (lemOf lem₁) funext
-  open SubModel lem₁ funext using (uniformSub)
+  open ContinuousSub A (lemOf lem₁)
+  open SubModel lem₁ using (uniformSub)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (half) renaming (half+half to hh)
   open Expansion A half hh using (expansion; expansion≤1; Fun-expansion)

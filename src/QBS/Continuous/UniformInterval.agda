@@ -14,7 +14,6 @@ open import Data.Empty using (⊥)
 open import Data.Nat.Base using (ℕ)
 open import Data.Sum.Base using (_⊎_)
 import Level as L
-open import Axiom.Extensionality.Propositional using (Extensionality)
 import Algebra.Solver.Ring.NaturalCoefficients.Default as Solver
 
 open import QBS.Analysis.CoinIntegral using (lemOf)
@@ -28,10 +27,10 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
 open import QBS.Continuous.UniformSample using (module UniformSample)
 
-module UniformInterval (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module UniformInterval (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Lebesgue (lemOf lem₁) using (A)
   open UniformVariance lem₁ using (u; varU; pm; variance; mean-u)
-  module US = UniformSample lem₁ funext
+  module US = UniformSample lem₁
   open BoundedRing (lemOf lem₁) using (boundedRing; E-B; κB; E-κB; E-κB*)
   open Bounded A using (Sg; finite; signedRing; _≃_; ≃-trans; ≃-sym; ≃-refl; _+S_; _*S_; -S_; 1S; +S-cong; *S-congʳ; *S-identityʳ; *S-assoc; *S-distribˡ)
   open SignedIntegral (lemOf lem₁) using (E)

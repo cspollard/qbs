@@ -16,7 +16,6 @@ open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import Categories.Category.Core using (Category)
 
@@ -36,15 +35,14 @@ open import QBS.Analysis.Tensor
 open import QBS.Continuous.Sample
 open import QBS.Continuous.Monad
 
-module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥))
-                (funext : Extensionality L.zero L.zero) (K : Integration.MeasureClass A) where
+module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (K : Integration.MeasureClass A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Measurable A
   open Integration A
   open Indicators A lem
   open Tensor A lem
   open UnitInterval A lem
-  open Continuous A lem funext K
+  open Continuous A lem K
   open QBS
   open Hom
   open Pre

@@ -12,7 +12,6 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -31,15 +30,14 @@ open import QBS.Continuous.Sample
 open import QBS.Continuous.Monad
 open import QBS.Continuous.Strong
 
-module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥))
-                      (funext : Extensionality L.zero L.zero) where
+module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Measurable A
   open Integration A
   open Tensor A lem
   open Indicators A lem using (I-const)
-  open Continuous A lem funext probClass
-  open Strength A lem funext probClass using (strongMonad; commutative)
+  open Continuous A lem probClass
+  open Strength A lem probClass using (strongMonad; commutative)
   open QBS
   open Hom
   open Pre

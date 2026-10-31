@@ -47,7 +47,7 @@ One line per module: [Modules.md](Modules.md) (generated). The public names: [In
 ## Hypotheses
 
 The code is `--safe --without-K` with no postulates. Non-constructive principles are module parameters:
-`lem : (P : Set) → P ⊎ ¬P`, `lem₁` (at `Set₁`), `funext`. The `hyp` column of [Modules.md](Modules.md) says which
+`lem : (P : Set) → P ⊎ ¬P`, `lem₁` (at `Set₁`). (There is no `funext`: points of Cantor space are compared pointwise.) The `hyp` column of [Modules.md](Modules.md) says which
 modules mention them directly. The abstract layer and `Example.Bayes` mention none. [Classical.md](Classical.md) says
 why each is needed and which are inherent. Constructive alternatives: [ConstructiveLit.md](ConstructiveLit.md).
 

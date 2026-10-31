@@ -17,7 +17,6 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ; !Q)
@@ -60,7 +59,7 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
-module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -69,18 +68,18 @@ module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : E
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
-  open SFiniteMonad lem funext
-  open SFiniteStrong lem funext
-  open SFiniteSum lem funext
-  open SFiniteIncl lem funext
-  open SFiniteCommute lem funext using (commutative)
+  open SFiniteMonad lem
+  open SFiniteStrong lem
+  open SFiniteSum lem
+  open SFiniteIncl lem
+  open SFiniteCommute lem using (commutative)
   open JSum lem using (J-∑; Meas-∑)
   open Series A using (∑ᶠ; ∑ᶠ-cong; ∑ᶠ-scale)
-  open SFiniteDecomp lem funext
-  open SFiniteNorm lem funext
-  private module CP = ContinuousProb A lem funext
+  open SFiniteDecomp lem
+  open SFiniteNorm lem
+  private module CP = ContinuousProb A lem
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre
   open QBS

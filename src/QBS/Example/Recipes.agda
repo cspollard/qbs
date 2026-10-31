@@ -9,7 +9,6 @@ import Level as L
 open import Data.Bool.Base using (Bool; true; false; _∧_)
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Model.Semiring
 import QBS.Model.WeightClasses as WC      -- qualified: `Analysis.Measure` also exports `probClass`
@@ -50,14 +49,14 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Continuous.Monad using (module Continuous)
 
-module UniformSetup (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module UniformSetup (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   A = LowerRealsOmega (lemOf lem₁)                    -- values: [0,∞] as lower cuts of ℚ
   open UnitInterval A (lemOf lem₁) public using (AQ)               -- the unit interval as a quasi-Borel space
   open Integration A using (probClass)
-  open Continuous A (lemOf lem₁) funext probClass public using (∫)
+  open Continuous A (lemOf lem₁) probClass public using (∫)
   open OmegaSemiring A public using (_≈_)
   open Arch (lowerRealsArch (lemOf lem₁)) public using (half)
-  open Uniform lem₁ funext public using (uniform)
+  open Uniform lem₁ public using (uniform)
 
   -- `idH S {AQ}` is the identity morphism of `AQ`; the mean `∫ uniform (idH S {AQ}) ≈ half` is
   -- `UniformMean.mean` (stated at the level of the underlying integral `I`)

@@ -11,7 +11,6 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_×_; _,_)
 open import Data.Sum.Base using (_⊎_)
 import Level as L
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
@@ -22,12 +21,12 @@ open import QBS.Continuous.UniformVariance using (module UniformVariance)
 open import QBS.Continuous.UniformInterval using (module UniformInterval)
 open import QBS.Inference.Frequentist
 
-module UniformExperiment (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module UniformExperiment (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Lebesgue (lemOf lem₁) using (A)
   open Bounded A using (Sg; _+S_; _*S_; -S_)
   open SignedIntegral (lemOf lem₁) using (E)
   open UniformVariance lem₁ using (u; pm)
-  module UI = UniformInterval lem₁ funext
+  module UI = UniformInterval lem₁
   module F = Frequentist lem₁
   open FairCoin lem₁ using (fairCoin)
 

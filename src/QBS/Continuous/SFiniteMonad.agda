@@ -14,7 +14,6 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -41,7 +40,7 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
-module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -52,7 +51,7 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
   open Tensor A lem using (constK)
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre
@@ -124,15 +123,16 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
       (λ s → IsProb-push {mergeR (oddsR (mergeR r s))} (measurable-merge₁ (lower (oddsR (mergeR r s))))
           {g w₂ (mergeR r s)} (g-pr w₂ (mergeR r s)))
 
+    Ww-cong : ∀ {k k′} → k R≈.≈ k′ → Ww k ≈ Ww k′
+    Ww-cong ek = proj₁ (Func.cong (map (a w)) (evensR-cong ek , oddsR-cong ek))
+
     a′ : Joint (XW X)
     a′ = record
       { map = record
           { to = λ p → let k = mergeR (proj₁ p) (evensR (proj₂ p)) ; u = oddsR (proj₂ p) in
               Ww k * proj₁ (map a₂ ⟨$⟩ (k , u)) , proj₂ (map a₂ ⟨$⟩ (k , u))
-          ; cong = λ (e₁ , e₂) →
-              let ek = mergeR-cong e₁ (evensR-cong e₂)
-                  ca = Func.cong (map a₂) (ek , oddsR-cong e₂)
-              in *-cong (proj₁ (Func.cong (map (a w)) (evensR-cong ek , oddsR-cong ek))) (proj₁ ca) , proj₂ ca }
+          ; cong = λ (e₁ , e₂) → let ek = mergeR-cong e₁ (evensR-cong e₂) ; ca = Func.cong (map a₂) (ek , oddsR-cong e₂)
+                                 in *-cong (Ww-cong ek) (proj₁ ca) , proj₂ ca }
       ; map-random = λ {γ} (m₁ , m₂) →
           let mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
               mτ = measurable-∘ m₂ measurable-odds
@@ -165,6 +165,18 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
       KP : R₁ → Pre (XW X)
       KP r = kerP {X} a′ g′ gpr′ r
 
+      Gq : R₁ → R₁ → Cut
+      Gq k u = (Ww k * proj₁ (map a₂ ⟨$⟩ (k , u))) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
+
+      Hq : R₁ → R₁ → Cut
+      Hq k u = proj₁ (map a₂ ⟨$⟩ (k , u)) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
+
+      Gq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Gq k u ≈ Gq k′ u′
+      Gq-cong ek eu = let ca = Func.cong (map a₂) (ek , eu) in *-cong (*-cong (Ww-cong ek) (proj₁ ca)) (Func.cong (map f) (proj₂ ca))
+
+      Hq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Hq k u ≈ Hq k′ u′
+      Hq-cong ek eu = let ca = Func.cong (map a₂) (ek , eu) in *-cong (proj₁ ca) (Func.cong (map f) (proj₂ ca))
+
       -- the integrand at the second level, rewritten through the splitting of the parameter
       ptt : ∀ r s t → ψ {X} (KP r) f (mergeR (oddsR (mergeR r s)) t)
                       ≈ Ww (mergeR r s) * φJ {X} a₂ f (mergeR (mergeR r s) t)
@@ -174,20 +186,6 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
                  (merge-odds (oddsR (mergeR r s)) t))
         (trans (*-assoc _ _ _)
           (*-cong refl (sym (Hq-cong (merge-evens (mergeR r s) t) (merge-odds (mergeR r s) t)))))
-        where
-          Gq : R₁ → R₁ → Cut
-          Gq k u = (Ww k * proj₁ (map a₂ ⟨$⟩ (k , u))) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
-          Hq : R₁ → R₁ → Cut
-          Hq k u = proj₁ (map a₂ ⟨$⟩ (k , u)) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
-
-          Gq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Gq k u ≈ Gq k′ u′
-          Gq-cong ek eu =
-            let ca = Func.cong (map a₂) (ek , eu)
-            in *-cong (*-cong (proj₁ (Func.cong (map (a w)) (evensR-cong ek , oddsR-cong ek))) (proj₁ ca))
-                      (Func.cong (map f) (proj₂ ca))
-
-          Hq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Hq k u ≈ Hq k′ u′
-          Hq-cong ek eu = let ca = Func.cong (map a₂) (ek , eu) in *-cong (proj₁ ca) (Func.cong (map f) (proj₂ ca))
 
       -- the right-hand side as an integral over r
       stepC : ∀ r → ∫ᴹ {X} (KP r) f ≈ J (g w r) (Bf r) (mBf r)

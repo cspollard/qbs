@@ -93,17 +93,17 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `_+SF_`, `E-+` — sum and additivity; `-SF_`, `E-neg`; `scaleSF`, `E-scale` — scaling by a signed constant; `constSF`, `E-const`, `J-const` — constants against a probability measure.
 
 ### `QBS.Continuous.Monad`, `QBS.Continuous.ProbInstance`, `QBS.Continuous.SubProb`, `QBS.Continuous.RealModel`
-- `Continuous` (`Monad`) — `module Continuous A lem funext K` (value semiring, `lem`, `funext`, measure class such as `Integration.probClass`): the probability monad: `Pre`, `mk`, `∫`, `joinPre`, `∫-join`.
+- `Continuous` (`Monad`) — `module Continuous A lem K` (value semiring, `lem`, measure class such as `Integration.probClass`): the probability monad: `Pre`, `mk`, `∫`, `joinPre`, `∫-join`.
 - `ContinuousProb` (`ProbInstance`) — it is a `ProbabilityInterface`; `continuousQBSLike`; `RealModel`: `realQBSLike`.
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
-- `continuousStat` (`SFiniteStat`, `module SFiniteStat lem funext`) — the complete `StatisticalInterface` for the continuous model.
+- `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
 
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
-- `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁ funext`).
+- `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
 - `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
 - `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).

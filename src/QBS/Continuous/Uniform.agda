@@ -8,7 +8,6 @@ import Level as L
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core using (QBS; idH)
 open import QBS.Continuous.UniformMean using (module UniformMean)
@@ -25,7 +24,7 @@ open import QBS.Continuous.Sample using (module UnitInterval; S)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.FairCoin
 
-module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   open FairCoin lem₁ using (fairCoin)
@@ -33,7 +32,7 @@ module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
   open Expansion A half hh
   open UnitInterval A (lemOf lem₁) using (AQ)
   open Integration A using (probClass)
-  open Continuous A (lemOf lem₁) funext probClass using (Pre; mk)
+  open Continuous A (lemOf lem₁) probClass using (Pre; mk)
 
   -- the binary-expansion probe, a random element of the unit interval
   expansionProbe : R₁ → QBS.∣ AQ ∣
@@ -45,7 +44,7 @@ module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exten
 
   -- the mean: ∫ uniform id = ½, restating `UniformMean.mean` in the monad
   open Integration A using (I-cong)
-  open Continuous A (lemOf lem₁) funext probClass using (∫)
+  open Continuous A (lemOf lem₁) probClass using (∫)
   open UniformMean lem₁ using (mean)
   open OmegaSemiring A using (_≈_; refl; trans)
 

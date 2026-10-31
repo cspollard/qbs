@@ -9,7 +9,6 @@ open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core using (QBS; Hom)
 open Hom using ()
@@ -29,13 +28,13 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Continuous.SubProb
 
-module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   A = LowerRealsOmega (lemOf lem₁)
   open FairCoin lem₁ using (fairCoin)
   open Arch (lowerRealsArch (lemOf lem₁)) using (half) renaming (half+half to hh)
   open Expansion A half hh
   open UnitInterval A (lemOf lem₁) using (AQ)
-  open ContinuousSub A (lemOf lem₁) funext
+  open ContinuousSub A (lemOf lem₁)
   open OmegaSemiring A using (_≈_; 1#; ≤-refl; refl; trans)
   open UniformMean lem₁ using (mean)
   open import QBS.Analysis.Fun using (module Measurable)

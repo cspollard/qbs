@@ -20,7 +20,6 @@ open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category

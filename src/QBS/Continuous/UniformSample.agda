@@ -15,7 +15,6 @@ open import Data.Empty using (⊥)
 open import Data.Nat.Base using (ℕ; zero; suc; _<_)
 open import Data.Product.Base using (_,_; proj₁)
 import Level as L
-open import Axiom.Extensionality.Propositional using (Extensionality)
 open import Data.Sum.Base using (_⊎_)
 
 open import QBS.Analysis.CoinIntegral using (lemOf)
@@ -30,10 +29,10 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.CoinCoords using (module CoinCoords)
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
 
-module UniformSample (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module UniformSample (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open UniformVariance lem₁ using (u; u-bdd; uu; varU; pm; vf; variance; mean-u; moment-u)
   open Lebesgue (lemOf lem₁) using (A)
-  open CoinCoords lem₁ funext using (coordSF; coordSF-bdd; E-coord; E-indep)
+  open CoinCoords lem₁ using (coordSF; coordSF-bdd; E-coord; E-indep)
   open BoundedRing (lemOf lem₁) using (boundedRing; E-B; E-B-cong; E-B-+)
   open Bounded A using (Sg; finite; signedRing; _≃_; ≃-trans; ≃-sym; ≃-refl; _+S_; _*S_; -S_; 0S; 1S; +S-cong; +S-assoc; +S-comm; +S-identityˡ; +S-inverseˡ; *S-congʳ; *S-identityʳ; *S-distribˡ)
   open SignedIntegral (lemOf lem₁) using (E; E-cong)

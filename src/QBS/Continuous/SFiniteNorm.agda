@@ -22,7 +22,6 @@ open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -72,7 +71,7 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
-module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -86,12 +85,12 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open Tensor A lem using (constK)
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
-  open SFiniteMonad lem funext
-  open SFiniteStrong lem funext
-  open SFiniteSum lem funext
-  open SFiniteIncl lem funext
+  open SFiniteMonad lem
+  open SFiniteStrong lem
+  open SFiniteSum lem
+  open SFiniteIncl lem
   open Series A
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre

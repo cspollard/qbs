@@ -15,7 +15,6 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -47,7 +46,7 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
-module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -58,11 +57,11 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open Tensor A lem using (constK)
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
-  open SFiniteMonad lem funext
-  open SFiniteStrong lem funext
-  module CS = Strength A lem funext probClass
+  open SFiniteMonad lem
+  open SFiniteStrong lem
+  module CS = Strength A lem probClass
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre
   open QBS

@@ -8,7 +8,6 @@ module QBS.Continuous.ExtNatModel where
 import Level as L
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core using (QBS)
 open import QBS.Category using (QBSCat)
@@ -17,8 +16,8 @@ open import QBS.Borel.Source using (cantorSource)
 open import QBS.Analysis.ExtNat using (module Instance)
 open import QBS.Continuous.ProbInstance
 
-module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
-  open ContinuousProb (Instance.ExtNatOmega (L.suc L.zero) lem) lem funext public
+module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+  open ContinuousProb (Instance.ExtNatOmega (L.suc L.zero) lem) lem public
 
   extNatQBSLike : IsQBSLike (L.suc L.zero) (QBSCat cantorSource)
   extNatQBSLike = continuousQBSLike

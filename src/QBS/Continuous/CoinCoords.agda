@@ -8,7 +8,6 @@ module QBS.Continuous.CoinCoords where
 
 import Level as L
 open import Level using (lift; lower)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
@@ -35,7 +34,7 @@ open import QBS.Borel.Merge using (measurable-merge₁)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.CoinIndep
 
-module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Lebesgue (lemOf lem₁) using (A; J; J-cong; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas; Meas-pre; Meas-⊗; Meas-const; Meas-resp)
   open OmegaSemiring A using (_≈_; _*_; 1#; refl; sym; trans; *-cong; *-comm; *-identityʳ; *-identityˡ)

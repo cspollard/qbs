@@ -134,7 +134,7 @@ claims a solution via finite-valuation approximable structures; **not verified**
 | Carathéodory extension + Dynkin π–λ | Replaced by *presenting* the measure on a lattice of opens (`Thm 7`): a valuation on the frame is determined by a valuation on the generating lattice respecting covers. |
 | Resizing (`Set₁ → Set`) | Predicative treatments: Petrakis–Zeuner. Vickers: footnote on arithmetic universes (Maietti–Vickers) as a predicative setting for geometric logic. |
 | `normalize` (invertible?) | Not addressed: no source gives a total constructive normalisation of arbitrary measures. |
-| `funext` | Not a classical-logic issue; arises from our choice of a function type with propositional equality. |
+| `funext` | Removed: Cantor space carries pointwise equality (`Borel/Source.R₁ˢ`), so no function extensionality is needed. |
 
 ## 4. Routes to a constructive version
 

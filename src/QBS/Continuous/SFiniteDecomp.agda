@@ -22,7 +22,6 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -78,7 +77,7 @@ open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 open import Data.Empty using (⊥-elim)
 open Cut renaming (mem to memC; down to downC; open′ to openC; neg to negC)
 
-module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -91,12 +90,12 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   open LevelSets lem using (LS; Lvl; borel-prop)
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
-  open SFiniteMonad lem funext
-  open SFiniteStrong lem funext
-  open SFiniteSum lem funext
-  open SFiniteIncl lem funext
+  open SFiniteMonad lem
+  open SFiniteStrong lem
+  open SFiniteSum lem
+  open SFiniteIncl lem
   open Series A
   open JSum lem using (J-∑; Meas-∑)
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)

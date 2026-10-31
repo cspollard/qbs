@@ -97,12 +97,12 @@ Three tools, in increasing generality:
 The continuous model has the fair coin on Cantor space (`Continuous.FairCoin`), the uniform distribution on
 `[0,1]`, and an integral of any measurable function.
 
-- The whole set-up is one checked module, `Example.Recipes.UniformSetup lem₁ funext`: it fixes the value semiring `A`
+- The whole set-up is one checked module, `Example.Recipes.UniformSetup lem₁`: it fixes the value semiring `A`
   (lower cuts, via `lemOf lem₁`), the unit interval `AQ`, `∫`, `half`, and `uniform : Pre AQ`.
 
 ```agda
 -- from: src/QBS/Example/Recipes.agda
-  open Continuous A (lemOf lem₁) funext probClass public using (∫)
+  open Continuous A (lemOf lem₁) probClass public using (∫)
 ```
 
 - `∫ p f` (`Continuous.Monad`) is the integral of a morphism `f : Hom S X AQ` (values in `[0,1]`) against `p`.
@@ -126,7 +126,7 @@ The continuous model has the fair coin on Cantor space (`Continuous.FairCoin`), 
 - Unbounded and weighted integrals use `J` (`Analysis.Lebesgue`), which integrates any threshold-measurable
   `[0,∞]`-valued function (`Meas`). The s-finite monad `TM` (`Continuous.SFinite*`) is built on `J`; its
   statistical structure is `continuousStat` in `Continuous.SFiniteStat`
-  (`open SFiniteStat lem funext`), so every result stated over `StatisticalInterface` applies to it.
+  (`open SFiniteStat lem`), so every result stated over `StatisticalInterface` applies to it.
 
 ## 4. Prove something generic
 
@@ -147,4 +147,4 @@ Generic lemmas already available: `bind-sum` and `bind-scale` (`StatisticalLemma
 | iid products `X^n` with independence of n coordinates | sampling distributions | `plans/02-uniform-integrals.md` |
 | Gaussian (exp, π, the Gaussian integral) | Gaussian inference | `plans/03-bayesian-frequentist.md` |
 | Statistical models `Θ ⇒ M X`, estimators, priors/posteriors over continuous parameters | both inference styles | `plans/03-bayesian-frequentist.md` |
-| Constructive foundations | removing `lem`/`funext` | `docs/ConstructiveLit.md` |
+| Constructive foundations | removing `lem` | `docs/ConstructiveLit.md` |

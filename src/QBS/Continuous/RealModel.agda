@@ -7,7 +7,6 @@ module QBS.Continuous.RealModel where
 import Level as L
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_)
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Category using (QBSCat)
 open import QBS.IsQBSLike using (IsQBSLike)
@@ -15,8 +14,8 @@ open import QBS.Borel.Source using (cantorSource)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Continuous.ProbInstance
 
-module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
-  open ContinuousProb (LowerRealsOmega lem) lem funext public
+module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+  open ContinuousProb (LowerRealsOmega lem) lem public
 
   realQBSLike : IsQBSLike (L.suc L.zero) (QBSCat cantorSource)
   realQBSLike = continuousQBSLike

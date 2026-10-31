@@ -18,7 +18,6 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Axiom.Extensionality.Propositional using (Extensionality)
 
 open import QBS.Core
 open import QBS.Category
@@ -51,7 +50,7 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
-module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
+module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
@@ -62,9 +61,9 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensio
   open Tensor A lem using (constK)
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
-  open SFinite lem funext
+  open SFinite lem
   open WitM
-  open SFiniteMonad lem funext
+  open SFiniteMonad lem
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
   open C.Pre
   open QBS
@@ -202,6 +201,10 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensio
   ----------------------------------------------------------------------------
   -- countable sums of kernels
 
+  -- `lead` does not distinguish points that agree everywhere
+  lead-≗ : ∀ {x y : R₁} → x R≈.≈ y → lead (lower x) ≡.≡ lead (lower y)
+  lead-≗ {x} {y} e = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower x))) {lower x} {lower y} (lower e)) ≡.refl)
+
   abstract
     -- the joint probe r , s ↦ (2ⁿ⁺¹, kₙ (γ r)) with n = lead s, for a random γ in X
     aSum : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) {γ : R₁ → ∣ X ∣} → Random X γ → Joint (XW (TQ Y))
@@ -209,10 +212,10 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensio
       { map = record
           { to = λ p → pw (ℕ.suc (lead (lower (proj₂ p)))) , map (ks (lead (lower (proj₂ p)))) ⟨$⟩ γ (proj₁ p)
           ; cong = λ {p} {p′} (e₁ , e₂) →
-              let le = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower (proj₂ p)))) {lower (proj₂ p)} {lower (proj₂ p′)} (lower e₂)) ≡.refl)
+              let le = lead-≗ e₂ ; T = Carrier (TQ Y)
               in Setoid.reflexive Aˢ (≡.cong (λ n → pw (ℕ.suc n)) le)
-               , Setoid.trans (Carrier (TQ Y)) (Func.cong (map (ks (lead (lower (proj₂ p))))) (random-cong X rγ e₁))
-                   (Setoid.reflexive (Carrier (TQ Y)) (≡.cong (λ n → map (ks n) ⟨$⟩ γ (proj₁ p′)) le)) }
+               , Setoid.trans T (Func.cong (map (ks _)) (random-cong X rγ e₁))
+                   (Setoid.reflexive T (≡.cong (λ n → map (ks n) ⟨$⟩ γ (proj₁ p′)) le)) }
       ; map-random = λ {γ′} (m₁ , m₂) →
           Meas-pre {λ s → pw (ℕ.suc (lead (lower s)))} {λ x → proj₂ (γ′ x)}
             (Meas-glue {λ s → lead (lower s)} {λ k _ → pw (ℕ.suc k)} lead-partition (λ k → Meas-const (pw (ℕ.suc k)))) m₂
