@@ -35,15 +35,7 @@ module Series {ℓ} (A : OmegaSemiring ℓ) where
   ∑ᶠ : (ℕ → ∣A∣) → ∣A∣
   ∑ᶠ a = ⨆ (psum a) (psum-inc a)
 
-  private
-    +-interchange : ∀ x y z w → (x + y) + (z + w) ≈ (x + z) + (y + w)
-    +-interchange x y z w = begin
-      (x + y) + (z + w)   ≈⟨ +-assoc x y (z + w) ⟩
-      x + (y + (z + w))   ≈⟨ +-cong refl (sym (+-assoc y z w)) ⟩
-      x + ((y + z) + w)   ≈⟨ +-cong refl (+-cong (+-comm y z) refl) ⟩
-      x + ((z + y) + w)   ≈⟨ +-cong refl (+-assoc z y w) ⟩
-      x + (z + (y + w))   ≈⟨ sym (+-assoc x z (y + w)) ⟩
-      (x + z) + (y + w)   ∎
+  open import Algebra.Properties.CommutativeSemigroup +-commutativeSemigroup using () renaming (interchange to +-interchange)
 
   ≤-+ˡ : ∀ {a b} → b ≤ a + b
   ≤-+ˡ {a} {b} = ≤-resp refl (+-comm b a) ≤-+ʳ

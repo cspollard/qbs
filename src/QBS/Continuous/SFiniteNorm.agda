@@ -207,8 +207,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   inv-resp : ∀ {x y n} → x ≈ y → x * n ≈ 1# → y * n ≈ 1#
   inv-resp e h = trans (*-cong (sym e) refl) h
 
-  swap* : ∀ x y z → x * (y * z) ≈ y * (x * z)
-  swap* x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+  open import Algebra.Properties.CommutativeSemigroup *-commutativeSemigroup using () renaming (x∙yz≈y∙xz to swap*)
 
   scale-inv₁ : ∀ x n′ c → (c * x) * n′ ≈ 1# → x * (n′ * c) ≈ 1#
   scale-inv₁ x n′ c h = trans (*-cong refl (*-comm n′ c)) (trans (swap* x c n′) (trans (sym (*-assoc c x n′)) h))

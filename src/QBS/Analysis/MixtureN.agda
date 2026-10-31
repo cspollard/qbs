@@ -24,9 +24,7 @@ module MixtureN (A : OmegaSemiring (suc zero)) where
   open SeriesSup A
   open SetoidReasoning setoid
 
-  private
-    swap : ∀ x y z → x * (y * z) ≈ y * (x * z)
-    swap x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+  open import Algebra.Properties.CommutativeSemigroup *-commutativeSemigroup using () renaming (x∙yz≈y∙xz to swap)
 
   -- the mixture functional `h ↦ ∑ₙ cₙ · I μₙ h`
   mixI : (ℕ → ∣A∣) → (ℕ → Measure) → ∀ {h} → Fun h → ∣A∣

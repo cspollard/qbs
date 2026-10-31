@@ -150,8 +150,7 @@ module SFiniteCommute (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     Gt = _∘H_ S {X} {_×Q_ S X (TQ Y)} {WQ} (_∘H_ S {_×Q_ S X (TQ Y)} {TQ (_×Q_ S X Y)} {WQ} (∫ᶠ {_×Q_ S X Y} g) (σH X Y))
            (pairQ S {X} {X} {TQ Y} (idH S) (constH t))
 
-    swap3 : ∀ a b c → a * (b * c) ≈ b * (a * c)
-    swap3 a b c = trans (sym (*-assoc a b c)) (trans (*-cong (*-comm a b) refl) (*-assoc b a c))
+    open import Algebra.Properties.CommutativeSemigroup *-commutativeSemigroup using () renaming (x∙yz≈y∙xz to swap3)
 
     pw₂ : ∀ r → ψ {Y} t Gs r ≈ J (m s) (λ k → Φ (P₂.mergeR r k))
       (Meas-pre {Φ} {P₂.mergeR r} mΦ (measurable-merge₂ (lower r)))

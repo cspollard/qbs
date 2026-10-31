@@ -31,9 +31,7 @@ module Density (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Measurable A using (Fun; Fun-const)
   module M = Measure
 
-  private
-    swap : ∀ x y z → x * (y * z) ≈ y * (x * z)
-    swap x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+  open import Algebra.Properties.CommutativeSemigroup (OmegaSemiring.*-commutativeSemigroup A) using () renaming (x∙yz≈y∙xz to swap)
 
   -- v · h is measurable when v is and h is a bounded measurable function
   Mvh : ∀ {v h} → Meas v → Fun h → Meas (λ r → v r * h r)

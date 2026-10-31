@@ -87,9 +87,7 @@ module JSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   ----------------------------------------------------------------------------
   -- the integral against a countable mixture
 
-  private
-    swap : ∀ x y z → x * (y * z) ≈ y * (x * z)
-    swap x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+  open import Algebra.Properties.CommutativeSemigroup (OmegaSemiring.*-commutativeSemigroup A) using () renaming (x∙yz≈y∙xz to swap)
 
   J-mixN : ∀ c (sub : ∑ᶠ c ≤ 1#) (μ : ℕ → Measure) {φ} (p : Meas φ) →
     J (mixN c sub μ) φ p ≈ ∑ᶠ (λ n → c n * J (μ n) φ p)

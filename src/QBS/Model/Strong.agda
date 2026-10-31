@@ -152,8 +152,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     where
       open SetoidReasoning Aˢ
       G = λ k r → g ⟨$⟩ (α s k , α t r)
-      mid : ∀ x y z → x * (y * z) ≈ y * (x * z)
-      mid x y z = trans (sym (*-assoc x y z)) (trans (*-cong (*-comm x y) refl) (*-assoc y x z))
+      open import Algebra.Properties.CommutativeSemigroup *-commutativeSemigroup using () renaming (x∙yz≈y∙xz to mid)
 
   private
     module SP = Categories.Monad.Strong.Properties

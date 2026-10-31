@@ -31,8 +31,7 @@ module Premeasure {A : OmegaSemiring (suc zero)} (R : Arch A) where
     μ0 (leaf false) = 0#
     μ0 (split a b) = half * (μ0 a + μ0 b)
 
-    swap4 : ∀ a b c d → (a + b) + (c + d) ≈ (a + c) + (b + d)
-    swap4 = solve 4 (λ a b c d → (a :+ b) :+ (c :+ d) := (a :+ c) :+ (b :+ d)) refl
+    open import Algebra.Properties.CommutativeSemigroup +-commutativeSemigroup using () renaming (interchange to swap4) public
 
     μ0-mod : ∀ a b → μ0 (a ∪ b) + μ0 (a ∩ b) ≈ μ0 a + μ0 b
     μ0-mod (leaf true) t = refl
