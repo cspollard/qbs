@@ -28,4 +28,4 @@ record IsQBSLike {o h e} ℓ (C : Category o h e) : Set (suc (o ⊔ h ⊔ e ⊔ 
     binaryCoproducts : Cocartesian.BinaryCoproducts C
     countableProducts : (P : ℕ → Obj) → IndexedProductOf C P
     countableCoproducts : (P : ℕ → Obj) → IndexedCoproductOf C P
-    prob : ProbabilityInterface ℓ C ℛ cartesianClosed
+    prob : ProbabilityInterface ℓ ℛ cartesianClosed

@@ -81,10 +81,10 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
           ; map-random = λ {γ′} (m₁ , m₂) → measurable-∘ m₁ mβ , m₂
           }
 
-  continuousMonad : ProbMonad (QBSCat S) (cartesianClosed S)
+  continuousMonad : ProbMonad (cartesianClosed S)
   continuousMonad = record { strongMonad = strongMonad ; commutative = commutative }
 
-  continuousProbLaws : ProbLaws (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad
+  continuousProbLaws : ProbLaws (L.suc L.zero) (ℛQ S) (cartesianClosed S) continuousMonad
   continuousProbLaws = record
     { Measure = PM
     ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) μ
@@ -100,7 +100,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
         in probe S (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
     }
 
-  continuousProbFubini : Fubini (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad continuousProbLaws
+  continuousProbFubini : Fubini (L.suc L.zero) (ℛQ S) (cartesianClosed S) continuousMonad continuousProbLaws
   continuousProbFubini = record
     { split = record
         { from = fromH
@@ -117,7 +117,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
           (Setoid.sym Aˢ (∫-join {_×Q_ S (ℛQ S) (ℛQ S)} (lawP (kerH (idH S) νp) μp) f))
     }
 
-  continuousProb : ProbabilityInterface (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S)
+  continuousProb : ProbabilityInterface (L.suc L.zero) (ℛQ S) (cartesianClosed S)
   continuousProb = record
     { commutativeMonad = continuousMonad
     ; laws = continuousProbLaws

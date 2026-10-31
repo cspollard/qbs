@@ -21,8 +21,8 @@ import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR
 
 -- a commutative monad on a cartesian closed category, for the symmetric monoidal structure of its products
-ProbMonad : ∀ {o h e} (C : Category o h e) → Canonical.CartesianClosed C → Set (o ⊔ h ⊔ e)
-ProbMonad C CC = CommutativeMonad (Symmetric.braided (CSM.symmetric C (Canonical.CartesianClosed.isCartesian CC)))
+ProbMonad : ∀ {o h e} {C : Category o h e} → Canonical.CartesianClosed C → Set (o ⊔ h ⊔ e)
+ProbMonad {C = C} CC = CommutativeMonad (Symmetric.braided (CSM.symmetric C (Canonical.CartesianClosed.isCartesian CC)))
 
 -- An abstract probability monad on a cartesian closed category with an object
 -- ℛ of probes (random sources), in the style of Heunen–Kammar–Staton–Vákár.
@@ -34,7 +34,7 @@ ProbMonad C CC = CommutativeMonad (Symmetric.braided (CSM.symmetric C (Canonical
 --   the commutative monad itself,
 --   `ProbLaws`  : measures on ℛ and their laws, which are natural, reparametrisable, and exhaust the monad,
 --   `Fubini`    : the splitting ℛ ≅ ℛ × ℛ, product measures, and the bind (Fubini) axioms.
-module _ {o h e} ℓ (C : Category o h e) (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where
+module _ {o h e} ℓ {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where
   private
     cartesian = Canonical.CartesianClosed.isCartesian CC
     braided = Symmetric.braided (CSM.symmetric C cartesian)
