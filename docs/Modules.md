@@ -18,6 +18,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
 | `QBS.Category.Concrete` | 211 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
 | `QBS.Category.Forget` | 34 |  | The forgetful functor `QBSCat S → Setoids`. |
+| `QBS.Category.Measurable` | 58 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
 | `QBS.Classical` | 23 |  | Excluded middle, named once. |
 | `QBS.Colimits` | 248 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.Complete` | 196 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |

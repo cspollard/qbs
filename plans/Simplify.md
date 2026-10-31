@@ -419,4 +419,5 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
   `Sub ∘ ToSub = Forget` holds by `refl`.  `CodiscQ` (every sequence random) and `DiscQ` (random = locally constant along a measurable partition,
   glued with `idx-glue`) give `Disc ⊣ Forget ⊣ Codisc`; `rapl′`/`lapc′` then give `Forget` continuous and cocontinuous, `Codisc` continuous,
   `Disc` cocontinuous; `Disc` and `Codisc` are faithful.  No downstream module changed.
-* Item 2 (measurable maps as a one-object `SubCategory`) is not done; it is independent of this.
+* **Item 2 done** (`QBS.Category.Measurable`): `MeasCat` is a direct one-object `SubCategory` (no comparison needed: no downstream users, nothing to unify).
+  `yoneda : MeasCat → QBSCat S` sends the object to `ℛQ` and is full (`unprobe`) and faithful; `Forget ∘ yoneda` and the subcategory inclusion agree by `refl`.
