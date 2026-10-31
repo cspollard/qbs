@@ -174,6 +174,32 @@ the probes of discrete `ℕˢ`, `idx-const`/`idx-pre`/`idx-glue` the coverage ax
   (Borel-ness), `Continuous/Monad.Wit-cong` (via `Fun-resp lem`, as before) for the normalisation in `SFiniteNorm`,
   and `Fun-resp` for `Uniform.expansionProbe`.
 
+### To do: canary timings for the `probes-site` branch
+
+Not yet measured.  The branch passes `make check` (140 files, 0 holes, 0 failures at `80125df`), `make longcheck` and
+`make doccheck`.  What is missing is the timing and memory comparison with `main` that every stage of this plan ends
+with (see "Outcome" above for the format).
+
+* **Canaries:** `QBS.Probability`, `QBS.Exponential`, `QBS.Continuous.Monad`, `QBS.Continuous.SFiniteMonad`,
+  `QBS.Continuous.SFiniteNorm`.  Add `QBS.Continuous.SFiniteStrong` and `QBS.Model.StatInstance`: they had the
+  largest number of new explicit `Func` implicits and `random-cast`s.
+* **Method:** a forced recheck of one module against cached dependency interfaces, on each side.
+  1. In a checkout of `main` and in the `probes-site` worktree, run `make all-interfaces` (or `make check`) first,
+     so that only the canary itself is rechecked.
+  2. For each canary, run `make profile-QBS.X.Y`.  It deletes that module's `.agdai` and rechecks it under
+     `/usr/bin/time -p` with `+RTS -s`, once per profile mode.  Read the wall time (`real`) and `maximum residency`
+     from the `modules`-mode output, `profile/QBS/X/Y.modules.txt`.
+  3. Repeat each canary at least twice per side and keep the lower figure.  Run nothing else Agda-heavy at the same
+     time: other sessions share the machine.  Wrap the command in `scripts/agda-locked` from the main checkout if
+     another session is building.
+* **Record:** one bullet under "Stage 1 as first planned" giving new vs old for each canary, e.g.
+  `SFiniteMonad 4.66 s / 656 MB vs 4.83 s / 634 MB`.  Treat a slowdown above about 20 %, or any module over 30 s, as a
+  regression.  For those, run `make profile-QBS.X.Y` and read the `definitions` output to name the slow
+  declaration.  The usual suspects are unification against `Func` records in `glueₛ`/`_∘ₛ_` composites.  An
+  explicit implicit argument or a named `Func` (as `reassoc`, `Ψ₂ₛ` were) is the known fix.
+* The old figures for `SFiniteMonad`, `SFiniteNorm` and `Continuous/Monad` (in "Outcome") are a sanity check: `main`
+  should reproduce them to within noise.
+
 ### Further simplifications noticed during the sweep (not done)
 
 Ordered by payoff.  Each one swaps a local definition for a standard structure, or removes a repeated idiom.
