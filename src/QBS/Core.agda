@@ -160,4 +160,4 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- Morphisms are equal when they agree pointwise.
   _≈H_ : ∀ {X Y} → Hom X Y → Hom X Y → Set ℓ
-  _≈H_ {X} {Y} f g = ∀ x → Setoid._≈_ (Carrier Y) (map f ⟨$⟩ x) (map g ⟨$⟩ x)
+  _≈H_ {X} {Y} f g = ∀ {x} → Setoid._≈_ (Carrier Y) (map f ⟨$⟩ x) (map g ⟨$⟩ x)

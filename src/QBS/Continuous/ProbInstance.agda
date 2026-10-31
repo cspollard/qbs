@@ -91,14 +91,14 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) where
     ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (unprobe S m) μ
         , IsProb-push {λ r → map m ⟨$⟩ r} (unprobe S m) {μ} pμ
     ; measure = lawH (idH S)
-    ; measure-push = λ m (μ , _) _ g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
-    ; measure-total = λ (μ , pμ) pt f →
+    ; measure-push = λ m (μ , _) {_} g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
+    ; measure-total = λ (μ , pμ) {pt} f →
         let c = proj₁ (map f ⟨$⟩ pt)
             c≤1 = proj₂ (map f ⟨$⟩ pt)
         in Setoid.trans Aˢ (I-cong μ (λ _ → Setoid.refl Aˢ) _ (Fun-const c c≤1)) (I-const μ pμ c c≤1)
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ _
-        in probe S {α = α p} (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
+        in probe S {α = α p} (α-random p) , (m p , ok p) , (λ {pt} f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
     }
 
   continuousProbFubini : Fubini (L.suc L.zero) (ℛQ S) (cartesianClosed S) continuousMonad continuousProbLaws
@@ -107,11 +107,11 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) where
         { from = fromH
         ; to = toH
         ; iso = record
-            { isoˡ = split-merge
-            ; isoʳ = λ { (r₁ , r₂) → merge-evens r₁ r₂ , merge-odds r₁ r₂ } }
+            { isoˡ = λ {x} → split-merge x
+            ; isoʳ = λ { {r₁ , r₂} → merge-evens r₁ r₂ , merge-odds r₁ r₂ } }
         }
     ; tensor = λ (μ , pμ) (ν , pν) → tensor₁ μ ν , IsProb-tensor₁ μ ν pμ pν
-    ; measure-tensor = λ μp@(μ , _) νp@(ν , _) pt f →
+    ; measure-tensor = λ μp@(μ , _) νp@(ν , _) {pt} f →
         Setoid.trans Aˢ
           (I-cong μ (λ r → I-cong ν (λ s → Func.cong (map f)
               (merge-evens r s , merge-odds r s)) _ _) _ _)

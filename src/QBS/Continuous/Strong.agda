@@ -109,17 +109,17 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
   strength = record
     { strengthen = record
         { η = λ { (X , Y) → σH X Y }
-        ; commute = λ f (x , q) h → Ir (m q) (λ r → Setoid.refl Aˢ)
-        ; sym-commute = λ f (x , q) h → Ir (m q) (λ r → Setoid.refl Aˢ)
+        ; commute = λ f {(x , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
+        ; sym-commute = λ f {(x , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
         }
-    ; identityˡ = λ (_ , q) h → Ir (m q) (λ r → Setoid.refl Aˢ)
-    ; η-comm = λ {A} {B} x h → Func.cong (map h) (Setoid.refl (Carrier (_×Q_ S A B)))
-    ; μ-η-comm = λ {A} {B} (a , P) g →
+    ; identityˡ = λ {_} {(_ , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
+    ; η-comm = λ {A} {B} {x} h → Func.cong (map h) (Setoid.refl (Carrier (_×Q_ S A B)))
+    ; μ-η-comm = λ {A} {B} {(a , P)} g →
         Setoid.trans Aˢ (∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g)
           (Setoid.trans Aˢ (Ir (m P) (λ r → ∫-σ {A} {B} a (α P ⟨$⟩ r) g))
             (Setoid.trans Aˢ (Setoid.sym Aˢ (∫-join {B} P (fixH {A} {B} a g)))
               (Setoid.sym Aˢ (∫-σ {A} {B} a (joinPre P) g))))
-    ; strength-assoc = λ ((x , y) , q) h → Ir (m q) (λ r → Setoid.refl Aˢ)
+    ; strength-assoc = λ {_} {_} {_} {((x , y) , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
     }
 
   strongMonad : StrongMonad V
@@ -152,7 +152,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
     (Func.cong (α s) (merge-evens k r) , Func.cong (α t) (merge-odds k r))
 
   commutative : Commutative braided strongMonad
-  commutative = record { commutes = λ {X} {Y} (s , t) g →
+  commutative = record { commutes = λ {X} {Y} {(s , t)} g →
     Setoid.trans Aˢ
       (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
       (Setoid.trans Aˢ

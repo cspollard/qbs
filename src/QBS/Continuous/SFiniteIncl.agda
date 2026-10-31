@@ -177,11 +177,11 @@ module SFiniteIncl (lem : LEM₀) where
   inclusion = record
     { α = record
         { η = ιH
-        ; commute = λ {X} {Y} f p h → ι-nat {X} {Y} f p h
-        ; sym-commute = λ {X} {Y} f p h → sym (ι-nat {X} {Y} f p h)
+        ; commute = λ {X} {Y} f {p} h → ι-nat {X} {Y} f p h
+        ; sym-commute = λ {X} {Y} f {p} h → sym (ι-nat {X} {Y} f p h)
         }
-    ; unit-comp = λ {X} x h → ι-unit {X} x h
-    ; mult-comp = λ {U} q h → ι-mult {U} q h
+    ; unit-comp = λ {X} {x} h → ι-unit {X} x h
+    ; mult-comp = λ {U} {q} h → ι-mult {U} q h
     }
 
   ----------------------------------------------------------------------------

@@ -26,8 +26,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; F₁ = map
     ; identity = λ {A} → Setoid.refl (Carrier A)
     ; homomorphism = λ {_} {_} {C} → Setoid.refl (Carrier C)
-    ; F-resp-≈ = λ p {x} → p x
+    ; F-resp-≈ = λ p → p
     }
 
   Forget-faithful : Faithful Forget
-  Forget-faithful eq x = eq {x}
+  Forget-faithful eq = eq

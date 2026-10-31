@@ -110,15 +110,15 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   strength = record
     { strengthen = record
         { η = λ { (X , Y) → σH X Y }
-        ; commute = λ _ _ _ → Setoid.refl Aˢ
-        ; sym-commute = λ _ _ _ → Setoid.refl Aˢ
+        ; commute = λ _ {_} _ → Setoid.refl Aˢ
+        ; sym-commute = λ _ {_} _ → Setoid.refl Aˢ
         }
-    ; identityˡ = λ _ _ → Setoid.refl Aˢ
-    ; η-comm = λ _ _ → Setoid.refl Aˢ
-    ; μ-η-comm = λ {A} {B} (a , P) g →
+    ; identityˡ = λ {_} {_} _ → Setoid.refl Aˢ
+    ; η-comm = λ {_} {_} {_} _ → Setoid.refl Aˢ
+    ; μ-η-comm = λ {A} {B} {(a , P)} g →
         Setoid.trans Aˢ (∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g)
           (Setoid.sym Aˢ (∫-join {B} P (fix {A} {B} a g)))
-    ; strength-assoc = λ _ _ → Setoid.refl Aˢ
+    ; strength-assoc = λ {_} {_} {_} {_} _ → Setoid.refl Aˢ
     }
 
   open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
@@ -157,7 +157,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided strength)
 
   commutative : Commutative braided strongMonad
-  commutative = record { commutes = λ {X} {Y} (s , t) g →
+  commutative = record { commutes = λ {X} {Y} {(s , t)} g →
     Setoid.trans Aˢ
       (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
       (Setoid.trans Aˢ (fubini {X} {Y} s t g)

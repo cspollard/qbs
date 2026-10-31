@@ -368,26 +368,26 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   TF = record
     { F₀ = TQ
     ; F₁ = TH
-    ; identity = λ {X} p g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
-    ; homomorphism = λ {X} {Y} {Z} {f} {h} p g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
-    ; F-resp-≈ = λ {X} {Y} {f} {h} e p g → I-cong (m p) (λ r → Func.cong (map g) (e (α p ⟨$⟩ r))) _ _
+    ; identity = λ {X} {p} g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
+    ; homomorphism = λ {X} {Y} {Z} {f} {h} {p} g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
+    ; F-resp-≈ = λ {X} {Y} {f} {h} e {p} g → I-cong (m p) (λ r → Func.cong (map g) (e {α p ⟨$⟩ r})) _ _
     }
 
   ηN : NaturalTransformation idF TF
   ηN = record
     { η = ηH
-    ; commute = λ {X} {Y} f x h → Setoid.refl Aˢ
-    ; sym-commute = λ {X} {Y} f x h → Setoid.refl Aˢ
+    ; commute = λ {X} {Y} f {x} h → Setoid.refl Aˢ
+    ; sym-commute = λ {X} {Y} f {x} h → Setoid.refl Aˢ
     }
 
   μN : NaturalTransformation (TF ∘F TF) TF
   μN = record
     { η = joinH
-    ; commute = λ {X} {Y} f p h →
+    ; commute = λ {X} {Y} f {p} h →
         Setoid.trans Aˢ (∫-join (mapPre (TH f) p) h)
           (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-map f (α p ⟨$⟩ r) h) _ _)
             (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-map f (joinPre p) h) (∫-join p (_∘H_ S h f)))))
-    ; sym-commute = λ {X} {Y} f p h →
+    ; sym-commute = λ {X} {Y} f {p} h →
         Setoid.trans Aˢ (Setoid.trans Aˢ (∫-map f (joinPre p) h) (∫-join p (_∘H_ S h f)))
           (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (TH f) p) h)
             (I-cong (m p) (λ r → ∫-map f (α p ⟨$⟩ r) h) _ _)))
@@ -398,15 +398,15 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     { F = TF
     ; η = ηN
     ; μ = μN
-    ; assoc = λ {X} p f →
+    ; assoc = λ {X} {p} f →
         Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
           (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)
             (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))))
-    ; sym-assoc = λ {X} p f →
+    ; sym-assoc = λ {X} {p} f →
         Setoid.trans Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))
           (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
             (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)))
-    ; identityˡ = λ {X} p f →
+    ; identityˡ = λ {X} {p} f →
         Setoid.trans Aˢ (∫-join (mapPre (ηH X) p) f) (I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
-    ; identityʳ = λ {X} p f → ∫-join (ηPre p) f
+    ; identityʳ = λ {X} {p} f → ∫-join (ηPre p) f
     }

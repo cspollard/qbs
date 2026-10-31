@@ -106,7 +106,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { ⊥ = 0Q
     ; ⊥-is-initial = record
         { ! = record { map = record { to = λ () ; cong = λ {} } ; map-random = λ () }
-        ; !-unique = λ _ ()
+        ; !-unique = λ { _ {()} }
         }
     }
 
@@ -154,9 +154,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
             constₛ 0 , idx-const 0 , const (inj₂ (α , p)) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
         }
     ; [_,_] = copair
-    ; inject₁ = λ {C} _ → Setoid.refl (Carrier C)
-    ; inject₂ = λ {C} _ → Setoid.refl (Carrier C)
-    ; unique = λ {C} p q → λ { (inj₁ x) → Setoid.sym (Carrier C) (p x) ; (inj₂ y) → Setoid.sym (Carrier C) (q y) }
+    ; inject₁ = λ {C} → Setoid.refl (Carrier C)
+    ; inject₂ = λ {C} → Setoid.refl (Carrier C)
+    ; unique = λ {C} p q → λ { {inj₁ x} → Setoid.sym (Carrier C) (p {x}) ; {inj₂ y} → Setoid.sym (Carrier C) (q {y}) }
     }
 
   cocartesian : Cocartesian (QBSCat S)
@@ -217,7 +217,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       lift-gen = EqC.gfold (Setoid.isEquivalence (Carrier Z)) (map h ⟨$⟩_) λ
         { (inj₁ e) → Func.cong (map h) e
         ; (inj₂ (x , e , e′)) → Setoid.trans (Carrier Z) (Func.cong (map h) e)
-            (Setoid.trans (Carrier Z) (eq x) (Setoid.sym (Carrier Z) (Func.cong (map h) e′)))
+            (Setoid.trans (Carrier Z) (eq {x}) (Setoid.sym (Carrier Z) (Func.cong (map h) e′)))
         }
 
       coeq-fun : Func CoeqS (Carrier Z)
@@ -236,10 +236,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { obj = CoeqQ f g
     ; arr = coeq-arr f g
     ; isCoequalizer = record
-        { equality = λ x → fwd (inj₂ (x , Setoid.refl (Carrier Y) , Setoid.refl (Carrier Y))) ◅ ε
+        { equality = λ {x} → fwd (inj₂ (x , Setoid.refl (Carrier Y) , Setoid.refl (Carrier Y))) ◅ ε
         ; coequalize = λ {_} {h} eq → coeq-hom f g h eq
-        ; universal = λ {C} _ → Setoid.refl (Carrier C)
-        ; unique = λ {C} p x → Setoid.sym (Carrier C) (p x)
+        ; universal = λ {C} → Setoid.refl (Carrier C)
+        ; unique = λ {C} p → Setoid.sym (Carrier C) p
         }
     }
 

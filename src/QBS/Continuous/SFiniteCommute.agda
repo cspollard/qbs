@@ -247,5 +247,5 @@ module SFiniteCommute (lem : LEM₀) where
   catA s t g = commA s t g
 
   commutative : Commutative braided strongMonad
-  commutative = record { commutes = λ {X} {Y} (s , t) g →
+  commutative = record { commutes = λ {X} {Y} {(s , t)} g →
     trans (catA s t g) (trans (Fub.fubiniᴹ s t g) (sym (catB s t g))) }
