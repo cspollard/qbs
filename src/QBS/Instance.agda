@@ -31,7 +31,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- Everything but the probability monad holds for every random source; the
   -- monad is taken as a hypothesis until a concrete one is constructed.
-  isQBSLike : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) →
+  isQBSLike : ProbabilityInterface ℓ (ℛQ S) (cartesianClosed S) →
     IsQBSLike ℓ (QBSCat S)
   isQBSLike P = record
     { ℛ = ℛQ S
@@ -43,7 +43,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     }
 
   -- Likewise for conditioning: the measure monad is a hypothesis.
-  isStatisticalQBSLike : (P : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)) →
+  isStatisticalQBSLike : (P : ProbabilityInterface ℓ (ℛQ S) (cartesianClosed S)) →
     StatisticalInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) P
       (Cocartesian.Cocartesian.coproducts (cocartesian S)) →
     IsStatisticalQBSLike ℓ (QBSCat S)
