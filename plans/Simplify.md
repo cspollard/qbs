@@ -362,7 +362,11 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
 pass; one commit per item.  Canaries (forced recheck, `--profile=modules`, warm interfaces, two runs each, on `main`
 before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 vs 2.81 s, `Continuous/Monad` 3.36 vs
 3.57 s, `SFiniteMonad` 4.42 vs 4.57 s, `SFiniteNorm` 6.28 vs 6.49 s, `SFiniteStrong` 4.89 vs 5.03 s, `StatInstance`
-10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  @@CANARY@@
+10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  Re-timed on the same machine state, the baseline had itself
+drifted up 2–3 % (`Exponential` 2.65 s, `Probability` 4.98 s), so the residual cost of this branch is about 5–6 % on
+`Exponential` and `Probability`, and 3–4 % elsewhere.  Moving `Forget` into its own module `QBS.Category.Forget`
+made no difference, so the cost is the extra definitions in `Core` (which every module loads), not the import.  It is
+well under the 20 % threshold and the work was left as is.
 
 * **6 done.**  `reassocR` is exported from `Continuous/Sample`; both local copies are gone.
 * **5 done, first half.**  `⇑` now lives in `Core` next to `constₛ`, for any `≡`-setoid.  The second half (one
@@ -376,7 +380,7 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
   projection, patterns and remain (18 `random-cast` sites left).
 * **1 and 2 partly done, rewrite deferred.**  80 `map-random =` sites in 28 files build `Hom` records, so redefining
   `QBSCat` as a `SubCat` (a Σ-typed hom) would touch all of them and change the normal forms the CCC and monad
-  conversions rely on.  Instead `Category.agda` gains `Forget : Functor (QBSCat S) (Setoids ℓ ℓ)` and `Forget-faithful`.
+  conversions rely on.  Instead the new module `QBS.Category.Forget` has `Forget : Functor (QBSCat S) (Setoids ℓ ℓ)` and `Forget-faithful`.
   `Measurability` as a one-object `SubCat` is untouched.
 * **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
   circular `Idx`/`QBS` dependency broken first and was not attempted.
