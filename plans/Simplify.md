@@ -128,7 +128,7 @@ sections are in suggested order of work.
    - Sites: `SFinite.agda:126-182` (`WitM`, `TQ-resp/const/pre/glue`) against `Continuous/Monad.agda:116-123,
      150-169, 193-226`.  The only difference is `≈ᴹ` instead of `≈ᵖ`.
    - Do: parameterise `Wit` and the probes of `TQ` by an equivalence `_≋_` on `Pre X` with `≈ᵖ ⊆ ≋`.  Do this
-     together with Stage 1a item 7 (index `Wit` by `Func`).
+     by parameterising on the raw family (Stage 1a item 7, re-indexing by `Func`, was tried and does not help).
    - Payoff: about 60 lines; `fromWit` goes.
    - Risk: keep the `abstract` blocks for compile time.
 3. **Colimits are one construction written three times.**
@@ -317,12 +317,12 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
-   cleaned casts, and item 7 is the `Wit` work that B.1/B.2 wait for.
+   cleaned casts, (item 7 was tried and closed).
 3. Then A.1 and A.2 together: one `Half` module, then the `Poset` record.  This is the biggest readability gain in
    Analysis.
 4. Then A.5 together with the `nat` and `½` cleanup.
 5. Then B.3 and B.5 (colimits, codiscrete), and E.1.
-6. Then B.1 and B.2, after Stage 1a item 7.  Time the canaries before and after (see plan 4, "To do: canary
+6. Then B.1 and B.2 (Stage 1a item 7 turned out not to be a prerequisite).  Time the canaries before and after (see plan 4, "To do: canary
    timings").
 7. B.4, E.2 (full option), F.1 and F.2 as time allows.
 
@@ -362,11 +362,7 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
 pass; one commit per item.  Canaries (forced recheck, `--profile=modules`, warm interfaces, two runs each, on `main`
 before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 vs 2.81 s, `Continuous/Monad` 3.36 vs
 3.57 s, `SFiniteMonad` 4.42 vs 4.57 s, `SFiniteNorm` 6.28 vs 6.49 s, `SFiniteStrong` 4.89 vs 5.03 s, `StatInstance`
-10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  Re-timed on the same machine state, the baseline had itself
-drifted up 2–3 % (`Exponential` 2.65 s, `Probability` 4.98 s), so the residual cost of this branch is about 5–6 % on
-`Exponential` and `Probability`, and 3–4 % elsewhere.  Moving `Forget` into its own module `QBS.Category.Forget`
-made no difference, so the cost is the extra definitions in `Core` (which every module loads), not the import.  It is
-well under the 20 % threshold and the work was left as is.
+10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  Re-timed on the same machine state, the baseline had itself drifted up 2–3 %.  Stage 1b's run then showed `Exponential` back at 2.64 s without `Exponential` or `Core` changing, so the residual 5–6 % seen on `Exponential`/`Probability` here was drift, not a cost of the `Core` additions.  Moving `Forget` into its own module made no difference either.
 
 * **6 done.**  `reassocR` is exported from `Continuous/Sample`; both local copies are gone.
 * **5 done, first half.**  `⇑` now lives in `Core` next to `constₛ`, for any `≡`-setoid.  The second half (one
@@ -385,21 +381,28 @@ well under the 20 % threshold and the work was left as is.
 * **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
   circular `Idx`/`QBS` dependency broken first and was not attempted.
 
-## Stage 1b outcome (item 4, second half; 7 and 8 still deferred)
+## Stage 1b outcome (item 4, second half; 7 and 8 closed)
 
 `make check` (142 files, 0 holes, 0 failures), `make longcheck` (36 flagged) and `make doccheck` pass.
 
-* **4b done.**  In `Model/Monad`, `Pre.α` and `Wit.wα` became `Func`s, `αₛ` and `wαₛ`; `α p r` and `wα w r` remain as
+* **4b done.**  The `Exponential:63` and `Continuous/Monad:153` casts look alike but are not: `Exponential`'s map is a bespoke
+  record rather than `glueₛ`, so a precomposition lemma (`random-glue-pre`, tried and reverted) clears only one site.
+  The `SFinite`/`SFiniteMonad` casts belong with B.2.  In `Model/Monad`, `Pre.α` and `Wit.wα` became `Func`s, `αₛ` and `wαₛ`; `α p r` and `wα w r` remain as
   functions defined from them, so most uses are unchanged.  Constructing a `Pre` now takes a `Func` (`map f ∘ₛ αₛ p`,
   `constₛ x`, `< constₛ x , αₛ q >ₛ`, `⇑ face`), and the discrete model's `random-cast`s are gone (22 sites before,
   4 left, none in the discrete model).  Touched: `Model/{Monad,Strong,ProbInstance,StatInstance}`,
   `Example/{Program,Bayes,HardConditioning,Conditioning}` and `Inference/Bayesian`.
-  Canaries, this branch vs `main` (two runs each): `Probability` 5.00 vs 5.25 s, `Exponential` 2.64 vs 2.81 s,
+  Canaries, this branch vs the earlier Stage 1a run (labelled "main" here; not re-run in the same session) (two runs each): `Probability` 5.00 vs 5.25 s, `Exponential` 2.64 vs 2.81 s,
   `Continuous/Monad` 3.43 vs 3.57 s, `SFiniteMonad` 4.55 vs 4.56 s, `SFiniteNorm` 6.45 vs 6.44 s,
   `SFiniteStrong` 5.02 vs 5.04 s, `StatInstance` 9.32 vs 10.58 s (-12 %); memory unchanged.  The earlier 5 % Stage 1a
   cost on `Exponential`/`Probability` shows up as drift here, so treat the small differences as noise.
-* **7 still deferred.**  Re-indexing `Wit` by a `Func Rˢ (PreS X)` would touch `Model/{Monad,Strong,StatInstance}`
-  and, through `WitM`, 16 files in all, to remove only the `β ⟨$⟩_` eta noise.  The plan's earlier attempt failed on
-  `C.PreS`/`PreMS` equalities, and B.1/B.2 can proceed without it by parameterising `Wit` by `_≋_` directly.  Revisit
-  only if B.2 needs it.
-* **8 still deferred**, as before.
+* **7 tried and reverted.**  I indexed `Continuous/Monad.Wit` by `Func Rˢ (PreS X)`; `Continuous/Monad` itself checked
+  (16 lines added, 30 removed, with `Wit-cong` and `witₛ` deleted).  It then fails in `Continuous/SFinite.fromWit`
+  (`β has type R₁ → Pre (XW X)` where `Func Rˢ (C.PreS (XW X))` is wanted) and in `SFiniteNorm:459`, the only user of
+  `witₛ`.  Both start from a raw family plus a witness and need the congruence that `Wit-cong` proves, so the obligation
+  moves to the use site rather than going away.  `WitM` cannot take a `Func` into `PreMS` instead, since `fromWit`
+  would then compare two `Func`s with the same `to` and different `cong`.  Net: no line saving.  Item 7 is closed as
+  not worthwhile.  B.2 should parameterise `Wit` by `_≋_` on the raw family, not re-index it.
+* **8 closed, nothing to collapse.**  No discrete-ℕ QBS is rebuilt anywhere: `Colimits` and `Complete` use `idx-const` and
+  `idx-pre` directly.  `ℕQ` would be a pure addition with no consumer.  (Not the circularity the first draft cited: the
+  plan always put it in `Colimits`, not `Core`.)
