@@ -200,6 +200,24 @@ with (see "Outcome" above for the format).
 * The old figures for `SFiniteMonad`, `SFiniteNorm` and `Continuous/Monad` (in "Outcome") are a sanity check: `main`
   should reproduce them to within noise.
 
+**Canary timings (measured 2026-10-31).**  Forced rechecks of one module against warm interfaces, `--profile=modules`
+with `+RTS -s`, two runs per side, lower wall time kept (new = `probes-site` merged into `main` at `70954c1`, old =
+`c6d884c`; `make check` clean on both, 140 files).  New vs old:
+
+* `Probability` 5.66 s / 705 MB vs 5.81 s / 879 MB
+* `Exponential` 3.05 s / 431 MB vs 3.05 s / 428 MB
+* `Continuous/Monad` 3.93 s / 493 MB vs 3.81 s / 442 MB
+* `Continuous/SFiniteMonad` 5.24 s / 614 MB vs 5.18 s / 604 MB
+* `Continuous/SFiniteNorm` 7.35 s / 799 MB vs 7.41 s / 830 MB
+* `Continuous/SFiniteStrong` 5.62 s / 726 MB vs 5.68 s / 713 MB
+* `Model/StatInstance` 11.76 s / 777 MB vs 11.22 s / 734 MB
+
+No regression: the worst slowdown is `StatInstance` at +5 %, well under the 20 % threshold, and no module nears 30 s.
+Old-side figures for `Monad`, `SFiniteMonad` and `SFiniteNorm` reproduce the "Outcome" numbers to within noise.  Several
+first runs were slow (`SFiniteNorm` 30.8 s, `StatInstance` 23.5 s on the old side), probably cold file cache, so the
+second run is the one to trust.  Memory is noisy at about 100 MB between runs of the same module (`Probability`).
+I timed `agda --profile=modules` directly rather than `make profile-…`, which would repeat each module in three modes.
+
 ### Further simplifications noticed during the sweep (not done)
 
 Ordered by payoff.  Each one swaps a local definition for a standard structure, or removes a repeated idiom.

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Run a command (agda, make ...) under a machine-wide lock, so that only one Agda build runs at a time
+# across all worktrees and agents; others wait their turn.  macOS has no flock, so the lock is a
+# directory made atomically with mkdir; a stale lock (owner pid dead) is broken.
+#   usage: scripts/agda-locked make progress
+#          scripts/agda-locked agda src/QBS/Foo.agda
+LOCK=${QBS_BUILD_LOCK:-/tmp/qbs-build.lock}
+while ! mkdir "$LOCK" 2>/dev/null; do
+  owner=$(cat "$LOCK/pid" 2>/dev/null)
+  if [ -n "$owner" ] && ! kill -0 "$owner" 2>/dev/null; then rm -rf "$LOCK"; continue; fi
+  sleep 5
+done
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT INT TERM
+# cap the Agda heap so a runaway module fails instead of swapping the machine (override with QBS_AGDA_HEAP)
+export GHCRTS="${GHCRTS:--M${QBS_AGDA_HEAP:-8G}}"
+"$@"
