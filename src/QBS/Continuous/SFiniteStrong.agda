@@ -48,7 +48,7 @@ module SFiniteStrong (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Exten
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zeroW)
+  open Weights lem using (WQ; mulW; constW; oneW; zeroâ)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A

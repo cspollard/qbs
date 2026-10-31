@@ -51,7 +51,7 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zeroW)
+  open Weights lem using (WQ; mulW; constW; oneW; zeroâ)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -217,7 +217,7 @@ module SFiniteIncl (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   zeroPre = scorePre 0#
 
   zeroH : Hom S (1Q S) (TQ (1Q S))
-  zeroH = _∘H_ S {1Q S} {WQ} {TQ (1Q S)} scoreH zeroW
+  zeroH = _∘H_ S {1Q S} {WQ} {TQ (1Q S)} scoreH zeroâ
 
   zero-bind : ∀ (k : Hom S (1Q S) (TQ (1Q S))) (pt : ∣ 1Q S ∣) (h : Hom S (1Q S) WQ) →
     ∫ᴹ {1Q S} (joinPre {1Q S} (mapM {1Q S} {TQ (1Q S)} k zeroPre)) h ≈ ∫ᴹ {1Q S} zeroPre h

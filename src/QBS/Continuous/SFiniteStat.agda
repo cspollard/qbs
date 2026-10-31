@@ -58,7 +58,7 @@ open import QBS.Continuous.SFiniteDecomp using (module SFiniteDecomp)
 open import QBS.Continuous.SFiniteNorm using (module SFiniteNorm)
 open import QBS.Continuous.SFiniteStatBridge using (module SFiniteStatBridge)
 open import QBS.Continuous.ProbInstance using (module ContinuousProb)
-open import QBS.Statistical using (StatisticalInterface; WeightMonoid; SubMonad; Score; CountableSums; Normalization)
+open import QBS.Statistical using (StatisticalInterface; CommutativeMonoidWithZero; SubMonad; Score; CountableSums; Normalization)
 open import QBS.Exponential using (cartesianClosed)
 open import QBS.Probability using (ProbabilityInterface)
 import Categories.Category.Cocartesian as Cocartesian
@@ -80,7 +80,7 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zeroW)
+  open Weights lem using (WQ; mulW; constW; oneW; zeroâ)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -108,12 +108,12 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   ----------------------------------------------------------------------------
   -- the parts of the interface
 
-  continuousWeights : WeightMonoid (QBSCat S) (cartesianClosed S)
+  continuousWeights : CommutativeMonoidWithZero (QBSCat S) (cartesianClosed S)
   continuousWeights = record
     { W = WQ
     ; mulW = mulW
     ; oneW = oneW
-    ; zeroW = zeroW
+    ; zeroâ = zeroâ
     ; mul-assoc = λ a b c z → *-assoc _ _ _
     ; mul-comm = λ a b z → *-comm _ _
     ; mul-one = λ a z → *-identityʳ _

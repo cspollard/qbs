@@ -17,7 +17,7 @@ Open items are ordered easiest first; finished items are at the end. Skeleton mo
 ## Audit of the s-finite work (HISTORICAL, 2026-10-29: all holes are since filled and `make check` passes; kept as a record of the proof routes; the counts and hole map below are out of date)
 
 **Coverage.** All 34 fields of `StatisticalInterface` are present in `SFiniteStat.continuousStat`: 16 are filled
-(`W`, `mulW`, `oneW`, `zeroW`, the four monoid laws, `commutativeMonad`, `inclusion`, `zero`, `score`, `sumM`, `scaleM`,
+(`W`, `mulW`, `oneW`, `zeroâ`, the four monoid laws, `commutativeMonad`, `inclusion`, `zero`, `score`, `sumM`, `scaleM`,
 `sumK`, `normalize`) and 18 are holes. `SFiniteDecomp` has 12 holes and `SFiniteNorm` 13 (43 in all; `scripts/holes.py`
 counts them). Every intermediate statement the proofs need is now a named top-level declaration, so no hole hides an
 undeclared lemma. Added in this audit: `pieceψ(-Meas)`, `∫ᴹ-pieces`, `probeOf`, `pieceMass`, `pieceProb(-int)` in `SFiniteDecomp`;

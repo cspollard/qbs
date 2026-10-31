@@ -27,7 +27,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 
 ### `QBS.Statistical`
 `StatisticalInterface` on top of a `ProbabilityInterface`, assembled from five small structures (their fields are re-exported, so `open StatisticalInterface St` still gives every name), plus `scaled-laws` (every measure is a countable sum of scaled laws):
-- `WeightMonoid` (`weights`): `W`, `mulW`, `oneW`, `zeroW`, and `mul-assoc`, `mul-comm`, `mul-one`, `mul-zero`.
+- `CommutativeMonoidWithZero` (`weights`): `W`, `mulW`, `oneW`, `zeroâ`, and `mul-assoc`, `mul-comm`, `mul-one`, `mul-zero`.
 - `SubMonad` (`measures`): `commutativeMonad` (the measure monad `M`), `inclusion` (Prob into `M`), `inclusion-strong`.
 - `Score` (`scoring`): `zero` (zero measure), `score : W ⇒ M 1`, `score-zero`, `score-one`, `score-mul`, `zero-bind`.  It *defines* `scaleM a t = μ ∘ M t ∘ score ∘ a` and proves `scale-one`, `scale-mul`, `scale-return`, `scale-nat`, `scale-join`.
 - `CountableSums` (`sums`): `sumK` (sums of kernels), `sumK-point`, `bind-sumK`, `sum-nat`, `sum-join`; `sumM` is `sumK` on global measures.  `scale-sum` is derived from `bind-sumK`.

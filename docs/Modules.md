@@ -26,7 +26,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Limits` | 139 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
 | `QBS.Probability` | 83 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 43 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 232 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `WeightMonoid`   weights W: a c... |
+| `QBS.Statistical` | 233 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 
 ## Discrete model

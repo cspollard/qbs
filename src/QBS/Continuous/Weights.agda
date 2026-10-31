@@ -50,6 +50,6 @@ module Weights (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     ; map-random = λ _ → Meas-const c
     }
 
-  oneW zeroW : Hom S (1Q S) WQ
+  oneW zeroâ : Hom S (1Q S) WQ
   oneW = constW 1#
-  zeroW = constW 0#
+  zeroâ = constW 0#
