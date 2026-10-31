@@ -62,11 +62,14 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   record Pre (X : QBS S) : Set ℓ where
     constructor mk
     field
-      α : R → ∣ X ∣
-      α-random : Random X (⇑ α)
+      αₛ : Func Rˢ (Carrier X)
+      α-random : Random X αₛ
       μ : R → ∣A∣
       μ-ok : Ok μ
   open Pre
+
+  α : ∀ {X} → Pre X → R → ∣ X ∣
+  α p r = αₛ p ⟨$⟩ r
 
   -- integration against a test function
   ∫ : ∀ {X} → Pre X → Func (Carrier X) Aˢ → ∣A∣
@@ -89,13 +92,16 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- The witness that β : R → Pre X is a random element of the measure space.
   record Wit {X : QBS S} (β : R → Pre X) : Set ℓ where
     field
-      wα : R → ∣ X ∣
-      wα-random : Random X (⇑ wα)
+      wαₛ : Func Rˢ (Carrier X)
+      wα-random : Random X wαₛ
       wg : R → R → ∣A∣
       wg-ok : ∀ r → Ok (wg r)
-      w-eq : ∀ r → β r ≈ᵖ mk wα wα-random (wg r) (wg-ok r)
+      w-eq : ∀ r → β r ≈ᵖ mk wαₛ wα-random (wg r) (wg-ok r)
 
   open Wit
+
+  wα : ∀ {X} {β : R → Pre X} → Wit β → R → ∣ X ∣
+  wα w r = wαₛ w ⟨$⟩ r
 
   private
     -- the pushforward index map R → R, m ↦ ⟨n, m⟩
@@ -117,20 +123,19 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     ; probes = record
         { Random = λ β → Wit (β ⟨$⟩_)
         ; random-resp = λ e w → record
-            { wα = wα w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
+            { wαₛ = wαₛ w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
             ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
         ; const-random = λ x → record
-            { wα = α x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
+            { wαₛ = αₛ x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
             ; w-eq = λ _ f → Setoid.refl Aˢ }
         ; pre-random = λ {_} {h} w _ → record
-            { wα = wα w ; wα-random = wα-random w ; wg = λ r → wg w (h ⟨$⟩ r)
+            { wαₛ = wαₛ w ; wα-random = wα-random w ; wg = λ r → wg w (h ⟨$⟩ r)
             ; wg-ok = λ r → wg-ok w (h ⟨$⟩ r) ; w-eq = λ r → w-eq w (h ⟨$⟩ r) }
         }
     ; glue-random = λ {i} _ β w → record
-        { wα = λ r → B w (unpairᴺ (lower r))
-        ; wα-random = random-cast X (λ _ → ≡.refl)
-            (QBS.glue-random X {⇑ ι} tt (λ n → ⇑ (wα (w n)) ∘ₛ ⇑ ρ)
-              (λ n → QBS.pre-random X (wα-random (w n)) tt))
+        { wαₛ = glueₛ (⇑ ι) (λ n → wαₛ (w n) ∘ₛ ⇑ ρ)
+        ; wα-random = QBS.glue-random X {⇑ ι} tt (λ n → wαₛ (w n) ∘ₛ ⇑ ρ)
+            (λ n → QBS.pre-random X (wα-random (w n)) tt)
         ; wg = λ r → push (φ (i ⟨$⟩ r)) (wg (w (i ⟨$⟩ r)) r)
         ; wg-ok = λ r → ok-push (φ (i ⟨$⟩ r)) (wg-ok (w (i ⟨$⟩ r)) r)
         ; w-eq = λ r f →
@@ -153,7 +158,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
 
   mapPre : ∀ {X Y} → Hom S X Y → Pre X → Pre Y
   mapPre {Y = Y} f p =
-    mk (λ r → map f ⟨$⟩ α p r) (random-cast Y (λ _ → ≡.refl) (map-random f (α-random p))) (μ p) (μ-ok p)
+    mk (map f ∘ₛ αₛ p) (map-random f (α-random p)) (μ p) (μ-ok p)
 
   -- ∫ (mapPre f p) g ≡ ∫ p (g ∘ f)   (definitionally)
 
@@ -164,8 +169,8 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
         ; cong = λ e g → e (Comp.function (map f) g)
         }
     ; map-random = λ w → record
-        { wα = λ r → map f ⟨$⟩ wα w r
-        ; wα-random = random-cast Y (λ _ → ≡.refl) (map-random f (wα-random w))
+        { wαₛ = map f ∘ₛ wαₛ w
+        ; wα-random = map-random f (wα-random w)
         ; wg = wg w
         ; wg-ok = wg-ok w
         ; w-eq = λ r g → w-eq w r (Comp.function (map f) g)
@@ -176,7 +181,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- unit
 
   ηPre : ∀ {X} → ∣ X ∣ → Pre X
-  ηPre {X} x = mk (const x) (random-cast X (λ _ → ≡.refl) (QBS.const-random X x)) (dirac r₀) (ok-dirac r₀)
+  ηPre {X} x = mk (constₛ x) (QBS.const-random X x) (dirac r₀) (ok-dirac r₀)
 
   -- ∫ (ηPre x) f ≈ f x
   ∫-η : ∀ {X} (x : ∣ X ∣) (f : Func (Carrier X) Aˢ) → ∫ {X} (ηPre {X} x) f ≈ f ⟨$⟩ x
@@ -190,8 +195,8 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
             (Setoid.trans Aˢ (Func.cong f e) (Setoid.sym Aˢ (∫-η {X} y f)))
         }
     ; map-random = λ {a} p → record
-        { wα = a ⟨$⟩_
-        ; wα-random = random-cast X (λ _ → ≡.refl) p
+        { wαₛ = a
+        ; wα-random = p
         ; wg = λ r → dirac r
         ; wg-ok = λ r → ok-dirac r
         ; w-eq = λ r f → Setoid.trans Aˢ (∫-η {X} (a ⟨$⟩ r) f)
@@ -203,7 +208,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- join
 
   joinPre : ∀ {X} → Pre (TQ X) → Pre X
-  joinPre p = mk (wα w) (wα-random w)
+  joinPre p = mk (wαₛ w) (wα-random w)
                  (λ k → ∑ (λ r → μ p r * wg w r k)) (ok-bind (μ-ok p) (wg-ok w))
     where w = α-random p
 
@@ -241,14 +246,14 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
         }
     ; map-random = λ {β} w →
         let w₂ = wα-random w in record
-          { wα = wα w₂
+          { wαₛ = wαₛ w₂
           ; wα-random = wα-random w₂
           ; wg = λ r k → ∑ (λ r′ → wg w r r′ * wg w₂ r′ k)
           ; wg-ok = λ r → ok-bind (wg-ok w r) (wg-ok w₂)
           ; w-eq = λ r f →
               Setoid.trans Aˢ (∫-join (β ⟨$⟩ r) f)
                 (Setoid.trans Aˢ (w-eq w r (∫ᶠ f))
-                  (Setoid.sym Aˢ (∫-join (mk (wα w) (wα-random w) (wg w r) (wg-ok w r)) f)))
+                  (Setoid.sym Aˢ (∫-join (mk (wαₛ w) (wα-random w) (wg w r) (wg-ok w r)) f)))
           }
     }
 

@@ -50,7 +50,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
   private
     -- the law of a probe under a probability measure
     lawP : ∀ {X : QBS S} → Hom S (ℛQ S) X → Σ (R → ∣A∣) Ok → Pre X
-    lawP {X} a (μ , ok) = mk (λ r → map a ⟨$⟩ r) (random-cast X (λ _ → ≡.refl) (unprobe S a)) μ ok
+    lawP {X} a (μ , ok) = mk (map a) (unprobe S a) μ ok
 
     lawH : ∀ {X : QBS S} → Hom S (ℛQ S) X → Σ (R → ∣A∣) Ok → Hom S (1Q S) (TQ X)
     lawH {X} a m = record
@@ -63,7 +63,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
 
     kerPre : ∀ {X : QBS S} → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X → Σ (R → ∣A∣) Ok → R → Pre X
     kerPre {X} γ (ν , ok) r =
-      mk (λ s → map γ ⟨$⟩ (r , s)) (random-cast X (λ _ → ≡.refl) (map-random γ {⇑ (λ s → r , s)} (tt , tt))) ν ok
+      mk (map γ ∘ₛ ⇑ (λ s → r , s)) (map-random γ {⇑ (λ s → r , s)} (tt , tt)) ν ok
 
     kerEq : ∀ {X : QBS S} (γ : Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X) (α : R → R) s m →
       map γ ⟨$⟩ (α (ιR (lift (pair (lower s) (lower m)))) , ρR (lift (pair (lower s) (lower m))))
@@ -74,8 +74,8 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     kerH {X} γ m@(ν , ok) = record
       { map = record { to = kerPre γ m ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
       ; map-random = λ {α} _ → record
-          { wα = λ k → map γ ⟨$⟩ (α ⟨$⟩ ιR k , ρR k)
-          ; wα-random = random-cast X (λ _ → ≡.refl) (map-random γ {⇑ (λ k → α ⟨$⟩ ιR k , ρR k)} (tt , tt))
+          { wαₛ = map γ ∘ₛ ⇑ (λ k → α ⟨$⟩ ιR k , ρR k)
+          ; wα-random = map-random γ {⇑ (λ k → α ⟨$⟩ ιR k , ρR k)} (tt , tt)
           ; wg = λ s → push (φ (lower s)) ν
           ; wg-ok = λ s → ok-push _ ok
           ; w-eq = λ s f → Setoid.sym Aˢ (Setoid.trans Aˢ
