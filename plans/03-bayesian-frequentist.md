@@ -48,6 +48,31 @@ The Bayesian half (`Inference/Bayesian`) is independent of both layers until con
 
 **3b DONE (2026-10-30):** `Inference/Bayesian` (discrete, generic in the normalisable semiring): `sequential`, `evidence-sequential`, `predictive-chain`, `evidence-total` (the evidence is a distribution on the data), and the Bernoulli model with `likSeq-counts`, `posterior-seq`, `posterior-exchangeable`; `Inference/CoinBias`, a worked example with numbers (also at the lower reals). Deliberately *not* done here: the side-by-side with the frequentist estimator on the same data. The two halves live in different worlds today (frequentist: the continuous model with signed values `Sg`; Bayesian: the discrete model over a generic semiring), so comparing posterior mean with sample mean, and the Bayes risk of an estimator, needs the layer-2 bridge of 3c (a QBS of signed reals and a kernel `Θ ⇒ M X` in one model). The explicit joint `prior ⊗ likelihood` needs the same kernels; for now the evidence is the marginal of the joint by definition (`evidence p w = ∫ p w`, `evidence-total`).
 
+### 3c in detail (design, 2026-10-30)
+Findings from reading the code, which simplify the plan above:
+- **The signed-reals QBS needs no boundedness.** `Meas` (threshold measurability of `R₁ → Cut`) has `Meas-ext`, `Meas-const`,
+  `Meas-pre`, `Meas-glue`, so `CutQ` (carrier: lower cuts, random elements: `Meas`) is a QBS, exactly as `AQ` is for `Fun`. A
+  signed test on `X` is a pair of maps `X ⇒ CutQ` with a common natural bound: boundedness is a property of the test, not of
+  the space, so the glue problem that blocked a QBS of bounded signed values never arises.
+- **Every model we can actually build is a sampler.** A kernel `Θ ⇒ T X` is, in this library, represented by a *joint* probe: a
+  map `Θ × ℛ ⇒ X` (a program with parameter `θ` and coin flips `r`) together with the fair coin (cf. `Monad.sec` and the
+  `Wit` structure of `TQ`).  So the expectation of a bounded statistic `g` at `θ` is `E (g ∘ draw θ)` over `fairCoin`, a
+  `BSF fairCoin`, and the iid sample is `Xᵢ = g ∘ draw θ ∘ coordᵢ`: Plan 2's coordinates and independence
+  (`CoinCoords.E-coord`, `E-indep`, stated for arbitrary bounded signed functions) apply unchanged.  No product measures on
+  general `Pre X` and no Fubini beyond what is proved.
+- **Hence the bridge is a corollary.** `Frequentist.Moments` of the iid experiment follow from the *single-draw* moments
+  `E g = μ`, `E g² = σ² + μ²` alone (`second` by `E-coord`, `uncorr` by `E-indep`).  That is what `UniformSample.moments`
+  does for `u`; the new lemma `iid-moments` is its generic form.
+- **Not on the critical path:** well-definedness of `E` on the quotient `TQ X` (`p ≈ᵖ q → E-at p g ≃ E-at q g`) needs that
+  integrals of `[0,1]`-tests determine integrals of unbounded measurable functions (truncation `min(g, n)` plus monotone
+  convergence).  Real work, declared as `E-resp` with a hole; models given as samplers do not need it.
+Modules: `Continuous/SignedTests` (`CutQ`, `STest`, `J-bounded`, `pullback` to `BSF`), `Inference/Sampler` (`Sampler`, `draw`,
+`single`, `iidExperiment`, `SingleMoments`, `iid-moments`, unbiasedness corollaries, `kernelOf`, `E-at`, `E-resp`),
+`Inference/UniformSampler` (validation: the uniform-interval model as a sampler reproduces `UniformExperiment`'s theorems).
+Lemmas to prove, in order of difficulty: `CutQ` axioms (direct from `Meas-*`); `J-bounded` (bounded measurable has bounded
+integral: monotonicity and `J` of a constant); `iid-moments` (assembly of Plan 2 lemmas); `kernelOf` random (build the `Wit`);
+the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, optional).
+
 ### Revised staging (supersedes the staging below where they differ)
 - 3a. `Inference/Frequentist` skeleton (declarations with holes), then definitions, then the generic theorems, then the uniform
   instance (`Inference/UniformExperiment`).  Each module compiles on its own in seconds; keep proofs short.
@@ -102,3 +127,7 @@ The Bayesian half (`Inference/Bayesian`) is independent of both layers until con
 - Whether frequentist coverage statements need probabilities as *real-valued* (lower reals suffice for `≥ 1 − α`
   in one direction, but not in general). Resolve when confidence sets are reached.
 - Constructive foundations (see `Docs/ConstructiveLit.md`): keep named hypotheses so this layer stays portable.
+
+### 3c status
+
+Done: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`.  Not done: `E-resp` (well-definedness of `E-at` on `TQ X`; dropped from the code, needs truncation and monotone convergence).
