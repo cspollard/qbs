@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Status (2026-10-31): Stage 1, Stage 1a and Stage 2 so far (A.1, A.2, B.3, B.5) are complete and merged; E.1 is in progress; everything else is open.  See
+definitions.  Status (2026-10-31): Stage 1, Stage 1a and Stage 2 so far (A.1, A.2, B.3, B.5, E.1) are complete and merged; everything else is open.  See
 "Status at a glance" below, and the outcome sections at the end for details.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
@@ -23,12 +23,12 @@ sections are in suggested order of work.
     The direct `SubCategory` definition makes `SFiniteStat` run for over 19 minutes (tag `sigma-wip`).
   - Item 2 is a direct one-object `SubCategory` (`QBS.Category.Measurable`) with a full and faithful `yoneda` embedding.
 
-- Stage 2: A.1, A.2, B.3, B.5 (see the "Stage 2 outcome" sections).
+- Stage 2: A.1, A.2, B.3, B.5, E.1 (see the "Stage 2 outcome" sections).
 
 **Open:**
 - A.5; A.7, A.8 (uncertain).
 - B.1 (largest), B.2, B.4.
-- C.2, C.3, C.5; D.2; E.1, E.2; F.1, F.2; G.
+- C.2, C.3, C.5; D.2; E.2; F.1, F.2; G.
 - Stage 1a item 5, second half: `measₛ`/`idxₛ` (`Borel/Source`) and `witₛ` are still separate constructors.
 - Stage 1a item 4: 4 `random-cast` sites remain (`Exponential`, `Continuous/Monad`, `SFinite*`); the `SFinite*` ones belong with B.2.
 
@@ -217,7 +217,7 @@ sections are in suggested order of work.
 
 ## E. Cantor space, streams and Bool/ℕ helpers
 
-1. **Cantor reindexing is copied across the discrete model.**
+1. **[done]** **Cantor reindexing is copied across the discrete model.**
    - `φ`/`ι`/`ρ` are defined in `Model/Monad.agda:106-116`, `Model/Strong.agda:52-59` and
      `Model/Cantor.agda:22-27`.
    - The push-along-`φ n` proof (`push-∑`, `unpair-pair`) is repeated in `Model/Monad:133-147`, `Model/Strong:77-90`
@@ -335,7 +335,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1, 2 and 3 are done; in step 5, B.3 and B.5 are done and E.1 is in progress; step 4 and steps 6 onward are open.
+Status: steps 1, 2, 3 and 5 are done; step 4 and steps 6 onward are open.
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -474,3 +474,16 @@ Canary `StatInstance` 10.1 vs 10.0 s (concurrent builds; noise).
   `coeq-hom`, `copairΣ` and the injections needed no edits.  `0Q` stays separate (no pieces).
 * **B.5 done.**  `CodiscQ` moved from `Concrete` down into `Core` (since `Concrete` imports `Forget`); `Limits.1Q`,
   `Example/Program.Disc` and `Model/StatInstance.WQ` (each `Random = λ _ → ⊤`) are now `CodiscQ S …`.
+
+## Stage 2 outcome (E.1)
+
+`make check` (144 files, 0 holes, 0 failures), `make longcheck` (36 flagged, baseline) and `make doccheck` pass.  5 files, +31 −60.
+Canaries (forced recheck, concurrent builds, so noisy; "before" taken right after a cold build): `Model/Monad` 3 vs 3 s, `Model/Strong`
+22 vs 14 s, `Model/ProbInstance` 7 vs 5–6 s, `Model/StatInstance` 14 vs 7 s.  Treat the drops as mostly noise; nothing got slower.
+
+* **E.1 done.**  `φ`, `ιR`, `ρR` are defined once in `Model/Cantor`; `Model/Monad` and `Model/Strong` no longer define their own or open
+  `RandomSource`'s `pair`/`unpair`.  New `Cantor.push-pair-∑ n μ H : ∑ k. push (φ n) μ k * H (unpair k) ≈ ∑ m. μ m * H (n , m)` replaces the
+  `push-∑` + `unpair-pair` chain in `Model/Monad` (`TQ` glue), `Model/Strong` (`σH`) and `Model/ProbInstance` (`kerH`; `kerEq` is gone).
+  `ProbInstance.split` is built from `Cantor.cantorIso` (`Inverse.from`/`to`/`inverse`).  `Monad.ι : R → ℕ` stays, as `lower (ιR r)`,
+  since `glueₛ` needs a ℕ index.  The `DS` alias concern did not materialise.  Saving is ~30 lines rather than ~40: the lemma takes an
+  explicit `H` and the call sites keep their lambdas.  Skipped: moving `φ`/`ιR`/`ρR` out of `module Cantor A` (they do not use `A`).

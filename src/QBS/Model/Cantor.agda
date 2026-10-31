@@ -6,7 +6,7 @@ module QBS.Model.Cantor where
 open import Level using (Level; Lift; lift; lower)
 open import Function.Bundles using (_↔_; mk↔ₛ′)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Model.Pairing
@@ -44,3 +44,9 @@ module Cantor {ℓ} (A : CompleteSemiring ℓ) where
   cantor F = trans (sym (∑-reindex cantorIso (λ k → F (ιR k) (ρR k))))
     (trans (∑-cong (λ p → sym (cantor-cong F (proj₁ p) (proj₂ p))))
            (∑-Σ {J = λ _ → R} (λ p → F (proj₁ p) (proj₂ p))))
+
+  -- the weights of ⟨n, –⟩ pushed along φ n, tested against a function of the unpaired indices
+  push-pair-∑ : ∀ n (μ : R → ∣A∣) (H : ℕ × ℕ → ∣A∣) →
+    ∑ (λ k → push (φ n) μ k * H (unpair (lower k))) ≈ ∑ (λ m → μ m * H (n , lower m))
+  push-pair-∑ n μ H = trans (push-∑ (φ n) μ (λ k → H (unpair (lower k))))
+    (∑-cong (λ m → *-cong refl (reflexive (≡.cong H (unpair-pair n (lower m))))))

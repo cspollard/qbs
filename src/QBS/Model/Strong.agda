@@ -22,10 +22,10 @@ open import Categories.Category.Core using (Category)
 open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_)
-open import QBS.Model.Pairing
 open import QBS.Model.DiscreteSource
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
+open import QBS.Model.Cantor
 open import QBS.Model.Monad
 
 module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
@@ -36,7 +36,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   private
     open DS ℓ using (S)
     R = Lift ℓ ℕ
-  open RandomSource S using () renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
+  open Cantor A using (φ; ιR; ρR; push-pair-∑)
   open QBS
   open Hom
   open Pre
@@ -49,15 +49,6 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
       (μ q) (μ-ok q)
 
   private
-    φ : ℕ → R → R
-    φ n m = lift (pairᴺ n (lower m))
-
-    ιR : R → R
-    ιR k = lift (proj₁ (unpairᴺ (lower k)))
-
-    ρ : R → R
-    ρ k = lift (proj₂ (unpairᴺ (lower k)))
-
     -- the test function y ↦ f (x, y)
     fix : ∀ {X Y : QBS S} → ∣ X ∣ → Func (×-setoid (Carrier X) (Carrier Y)) Aˢ → Func (Carrier Y) Aˢ
     fix {X} {Y} x f = record
@@ -75,17 +66,13 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
                 (Func.cong f (ex , Setoid.refl (Carrier Y)))))
         }
     ; map-random = λ {β} (pb , w) → record
-        { wαₛ = < (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρ >ₛ
-        ; wα-random = QBS.pre-random X {f = ⇑ ιR} pb tt , QBS.pre-random Y {f = ⇑ ρ} (wα-random w) tt
+        { wαₛ = < (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρR >ₛ
+        ; wα-random = QBS.pre-random X {f = ⇑ ιR} pb tt , QBS.pre-random Y {f = ⇑ ρR} (wα-random w) tt
         ; wg = λ r → push (φ (lower r)) (wg w r)
         ; wg-ok = λ r → ok-push (φ (lower r)) (wg-ok w r)
         ; w-eq = λ r f →
             Setoid.trans Aˢ (w-eq w r (fix {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
-              (Setoid.sym Aˢ (Setoid.trans Aˢ
-                (push-∑ (φ (lower r)) (wg w r) (λ k → f ⟨$⟩ B (β ⟨$⟩_) w (unpairᴺ (lower k))))
-                (∑-cong (λ m → *-cong (Setoid.refl Aˢ)
-                  (Func.cong f (Setoid.reflexive (Carrier (_×Q_ S X Y))
-                    (≡.cong (B (β ⟨$⟩_) w) (unpair-pairᴺ (lower r) (lower m)))))))))
+              (Setoid.sym Aˢ (push-pair-∑ (lower r) (wg w r) (λ u → f ⟨$⟩ B (β ⟨$⟩_) w u)))
         }
     }
     where
