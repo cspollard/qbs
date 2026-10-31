@@ -6,6 +6,7 @@ module QBS.Analysis.ClopenMeasure where
 
 open import Level using (suc; zero)
 open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_)
+open import Data.Bool.Properties using (¬-not)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Empty using (⊥; ⊥-elim)
@@ -96,7 +97,7 @@ module Premeasure {A : OmegaSemiring (suc zero)} (R : Arch A) where
     μ0-mono (leaf true) b h = μ0-full b (λ x → h x ≡.refl)
     μ0-mono (split a₀ a₁) (leaf true) h = μ0-≤1 (split a₀ a₁)
     μ0-mono (split a₀ a₁) (leaf false) h = μ0-empty (split a₀ a₁)
-      (λ x → ¬true⇒false (eval (split a₀ a₁) x) (λ e → true≢false (≡.sym (h x e))))
+      (λ x → ¬-not (λ e → true≢false (≡.sym (h x e))))
     μ0-mono (split a₀ a₁) (split b₀ b₁) h =
       *-mono half (+-mono (μ0-mono a₀ b₀ (λ y → h (cons false y))) (μ0-mono a₁ b₁ (λ y → h (cons true y))))
 

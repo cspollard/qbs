@@ -14,6 +14,7 @@ open import Data.Unit.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (yes; no)
+open import Relation.Nullary.Decidable using (toSum)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
@@ -44,9 +45,7 @@ borel-const P (inj₁ p) = resp (λ x → (λ _ → p) , (λ _ → tt)) ⊤-bore
 borel-const P (inj₂ np) = resp (λ x → (λ b → ⊥-elim b) , (λ p → np p)) ⊥-borel
 
 bool-dec : ∀ (x y : Bool) → (x ≡ y) ⊎ ((x ≡ y) → ⊥)
-bool-dec x y with x ≟ y
-... | yes p = inj₁ p
-... | no ¬p = inj₂ ¬p
+bool-dec x y = toSum (x ≟ y)
 
 -- merge is measurable in each argument
 measurable-merge₁ : ∀ a → Measurable (mergeC a)

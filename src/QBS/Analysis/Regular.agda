@@ -12,6 +12,7 @@ module QBS.Analysis.Regular where
 
 import Level as L
 open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_)
+open import Data.Bool.Properties using (¬-not)
 open import Data.Nat.Base using (ℕ; zero; suc; _⊔_; _<_)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕₚ
@@ -128,7 +129,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
     (≤-trans (≤-reflexive (trans (+-cong (ν-clopen (∁ᶜ C)) refl) (μ0-∁ C))) ≤-+ʳ)
     where
       sP : ∀ x → (Pt C x → ⊥) → x ∈ᵒ clopen (∁ᶜ C)
-      sP x nt = 0 , ≡.trans (eval-∁ C x) (≡.cong not (¬true⇒false _ nt))
+      sP x nt = 0 , ≡.trans (eval-∁ C x) (≡.cong not (¬-not nt))
 
   -- the tree of the cylinder {x | x n ≡ b}
   bitT : ℕ → Bool → Cl

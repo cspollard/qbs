@@ -11,7 +11,8 @@ module QBS.Analysis.CutSum where
 
 import Level as L
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
+open import Data.Sum.Properties using (inj₁-injective; inj₂-injective)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
@@ -82,32 +83,22 @@ open +-*-Solver using (solve; _:+_; _:*_; :-_; _:=_; con)
 
 module Sum {I J : Set₁} where
 
-  copair : (I → Cut) → (J → Cut) → I ⊎ J → Cut
-  copair F G (inj₁ i) = F i
-  copair F G (inj₂ j) = G j
-
-  inl-inj : ∀ {x y : I} → _≡_ {A = I ⊎ J} (inj₁ x) (inj₁ y) → x ≡ y
-  inl-inj refl = refl
-
-  inr-inj : ∀ {x y : J} → _≡_ {A = I ⊎ J} (inj₂ x) (inj₂ y) → x ≡ y
-  inr-inj refl = refl
-
-  lift-r : ∀ {G : J → Cut} {b} → Mem G b → ∀ (H : I → Cut) → Mem (copair H G) b
+  lift-r : ∀ {G : J → Cut} {b} → Mem G b → ∀ (H : I → Cut) → Mem ([ H , G ]′) b
   lift-r (m-neg lt) H = m-neg lt
   lift-r {G} (m-step j r g mr ex gz mg le) H =
-    m-step (inj₂ j) r (copair H g) mr ex′ gz (lift-r mg H) le
+    m-step (inj₂ j) r ([ H , g ]′) mr ex′ gz (lift-r mg H) le
     where
-      ex′ : ∀ k → (inj₂ j ≡ k → ⊥) → copair H g k ⊑ copair H G k
+      ex′ : ∀ k → (inj₂ j ≡ k → ⊥) → [ H , g ]′ k ⊑ [ H , G ]′ k
       ex′ (inj₁ i) _ = ⊑-refl
       ex′ (inj₂ j′) ne = ex j′ (λ e → ne (cong inj₂ e))
 
-  combine : ∀ {F : I → Cut} {a} → Mem F a → ∀ (G : J → Cut) {b} → Mem G b → Mem (copair F G) (a + b)
+  combine : ∀ {F : I → Cut} {a} → Mem F a → ∀ (G : J → Cut) {b} → Mem G b → Mem ([ F , G ]′) (a + b)
   combine {F} (m-neg lt) G mb = Mem-down (add-neg-le′ lt) (lift-r mb F)
   combine {F} (m-step {q′ = q′} i r F′ mr ex gz mF′ le) G {b} mb =
-    m-step (inj₁ i) r (copair F′ G) mr ex′ gz (combine mF′ G mb)
+    m-step (inj₁ i) r ([ F′ , G ]′) mr ex′ gz (combine mF′ G mb)
       (≤-trans (+-mono-≤ le (≤-refl {b})) (≤-≃ (+-assoc r q′ b)))
     where
-      ex′ : ∀ k → (inj₁ i ≡ k → ⊥) → copair F′ G k ⊑ copair F G k
+      ex′ : ∀ k → (inj₁ i ≡ k → ⊥) → [ F′ , G ]′ k ⊑ [ F , G ]′ k
       ex′ (inj₁ j) ne = ex j (λ e → ne (cong inj₁ e))
       ex′ (inj₂ j) _ = ⊑-refl
 
@@ -117,14 +108,14 @@ module Sum {I J : Set₁} where
   split {f} (m-step {q′ = q′} (inj₁ i) r g mr ex gz mg le) =
     let a , b , ma , mb , le′ = split mg
     in r + a , b
-       , m-step i r (λ j → g (inj₁ j)) mr (λ j ne → ex (inj₁ j) (λ e → ne (inl-inj e))) gz ma ≤-refl
+       , m-step i r (λ j → g (inj₁ j)) mr (λ j ne → ex (inj₁ j) (λ e → ne (inj₁-injective e))) gz ma ≤-refl
        , Mem-mono (λ j → ex (inj₂ j) (λ ())) mb
        , ≤-trans le (≤-trans (+-mono-≤ (≤-refl {r}) le′) (≤-≃ (≃-sym (+-assoc r a b))))
   split {f} (m-step {q′ = q′} (inj₂ j) r g mr ex gz mg le) =
     let a , b , ma , mb , le′ = split mg
     in a , r + b
        , Mem-mono (λ i → ex (inj₁ i) (λ ())) ma
-       , m-step j r (λ k → g (inj₂ k)) mr (λ k ne → ex (inj₂ k) (λ e → ne (inr-inj e))) gz mb ≤-refl
+       , m-step j r (λ k → g (inj₂ k)) mr (λ k ne → ex (inj₂ k) (λ e → ne (inj₂-injective e))) gz mb ≤-refl
        , ≤-trans le (≤-trans (+-mono-≤ (≤-refl {r}) le′)
            (≤-≃ (solve 3 (λ r a b → r :+ (a :+ b) := a :+ (r :+ b)) ≃-refl r a b)))
 

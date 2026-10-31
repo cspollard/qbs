@@ -7,6 +7,7 @@ module QBS.Analysis.Clopen where
 
 open import Function.Base using (_∘_)
 open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_; T; if_then_else_)
+open import Data.Bool.Properties using (∨-identityʳ; ∧-identityʳ; ∧-zeroʳ; ∨-zeroʳ; ¬-not)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)
 import Data.Nat.Properties as ℕₚ
 import Data.Nat.Base as ℕ
@@ -78,27 +79,11 @@ split a b ∩ split c d = split (a ∩ c) (b ∩ d)
 ∁ᶜ (leaf c) = leaf (not c)
 ∁ᶜ (split a b) = split (∁ᶜ a) (∁ᶜ b)
 
-∨-idʳ : ∀ b → b ∨ false ≡ b
-∨-idʳ true = refl
-∨-idʳ false = refl
-
-∧-idʳ : ∀ b → b ∧ true ≡ b
-∧-idʳ true = refl
-∧-idʳ false = refl
-
-∧-zeroʳ : ∀ b → b ∧ false ≡ false
-∧-zeroʳ true = refl
-∧-zeroʳ false = refl
-
-∨-zeroʳ : ∀ b → b ∨ true ≡ true
-∨-zeroʳ true = refl
-∨-zeroʳ false = refl
-
 eval-∪ : ∀ s t x → eval (s ∪ t) x ≡ eval s x ∨ eval t x
 eval-∪ (leaf true) t x = refl
 eval-∪ (leaf false) t x = refl
 eval-∪ (split a b) (leaf true) x = sym (∨-zeroʳ _)
-eval-∪ (split a b) (leaf false) x = sym (∨-idʳ _)
+eval-∪ (split a b) (leaf false) x = sym (∨-identityʳ _)
 eval-∪ (split a b) (split c d) x with x 0
 ... | false = eval-∪ a c (tl x)
 ... | true = eval-∪ b d (tl x)
@@ -106,7 +91,7 @@ eval-∪ (split a b) (split c d) x with x 0
 eval-∩ : ∀ s t x → eval (s ∩ t) x ≡ eval s x ∧ eval t x
 eval-∩ (leaf true) t x = refl
 eval-∩ (leaf false) t x = refl
-eval-∩ (split a b) (leaf true) x = sym (∧-idʳ _)
+eval-∩ (split a b) (leaf true) x = sym (∧-identityʳ _)
 eval-∩ (split a b) (leaf false) x = sym (∧-zeroʳ _)
 eval-∩ (split a b) (split c d) x with x 0
 ... | false = eval-∩ a c (tl x)
@@ -173,10 +158,6 @@ Ne t = Σ Cantor (λ y → eval t y ≡ true)
 
 Decreasing : (ℕ → Cl) → Set
 Decreasing G = ∀ N x → eval (G (suc N)) x ≡ true → eval (G N) x ≡ true
-
-¬true⇒false : ∀ b → (b ≡ true → ⊥) → b ≡ false
-¬true⇒false true h = ⊥-elim (h refl)
-¬true⇒false false h = refl
 
 true≢false : true ≡ false → ⊥
 true≢false ()
@@ -268,7 +249,7 @@ module Fan (lem : LEM₀) where
       bad : Bad E
       bad N with lem (Ne (E N))
       ... | inj₁ ne = ne
-      ... | inj₂ nne = ⊥-elim (no (N , λ x → ¬true⇒false (eval (E N) x) (λ e → nne (x , e))))
+      ... | inj₂ nne = ⊥-elim (no (N , λ x → ¬-not (λ e → nne (x , e))))
       contra : Σ ℕ (λ N → eval (E N) (xs E) ≡ false) → ⊥
       contra (N , e) with eval-leaf (E N) (xs E)
       ... | c , fl , ev = true≢false (trans (sym ctrue) cfalse)
