@@ -23,7 +23,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Probability`
 - `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`, assembled from the monad (`ProbMonad`), `ProbLaws` and `Fubini` (fields re-exported).
 - `Measure` — the type of probability measures on `ℛ`; `measure μ : ⊤ ⇒ T ℛ` embeds a measure as a global element of the monad, and `law a μ = T a ∘ measure μ : ⊤ ⇒ T X` (derived) is the distribution of a probe `a : ℛ ⇒ X` under `μ`.
-- `measure-push` (pushforward is `T m`), `measure-total` (mass one), `law-surjective` — the axioms linking measures to the monad; `law-resp`, `law-map`, `law-pre`, `law-return` are derived from them; `tensor`, `kernel`, `law-join` — the Fubini axioms.
+- `measure-push` (pushforward is `T m`), `measure-total` (mass one), `law-surjective` — the axioms linking measures to the monad; `law-resp`, `law-map`, `law-pre`, `law-return` are derived from them; `split`, `tensor`, `measure-tensor` (`T split.from ∘ measure (tensor μ ν) ≈ ψ ∘ ⟨measure μ, measure ν⟩`, with `ψ` the monoidal structure of the commutative monad) — the Fubini axiom; `kernel`, `kernel-law`, `law-join` are derived from it.
 
 ### `QBS.Statistical`
 `StatisticalInterface` on top of a `ProbabilityInterface`, assembled from five small structures (their fields are re-exported, so `open StatisticalInterface St` still gives every name), plus `scaled-laws` (every measure is a countable sum of scaled laws):

@@ -110,12 +110,11 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
             ; isoʳ = λ { (r₁ , r₂) → merge-evens r₁ r₂ , merge-odds r₁ r₂ } }
         }
     ; tensor = λ (μ , pμ) (ν , pν) → tensor₁ μ ν , IsProb-tensor₁ μ ν pμ pν
-    ; kernel = kerH
-    ; kernel-law = λ γ (ν , _) r _ f → I-cong ν (λ s → Setoid.refl Aˢ) _ _
-    ; law-join = λ {X} γ μp@(μ , _) νp@(ν , _) _ f →
-        Setoid.trans Aˢ (∫-join {X} (lawP (kerH γ νp) μp) f)
-          (I-cong μ (λ r → I-cong ν (λ s → Func.cong (map f) (Func.cong (map γ)
-              (Setoid.sym (Carrier (ℛQ S)) (merge-evens r s) , Setoid.sym (Carrier (ℛQ S)) (merge-odds r s)))) _ _) _ _)
+    ; measure-tensor = λ μp@(μ , _) νp@(ν , _) pt f →
+        Setoid.trans Aˢ
+          (I-cong μ (λ r → I-cong ν (λ s → Func.cong (map f)
+              (merge-evens r s , merge-odds r s)) _ _) _ _)
+          (Setoid.sym Aˢ (∫-join {_×Q_ S (ℛQ S) (ℛQ S)} (lawP (kerH (idH S) νp) μp) f))
     }
 
   continuousProb : ProbabilityInterface (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S)

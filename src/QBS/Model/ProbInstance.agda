@@ -121,13 +121,11 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
         tensorW μ ν
         , trans (cantor (λ a b → μ a * ν b))
             (trans (∑-prod μ ν) (trans (*-cong okμ okν) (*-identityˡ 1#)))
-    ; kernel = kerH
-    ; kernel-law = λ γ m r _ f → Setoid.refl Aˢ
-    ; law-join = λ {X} γ (μ , okμ) (ν , okν) _ f →
-        Setoid.trans Aˢ (∫-join {X} (lawP (kerH γ (ν , okν)) (μ , okμ)) f)
-          (Setoid.trans Aˢ (∑-cong (λ s → sym (∑-scale (μ s) _)))
-            (Setoid.trans Aˢ (∑-cong (λ s → ∑-cong (λ m → sym (*-assoc (μ s) (ν m) _))))
-              (Setoid.sym Aˢ (cantor (λ a b → (μ a * ν b) * (f ⟨$⟩ (map γ ⟨$⟩ (a , b))))))))
+    ; measure-tensor = λ (μ , okμ) (ν , okν) pt f →
+        Setoid.trans Aˢ (cantor (λ a b → (μ a * ν b) * (f ⟨$⟩ (a , b))))
+          (Setoid.trans Aˢ (∑-cong (λ a → ∑-cong (λ b → *-assoc (μ a) (ν b) _)))
+            (Setoid.trans Aˢ (∑-cong (λ a → ∑-scale (μ a) _))
+              (Setoid.sym Aˢ (∫-join _ f))))
     }
 
   discreteProb : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)
