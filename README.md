@@ -11,7 +11,7 @@ An extrinsic formalisation of the category **QBS** (Heunen, Kammar, Staton, Yang
 | [docs/Guide.md](docs/Guide.md) | task-oriented tour: which model to use, write a program, condition, continuous integrals, what is missing |
 | [docs/Interface.md](docs/Interface.md) | the public names, by module, with one-line meanings |
 | [docs/Architecture.md](docs/Architecture.md) | layers, dependencies, hypotheses, compile time, where to add things |
-| [docs/Modules.md](docs/Modules.md) | one line for each of the 124 modules (generated) |
+| [docs/Modules.md](docs/Modules.md) | one line for each module (generated) |
 | [docs/Classical.md](docs/Classical.md), [docs/ConstructiveLit.md](docs/ConstructiveLit.md) | where `lem`/`funext` are used; literature for a constructive version |
 | [plans/](plans/) | plans: documentation, uniform-distribution moments and estimators, Bayesian and frequentist inference |
 | [TODO.md](TODO.md) | open work |

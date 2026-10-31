@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs/Modules.md (module index) from the leading comments of src/QBS/**/*.agda, and lint:
+"""Generate docs/Modules.md (module index) from the leading comments of src/QBS.agda and src/QBS/**/*.agda, and lint:
 every module must have a leading comment, and modules using `lem`/`funext` are flagged.
 Usage: scripts/modindex.py [--check]   (--check: exit 1 if a header is missing or Modules.md is stale)"""
 import os, re, sys
@@ -31,16 +31,16 @@ def sentence(h):
 
 def collect():
     rows = []
+    files = [os.path.join(SRC, 'QBS.agda')]
     for d, _, fs in os.walk(os.path.join(SRC, 'QBS')):
-        for f in fs:
-            if not f.endswith('.agda'): continue
-            p = os.path.join(d, f)
-            text = open(p).read(); lines = text.split('\n')
-            mod = os.path.relpath(p, SRC)[:-5].replace(os.sep, '.')
-            h = header(lines)
-            code = re.sub(r'--.*', '', text)
-            hyp = [k for k, pat in (('lem', r'\blem[₁]?\b|\blemOf\b'), ('funext', r'\bfunext\b')) if re.search(pat, code)]
-            rows.append((mod, len(lines), h, hyp))
+        files += [os.path.join(d, f) for f in fs if f.endswith('.agda')]
+    for p in files:
+        text = open(p).read(); lines = text.split('\n')
+        mod = os.path.relpath(p, SRC)[:-5].replace(os.sep, '.')
+        h = header(lines)
+        code = re.sub(r'--.*', '', text)
+        hyp = [k for k, pat in (('lem', r'\blem[₁]?\b|\blemOf\b'), ('funext', r'\bfunext\b')) if re.search(pat, code)]
+        rows.append((mod, len(lines), h, hyp))
     return sorted(rows)
 
 def render(rows):
@@ -52,9 +52,9 @@ def render(rows):
            'through imports (see `Classical.md`).  The first sentence of the header is shown; read the file for the rest.', '']
     groups = {}
     for r in rows:
-        g = next((n for pre, n in layers if r[0].startswith(pre + '.')), 'Abstract layer')
+        g = 'Overview' if r[0] == 'QBS' else next((n for pre, n in layers if r[0].startswith(pre + '.')), 'Abstract layer')
         groups.setdefault(g, []).append(r)
-    for g in ['Abstract layer'] + [n for _, n in layers]:
+    for g in ['Overview', 'Abstract layer'] + [n for _, n in layers]:
         if g not in groups: continue
         out += [f'## {g}', '', '| module | lines | hyp | purpose |', '|---|---|---|---|']
         for mod, n, h, hyp in groups[g]:
