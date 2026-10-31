@@ -375,9 +375,9 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
     mφN {h} fh = Meas-⊗ {λ k → proj₁ (map (a w) ⟨$⟩ (evensR k , oddsR k))} {λ k → h (oddsR k)}
       (proj₁ (paJ {X} (a w))) (Meas-pre {h} {oddsR} (LS fh) measurable-odds)
 
-    φN-sec : ∀ h r s → φN h (mergeR r s) ≈ proj₁ (map (a w) ⟨$⟩ (r , s)) * h s
-    φN-sec h r s = Setoid.reflexive Aˢ
-      (≡.cong₂ (λ r′ s′ → proj₁ (map (a w) ⟨$⟩ (r′ , s′)) * h s′) (merge-evens r s) (merge-odds r s))
+    φN-sec : ∀ {h} → Fun h → ∀ r s → φN h (mergeR r s) ≈ proj₁ (map (a w) ⟨$⟩ (r , s)) * h s
+    φN-sec fh r s = *-cong (proj₁ (Func.cong (map (a w)) (merge-evens r s , merge-odds r s)))
+                           (Meas-resp (LS fh) (lower (merge-odds r s)))
 
     srcMeas : ∀ {h} (fh : Fun h) → Meas (λ r → nN r * J (g w r) (λ s → φN h (mergeR r s))
                                         (Meas-pre {φN h} {mergeR r} (mφN fh) (measurable-merge₁ (lower r))))
@@ -388,7 +388,7 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
     meas-int : ∀ {h} (fh : Fun h) → Meas (λ r → I (gN r) h fh)
     meas-int {h} fh = Meas-ext {λ r → nN r * J (g w r) (λ s → φN h (mergeR r s))
                                         (Meas-pre {φN h} {mergeR r} (mφN fh) (measurable-merge₁ (lower r)))}
-      {λ r → I (gN r) h fh} (λ r → *-cong refl (J-cong (g w r) _ _ (φN-sec h r))) (srcMeas fh)
+      {λ r → I (gN r) h fh} (λ r → *-cong refl (J-cong (g w r) _ _ (φN-sec fh r))) (srcMeas fh)
 
     g-ok-N : KernelOk gN
     g-ok-N {h} fh = Meas→Fun bound (meas-int fh)
