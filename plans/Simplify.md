@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Stage 1 of "Suggested order" is done on branch `simplify-stage1` (see "Stage 1 outcome" at the end); the rest is not.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
+definitions.  Stage 1 of "Suggested order" is done and merged; Stage 1a is partly done on branch `simplify-stage1a` (see "Stage 1 outcome" and "Stage 1a outcome" at the end); the rest is not.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
 `refineₛ`, the `random-cast` casts, `⇑`, `reassoc`, `Wit` indexing, `ℕQ`) are in "Stage 1a" below, moved from `plans/04-equality.md`.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
@@ -316,15 +316,15 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 ## Suggested order
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
-2. Stage 1a (the `Core`/probes items below) next: B.3 then builds on `refineₛ` and the cleaned casts, and item 7 is the
-   `Wit` work that B.1/B.2 wait for.  Items 1 and 2 are conditional on counting `Hom` build/projection sites first.
-   Then A.1 and A.2 together: one `Half` module, then the `Poset` record.  This is the biggest readability gain in
+2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
+   cleaned casts, and item 7 is the `Wit` work that B.1/B.2 wait for.
+3. Then A.1 and A.2 together: one `Half` module, then the `Poset` record.  This is the biggest readability gain in
    Analysis.
-3. Then A.5 together with the `nat` and `½` cleanup.
-4. Then B.3 and B.5 (colimits, codiscrete), and E.1.
-5. Then B.1 and B.2, after Stage 1a item 7.  Time the canaries before and after (see plan 4, "To do: canary
+4. Then A.5 together with the `nat` and `½` cleanup.
+5. Then B.3 and B.5 (colimits, codiscrete), and E.1.
+6. Then B.1 and B.2, after Stage 1a item 7.  Time the canaries before and after (see plan 4, "To do: canary
    timings").
-6. B.4, E.2 (full option), F.1 and F.2 as time allows.
+7. B.4, E.2 (full option), F.1 and F.2 as time allows.
 
 Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regenerate `docs/Modules.md` and update
 `docs/Interface.md` when public names change.
@@ -362,8 +362,7 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
 pass; one commit per item.  Canaries (forced recheck, `--profile=modules`, warm interfaces, two runs each, on `main`
 before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 vs 2.81 s, `Continuous/Monad` 3.36 vs
 3.57 s, `SFiniteMonad` 4.42 vs 4.57 s, `SFiniteNorm` 6.28 vs 6.49 s, `SFiniteStrong` 4.89 vs 5.03 s, `StatInstance`
-10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  The slowdown is at most 8 % (`Exponential`, which
-this branch does not touch beyond `Core`), so within noise but not zero.
+10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  @@CANARY@@
 
 * **6 done.**  `reassocR` is exported from `Continuous/Sample`; both local copies are gone.
 * **5 done, first half.**  `⇑` now lives in `Core` next to `constₛ`, for any `≡`-setoid.  The second half (one
