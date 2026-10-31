@@ -23,8 +23,10 @@ sections are in suggested order of work.
     The direct `SubCategory` definition makes `SFiniteStat` run for over 19 minutes (tag `sigma-wip`).
   - Item 2 is a direct one-object `SubCategory` (`QBS.Category.Measurable`) with a full and faithful `yoneda` embedding.
 
+**Done on branch `simplify-half` (not yet merged):** A.1, A.2 (Stage 2; see "Stage 2 outcome").
+
 **Open:**
-- A.1, A.2, A.5; A.7, A.8 (uncertain).
+- A.5; A.7, A.8 (uncertain).
 - B.1 (largest), B.2, B.3, B.4, B.5.  B.5 now overlaps `Concrete.CodiscQ`: check whether the three codiscrete QBS
   (`Example/Program.Disc`, `Model/StatInstance.WQ`, `Limits.1Q`) can reuse it.  `Concrete` imports `Forget`, so a
   shared constructor may need to move down into `Limits` or `Category` first.
@@ -335,7 +337,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1 and 2 are done; steps 3 onward are open.
+Status: steps 1, 2 and 3 are done (3 on branch `simplify-half`); steps 4 onward are open.
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -443,3 +445,22 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
   `Disc` cocontinuous; `Disc` and `Codisc` are faithful.  No downstream module changed.
 * **Item 2 done** (`QBS.Category.Measurable`): `MeasCat` is a direct one-object `SubCategory` (no comparison needed: no downstream users, nothing to unify).
   `yoneda : MeasCat → QBSCat S` sends the object to `ℛQ` and is full (`unprobe`) and faithful; `Forget ∘ yoneda` and the subcategory inclusion agree by `refl`.
+
+## Stage 2 outcome (A.1, A.2)
+
+`make check` (145 files, 0 holes, 0 failures), `make longcheck` (36 flagged, unchanged) and `make doccheck` pass.  Two commits on `simplify-half`; `src/` is +334/-262 lines
+including the new 84-line `Half.agda` (about -12 net, -96 without it).  No canary modules (`Model/`, `SFinite*`, `Probability`, `Exponential`) were touched, so none were timed;
+the whole `make check -j4` took about 2 minutes either side.
+
+* **A.2 done.**  `OrderedSemiring` has `isPartialOrder : IsPartialOrder _≈_ _≤_` and a `poset`; `≤-reflexive`, `≤-trans`, `≤-antisym`, `≤-refl` and `≤-resp-≈` are re-exported
+  projections, so no user changed.  The two instances (`LowerReals`, `ExtNat`; the plan said "`Min`", but `Min` is not an instance) build the record.
+  The 3-argument `≤-resp` was *not* renamed: stdlib's `≤-resp-≈` is a `Respects₂` pair and now holds that name, so `≤-resp` stays as a derived lemma.
+  Header cites Kuich and Ésik–Kuich.  Skipped: `Min` as `Infimum`/`mn-mono` as `∧-monotonic` (`Min` is a separate record with 12 uses, `mn-mono` is two lines)
+  and the `Relation.Binary.Reasoning.PartialOrder` conversion of the 67 idioms (not needed).
+* **A.1 done.**  `QBS.Analysis.Half` (over `A`, `half`, `half+half`): `hp = half ^ n` (stdlib; `hp (suc n) = half * hp n` is `refl`), `half-twice`, `hp-double`, `hp-unique`,
+  `geoF`/`geom`/`geo`/`geo-sum`.  `Arch` now has only `half`, `half+half`, `arch`, `cancel≤`, `way-below`, plus `open Half … public` and the generic
+  `∑hp≤1`/`∑hp≈1` (moved from `JSum`).  Removed: `ArchLemmas`, `BinaryExpansion.hpow/geom`, `HalfOrder.half-twice`, `Interleave.half-double`, the `double-half` proof and
+  `two` in `ClopenMeasure`, `SelfSimilar.hp-half`, `Unbounded.half-hp`, `JSum.hp-geo`, `UniformMean.hp≈hpow` and `geom-sum`.  `BoundedCancel.pow2` is now ℕ `2 ^ k`.
+* **Different from the plan.**  `LowerRealsArch` needed no `qC`-commutes-with-`*` lemma: any sequence with `h 0 = 1` and `h (n+1) + h (n+1) = h n` equals `hp` (`Half.hp-unique`,
+  using `half-twice`), so `hpC n ≋ hp n` follows from `hpC-double`.  The ℚ-valued `tp`/`hpC` stay because `CoinIntegral` and `arch-⊑` do rational ε-arguments with them;
+  `Lebesgue` now uses `Arch.hp`.  `Unbounded.pw`/`Min.Pow.pw` (2ᵏ inside `A`) also stay: they are powers of 2, not of ½, and `hp-pw` ties them to `hp`.
