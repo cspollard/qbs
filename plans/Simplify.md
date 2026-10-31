@@ -449,7 +449,7 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
 ## Stage 2 outcome (A.1, A.2)
 
 `make check` (145 files, 0 holes, 0 failures), `make longcheck` (36 flagged, unchanged) and `make doccheck` pass.  Two commits on `simplify-half`; `src/` is +334/-262 lines
-including the new 84-line `Half.agda` (about -12 net, -96 without it).  No canary modules (`Model/`, `SFinite*`, `Probability`, `Exponential`) were touched, so none were timed;
+including the new 84-line `Half.agda` (net +72; -12 without it, so the payoff is clarity, not size).  No canary modules (`Model/`, `SFinite*`, `Probability`, `Exponential`) were touched, so none were timed;
 the whole `make check -j4` took about 2 minutes either side.
 
 * **A.2 done.**  `OrderedSemiring` has `isPartialOrder : IsPartialOrder _≈_ _≤_` and a `poset`; `≤-reflexive`, `≤-trans`, `≤-antisym`, `≤-refl` and `≤-resp-≈` are re-exported
