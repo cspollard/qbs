@@ -102,43 +102,14 @@ module _ {ℓ} (S : RandomSource ℓ) where
   ----------------------------------------------------------------------------
   -- 3. Disc ⊣ Forget ⊣ Codisc
 
-  -- the codiscrete QBS: every sequence is random
-  CodiscQ : Setoid ℓ ℓ → QBS S
-  CodiscQ A = record
-    { Carrier = A
-    ; probes = record
-        { Random = λ _ → ⊤
-        ; random-resp = λ _ _ → tt
-        ; const-random = λ _ → tt
-        ; pre-random = λ _ _ → tt
-        }
-    ; glue-random = λ _ _ _ → tt
-    }
-
   -- the discrete QBS: random = locally constant along a measurable countable partition
   DiscQ : Setoid ℓ ℓ → QBS S
-  DiscQ A = record
-    { Carrier = A
-    ; probes = record
-        { Random = λ α → Σ (Func Rˢ ℕˢ) λ j → Idx j × Σ (ℕ → Setoid.Carrier A) λ a →
-            ∀ r → (α ⟨$⟩ r) ≈ᴬ a (j ⟨$⟩ r)
-        ; random-resp = λ e (j , ix , a , h) → j , ix , a , λ r → Setoid.trans A (Setoid.sym A (e r)) (h r)
-        ; const-random = λ x → constₛ 0 , idx-const 0 , (λ _ → x) , λ r → Setoid.refl A
-        ; pre-random = λ {_} {f} (j , ix , a , h) m → j ∘ₛ f , idx-pre ix m , a , λ r → h (f ⟨$⟩ r)
-        }
-    ; glue-random = λ {i} ix α p →
-        refineₛ i (λ n → proj₁ (p n)) ,
-        idx-glue ix (λ n → proj₁ (proj₂ (p n))) ,
-        (λ m → uncurry (λ n k → proj₁ (proj₂ (proj₂ (p n))) k) (unpair m)) ,
-        λ r → Setoid.trans A (proj₂ (proj₂ (proj₂ (p (i ⟨$⟩ r)))) r)
-          (Setoid.reflexive A (≡.sym (≡.cong (uncurry (λ n k → proj₁ (proj₂ (proj₂ (p n))) k))
-            (unpair-pair (i ⟨$⟩ r) (proj₁ (p (i ⟨$⟩ r)) ⟨$⟩ r)))))
-    }
-    where _≈ᴬ_ = Setoid._≈_ A
+  DiscQ A = GluedQBS S A (Setoid.Carrier A) (λ a _ → a) (λ a _ → a) (λ _ _ _ → Setoid.refl A)
+    λ x → x , λ _ → Setoid.refl A
 
   Codisc : Functor (Setoids ℓ ℓ) (QBSCat S)
   Codisc = record
-    { F₀ = CodiscQ
+    { F₀ = CodiscQ S
     ; F₁ = λ f → record { map = f ; map-random = λ _ → tt }
     ; identity = λ {A} → Setoid.refl A
     ; homomorphism = λ {_} {_} {C} → Setoid.refl C

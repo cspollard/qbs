@@ -107,30 +107,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
     preΣ {f} (i , a , p) m = i , a ∘ₛ f , pre-random (P i) p m
 
     ΣQ : QBS S
-    ΣQ = record
-      { Carrier = ΣS
-      ; probes = record
-          { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
-              Σ (ℕ → PieceΣ) λ c → ∀ r → Setoid._≈_ ΣS (α ⟨$⟩ r) (evΣ (c (i ⟨$⟩ r)) r)
-          ; random-resp = λ e (i , ii , c , q) →
-              i , ii , c , λ r → Setoid.trans ΣS (Setoid.sym ΣS (e r)) (q r)
-          ; const-random = λ (i , x) →
-              constₛ 0 , idx-const 0 , const (i , constₛ x , const-random (P i) x) ,
-              λ _ → Setoid.refl ΣS
-          ; pre-random = λ {_} {f} (i , ii , c , q) m →
-              i ∘ₛ f , idx-pre ii m , (λ n → preΣ (c n) m) , λ r → q (f ⟨$⟩ r)
-          }
-      ; glue-random = λ {j} ij α p →
-          let i = λ n → proj₁ (p n)
-              c = λ n → proj₁ (proj₂ (proj₂ (p n)))
-              c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in refineₛ j i
-           , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
-           , c′
-           , λ r → subst (λ u → Setoid._≈_ ΣS (α (j ⟨$⟩ r) ⟨$⟩ r) (evΣ (c (proj₁ u) (proj₂ u)) r))
-                         (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
-                         (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
-      }
+    ΣQ = GluedQBS S ΣS PieceΣ evΣ preΣ (λ _ _ _ → Setoid.refl ΣS)
+      λ (i , x) → (i , constₛ x , const-random (P i) x) , λ _ → Setoid.refl ΣS
 
     pmΣ : ∀ {Y} → (∀ i → Hom S (P i) Y) → PieceΣ → Func Rˢ (Carrier Y)
     pmΣ f (i , a , _) = map (f i) ∘ₛ a
