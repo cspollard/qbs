@@ -12,6 +12,7 @@ open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.Structures using (IsEquivalence)
+import Relation.Binary.Construct.On as On
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
@@ -73,15 +74,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     }
     where
       EqS : Setoid ℓ ℓ
-      EqS = record
-        { Carrier = Σ ∣ X ∣ (λ x → Setoid._≈_ (Carrier Y) (map f ⟨$⟩ x) (map g ⟨$⟩ x))
-        ; _≈_ = λ a b → Setoid._≈_ (Carrier X) (proj₁ a) (proj₁ b)
-        ; isEquivalence = record
-            { refl = Setoid.refl (Carrier X)
-            ; sym = Setoid.sym (Carrier X)
-            ; trans = Setoid.trans (Carrier X)
-            }
-        }
+      EqS = On.setoid (Carrier X) (proj₁ {B = λ x → Setoid._≈_ (Carrier Y) (map f ⟨$⟩ x) (map g ⟨$⟩ x)})
       ι : Func EqS (Carrier X)
       ι = record { to = proj₁ ; cong = λ e → e }
 
