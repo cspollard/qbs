@@ -14,6 +14,7 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; cong₂; subst)
 open import Relation.Binary.Bundles using (Setoid)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core using (RandomSource)
 open import QBS.Model.Pairing
@@ -69,20 +70,21 @@ cantorSource : RandomSource (suc zero)
 cantorSource = record
   { measurable = record
     { Rˢ = R₁ˢ
-    ; Meas = λ f → Measurable (down f)
+    ; Meas = λ f → Measurable (down (f ⟨$⟩_))
     ; meas-id = measurable-id
     ; meas-∘ = λ mf mg → measurable-∘ mg mf
-    ; meas-resp = λ {f} mf {r} {r′} e → lift (measurable-≗ {down f} mf {lower r} {lower r′} (lower e))
     ; meas-ext = λ e mf → measurable-ext (λ x → lower (e (lift x))) mf
     ; meas-const = λ r → measurable-const (lower r)
     }
-  ; partitions = record
-    { Idx = λ i → Partition (downℕ i)
-    ; idx-resp = λ {i} pi {r} {r′} e → sym (proj₁ (borel-≗ (pi (i r)) {lower r} {lower r′} (lower e)) refl)
-    ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ j} {λ k → down (f k)} pj mf
-    ; idx-const = λ n k → borel-eq n k
-    ; idx-pre = λ {i} {f} pi mf k → preimage mf (pi k)
+  ; covering = record
+    { partitions = record
+      { Random = λ i → Partition (downℕ (i ⟨$⟩_))
+      ; random-resp = λ e pi k → resp (λ x → (λ q → trans (sym (e (lift x))) q) , (λ q → trans (e (lift x)) q)) (pi k)
+      ; const-random = λ n k → borel-eq n k
+      ; pre-random = λ pi mf k → preimage mf (pi k)
+      }
+    ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ (j ⟨$⟩_)} {λ k → down (f k ⟨$⟩_)} pj mf
     }
   ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
-  ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ j) (λ n → downℕ (i n)) pj pi
+  ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
   }

@@ -40,11 +40,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
   0Q : QBS S
   0Q = record
     { Carrier = setoid (⊥ {ℓ})
-    ; Random = λ _ → ⊥ {ℓ}
-    ; random-resp = λ _ p → p
-    ; random-cong = λ ()
-    ; const-random = λ ()
-    ; pre-random = λ p _ → p
+    ; probes = record
+        { Random = λ _ → ⊥ {ℓ}
+        ; random-resp = λ _ p → p
+        ; const-random = λ ()
+        ; pre-random = λ p _ → p
+        }
     ; glue-random = λ _ α p → p 0
     }
 
@@ -52,58 +53,51 @@ module _ {ℓ} (S : RandomSource ℓ) where
     -- A random element of X + Y is, locally on a measurable countable
     -- partition, a random element of X or of Y.
     Piece : Set ℓ
-    Piece = Σ (R → ∣ X ∣) (Random X) ⊎ Σ (R → ∣ Y ∣) (Random Y)
+    Piece = Σ (Func Rˢ (Carrier X)) (Random X) ⊎ Σ (Func Rˢ (Carrier Y)) (Random Y)
 
     ev : Piece → R → ∣ X ∣ ⊎ ∣ Y ∣
-    ev (inj₁ (a , _)) r = inj₁ (a r)
-    ev (inj₂ (b , _)) r = inj₂ (b r)
+    ev (inj₁ (a , _)) r = inj₁ (a ⟨$⟩ r)
+    ev (inj₂ (b , _)) r = inj₂ (b ⟨$⟩ r)
 
     pre : ∀ {f} → Piece → Meas f → Piece
-    pre {f} (inj₁ (a , p)) m = inj₁ (a ∘ f , pre-random X p m)
-    pre {f} (inj₂ (b , p)) m = inj₂ (b ∘ f , pre-random Y p m)
+    pre {f} (inj₁ (a , p)) m = inj₁ (a ∘ₛ f , pre-random X p m)
+    pre {f} (inj₂ (b , p)) m = inj₂ (b ∘ₛ f , pre-random Y p m)
 
     ⊎S : Setoid ℓ ℓ
     ⊎S = ⊎ʳ.⊎-setoid (Carrier X) (Carrier Y)
 
-    ev-cong : ∀ c {r r′} → r ≈ᴿ r′ → Setoid._≈_ ⊎S (ev c r) (ev c r′)
-    ev-cong (inj₁ (_ , p)) e = ⊎ʳ.inj₁ (random-cong X p e)
-    ev-cong (inj₂ (_ , p)) e = ⊎ʳ.inj₂ (random-cong Y p e)
-
-    ev-pre : ∀ {f} (c : Piece) (m : Meas f) r → Setoid._≈_ ⊎S (ev (pre c m) r) (ev c (f r))
+    ev-pre : ∀ {f} (c : Piece) (m : Meas f) r → Setoid._≈_ ⊎S (ev (pre c m) r) (ev c (f ⟨$⟩ r))
     ev-pre (inj₁ (a , _)) _ r = ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
     ev-pre (inj₂ (b , _)) _ r = ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
 
   _+Q_ : QBS S → QBS S → QBS S
   X +Q Y = record
     { Carrier = ⊎S X Y
-    ; Random = λ α → Σ (R → ℕ) λ i → Idx i ×
-        Σ (ℕ → Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (α r) (ev X Y (c (i r)) r)
-    ; random-resp = λ e (i , ii , c , q) →
-        i , ii , c , λ r → Setoid.trans (⊎S X Y) (Setoid.sym (⊎S X Y) (e r)) (q r)
-    ; random-cong = λ {_} (i , ii , c , q) {r} {r′} e →
-        Setoid.trans (⊎S X Y) (q r)
-          (Setoid.trans (⊎S X Y) (ev-cong X Y (c (i r)) e)
-            (Setoid.trans (⊎S X Y)
-              (Setoid.reflexive (⊎S X Y) (≡.cong (λ n → ev X Y (c n) r′) (idx-resp ii e)))
-              (Setoid.sym (⊎S X Y) (q r′))))
-    ; const-random = λ where
-        (inj₁ a) → const 0 , idx-const 0 , const (inj₁ (const a , const-random X a)) ,
-                   λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
-        (inj₂ b) → const 0 , idx-const 0 , const (inj₂ (const b , const-random Y b)) ,
-                   λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
-    ; pre-random = λ {_} {f} (i , ii , c , q) m →
-        i ∘ f , idx-pre ii m , (λ n → pre X Y (c n) m) ,
-        λ r → Setoid.trans (⊎S X Y) (q (f r)) (Setoid.sym (⊎S X Y) (ev-pre X Y (c (i (f r))) m r))
+    ; probes = record
+        { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
+            Σ (ℕ → Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (α ⟨$⟩ r) (ev X Y (c (i ⟨$⟩ r)) r)
+        ; random-resp = λ e (i , ii , c , q) →
+            i , ii , c , λ r → Setoid.trans (⊎S X Y) (Setoid.sym (⊎S X Y) (e r)) (q r)
+        ; const-random = λ where
+            (inj₁ a) → constₛ 0 , idx-const 0 , const (inj₁ (constₛ a , const-random X a)) ,
+                       λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
+            (inj₂ b) → constₛ 0 , idx-const 0 , const (inj₂ (constₛ b , const-random Y b)) ,
+                       λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
+        ; pre-random = λ {_} {f} (i , ii , c , q) m →
+            i ∘ₛ f , idx-pre ii m , (λ n → pre X Y (c n) m) ,
+            λ r → Setoid.trans (⊎S X Y) (q (f ⟨$⟩ r))
+                    (Setoid.sym (⊎S X Y) (ev-pre X Y (c (i ⟨$⟩ (f ⟨$⟩ r))) m r))
+        }
     ; glue-random = λ {j} ij α p →
         let i = λ n → proj₁ (p n)
             c = λ n → proj₁ (proj₂ (proj₂ (p n)))
             c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-        in (λ r → pair (j r) (i (j r) r))
+        in glueₛ j (λ n → pairₛ n ∘ₛ i n)
          , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
          , c′
-         , λ r → subst (λ u → Setoid._≈_ (⊎S X Y) (α (j r) r) (ev X Y (c (proj₁ u) (proj₂ u)) r))
-                       (sym (unpair-pair (j r) (i (j r) r)))
-                       (proj₂ (proj₂ (proj₂ (p (j r)))) r)
+         , λ r → subst (λ u → Setoid._≈_ (⊎S X Y) (α (j ⟨$⟩ r) ⟨$⟩ r) (ev X Y (c (proj₁ u) (proj₂ u)) r))
+                       (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
+                       (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
     }
 
 
@@ -117,9 +111,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
     }
 
   module _ {X Y Z : QBS S} (f : Hom S X Z) (g : Hom S Y Z) where
-    pm : Piece X Y → R → ∣ Z ∣
-    pm (inj₁ (a , _)) r = map f ⟨$⟩ a r
-    pm (inj₂ (b , _)) r = map g ⟨$⟩ b r
+    pm : Piece X Y → Func Rˢ (Carrier Z)
+    pm (inj₁ (a , _)) = map f ∘ₛ a
+    pm (inj₂ (b , _)) = map g ∘ₛ b
 
     pm-random : ∀ c → Random Z (pm c)
     pm-random (inj₁ (_ , p)) = map-random f p
@@ -131,7 +125,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       ; cong = λ { (⊎ʳ.inj₁ e) → Func.cong (map f) e ; (⊎ʳ.inj₂ e) → Func.cong (map g) e }
       }
 
-    pm-ev : ∀ c r → Setoid._≈_ (Carrier Z) (copair-fun ⟨$⟩ ev X Y c r) (pm c r)
+    pm-ev : ∀ c r → Setoid._≈_ (Carrier Z) (copair-fun ⟨$⟩ ev X Y c r) (pm c ⟨$⟩ r)
     pm-ev (inj₁ _) _ = Setoid.refl (Carrier Z)
     pm-ev (inj₂ _) _ = Setoid.refl (Carrier Z)
 
@@ -142,7 +136,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       ; map-random = λ {α} (i , ii , c , q) →
           random-resp Z
             (λ r → Setoid.sym (Carrier Z)
-              (Setoid.trans (Carrier Z) (Func.cong copair-fun (q r)) (pm-ev (c (i r)) r)))
+              (Setoid.trans (Carrier Z) (Func.cong copair-fun (q r)) (pm-ev (c (i ⟨$⟩ r)) r)))
             (glue-random Z ii (λ n → pm (c n)) (λ n → pm-random (c n)))
       }
 
@@ -152,12 +146,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; i₁ = record
         { map = record { to = inj₁ ; cong = ⊎ʳ.inj₁ }
         ; map-random = λ {α} p →
-            const 0 , idx-const 0 , const (inj₁ (α , p)) , λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
+            constₛ 0 , idx-const 0 , const (inj₁ (α , p)) , λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
         }
     ; i₂ = record
         { map = record { to = inj₂ ; cong = ⊎ʳ.inj₂ }
         ; map-random = λ {α} p →
-            const 0 , idx-const 0 , const (inj₂ (α , p)) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
+            constₛ 0 , idx-const 0 , const (inj₂ (α , p)) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
         }
     ; [_,_] = copair
     ; inject₁ = λ {C} _ → Setoid.refl (Carrier C)
@@ -186,39 +180,35 @@ module _ {ℓ} (S : RandomSource ℓ) where
     CoeqQ : QBS S
     CoeqQ = record
       { Carrier = CoeqS
-      ; Random = λ α → Σ (R → ℕ) λ i → Idx i ×
-          Σ (ℕ → Σ (R → ∣ Y ∣) (Random Y)) λ c →
-            ∀ r → Setoid._≈_ CoeqS (α r) (proj₁ (c (i r)) r)
-      ; random-resp = λ e (i , ii , c , q) →
-          i , ii , c , λ r → Setoid.trans CoeqS (Setoid.sym CoeqS (e r)) (q r)
-      ; random-cong = λ (i , ii , c , q) {r} {r′} e →
-          Setoid.trans CoeqS (q r)
-            (Setoid.trans CoeqS (fwd (inj₁ (random-cong Y (proj₂ (c (i r))) e)) ◅ ε)
-              (Setoid.trans CoeqS
-                (Setoid.reflexive CoeqS (≡.cong (λ n → proj₁ (c n) r′) (idx-resp ii e)))
-                (Setoid.sym CoeqS (q r′))))
-      ; const-random = λ x →
-          const 0 , idx-const 0 , const (const x , const-random Y x) , λ _ → Setoid.refl CoeqS
-      ; pre-random = λ {_} {m} (i , ii , c , q) mm →
-          i ∘ m , idx-pre ii mm , (λ n → proj₁ (c n) ∘ m , pre-random Y (proj₂ (c n)) mm) ,
-          λ r → q (m r)
+      ; probes = record
+          { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
+              Σ (ℕ → Σ (Func Rˢ (Carrier Y)) (Random Y)) λ c →
+                ∀ r → Setoid._≈_ CoeqS (α ⟨$⟩ r) (proj₁ (c (i ⟨$⟩ r)) ⟨$⟩ r)
+          ; random-resp = λ e (i , ii , c , q) →
+              i , ii , c , λ r → Setoid.trans CoeqS (Setoid.sym CoeqS (e r)) (q r)
+          ; const-random = λ x →
+              constₛ 0 , idx-const 0 , const (constₛ x , const-random Y x) , λ _ → Setoid.refl CoeqS
+          ; pre-random = λ {_} {m} (i , ii , c , q) mm →
+              i ∘ₛ m , idx-pre ii mm , (λ n → proj₁ (c n) ∘ₛ m , pre-random Y (proj₂ (c n)) mm) ,
+              λ r → q (m ⟨$⟩ r)
+          }
       ; glue-random = λ {j} ij α p →
           let i = λ n → proj₁ (p n)
               c = λ n → proj₁ (proj₂ (proj₂ (p n)))
               c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in (λ r → pair (j r) (i (j r) r))
+          in glueₛ j (λ n → pairₛ n ∘ₛ i n)
            , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
            , c′
-           , λ r → subst (λ u → Setoid._≈_ CoeqS (α (j r) r) (proj₁ (c (proj₁ u) (proj₂ u)) r))
-                         (sym (unpair-pair (j r) (i (j r) r)))
-                         (proj₂ (proj₂ (proj₂ (p (j r)))) r)
+           , λ r → subst (λ u → Setoid._≈_ CoeqS (α (j ⟨$⟩ r) ⟨$⟩ r) (proj₁ (c (proj₁ u) (proj₂ u)) ⟨$⟩ r))
+                         (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
+                         (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
       }
 
     coeq-arr : Hom S Y CoeqQ
     coeq-arr = record
       { map = record { to = id ; cong = λ e → fwd (inj₁ e) ◅ ε }
       ; map-random = λ {α} p →
-          const 0 , idx-const 0 , const (α , p) , λ _ → Setoid.refl CoeqS
+          constₛ 0 , idx-const 0 , const (α , p) , λ _ → Setoid.refl CoeqS
       }
 
     module _ {Z : QBS S} (h : Hom S Y Z) (eq : _≈H_ S (_∘H_ S h f) (_∘H_ S h g))
@@ -238,7 +228,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
         { map = coeq-fun
         ; map-random = λ {α} (i , ii , c , q) →
             random-resp Z (λ r → Setoid.sym (Carrier Z) (lift-gen (q r)))
-              (glue-random Z ii (λ n r → map h ⟨$⟩ proj₁ (c n) r) (λ n → map-random h (proj₂ (c n))))
+              (glue-random Z ii (λ n → map h ∘ₛ proj₁ (c n)) (λ n → map-random h (proj₂ (c n))))
         }
 
   coequalizer : ∀ {X Y} (f g : Hom S X Y) → Coequalizer (QBSCat S) f g

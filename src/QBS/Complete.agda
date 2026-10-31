@@ -35,30 +35,38 @@ module _ {ℓ} (S : RandomSource ℓ) where
   module _ {I : Set ℓ} (P : I → QBS S) where
 
     -- Indexed product: an element is random iff each coordinate is.
+    ΠS : Setoid ℓ ℓ
+    ΠS = record
+      { Carrier = ∀ i → ∣ P i ∣
+      ; _≈_ = λ a b → ∀ i → Setoid._≈_ (Carrier (P i)) (a i) (b i)
+      ; isEquivalence = record
+          { refl = λ i → Setoid.refl (Carrier (P i))
+          ; sym = λ e i → Setoid.sym (Carrier (P i)) (e i)
+          ; trans = λ e e′ i → Setoid.trans (Carrier (P i)) (e i) (e′ i)
+          }
+      }
+
+    πₛ : ∀ i → Func ΠS (Carrier (P i))
+    πₛ i = record { to = λ a → a i ; cong = λ e → e i }
+
     ΠQ : QBS S
     ΠQ = record
-      { Carrier = record
-          { Carrier = ∀ i → ∣ P i ∣
-          ; _≈_ = λ a b → ∀ i → Setoid._≈_ (Carrier (P i)) (a i) (b i)
-          ; isEquivalence = record
-              { refl = λ i → Setoid.refl (Carrier (P i))
-              ; sym = λ e i → Setoid.sym (Carrier (P i)) (e i)
-              ; trans = λ e e′ i → Setoid.trans (Carrier (P i)) (e i) (e′ i)
-              }
+      { Carrier = ΠS
+      ; probes = record
+          { Random = λ α → ∀ i → Random (P i) (πₛ i ∘ₛ α)
+          ; random-resp = λ e p i → random-resp (P i) (λ r → e r i) (p i)
+          ; const-random = λ x i → const-random (P i) (x i)
+          ; pre-random = λ p m i → pre-random (P i) (p i) m
           }
-      ; Random = λ α → ∀ i → Random (P i) (λ r → α r i)
-      ; random-resp = λ e p i → random-resp (P i) (λ r → e r i) (p i)
-      ; random-cong = λ p e i → random-cong (P i) (p i) e
-      ; const-random = λ x i → const-random (P i) (x i)
-      ; pre-random = λ p m i → pre-random (P i) (p i) m
-      ; glue-random = λ ij α p i → glue-random (P i) ij (λ n r → α n r i) (λ n → p n i)
+      ; glue-random = λ ij α p i →
+          random-cast (P i) (λ _ → refl) (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
       }
 
     indexedProduct : IndexedProductOf (QBSCat S) P
     indexedProduct = record
       { X = ΠQ
       ; π = λ i → record
-          { map = record { to = λ a → a i ; cong = λ e → e i }
+          { map = πₛ i
           ; map-random = λ p → p i
           }
       ; ⟨_⟩ = λ f → record
@@ -90,49 +98,42 @@ module _ {ℓ} (S : RandomSource ℓ) where
       }
 
     PieceΣ : Set ℓ
-    PieceΣ = Σ I λ i → Σ (R → ∣ P i ∣) (Random (P i))
+    PieceΣ = Σ I λ i → Σ (Func Rˢ (Carrier (P i))) (Random (P i))
 
     evΣ : PieceΣ → R → Σ I (λ i → ∣ P i ∣)
-    evΣ (i , a , _) r = i , a r
-
-    evΣ-cong : ∀ c {r r′} → r ≈ᴿ r′ → Setoid._≈_ ΣS (evΣ c r) (evΣ c r′)
-    evΣ-cong (i , a , p) e = refl , random-cong (P i) p e
+    evΣ (i , a , _) r = i , a ⟨$⟩ r
 
     preΣ : ∀ {f} → PieceΣ → Meas f → PieceΣ
-    preΣ {f} (i , a , p) m = i , a ∘ f , pre-random (P i) p m
+    preΣ {f} (i , a , p) m = i , a ∘ₛ f , pre-random (P i) p m
 
     ΣQ : QBS S
     ΣQ = record
       { Carrier = ΣS
-      ; Random = λ α → Σ (R → ℕ) λ i → Idx i ×
-          Σ (ℕ → PieceΣ) λ c → ∀ r → Setoid._≈_ ΣS (α r) (evΣ (c (i r)) r)
-      ; random-resp = λ e (i , ii , c , q) →
-          i , ii , c , λ r → Setoid.trans ΣS (Setoid.sym ΣS (e r)) (q r)
-      ; random-cong = λ (i , ii , c , q) {r} {r′} e →
-          Setoid.trans ΣS (q r)
-            (Setoid.trans ΣS (evΣ-cong (c (i r)) e)
-              (Setoid.trans ΣS
-                (Setoid.reflexive ΣS (≡.cong (λ n → evΣ (c n) r′) (idx-resp ii e)))
-                (Setoid.sym ΣS (q r′))))
-      ; const-random = λ (i , x) →
-          const 0 , idx-const 0 , const (i , const x , const-random (P i) x) ,
-          λ _ → Setoid.refl ΣS
-      ; pre-random = λ {_} {f} (i , ii , c , q) m →
-          i ∘ f , idx-pre ii m , (λ n → preΣ (c n) m) , λ r → q (f r)
+      ; probes = record
+          { Random = λ α → Σ (Func Rˢ ℕˢ) λ i → Idx i ×
+              Σ (ℕ → PieceΣ) λ c → ∀ r → Setoid._≈_ ΣS (α ⟨$⟩ r) (evΣ (c (i ⟨$⟩ r)) r)
+          ; random-resp = λ e (i , ii , c , q) →
+              i , ii , c , λ r → Setoid.trans ΣS (Setoid.sym ΣS (e r)) (q r)
+          ; const-random = λ (i , x) →
+              constₛ 0 , idx-const 0 , const (i , constₛ x , const-random (P i) x) ,
+              λ _ → Setoid.refl ΣS
+          ; pre-random = λ {_} {f} (i , ii , c , q) m →
+              i ∘ₛ f , idx-pre ii m , (λ n → preΣ (c n) m) , λ r → q (f ⟨$⟩ r)
+          }
       ; glue-random = λ {j} ij α p →
           let i = λ n → proj₁ (p n)
               c = λ n → proj₁ (proj₂ (proj₂ (p n)))
               c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in (λ r → pair (j r) (i (j r) r))
+          in glueₛ j (λ n → pairₛ n ∘ₛ i n)
            , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
            , c′
-           , λ r → subst (λ u → Setoid._≈_ ΣS (α (j r) r) (evΣ (c (proj₁ u) (proj₂ u)) r))
-                         (sym (unpair-pair (j r) (i (j r) r)))
-                         (proj₂ (proj₂ (proj₂ (p (j r)))) r)
+           , λ r → subst (λ u → Setoid._≈_ ΣS (α (j ⟨$⟩ r) ⟨$⟩ r) (evΣ (c (proj₁ u) (proj₂ u)) r))
+                         (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
+                         (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
       }
 
-    pmΣ : ∀ {Y} → (∀ i → Hom S (P i) Y) → PieceΣ → R → ∣ Y ∣
-    pmΣ f (i , a , _) r = map (f i) ⟨$⟩ a r
+    pmΣ : ∀ {Y} → (∀ i → Hom S (P i) Y) → PieceΣ → Func Rˢ (Carrier Y)
+    pmΣ f (i , a , _) = map (f i) ∘ₛ a
 
     pmΣ-random : ∀ {Y} (f : ∀ i → Hom S (P i) Y) c → Random Y (pmΣ f c)
     pmΣ-random f (i , _ , p) = map-random (f i) p
@@ -158,7 +159,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       ; ι = λ i → record
           { map = record { to = i ,_ ; cong = λ e → refl , e }
           ; map-random = λ {α} p →
-              const 0 , idx-const 0 , const (i , α , p) , λ _ → Setoid.refl ΣS
+              constₛ 0 , idx-const 0 , const (i , α , p) , λ _ → Setoid.refl ΣS
           }
       ; [_] = copairΣ
       ; commute = λ {Y} {f} {i} x → Setoid.refl (Carrier Y)

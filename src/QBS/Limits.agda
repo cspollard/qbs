@@ -9,6 +9,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.Structures using (IsEquivalence)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
@@ -32,11 +33,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
   1Q : QBS S
   1Q = record
     { Carrier = setoid (⊤ {ℓ})
-    ; Random = λ _ → ⊤
-    ; random-resp = λ _ _ → tt
-    ; random-cong = λ _ _ → refl
-    ; const-random = λ _ → tt
-    ; pre-random = λ _ _ → tt
+    ; probes = record
+        { Random = λ _ → ⊤
+        ; random-resp = λ _ _ → tt
+        ; const-random = λ _ → tt
+        ; pre-random = λ _ _ → tt
+        }
     ; glue-random = λ _ _ _ → tt
     }
 
@@ -46,20 +48,32 @@ module _ {ℓ} (S : RandomSource ℓ) where
   -- Binary products: a pair is random iff both components are.
   _×Q_ : QBS S → QBS S → QBS S
   _×Q_ X Y .QBS.Carrier = ×-setoid (Carrier X) (Carrier Y)
-  _×Q_ X Y .QBS.Random = λ α → Random X (proj₁ ∘ α) × Random Y (proj₂ ∘ α)
-  _×Q_ X Y .QBS.random-resp = λ e (p , q) →
-    random-resp X (λ r → proj₁ (e r)) p , random-resp Y (λ r → proj₂ (e r)) q
-  _×Q_ X Y .QBS.random-cong = λ (p , q) e → random-cong X p e , random-cong Y q e
-  _×Q_ X Y .QBS.const-random = λ _ → const-random X _ , const-random Y _
-  _×Q_ X Y .QBS.pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
+  _×Q_ X Y .QBS.probes = record
+    { Random = λ α → Random X (proj₁ₛ ∘ₛ α) × Random Y (proj₂ₛ ∘ₛ α)
+    ; random-resp = λ e (p , q) →
+        random-resp X (λ r → proj₁ (e r)) p , random-resp Y (λ r → proj₂ (e r)) q
+    ; const-random = λ _ → const-random X _ , const-random Y _
+    ; pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
+    }
   _×Q_ X Y .QBS.glue-random = λ i α p →
-    glue-random X i (λ n → proj₁ ∘ α n) (λ n → proj₁ (p n)) ,
-    glue-random Y i (λ n → proj₂ ∘ α n) (λ n → proj₂ (p n))
+    random-cast X (λ _ → refl) (glue-random X i (λ n → proj₁ₛ ∘ₛ α n) (λ n → proj₁ (p n))) ,
+    random-cast Y (λ _ → refl) (glue-random Y i (λ n → proj₂ₛ ∘ₛ α n) (λ n → proj₂ (p n)))
 
   -- Equalizers: the subspace on which two maps agree.
   EqQ : ∀ {X Y} → Hom S X Y → Hom S X Y → QBS S
   EqQ {X} {Y} f g = record
-    { Carrier = record
+    { Carrier = EqS
+    ; probes = record
+        { Random = λ α → Random X (ι ∘ₛ α)
+        ; random-resp = λ e → random-resp X e
+        ; const-random = λ (x , _) → const-random X x
+        ; pre-random = pre-random X
+        }
+    ; glue-random = λ i α p → random-cast X (λ _ → refl) (glue-random X i (λ n → ι ∘ₛ α n) p)
+    }
+    where
+      EqS : Setoid ℓ ℓ
+      EqS = record
         { Carrier = Σ ∣ X ∣ (λ x → Setoid._≈_ (Carrier Y) (map f ⟨$⟩ x) (map g ⟨$⟩ x))
         ; _≈_ = λ a b → Setoid._≈_ (Carrier X) (proj₁ a) (proj₁ b)
         ; isEquivalence = record
@@ -68,13 +82,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
             ; trans = Setoid.trans (Carrier X)
             }
         }
-    ; Random = λ α → Random X (proj₁ ∘ α)
-    ; random-resp = λ e → random-resp X e
-    ; random-cong = λ p e → random-cong X p e
-    ; const-random = λ (x , _) → const-random X x
-    ; pre-random = pre-random X
-    ; glue-random = λ i α p → glue-random X i (λ n → proj₁ ∘ α n) p
-    }
+      ι : Func EqS (Carrier X)
+      ι = record { to = proj₁ ; cong = λ e → e }
 
   fstQ : ∀ {X Y} → Hom S (X ×Q Y) X
   fstQ = record { map = record { to = proj₁ ; cong = proj₁ } ; map-random = proj₁ }

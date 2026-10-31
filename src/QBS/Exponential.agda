@@ -8,6 +8,8 @@ open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ; <_,_>ₛ)
+import Function.Construct.Identity as Id
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -41,10 +43,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
       -- the measurable map R → R as a morphism ℛ ⇒ ℛ
       measHom : ∀ {f} → Meas f → Hom S (ℛQ S) (ℛQ S)
-      measHom {f} m = record
-        { map = record { to = f ; cong = meas-resp m }
-        ; map-random = meas-∘ m
-        }
+      measHom {f} m = record { map = f ; map-random = meas-∘ m }
 
       -- f × id : ℛ × X ⇒ ℛ × X
       preRX : ∀ {f} → Meas f → Hom S RX RX
@@ -55,33 +54,32 @@ module _ {ℓ} (S : RandomSource ℓ) where
       glueRX : ∀ {j} → Idx j → (u : ℕ → Hom S RX Y) → Hom S RX Y
       glueRX {j} ij u = record
         { map = record
-            { to = λ (r , x) → map (u (j r)) ⟨$⟩ (r , x)
+            { to = λ (r , x) → map (u (j ⟨$⟩ r)) ⟨$⟩ (r , x)
             ; cong = λ { {r , x} {r′ , y} (er , e) →
-                Setoid.trans (Carrier Y) (Func.cong (map (u (j r))) (er , e))
-                  (Setoid.reflexive (Carrier Y) (≡.cong (λ n → map (u n) ⟨$⟩ (r′ , y)) (idx-resp ij er))) }
+                Setoid.trans (Carrier Y) (Func.cong (map (u (j ⟨$⟩ r))) (er , e))
+                  (Setoid.reflexive (Carrier Y) (≡.cong (λ n → map (u n) ⟨$⟩ (r′ , y)) (Func.cong j er))) }
             }
         ; map-random = λ {α} (pβ , pγ) →
-            glue-random Y (idx-pre ij pβ) (λ n s → map (u n) ⟨$⟩ (proj₁ (α s) , proj₂ (α s)))
-              (λ n → map-random (u n) (pβ , pγ))
+            random-cast Y (λ _ → refl)
+              (glue-random Y (idx-pre ij pβ) (λ n → map (u n) ∘ₛ α) (λ n → map-random (u n) (pβ , pγ)))
         }
 
     -- Y^X: a map R → Y^X is random when it uncurries to a morphism ℛ × X → Y.
     _⇨Q_ : QBS S
     _⇨Q_ = record
       { Carrier = HomS
-      ; Random = λ α → Σ (Hom S RX Y) λ u →
-          ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α r) ⟨$⟩ x)
-      ; random-resp = λ e (u , q) →
-          u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r x)
-      ; random-cong = λ (u , q) {r} {r′} er x →
-          Setoid.trans (Carrier Y) (Setoid.sym (Carrier Y) (q r x))
-            (Setoid.trans (Carrier Y) (Func.cong (map u) (er , Setoid.refl (Carrier X))) (q r′ x))
-      ; const-random = λ φ →
-          _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y)
-      ; pre-random = λ (u , q) m →
-          _∘H_ S u (preRX m) , λ r x → q _ x
+      ; probes = record
+          { Random = λ α → Σ (Hom S RX Y) λ u →
+              ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α ⟨$⟩ r) ⟨$⟩ x)
+          ; random-resp = λ e (u , q) →
+              u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r x)
+          ; const-random = λ φ →
+              _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y)
+          ; pre-random = λ (u , q) m →
+              _∘H_ S u (preRX m) , λ r x → q _ x
+          }
       ; glue-random = λ {j} ij α p →
-          glueRX ij (λ n → proj₁ (p n)) , λ r x → proj₂ (p (j r)) r x
+          glueRX ij (λ n → proj₁ (p n)) , λ r x → proj₂ (p (j ⟨$⟩ r)) r x
       }
 
   open Category (QBSCat S)
@@ -94,7 +92,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
             Setoid.trans (Carrier Y) (e x) (Func.cong (map φ′) ex) }
         }
     ; map-random = λ {α} ((u , q) , pγ) →
-        random-resp Y (λ r → q r (proj₂ (α r))) (map-random u (meas-id , pγ))
+        random-resp Y (λ r → q r (proj₂ (α ⟨$⟩ r)))
+          (map-random u {< Id.function Rˢ , proj₂ₛ ∘ₛ α >ₛ} (meas-id , pγ))
     }
 
   curryQ : ∀ {C X Y} → Hom S (_×Q_ S C X) Y → Hom S C (_⇨Q_ X Y)

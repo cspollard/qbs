@@ -24,16 +24,17 @@ discreteSource ℓ = record
     ; Meas = λ _ → ⊤
     ; meas-id = tt
     ; meas-∘ = λ _ _ → tt
-    ; meas-resp = λ _ e → ≡.cong _ e
     ; meas-ext = λ _ _ → tt
     ; meas-const = λ _ → tt
     }
-  ; partitions = record
-    { Idx = λ _ → ⊤
-    ; idx-resp = λ _ e → ≡.cong _ e
+  ; covering = record
+    { partitions = record
+      { Random = λ _ → ⊤
+      ; random-resp = λ _ _ → tt
+      ; const-random = λ _ → tt
+      ; pre-random = λ _ _ → tt
+      }
     ; meas-glue = λ _ _ → tt
-    ; idx-const = λ _ → tt
-    ; idx-pre = λ _ _ → tt
     }
   ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
   ; idx-glue = λ _ _ → tt
