@@ -56,6 +56,14 @@ for f in sorted(os.listdir(os.path.join(ROOT, 'docs'))):
 r = subprocess.run([sys.executable, os.path.join(ROOT, 'scripts', 'modindex.py'), '--check'], capture_output=True, text=True)
 if r.returncode: bad.append(r.stdout.strip())
 
+# 4. no `rewrite` (plans/04-equality.md): use cong, subst, or `with ... in eq`
+for d, _, fs in os.walk(os.path.join(ROOT, 'src')):
+    for f in fs:
+        if not f.endswith('.agda'): continue
+        p = os.path.join(d, f)
+        for i, l in enumerate(open(p), 1):
+            if re.search(r'\brewrite\b', re.sub(r'--.*', '', l)): bad.append(f'{os.path.relpath(p, ROOT)}:{i}: uses `rewrite`')
+
 if bad:
     print('\n'.join(bad)); sys.exit(1)
 print('docs OK')

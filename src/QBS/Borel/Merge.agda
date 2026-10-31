@@ -81,10 +81,10 @@ Rect m U = Σ Pred (λ C₁ → Σ Pred (λ C₂ →
   Cyl C₁ × Cyl C₂ × (∀ a s → U (m a s) → C₁ a × C₂ s) × (∀ a s → C₁ a → C₂ s → U (m a s))))
 
 mergeC-even : ∀ n a s → ev n ≡ true → mergeC a s n ≡ a (hf n)
-mergeC-even n a s e rewrite e = ≡.refl
+mergeC-even n a s e = ≡.cong (λ b → mergeBit b (a (hf n)) (s (hf n))) e
 
 mergeC-odd : ∀ n a s → ev n ≡ false → mergeC a s n ≡ s (hf n)
-mergeC-odd n a s e rewrite e = ≡.refl
+mergeC-odd n a s e = ≡.cong (λ b → mergeBit b (a (hf n)) (s (hf n))) e
 
 -- adding one coordinate constraint to a rectangle (split on the parity of n by a variable)
 rect-step : ∀ {V} (n : ℕ) (β : Bool) (d : Bool) → ev n ≡ d → Rect mergeC V → Rect mergeC (λ x → V x × (x n ≡ β))

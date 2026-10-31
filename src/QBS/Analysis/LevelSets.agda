@@ -37,13 +37,15 @@ enumSign (suc _) a = -[1+ a ]
 enumQ : ℕ → ℚᵘ
 enumQ k = mkℚᵘ (enumSign (proj₁ (unpair (proj₁ (unpair k)))) (proj₂ (unpair (proj₁ (unpair k))))) (proj₂ (unpair k))
 
+enumQ-pair : ∀ s a b → enumQ (pair (pair s a) b) ≡ mkℚᵘ (enumSign s a) b
+enumQ-pair s a b = ≡.cong₂ mkℚᵘ
+  (≡.trans (≡.cong (λ u → enumSign (proj₁ (unpair (proj₁ u))) (proj₂ (unpair (proj₁ u)))) (unpair-pair (pair s a) b))
+           (≡.cong (λ v → enumSign (proj₁ v) (proj₂ v)) (unpair-pair s a)))
+  (≡.cong proj₂ (unpair-pair (pair s a) b))
+
 enumQ-surj : ∀ q → Σ ℕ (λ k → enumQ k ≡ q)
-enumQ-surj (mkℚᵘ (+ a) b) = pair (pair 0 a) b , go
-  where go : enumQ (pair (pair 0 a) b) ≡ mkℚᵘ (+ a) b
-        go rewrite unpair-pair (pair 0 a) b | unpair-pair 0 a = ≡.refl
-enumQ-surj (mkℚᵘ -[1+ a ] b) = pair (pair 1 a) b , go
-  where go : enumQ (pair (pair 1 a) b) ≡ mkℚᵘ -[1+ a ] b
-        go rewrite unpair-pair (pair 1 a) b | unpair-pair 1 a = ≡.refl
+enumQ-surj (mkℚᵘ (+ a) b) = pair (pair 0 a) b , enumQ-pair 0 a b
+enumQ-surj (mkℚᵘ -[1+ a ] b) = pair (pair 1 a) b , enumQ-pair 1 a b
 
 module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   A : OmegaSemiring (L.suc L.zero)

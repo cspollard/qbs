@@ -44,19 +44,19 @@ dbl-suc n = ≡.cong ℕ.suc (+-suc n n)
 
 ev-dbl : ∀ n → ev (dbl n) ≡ true
 ev-dbl ℕ.zero = ≡.refl
-ev-dbl (ℕ.suc n) rewrite +-suc n n = ev-dbl n
+ev-dbl (ℕ.suc n) = ≡.trans (≡.cong ev (dbl-suc n)) (ev-dbl n)
 
 hf-dbl : ∀ n → hf (dbl n) ≡ n
 hf-dbl ℕ.zero = ≡.refl
-hf-dbl (ℕ.suc n) rewrite +-suc n n = ≡.cong ℕ.suc (hf-dbl n)
+hf-dbl (ℕ.suc n) = ≡.trans (≡.cong hf (dbl-suc n)) (≡.cong ℕ.suc (hf-dbl n))
 
 ev-sdbl : ∀ n → ev (ℕ.suc (dbl n)) ≡ false
 ev-sdbl ℕ.zero = ≡.refl
-ev-sdbl (ℕ.suc n) rewrite +-suc n n = ev-sdbl n
+ev-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → ev (ℕ.suc m)) (dbl-suc n)) (ev-sdbl n)
 
 hf-sdbl : ∀ n → hf (ℕ.suc (dbl n)) ≡ n
 hf-sdbl ℕ.zero = ≡.refl
-hf-sdbl (ℕ.suc n) rewrite +-suc n n = ≡.cong ℕ.suc (hf-sdbl n)
+hf-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → hf (ℕ.suc m)) (dbl-suc n)) (≡.cong ℕ.suc (hf-sdbl n))
 
 -- every index is double its half, or one more
 even-split : ∀ n → ev n ≡ true → n ≡ dbl (hf n)
@@ -81,10 +81,12 @@ merge-split k n with ev n in en
 ... | false = ≡.cong k (≡.sym (odd-split n en))
 
 evens-merge : ∀ a b n → evens (mergeC a b) n ≡ a n
-evens-merge a b n rewrite ev-dbl n | hf-dbl n = ≡.refl
+evens-merge a b n = ≡.trans (≡.cong (λ e → mergeBit e (a h) (b h)) (ev-dbl n)) (≡.cong a (hf-dbl n))
+  where h = hf (dbl n)
 
 odds-merge : ∀ a b n → odds (mergeC a b) n ≡ b n
-odds-merge a b n rewrite ev-sdbl n | hf-sdbl n = ≡.refl
+odds-merge a b n = ≡.trans (≡.cong (λ e → mergeBit e (a h) (b h)) (ev-sdbl n)) (≡.cong b (hf-sdbl n))
+  where h = hf (ℕ.suc (dbl n))
 
 ----------------------------------------------------------------------------
 -- at the level of the sample space R

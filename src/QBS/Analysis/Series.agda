@@ -427,7 +427,8 @@ module Series {ℓ} (A : OmegaSemiring ℓ) where
         inj-snd : ∀ i j → pair N i ≡.≡ pair N j → i ≡.≡ j
         inj-snd i j e = ≡.cong proj₂ (≡.trans (≡.sym (unpair-pair N i)) (≡.trans (≡.cong unpair e) (unpair-pair N j)))
         rowb : ∀ c m → eʳ c (pair N m) ≈ c N m
-        rowb c m rewrite unpair-pair N m = rowonly-self N c m
+        rowb c m = trans (reflexive (≡.cong₂ (rowonly N c) (≡.cong proj₁ (unpair-pair N m)) (≡.cong proj₂ (unpair-pair N m))))
+                         (rowonly-self N c m)
         part₁ : ∀ c → psum2 c N M ≤ psum (eᵒ c) K
         part₁ c = ≤-trans
           (≤-reflexive (psum2-cong-lt N M (λ n m n<N → sym (rowzero-other N c n m (λ p → ℕ.<-irrefl p n<N)))))

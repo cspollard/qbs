@@ -35,7 +35,9 @@ module Cantor {ℓ} (A : CompleteSemiring ℓ) where
 
   cantor-cong : ∀ (F : R → R → ∣A∣) r₁ r₂ →
     F r₁ r₂ ≈ F (ιR (lift (pair (lower r₁) (lower r₂)))) (ρR (lift (pair (lower r₁) (lower r₂))))
-  cantor-cong F r₁ r₂ rewrite unpair-pair (lower r₁) (lower r₂) = refl
+  cantor-cong F r₁ r₂ = reflexive (≡.cong₂ F
+    (≡.sym (≡.cong (λ u → lift (proj₁ u)) (unpair-pair (lower r₁) (lower r₂))))
+    (≡.sym (≡.cong (λ u → lift (proj₂ u)) (unpair-pair (lower r₁) (lower r₂)))))
 
   -- summing over R = ℕ is summing over pairs
   cantor : ∀ (F : R → R → ∣A∣) → ∑ (λ k → F (ιR k) (ρR k)) ≈ ∑ (λ a → ∑ (λ b → F a b))

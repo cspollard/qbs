@@ -32,7 +32,7 @@ sub (suc m) zero _ = refl
 sub (suc m) (suc b) (s≤s le) = sub m b le
 
 next-sub : ∀ m b → suc b ≤ m → next (m ∸ b , b) ≡ (m ∸ suc b , suc b)
-next-sub m b le rewrite sub m b le = refl
+next-sub m b le = cong (λ x → next (x , b)) (sub m b le)
 
 -- unpair (tri m + b) walks b steps down the m-th diagonal
 unpair-diag : ∀ m b → b ≤ m → unpair (tri m + b) ≡ (m ∸ b , b)
@@ -59,8 +59,10 @@ pair′ : ℕ × ℕ → ℕ
 pair′ (a , b) = pair a b
 
 pair-next : ∀ p → pair′ (next p) ≡ suc (pair′ p)
-pair-next (zero , b) rewrite +-identityʳ b = trans (+-identityʳ _) (cong suc (+-comm b (tri b)))
-pair-next (suc a , b) rewrite +-suc a b = +-suc (tri (suc (a + b))) b
+pair-next (zero , b) =
+  trans (+-identityʳ (tri (suc b + zero)))
+    (trans (cong (λ x → tri (suc x)) (+-identityʳ b)) (cong suc (+-comm b (tri b))))
+pair-next (suc a , b) = trans (cong (λ x → tri x + suc b) (+-suc a b)) (+-suc (tri (suc (a + b))) b)
 
 pair-unpair : ∀ n → pair′ (unpair n) ≡ n
 pair-unpair zero = refl

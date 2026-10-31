@@ -87,7 +87,7 @@ module Expansion (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrie
   Fun-bitW n = ind {U = λ x → x n ≡.≡ true} (half * hpow n) (w≤1 n) (gen n true) on off (λ r → ≤-trans (bitW-≤ n r) (w≤1 n))
     where
       on : ∀ r → lower r n ≡.≡ true → bitW n r ≈ half * hpow n
-      on r p rewrite p = refl
+      on r p = reflexive (≡.cong (λ b → sel b (half * hpow n)) p)
       off : ∀ r → (lower r n ≡.≡ true → ⊥) → bitW n r ≈ 0#
       off r q with lower r n in e
       ... | true = ⊥-elim (q ≡.refl)

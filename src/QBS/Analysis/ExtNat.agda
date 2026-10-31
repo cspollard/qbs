@@ -67,16 +67,16 @@ zeroʳ x = trans (*-comm x (fin 0)) (zeroˡ x)
 *-assoc (fin a) (fin b) (fin c) = cong fin (ℕ.*-assoc a b c)
 *-assoc (fin zero) (fin zero) ∞ = refl
 *-assoc (fin zero) (fin (suc b)) ∞ = refl
-*-assoc (fin (suc a)) (fin zero) ∞ rewrite ℕ.*-zeroʳ a = refl
+*-assoc (fin (suc a)) (fin zero) ∞ = trans (cong (λ k → fin k * ∞) (ℕ.*-zeroʳ a)) (cong fin (sym (ℕ.*-zeroʳ a)))
 *-assoc (fin (suc a)) (fin (suc b)) ∞ = refl
 *-assoc (fin zero) ∞ (fin zero) = refl
 *-assoc (fin zero) ∞ (fin (suc c)) = refl
-*-assoc (fin (suc a)) ∞ (fin zero) rewrite ℕ.*-zeroʳ a = refl
+*-assoc (fin (suc a)) ∞ (fin zero) = cong fin (sym (ℕ.*-zeroʳ a))
 *-assoc (fin (suc a)) ∞ (fin (suc c)) = refl
 *-assoc (fin zero) ∞ ∞ = refl
 *-assoc (fin (suc a)) ∞ ∞ = refl
 *-assoc ∞ (fin zero) (fin c) = refl
-*-assoc ∞ (fin (suc b)) (fin zero) rewrite ℕ.*-zeroʳ b = refl
+*-assoc ∞ (fin (suc b)) (fin zero) = cong (λ k → ∞ * fin k) (sym (ℕ.*-zeroʳ b))
 *-assoc ∞ (fin (suc b)) (fin (suc c)) = refl
 *-assoc ∞ (fin zero) ∞ = refl
 *-assoc ∞ (fin (suc b)) ∞ = refl
@@ -304,7 +304,7 @@ module Instance (ℓ : Level) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     +-mono′ : ∀ {a b c d} → a ⊑ b → c ⊑ d → a + c ⊑ b + d
     +-mono′ {a} {b} {c} {d} p q = ⊑-trans s₁ (+-mono⊑ b q)
       where s₁ : a + c ⊑ b + c
-            s₁ rewrite +-comm a c | +-comm b c = +-mono⊑ c p
+            s₁ = subst (λ x → x ⊑ b + c) (+-comm c a) (subst (λ y → c + a ⊑ y) (+-comm c b) (+-mono⊑ c p))
 
   ExtNatOmega : OmegaSemiring ℓ
   ExtNatOmega = record

@@ -342,10 +342,10 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
         c (ℕ.suc _) = inj₂ ((λ _ → tt) , tt)
 
         eq : ∀ r → Setoid._≈_ (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S)))
-               (normC′ (β r) (d r)) (ev S (MP.TQ X) (1Q S) (c (idxᵈ r)) r)
+               (normC′ (β r) (d r)) (ev S (MP.TQ X) (1Q S) (c (idx′ (d r))) r)
         eq r with d r in ed
-        ... | inj₁ (n , h) rewrite ed = ⊎ʳ.inj₁ (λ f → Setoid.refl Aˢ)
-        ... | inj₂ _ rewrite ed = ⊎ʳ.inj₂ ≡.refl
+        ... | inj₁ (n , h) = ⊎ʳ.inj₁ (≡.subst (λ e → MP._≈ᵖ_ (normP n (β r) h) (γ′ r e)) (≡.sym ed) (λ f → Setoid.refl Aˢ))
+        ... | inj₂ _ = ⊎ʳ.inj₂ ≡.refl
 
   normRandom : ∀ {X : QBS S} {β : R → Pre X} → MA.Wit β →
     QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (λ r → normC (β r))

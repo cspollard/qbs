@@ -67,7 +67,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     kerEq : ∀ {X : QBS S} (γ : Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X) (α : R → R) s m →
       map γ ⟨$⟩ (α (ιR (lift (pair (lower s) (lower m)))) , ρR (lift (pair (lower s) (lower m))))
         ≡ map γ ⟨$⟩ (α s , m)
-    kerEq γ α s m rewrite unpair-pair (lower s) (lower m) = ≡.refl
+    kerEq γ α s m = ≡.cong (λ u → map γ ⟨$⟩ (α (lift (proj₁ u)) , lift (proj₂ u))) (unpair-pair (lower s) (lower m))
 
     kerH : ∀ {X : QBS S} → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X → Σ (R → ∣A∣) Ok → Hom S (ℛQ S) (TQ X)
     kerH {X} γ m@(ν , ok) = record
