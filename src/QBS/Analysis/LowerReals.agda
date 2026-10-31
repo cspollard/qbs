@@ -404,9 +404,9 @@ LowerRealsOmega lem = record
   { ordered = record
         { commutativeSemiring = cutSemiring
       ; _≤_ = _⊑_
-      ; ≤-reflexive = proj₁
-      ; ≤-trans = ⊑-trans
-      ; ≤-antisym = _,_
+      ; isPartialOrder = record
+          { isPreorder = record { isEquivalence = ≋-isEquivalence ; reflexive = proj₁ ; trans = ⊑-trans }
+          ; antisym = _,_ }
       ; 0-least = 0-least
       ; ≤-+ʳ = λ {a} {b} → ⊕-inl a b
       ; +-mono = ⊕-mono

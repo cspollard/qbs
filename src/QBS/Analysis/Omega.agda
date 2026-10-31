@@ -4,6 +4,11 @@
 -- non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences
 -- preserved by + and ×, and cancellation of elements ≤ 1.
 -- The extended non-negative reals [0, ∞] are the intended instance.
+-- `OmegaSemiring` is an ω-continuous semiring in the sense of Kuich (1987, "The Kleene and the
+-- Parikh theorem in complete semirings") and Ésik–Kuich ("Equational axioms for a theory of automata"):
+-- an ordered semiring with suprema of increasing sequences, along which + and × are continuous.
+-- The stdlib (2.3) has no ordered-semiring bundle, so the record is local, but its order is a stdlib
+-- `IsPartialOrder` (`isPartialOrder`, with the bundled `poset`).
 module QBS.Analysis.Omega where
 
 import Level as L
@@ -17,6 +22,8 @@ import Data.Sum.Base
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
+open import Relation.Binary.Bundles using (Poset)
+open import Relation.Binary.Structures using (IsPartialOrder)
 
 -- a commutative semiring with a compatible order: monotone `+` and `*`, `0` least, complements below `1`
 record OrderedSemiring (ℓ : Level) : Set (L.suc ℓ) where
@@ -27,15 +34,20 @@ record OrderedSemiring (ℓ : Level) : Set (L.suc ℓ) where
   infix 4 _≤_
   field
     _≤_ : Carrier → Carrier → Set ℓ
-    ≤-reflexive : ∀ {a b} → a ≈ b → a ≤ b
-    ≤-trans : ∀ {a b c} → a ≤ b → b ≤ c → a ≤ c
-    ≤-antisym : ∀ {a b} → a ≤ b → b ≤ a → a ≈ b
+    isPartialOrder : IsPartialOrder _≈_ _≤_
     0-least : ∀ {a} → 0# ≤ a
     ≤-+ʳ : ∀ {a b} → a ≤ a + b
     +-mono : ∀ {a b c d} → a ≤ b → c ≤ d → a + c ≤ b + d
     *-mono : ∀ c {a b} → a ≤ b → c * a ≤ c * b
     -- subtraction below 1: every c ≤ 1 has a complement
     complement : ∀ {c} → c ≤ 1# → Σ Carrier (λ d → c + d ≈ 1#)
+
+  poset : Poset ℓ ℓ ℓ
+  poset = record { isPartialOrder = isPartialOrder }
+
+  open IsPartialOrder isPartialOrder public
+    using (≤-resp-≈)
+    renaming (reflexive to ≤-reflexive; trans to ≤-trans; antisym to ≤-antisym; refl to ≤-refl)
 
   Increasing : (ℕ → Carrier) → Set ℓ
   Increasing c = ∀ n → c n ≤ c (suc n)
@@ -62,9 +74,6 @@ record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
 
   ----------------------------------------------------------------------------
   -- the order
-
-  ≤-refl : ∀ {a} → a ≤ a
-  ≤-refl = ≤-reflexive refl
 
   ≤-resp : ∀ {a a′ b b′} → a ≈ a′ → b ≈ b′ → a ≤ b → a′ ≤ b′
   ≤-resp ea eb p = ≤-trans (≤-reflexive (sym ea)) (≤-trans p (≤-reflexive eb))

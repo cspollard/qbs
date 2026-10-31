@@ -312,9 +312,12 @@ module Instance (ℓ : Level) (lem : LEM₀) where
     { ordered = record
           { commutativeSemiring = commSemiring
         ; _≤_ = _≤ᶜ_
-        ; ≤-reflexive = λ e → lift (⊑-reflexive (cong lower e))
-        ; ≤-trans = λ p q → lift (⊑-trans (lower p) (lower q))
-        ; ≤-antisym = λ p q → lc (⊑-antisym (lower p) (lower q))
+        ; isPartialOrder = record
+            { isPreorder = record
+                { isEquivalence = isEquivalence
+                ; reflexive = λ e → lift (⊑-reflexive (cong lower e))
+                ; trans = λ p q → lift (⊑-trans (lower p) (lower q)) }
+            ; antisym = λ p q → lc (⊑-antisym (lower p) (lower q)) }
         ; 0-least = lift 0-⊑
         ; ≤-+ʳ = λ {a} {b} → lift (x⊑x+y (lower a) (lower b))
         ; +-mono = λ p q → lift (+-mono′ (lower p) (lower q))
