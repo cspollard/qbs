@@ -55,15 +55,19 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   private
     open DS ℓ using (S)
     R = Lift ℓ ℕ
-  open RandomSource S using () renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
+  open RandomSource S using (Rˢ) renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
   open QBS
+
+  -- R carries ≡, so every function out of R is a setoid map
+  ⇑ : ∀ {c e} {B : Setoid c e} → (R → Setoid.Carrier B) → Func Rˢ B
+  ⇑ {B = B} f = record { to = f ; cong = λ e → Setoid.reflexive B (≡.cong f e) }
 
   -- A measure on X, before identification.
   record Pre (X : QBS S) : Set ℓ where
     constructor mk
     field
       α : R → ∣ X ∣
-      α-random : Random X α
+      α-random : Random X (⇑ α)
       μ : R → ∣A∣
       μ-ok : Ok μ
   open Pre
@@ -90,7 +94,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   record Wit {X : QBS S} (β : R → Pre X) : Set ℓ where
     field
       wα : R → ∣ X ∣
-      wα-random : Random X wα
+      wα-random : Random X (⇑ wα)
       wg : R → R → ∣A∣
       wg-ok : ∀ r → Ok (wg r)
       w-eq : ∀ r → β r ≈ᵖ mk wα wα-random (wg r) (wg-ok r)
@@ -114,30 +118,32 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   TQ : QBS S → QBS S
   TQ X = record
     { Carrier = PreS X
-    ; Random = Wit
-    ; random-resp = λ e w → record
-        { wα = wα w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
-        ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
-    ; random-cong = λ _ e → Setoid.reflexive (PreS X) (≡.cong _ e)
-    ; const-random = λ x → record
-        { wα = α x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
-        ; w-eq = λ _ f → Setoid.refl Aˢ }
-    ; pre-random = λ w _ → record
-        { wα = wα w ; wα-random = wα-random w ; wg = λ r → wg w (_) ; wg-ok = λ r → wg-ok w (_)
-        ; w-eq = λ r → w-eq w (_) }
+    ; probes = record
+        { Random = λ β → Wit (β ⟨$⟩_)
+        ; random-resp = λ e w → record
+            { wα = wα w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
+            ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
+        ; const-random = λ x → record
+            { wα = α x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
+            ; w-eq = λ _ f → Setoid.refl Aˢ }
+        ; pre-random = λ {_} {h} w _ → record
+            { wα = wα w ; wα-random = wα-random w ; wg = λ r → wg w (h ⟨$⟩ r)
+            ; wg-ok = λ r → wg-ok w (h ⟨$⟩ r) ; w-eq = λ r → w-eq w (h ⟨$⟩ r) }
+        }
     ; glue-random = λ {i} _ β w → record
         { wα = λ r → B w (unpairᴺ (lower r))
-        ; wα-random = QBS.glue-random X {ι} tt (λ n → wα (w n) ∘ ρ)
-            (λ n → QBS.pre-random X (wα-random (w n)) tt)
-        ; wg = λ r → push (φ (i r)) (wg (w (i r)) r)
-        ; wg-ok = λ r → ok-push (φ (i r)) (wg-ok (w (i r)) r)
+        ; wα-random = random-cast X (λ _ → ≡.refl)
+            (QBS.glue-random X {⇑ ι} tt (λ n → ⇑ (wα (w n)) ∘ₛ ⇑ ρ)
+              (λ n → QBS.pre-random X (wα-random (w n)) tt))
+        ; wg = λ r → push (φ (i ⟨$⟩ r)) (wg (w (i ⟨$⟩ r)) r)
+        ; wg-ok = λ r → ok-push (φ (i ⟨$⟩ r)) (wg-ok (w (i ⟨$⟩ r)) r)
         ; w-eq = λ r f →
-            Setoid.trans Aˢ (w-eq (w (i r)) r f)
+            Setoid.trans Aˢ (w-eq (w (i ⟨$⟩ r)) r f)
               (Setoid.sym Aˢ (Setoid.trans Aˢ
-                (push-∑ (φ (i r)) (wg (w (i r)) r) (λ k → f ⟨$⟩ B w (unpairᴺ (lower k))))
+                (push-∑ (φ (i ⟨$⟩ r)) (wg (w (i ⟨$⟩ r)) r) (λ k → f ⟨$⟩ B w (unpairᴺ (lower k))))
                 (∑-cong (λ m → *-cong (Setoid.refl Aˢ)
                   (Func.cong f (Setoid.reflexive (Carrier X)
-                    (≡.cong (B w) (unpair-pairᴺ (i r) (lower m)))))))))
+                    (≡.cong (B w) (unpair-pairᴺ (i ⟨$⟩ r) (lower m)))))))))
         }
     }
     where
@@ -150,7 +156,8 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- functor action
 
   mapPre : ∀ {X Y} → Hom S X Y → Pre X → Pre Y
-  mapPre f p = mk (λ r → map f ⟨$⟩ α p r) (map-random f (α-random p)) (μ p) (μ-ok p)
+  mapPre {Y = Y} f p =
+    mk (λ r → map f ⟨$⟩ α p r) (random-cast Y (λ _ → ≡.refl) (map-random f (α-random p))) (μ p) (μ-ok p)
 
   -- ∫ (mapPre f p) g ≡ ∫ p (g ∘ f)   (definitionally)
 
@@ -162,7 +169,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
         }
     ; map-random = λ w → record
         { wα = λ r → map f ⟨$⟩ wα w r
-        ; wα-random = map-random f (wα-random w)
+        ; wα-random = random-cast Y (λ _ → ≡.refl) (map-random f (wα-random w))
         ; wg = wg w
         ; wg-ok = wg-ok w
         ; w-eq = λ r g → w-eq w r (Comp.function (map f) g)
@@ -173,7 +180,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- unit
 
   ηPre : ∀ {X} → ∣ X ∣ → Pre X
-  ηPre {X} x = mk (const x) (QBS.const-random X x) (dirac r₀) (ok-dirac r₀)
+  ηPre {X} x = mk (const x) (random-cast X (λ _ → ≡.refl) (QBS.const-random X x)) (dirac r₀) (ok-dirac r₀)
 
   -- ∫ (ηPre x) f ≈ f x
   ∫-η : ∀ {X} (x : ∣ X ∣) (f : Func (Carrier X) Aˢ) → ∫ {X} (ηPre {X} x) f ≈ f ⟨$⟩ x
@@ -187,12 +194,12 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
             (Setoid.trans Aˢ (Func.cong f e) (Setoid.sym Aˢ (∫-η {X} y f)))
         }
     ; map-random = λ {a} p → record
-        { wα = a
-        ; wα-random = p
+        { wα = a ⟨$⟩_
+        ; wα-random = random-cast X (λ _ → ≡.refl) p
         ; wg = λ r → dirac r
         ; wg-ok = λ r → ok-dirac r
-        ; w-eq = λ r f → Setoid.trans Aˢ (∫-η {X} (a r) f)
-            (Setoid.sym Aˢ (dirac-∑ r (λ k → f ⟨$⟩ a k)))
+        ; w-eq = λ r f → Setoid.trans Aˢ (∫-η {X} (a ⟨$⟩ r) f)
+            (Setoid.sym Aˢ (dirac-∑ r (λ k → f ⟨$⟩ (a ⟨$⟩ k))))
         }
     }
 
@@ -243,7 +250,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
           ; wg = λ r k → ∑ (λ r′ → wg w r r′ * wg w₂ r′ k)
           ; wg-ok = λ r → ok-bind (wg-ok w r) (wg-ok w₂)
           ; w-eq = λ r f →
-              Setoid.trans Aˢ (∫-join (β r) f)
+              Setoid.trans Aˢ (∫-join (β ⟨$⟩ r) f)
                 (Setoid.trans Aˢ (w-eq w r (∫ᶠ f))
                   (Setoid.sym Aˢ (∫-join (mk (wα w) (wα-random w) (wg w r) (wg-ok w r)) f)))
           }

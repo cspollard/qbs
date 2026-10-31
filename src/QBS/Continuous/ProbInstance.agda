@@ -9,6 +9,8 @@ open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Function.NonDependent.Setoid using (_×-function_)
+import Function.Construct.Identity as Id
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -42,6 +44,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
   open Hom
   open Pre
   open Wit
+  open RandomSource S using (Rˢ; Meas)
 
   private
     -- the law of a probe under a measure
@@ -49,7 +52,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
     PM = Σ Measure IsProb
 
     lawP : ∀ {X : QBS S} → Hom S (ℛQ S) X → PM → Pre X
-    lawP a (μ , pμ) = mk (λ r → map a ⟨$⟩ r) (unprobe S a) μ pμ
+    lawP a (μ , pμ) = mk (map a) (unprobe S a) μ pμ
 
     lawH : ∀ {X : QBS S} → Hom S (ℛQ S) X → PM → Hom S (1Q S) (TQ X)
     lawH {X} a μ = record
@@ -72,9 +75,9 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
           }
       }
       where
-        pairH : ∀ (β : R → R) → Measurable (down β) → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) (_×Q_ S (ℛQ S) (ℛQ S))
+        pairH : ∀ (β : Func Rˢ Rˢ) → Meas β → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) (_×Q_ S (ℛQ S) (ℛQ S))
         pairH β mβ = record
-          { map = record { to = λ p → β (proj₁ p) , proj₂ p ; cong = λ (e₁ , e₂) → lift (measurable-≗ {down β} mβ (lower e₁)) , e₂ }
+          { map = β ×-function Id.function Rˢ
           ; map-random = λ {γ′} (m₁ , m₂) → measurable-∘ m₁ mβ , m₂
           }
 
@@ -84,8 +87,8 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
   continuousProbLaws : ProbLaws (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad
   continuousProbLaws = record
     { Measure = PM
-    ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) μ
-        , IsProb-push {λ r → map m ⟨$⟩ r} (map-random m (RandomSource.meas-id S)) {μ} pμ
+    ; pushforward = λ m (μ , pμ) → push {λ r → map m ⟨$⟩ r} (unprobe S m) μ
+        , IsProb-push {λ r → map m ⟨$⟩ r} (unprobe S m) {μ} pμ
     ; measure = lawH (idH S)
     ; measure-push = λ m (μ , _) _ g → I-cong μ (λ r → Setoid.refl Aˢ) _ _
     ; measure-total = λ (μ , pμ) pt f →
@@ -94,7 +97,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
         in Setoid.trans Aˢ (I-cong μ (λ _ → Setoid.refl Aˢ) _ (Fun-const c c≤1)) (I-const μ pμ c c≤1)
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ _
-        in probe S (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
+        in probe S {α = α p} (α-random p) , (m p , ok p) , (λ pt f → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
     }
 
   continuousProbFubini : Fubini (L.suc L.zero) (QBSCat S) (ℛQ S) (cartesianClosed S) continuousMonad continuousProbLaws

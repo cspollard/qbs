@@ -63,11 +63,12 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   WQ : QBS S
   WQ = record
     { Carrier = Aˢ
-    ; Random = λ _ → ⊤
-    ; random-resp = λ _ _ → tt
-    ; random-cong = λ _ e → Setoid.reflexive Aˢ (≡.cong _ e)
-    ; const-random = λ _ → tt
-    ; pre-random = λ _ _ → tt
+    ; probes = record
+        { Random = λ _ → ⊤
+        ; random-resp = λ _ _ → tt
+        ; const-random = λ _ → tt
+        ; pre-random = λ _ _ → tt
+        }
     ; glue-random = λ _ _ _ → tt
     }
 
@@ -124,7 +125,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     r₀ : R
     r₀ = lift 0
 
-  open MA using (Pre; mk; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
+  open MA using (⇑; Pre; mk; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
   open MA.Pre
 
   -- constant elements ⊤ ⇒ M X
@@ -163,7 +164,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     ; map-random = λ {α} _ → record
         { wα = const tt
         ; wα-random = tt
-        ; wg = λ r k → α r * dirac r₀ k
+        ; wg = λ r k → (α ⟨$⟩ r) * dirac r₀ k
         ; wg-ok = λ _ → tt
         ; w-eq = λ r f → Setoid.refl Aˢ
         }
@@ -186,8 +187,8 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   -- countable sums of measures: glue the probes through the Cantor pairing
   sumP : ∀ {X : QBS S} → (ℕ → Pre X) → Pre X
   sumP {X} t = mk (λ k → α (t (lower (ιR k))) (ρR k))
-    (QBS.glue-random X {λ k → lower (ιR k)} tt (λ n → α (t n) ∘ ρR)
-      (λ n → QBS.pre-random X (α-random (t n)) tt))
+    (random-cast X (λ _ → ≡.refl) (QBS.glue-random X {⇑ (λ k → lower (ιR k))} tt (λ n → ⇑ (α (t n)) ∘ₛ ⇑ ρR)
+      (λ n → QBS.pre-random X (α-random (t n)) tt)))
     (λ k → μ (t (lower (ιR k))) (ρR k)) tt
 
   ∫-sum : ∀ {X : QBS S} (t : ℕ → Pre X) f →
@@ -216,7 +217,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
           ; wg = λ r → μ (sumP (t′ r))
           ; wg-ok = λ _ → tt
           ; w-eq = λ r f →
-              Setoid.trans Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ (β r)) f)
+              Setoid.trans Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ (β ⟨$⟩ r)) f)
                 (Setoid.trans Aˢ (∑-cong (λ n → MA.Wit.w-eq (w (lower n)) r f))
                   (Setoid.sym Aˢ (∫-sum (t′ r) f)))
           }
@@ -335,12 +336,12 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
       ; w-eq = λ r → γ-eq′ r (d r) }
 
     -- normalisation of a random family of measures is random in Prob + 1
-    normRandomᵈ : QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (λ r → normC′ (β r) (d r))
-    normRandomᵈ = idxᵈ , tt , c , eq
+    normRandomᵈ : QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (⇑ (λ r → normC′ (β r) (d r)))
+    normRandomᵈ = ⇑ idxᵈ , tt , c , eq
       where
         c : ℕ → Piece S (MP.TQ X) (1Q S)
-        c ℕ.zero = inj₁ ((λ r → γ′ r (d r)) , Wγ)
-        c (ℕ.suc _) = inj₂ ((λ _ → tt) , tt)
+        c ℕ.zero = inj₁ (⇑ (λ r → γ′ r (d r)) , Wγ)
+        c (ℕ.suc _) = inj₂ (constₛ tt , tt)
 
         eq : ∀ r → Setoid._≈_ (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S)))
                (normC′ (β r) (d r)) (ev S (MP.TQ X) (1Q S) (c (idx′ (d r))) r)
@@ -349,7 +350,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
         ... | inj₂ _ = ⊎ʳ.inj₂ ≡.refl
 
   normRandom : ∀ {X : QBS S} {β : R → Pre X} → MA.Wit β →
-    QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (λ r → normC (β r))
+    QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (⇑ (λ r → normC (β r)))
   normRandom {X} {β} w = normRandomᵈ w (λ r → NormalizableSemiring.invertible? N (mass (β r)))
 
   -- probability measures are fixed by normalisation
@@ -538,7 +539,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
     scaled-laws-law {X} t =
       let p = map t ⟨$⟩ tt
-          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (QBS.pre-random X {α p} {id} (α-random p) tt) (dirac (lift n)) tt
+          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (α-random p) (dirac (lift n)) tt
           fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
           aN = λ (n : ℕ) → probe S (α-random p)
           wN = λ (n : ℕ) → constH (μ p (lift n))

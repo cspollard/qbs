@@ -47,7 +47,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open UnitInterval A lem using (AQ)
+  open UnitInterval A using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   module C = Continuous A lem probClass
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)

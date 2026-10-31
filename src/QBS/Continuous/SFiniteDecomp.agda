@@ -88,7 +88,7 @@ module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Tensor A lem using (constK)
   open Density lem using (densM; J-dens; J-null; Mvh)
   open LevelSets lem using (LS; Lvl; borel-prop)
-  open UnitInterval A lem using (AQ)
+  open UnitInterval A using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   open SFinite lem
   open WitM

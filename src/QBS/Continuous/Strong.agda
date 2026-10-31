@@ -12,6 +12,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -41,7 +42,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
   open Integration A
   open Indicators A lem
   open Tensor A lem
-  open UnitInterval A lem
+  open UnitInterval A
   open Continuous A lem K
   open QBS
   open Hom
@@ -54,12 +55,12 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
     { map = record
         { to = λ y → map f ⟨$⟩ (x , y)
         ; cong = λ e → Func.cong (map f) (Setoid.refl (Carrier X) , e) }
-    ; map-random = λ {γ} rγ → map-random f {λ r → x , γ r} (const-random X x , rγ)
+    ; map-random = λ {γ} rγ → map-random f {< constₛ x , γ >ₛ} (const-random X x , rγ)
     }
 
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (_×Q_ S X Y)
-  σPre {X} {Y} (x , q) = mk (λ r → x , α q r) (const-random X x , α-random q) (m q) (ok q)
+  σPre {X} {Y} (x , q) = mk < constₛ x , α q >ₛ (const-random X x , α-random q) (m q) (ok q)
 
   ∫-σ : ∀ {X Y : QBS S} (x : ∣ X ∣) (q : Pre Y) (f : Hom S (_×Q_ S X Y) AQ) →
     ∫ {_×Q_ S X Y} (σPre {X} {Y} (x , q)) f ≈ ∫ {Y} q (fixH {X} {Y} x f)
@@ -76,13 +77,13 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
                   (Setoid.sym Aˢ (∫-σ {X} {Y} x′ q′ f))))
         }
     ; map-random = λ {β} (pb , w) → record
-        { a = pairQ S (fstJ {X} (λ r → proj₁ (β r)) pb) (a w)
+        { a = pairQ S (fstJ {X} (proj₁ₛ ∘ₛ β) pb) (a w)
         ; g = g w
         ; g-ok = g-ok w
         ; g-pr = g-pr w
         ; w-eq = λ r f →
-            Setoid.trans Aˢ (∫-σ {X} {Y} (proj₁ (β r)) (proj₂ (β r)) f)
-              (Setoid.trans Aˢ (w-eq w r (fixH {X} {Y} (proj₁ (β r)) f))
+            Setoid.trans Aˢ (∫-σ {X} {Y} (proj₁ (β ⟨$⟩ r)) (proj₂ (β ⟨$⟩ r)) f)
+              (Setoid.trans Aˢ (w-eq w r (fixH {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
                 (I-cong (g w r) (λ s → Setoid.refl Aˢ) _ _))
         }
     }
@@ -114,7 +115,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
     ; η-comm = λ {A} {B} x h → Func.cong (map h) (Setoid.refl (Carrier (_×Q_ S A B)))
     ; μ-η-comm = λ {A} {B} (a , P) g →
         Setoid.trans Aˢ (∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g)
-          (Setoid.trans Aˢ (Ir (m P) (λ r → ∫-σ {A} {B} a (α P r) g))
+          (Setoid.trans Aˢ (Ir (m P) (λ r → ∫-σ {A} {B} a (α P ⟨$⟩ r) g))
             (Setoid.trans Aˢ (Setoid.sym Aˢ (∫-join {B} P (fixH {A} {B} a g)))
               (Setoid.sym Aˢ (∫-σ {A} {B} a (joinPre P) g))))
     ; strength-assoc = λ ((x , y) , q) h → Ir (m q) (λ r → Setoid.refl Aˢ)
@@ -136,17 +137,18 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
 
   -- the joint test function u ↦ g (s (evens u), t (odds u))
   hF : ∀ {X Y : QBS S} → Pre X → Pre Y → Hom S (_×Q_ S X Y) AQ → R → ∣A∣
-  hF s t g u = proj₁ (map g ⟨$⟩ (α s (evensR u) , α t (oddsR u)))
+  hF s t g u = proj₁ (map g ⟨$⟩ (α s ⟨$⟩ evensR u , α t ⟨$⟩ oddsR u))
 
   fhF : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Hom S (_×Q_ S X Y) AQ) → Fun (hF s t g)
   fhF {X} {Y} s t g =
-    map-random g (QBS.pre-random X (α-random s) (proj₁ (map-random fromH (RandomSource.meas-id S))) ,
-                  QBS.pre-random Y (α-random t) (proj₂ (map-random fromH (RandomSource.meas-id S))))
+    map-random g {< α s ∘ₛ proj₁ₛ ∘ₛ map fromH , α t ∘ₛ proj₂ₛ ∘ₛ map fromH >ₛ}
+      (QBS.pre-random X (α-random s) (proj₁ (Probes.unprobe S fromH)) ,
+       QBS.pre-random Y (α-random t) (proj₂ (Probes.unprobe S fromH)))
 
   hmerge : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Hom S (_×Q_ S X Y) AQ) (k r : R) →
-    hF s t g (mergeR k r) ≈ proj₁ (map g ⟨$⟩ (α s k , α t r))
+    hF s t g (mergeR k r) ≈ proj₁ (map g ⟨$⟩ (α s ⟨$⟩ k , α t ⟨$⟩ r))
   hmerge {X} {Y} s t g k r = Func.cong (map g)
-    (random-cong X (α-random s) (merge-evens k r) , random-cong Y (α-random t) (merge-odds k r))
+    (Func.cong (α s) (merge-evens k r) , Func.cong (α t) (merge-odds k r))
 
   commutative : Commutative braided strongMonad
   commutative = record { commutes = λ {X} {Y} (s , t) g →

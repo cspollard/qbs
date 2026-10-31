@@ -44,7 +44,9 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (_×Q_ S X Y)
   σPre {X} {Y} (x , q) =
-    mk (λ r → x , α q r) (QBS.const-random X x , α-random q) (μ q) (μ-ok q)
+    mk (λ r → x , α q r)
+      (random-cast X (λ _ → ≡.refl) (QBS.const-random X x) , random-cast Y (λ _ → ≡.refl) (α-random q))
+      (μ q) (μ-ok q)
 
   private
     φ : ℕ → R → R
@@ -73,18 +75,19 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
                 (Func.cong f (ex , Setoid.refl (Carrier Y)))))
         }
     ; map-random = λ {β} (pb , w) → record
-        { wα = λ k → B β w (unpairᴺ (lower k))
+        { wα = λ k → B (β ⟨$⟩_) w (unpairᴺ (lower k))
         ; wα-random =
-            QBS.pre-random X pb tt , QBS.pre-random Y (wα-random w) tt
+            random-cast X (λ _ → ≡.refl) (QBS.pre-random X {f = ⇑ ιR} pb tt) ,
+            random-cast Y (λ _ → ≡.refl) (QBS.pre-random Y {f = ⇑ ρ} (wα-random w) tt)
         ; wg = λ r → push (φ (lower r)) (wg w r)
         ; wg-ok = λ r → ok-push (φ (lower r)) (wg-ok w r)
         ; w-eq = λ r f →
-            Setoid.trans Aˢ (w-eq w r (fix {X} {Y} (proj₁ (β r)) f))
+            Setoid.trans Aˢ (w-eq w r (fix {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
               (Setoid.sym Aˢ (Setoid.trans Aˢ
-                (push-∑ (φ (lower r)) (wg w r) (λ k → f ⟨$⟩ B β w (unpairᴺ (lower k))))
+                (push-∑ (φ (lower r)) (wg w r) (λ k → f ⟨$⟩ B (β ⟨$⟩_) w (unpairᴺ (lower k))))
                 (∑-cong (λ m → *-cong (Setoid.refl Aˢ)
                   (Func.cong f (Setoid.reflexive (Carrier (_×Q_ S X Y))
-                    (≡.cong (B β w) (unpair-pairᴺ (lower r) (lower m)))))))))
+                    (≡.cong (B (β ⟨$⟩_) w) (unpair-pairᴺ (lower r) (lower m)))))))))
         }
     }
     where

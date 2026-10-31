@@ -30,7 +30,7 @@ module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open FairCoin lem₁ using (fairCoin)
   open Arch (lowerRealsArch (lemOf lem₁)) using (half) renaming (half+half to hh)
   open Expansion A half hh
-  open UnitInterval A (lemOf lem₁) using (AQ)
+  open UnitInterval A using (AQ)
   open Integration A using (probClass)
   open Continuous A (lemOf lem₁) probClass using (Pre; mk)
 

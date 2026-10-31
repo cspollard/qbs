@@ -59,7 +59,7 @@ module SFiniteSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open UnitInterval A lem using (AQ)
+  open UnitInterval A using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   open SFinite lem
   open WitM

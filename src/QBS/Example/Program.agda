@@ -51,11 +51,12 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
   Disc : Set ℓ → QBS S
   Disc T = record
     { Carrier = setoid T
-    ; Random = λ _ → ⊤
-    ; random-resp = λ _ _ → tt
-    ; random-cong = λ _ e → ≡.cong _ e
-    ; const-random = λ _ → tt
-    ; pre-random = λ _ _ → tt
+    ; probes = record
+        { Random = λ _ → ⊤
+        ; random-resp = λ _ _ → tt
+        ; const-random = λ _ → tt
+        ; pre-random = λ _ _ → tt
+        }
     ; glue-random = λ _ _ _ → tt
     }
 
@@ -78,8 +79,9 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
   kernel {T} {U} k = record
     { map = record { to = k ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
     ; map-random = λ {β} _ →
-        glue-random (TQ (Disc U)) {i = lower} tt (λ n _ → k (β (lift n)))
-          (λ n → const-random (TQ (Disc U)) (k (β (lift n))))
+        glue-random (TQ (Disc U)) {i = record { to = lower ; cong = ≡.cong lower }} tt
+          (λ n → constₛ (k (β ⟨$⟩ lift n)))
+          (λ n → const-random (TQ (Disc U)) (k (β ⟨$⟩ lift n)))
     }
 
   infixl 1 _>>=_ _>>_

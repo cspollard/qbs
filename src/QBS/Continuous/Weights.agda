@@ -33,18 +33,19 @@ module Weights (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   WQ : QBS S
   WQ = record
     { Carrier = setoid
-    ; Random = Meas
-    ; random-resp = λ {α} {β} e m → Meas-ext {α} {β} e m
-    ; random-cong = λ m e → Meas-resp m (lower e)
-    ; const-random = Meas-const
-    ; pre-random = λ {α} {f} m mf → Meas-pre {α} {f} m mf
-    ; glue-random = λ {j} pj α ms → Meas-glue {j} {α} pj ms
+    ; probes = record
+        { Random = λ α → Meas (α ⟨$⟩_)
+        ; random-resp = λ {α} {β} e m → Meas-ext {α ⟨$⟩_} {β ⟨$⟩_} e m
+        ; const-random = Meas-const
+        ; pre-random = λ {α} {f} m mf → Meas-pre {α ⟨$⟩_} {f ⟨$⟩_} m mf
+        }
+    ; glue-random = λ {j} pj α ms → Meas-glue {j ⟨$⟩_} {λ k → α k ⟨$⟩_} pj ms
     }
 
   mulW : Hom S (_×Q_ S WQ WQ) WQ
   mulW = record
     { map = record { to = λ p → proj₁ p * proj₂ p ; cong = λ { (e₁ , e₂) → OmegaSemiring.*-cong A e₁ e₂ } }
-    ; map-random = λ {γ} (m₁ , m₂) → Meas-⊗ {λ r → proj₁ (γ r)} {λ r → proj₂ (γ r)} m₁ m₂
+    ; map-random = λ {γ} (m₁ , m₂) → Meas-⊗ {λ r → proj₁ (γ ⟨$⟩ r)} {λ r → proj₂ (γ ⟨$⟩ r)} m₁ m₂
     }
 
   constW : ∀ {X : QBS S} → Cut → Hom S X WQ

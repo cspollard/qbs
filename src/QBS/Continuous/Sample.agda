@@ -2,7 +2,7 @@
 
 -- Cantor space as a sample space: splitting into even and odd bits (the isomorphism
 -- ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the
--- measurable functions.  Function extensionality is assumed only for the isomorphism laws.
+-- measurable functions.  No function extensionality, and no excluded middle.
 module QBS.Continuous.Sample where
 
 import Level as L
@@ -155,7 +155,7 @@ merge-odds r s = lift (odds-merge (lower r) (lower s))
 ----------------------------------------------------------------------------
 -- the unit interval: random elements are the measurable functions
 
-module UnitInterval (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module UnitInterval (A : OmegaSemiring (L.suc L.zero)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
 
@@ -174,10 +174,11 @@ module UnitInterval (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → 
   AQ : QBS S
   AQ = record
     { Carrier = 𝕀
-    ; Random = λ h → Fun (λ r → proj₁ (h r))
-    ; random-resp = λ e f → Fun-ext e f
-    ; random-cong = λ {α} f e → Fun-resp lem f (lower e)
-    ; const-random = λ x → Fun-const (proj₁ x) (proj₂ x)
-    ; pre-random = λ f mf → Fun-pre f mf
-    ; glue-random = λ {i} pi hs fs → glueU pi (λ n r → proj₁ (hs n r)) fs
+    ; probes = record
+        { Random = λ h → Fun (λ r → proj₁ (h ⟨$⟩ r))
+        ; random-resp = λ e f → Fun-ext e f
+        ; const-random = λ x → Fun-const (proj₁ x) (proj₂ x)
+        ; pre-random = λ f mf → Fun-pre f mf
+        }
+    ; glue-random = λ {i} pi hs fs → glueU {i ⟨$⟩_} pi (λ n r → proj₁ (hs n ⟨$⟩ r)) fs
     }
