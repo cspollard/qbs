@@ -138,19 +138,13 @@ module SFiniteMonad (lem : LEM₀) where
       ; map-random = λ {γ} (m₁ , m₂) →
           let mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
               mτ = measurable-∘ m₂ measurable-odds
-              pr = map-random a₂ {reassoc ∘ₛ γ} (mκ , mτ)
+              pr = map-random a₂ {reassocR ∘ₛ γ} (mκ , mτ)
           in Meas-⊗ {λ x → Ww (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))))}
                 {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))) , oddsR (proj₂ (γ ⟨$⟩ x))))}
                 (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x)))} (proj₁ (paJ {TQ X} (a w))) mκ)
                 (proj₁ pr)
            , random-cast X (λ _ → ≡.refl) (proj₂ pr)
       }
-      where
-        -- (r , s) ↦ (merge r (evens s) , odds s)
-        reassoc : Func (Rˢ ×ₛ Rˢ) (Rˢ ×ₛ Rˢ)
-        reassoc = record
-          { to = λ p → mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p)
-          ; cong = λ (e₁ , e₂) → mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂ }
 
     -- the inner integral at the merged parameter, as a parametric function
     module Sec (f : Hom S X WQ) where

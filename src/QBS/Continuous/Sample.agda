@@ -14,6 +14,7 @@ open import Data.Nat.Base using (ℕ; _+_)
 import Data.Nat.Base as ℕ
 open import Data.Nat.Properties using (+-suc)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Empty using (⊥)
 open import Relation.Binary.Bundles using (Setoid)
@@ -124,6 +125,12 @@ oddsR-cong e = lift (λ n → lower e (ℕ.suc (dbl n)))
 
 mergeR-cong : ∀ {a a′ b b′} → a R≈.≈ a′ → b R≈.≈ b′ → mergeR a b R≈.≈ mergeR a′ b′
 mergeR-cong e₁ e₂ = lift (merge-cong (lower e₁) (lower e₂))
+
+-- (r , s) ↦ (merge r (evens s) , odds s)
+reassocR : Func (RandomSource.Rˢ S ×ₛ RandomSource.Rˢ S) (RandomSource.Rˢ S ×ₛ RandomSource.Rˢ S)
+reassocR = record
+  { to = λ p → mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p)
+  ; cong = λ (e₁ , e₂) → mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂ }
 
 -- the isomorphism ℛ ≅ ℛ × ℛ in QBS
 fromH : Hom S (Probes.ℛQ S) (_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S))
