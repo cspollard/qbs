@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Nothing here is done yet.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
+definitions.  Stage 1 of "Suggested order" is done on branch `simplify-stage1` (see "Stage 1 outcome" at the end); the rest is not.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
 `refineₛ`, the `random-cast` casts, `⇑`, `reassoc`, `Wit` indexing, `ℕQ`) are in `plans/04-equality.md`, "Further
 simplifications noticed during the sweep", and are not repeated here.
 
@@ -276,3 +276,29 @@ sections are in suggested order of work.
 
 Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regenerate `docs/Modules.md` and update
 `docs/Interface.md` when public names change.
+
+## Stage 1 outcome (A.3, A.4, A.6, C.1, C.4, D.1, E.3)
+
+`make check` (141 files, 0 holes, 0 failures), `make longcheck` and `make doccheck` pass; one commit per item.
+
+* **A.3 done.**  `Indicators` imports `Series.psum`/`psum-inc`; `fsum`, `fsum-inc`, `Uniqueness.fsum-cong` and
+  `Riesz.Bridge` are gone (`Fun-fsum` became `Fun-psum`).  `Riesz.μ-⋃` is now just `I-⋃`.
+* **A.4 done.**  `I-cong` is a lemma in `Integration` (`I-mono` both ways, `≤-antisym`), with `m` still the first
+  explicit argument; the field is dropped from all `Measure` instances (eight modules, ten records).
+* **A.6 done, partly.**  `swap`/`mid`/`swap3`/`swap*` in `JSum`, `MixtureN`, `Density`, `Model/Strong`,
+  `SFiniteCommute`, `SFiniteNorm` are `Algebra.Properties.CommutativeSemigroup.x∙yz≈y∙xz` over
+  `*-commutativeSemigroup`; `Series.+-interchange` and `ClopenMeasure.swap4` are `interchange` over
+  `+-commutativeSemigroup` (`swap4` is re-exported, `OpenMeasure` uses it).  Not done: `Variance`'s `(-x)·x`, which
+  is proved in the Grothendieck ring `Signed` via a solver on its parts, not by a `RingWithoutOne` lemma.
+* **C.1 done.**  In `Probability`, `σ` is now the left strength and `τ` the right (`σ-unit`, `τ-point`, … swapped with
+  them); `ψ` is documented as Kock's double strength.
+* **C.4 done.**  `Limits.EqS` is `On.setoid (Carrier X) proj₁`.
+* **D.1 done, alias only.**  New `QBS.Classical`: `LEM₀` (`Set`), `LEM₁` (`Set₁`, refuting into level-0 `⊥`) and
+  `LEM ℓ` (refuting into `⊥ {ℓ}`).  `LEM ℓ` at `ℓ = zero` is *not* `LEM₀`: Polymorphic `⊥` is `Lift ⊥`.  So the
+  `⊥ {L.zero}` hypothesis in `Example/Program.BoolDemo` and the `Set (L.suc L.zero)` hypotheses in
+  `Model/{Viterbi,Additive}Model` stay as written.  `dec`/`from-true`/`exfalso` in `BoolSemiring`/`ViterbiSemiring` are
+  untouched.
+* **E.3 done, partly.**  `Clopen`'s `∨-idʳ`/`∧-idʳ`/`∧-zeroʳ`/`∨-zeroʳ` and `¬true⇒false` are stdlib
+  (`∨-identityʳ`, …, `¬-not`); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum`
+  uses `[_,_]′`, `inj₁-injective`, `inj₂-injective`.  Not done: `Interleave.if-same`/`pick′-id`, because stdlib 2.3 has
+  no `if-eta`/`if-cong₂`.
