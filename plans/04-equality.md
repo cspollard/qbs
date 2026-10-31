@@ -138,3 +138,15 @@ canary modules, as for the `Probability` recast.
 * **Go/no-go: go.**  The core becomes parametric in `Rˢ`, with no default; the discrete model supplies `≡.setoid (Lift ℓ ℕ)`
   and Cantor supplies pointwise equality.  The core changes are the three files above; the instances change in their
   `RandomSource` records and in the proofs that matched on `refl` over `R`.
+
+## Outcome (stages 1–3 done)
+
+* `RandomSource` carries `Rˢ` with `meas-resp`, `idx-resp`, and `QBS` has `random-cong`; the core never mentions `≡` on `R`.
+  `discreteSource` supplies `≡.setoid`; `cantorSource` supplies pointwise equality (`Borel/Source.R₁ˢ`, lifted to `Set₁`).
+* New theorems: `Borel/Core.borel-≗` and `measurable-≗` (Borel sets and measurable maps respect pointwise equality, no
+  `lem`), `Analysis/Fun.Fun-resp` and `Analysis/Meas.Meas-resp` (need `lem`), `Continuous/Monad.Wit-cong`, `SFinite.∫ᴹ-Meas`.
+* `funext` is gone from all 25 modules that threaded it; `merge-evens`, `merge-odds`, `split-merge` are pointwise.
+* Cost: the 17 `random-cong` proofs, and `lem` now reaches `UnitInterval` (`UnitInterval A lem`).  Timing, forced rechecks
+  (new vs old): `SFiniteMonad` 4.66 s / 656 MB vs 4.83 s / 634 MB; `SFiniteNorm` 6.60 s / 882 MB vs 6.80 s / 878 MB;
+  `Continuous/Monad` 3.59 s / 526 MB vs 3.48 s / 467 MB.
+* Not done: §2 (standard setoids for ℕ and `Bool`), and the `Complete.agda` index-type `≡` question.
