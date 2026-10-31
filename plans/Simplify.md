@@ -378,6 +378,7 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
   `QBSCat` as a `SubCat` (a Σ-typed hom) would touch all of them and change the normal forms the CCC and monad
   conversions rely on.  Instead the new module `QBS.Category.Forget` has `Forget : Functor (QBSCat S) (Setoids ℓ ℓ)` and `Forget-faithful`.
   `Measurability` as a one-object `SubCat` is untouched.
+  *Superseded by the Stage 1c outcome below.*
 * **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
   circular `Idx`/`QBS` dependency broken first and was not attempted.
 
@@ -406,3 +407,16 @@ before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 v
 * **8 closed, nothing to collapse.**  No discrete-ℕ QBS is rebuilt anywhere: `Colimits` and `Complete` use `idx-const` and
   `idx-pre` directly.  `ℕQ` would be a pure addition with no consumer.  (Not the circularity the first draft cited: the
   plan always put it in `Colimits`, not `Core`.)
+
+## Stage 1c outcome (items 1 and 2, as a comparison)
+
+* **Step 1 kept**: hom equality takes its point implicitly, matching `Setoids`; no canary cost (within 2-3 % of a same-session baseline).
+* **Redefining `QBSCat` as a `SubCategory` (Σ homs) abandoned** (tag `sigma-wip`).  It compiled up to `Continuous/SFiniteStat`, which then ran over 19 minutes
+  (an earlier full check, 39).  Hypothesis, not profiled: `Hom X Y` and `Category._⇒_` both unfold to a `Σ`, so Agda unifies
+  `Carrier ?X` against nested carriers (`Carrier` is not injective), the cost the library already records for `QBSCat` conversions.
+* **Done instead**: `QBS.Category.Concrete` keeps the record `Hom` and proves the subcategory form as a theorem.
+  `QBSSub` is the `SubCategory` of `Setoids` with `R` = probe preservation; `QBS≃Sub` is a strong equivalence with both functors the identity on objects;
+  `Sub ∘ ToSub = Forget` holds by `refl`.  `CodiscQ` (every sequence random) and `DiscQ` (random = locally constant along a measurable partition,
+  glued with `idx-glue`) give `Disc ⊣ Forget ⊣ Codisc`; `rapl′`/`lapc′` then give `Forget` continuous and cocontinuous, `Codisc` continuous,
+  `Disc` cocontinuous; `Disc` and `Codisc` are faithful.  No downstream module changed.
+* Item 2 (measurable maps as a one-object `SubCategory`) is not done; it is independent of this.
