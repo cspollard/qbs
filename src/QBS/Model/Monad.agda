@@ -58,10 +58,6 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   open RandomSource S using (Rˢ) renaming (pair to pairᴺ; unpair to unpairᴺ; unpair-pair to unpair-pairᴺ)
   open QBS
 
-  -- R carries ≡, so every function out of R is a setoid map
-  ⇑ : ∀ {c e} {B : Setoid c e} → (R → Setoid.Carrier B) → Func Rˢ B
-  ⇑ {B = B} f = record { to = f ; cong = λ e → Setoid.reflexive B (≡.cong f e) }
-
   -- A measure on X, before identification.
   record Pre (X : QBS S) : Set ℓ where
     constructor mk

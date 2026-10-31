@@ -30,6 +30,10 @@ g ∘ₛ f = Comp.function f g
 constₛ : ∀ {a b c d} {A : Setoid a b} {B : Setoid c d} → Setoid.Carrier B → Func A B
 constₛ {B = B} b = record { to = λ _ → b ; cong = λ _ → Setoid.refl B }
 
+-- every function out of a ≡-setoid is a setoid map
+⇑ : ∀ {a c d} {A : Set a} {B : Setoid c d} → (A → Setoid.Carrier B) → Func (setoid A) B
+⇑ {B = B} f = record { to = f ; cong = λ e → Setoid.reflexive B (≡.cong f e) }
+
 ℕˢ : Setoid 0ℓ 0ℓ
 ℕˢ = setoid ℕ
 
