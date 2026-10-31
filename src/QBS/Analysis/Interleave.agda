@@ -76,22 +76,13 @@ private
   pick′ false hu hv = hu
   pick′ true hu hv = hv
 
-  pick′-id : ∀ (b : Bool) {u v u′ v′ : Bool} → u ≡ u′ → v ≡ v′ →
-    (if b then v else u) ≡ (if b then v′ else u′)
-  pick′-id false hu hv = hu
-  pick′-id true hu hv = hv
-
-  if-same : ∀ (b : Bool) (x : Bool) → (if b then x else x) ≡ x
-  if-same false x = refl
-  if-same true x = refl
-
 eval-stutter : ∀ t a s → eval (stutter t) (mergeC a s) ≡ eval t s
 eval-stutter (leaf b) a s = refl
 eval-stutter (split l r) a s =
-  trans (if-same (a 0) _)
-    (pick′-id (s 0)
-      (trans (eval-ext (stutter l) (tl2-merge a s)) (eval-stutter l (tl a) (tl s)))
-      (trans (eval-ext (stutter r) (tl2-merge a s)) (eval-stutter r (tl a) (tl s))))
+  trans (B.if-eta (a 0))
+    (B.if-cong₂ (s 0)
+      (trans (eval-ext (stutter r) (tl2-merge a s)) (eval-stutter r (tl a) (tl s)))
+      (trans (eval-ext (stutter l) (tl2-merge a s)) (eval-stutter l (tl a) (tl s))))
 
 eval-interleave : ∀ t₁ t₂ a s →
   eval (interleave t₁ t₂) (mergeC a s) ≡ eval t₁ a ∧ eval t₂ s

@@ -299,7 +299,7 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
   `LEM ℓ` is used in `Model/{Bool,Additive,Viterbi}{Semiring,Model}`, `Example/{Program,Probability}` and
   `Inference/CoinBias`.  Not touched: `dec`/`from-true`/`exfalso` in `BoolSemiring`/`ViterbiSemiring`, and the
   decision *arguments* (`pick*`, `borel-const`), which are not hypotheses.
-* **E.3 done, partly.**  `Clopen`'s `∨-idʳ`/`∧-idʳ`/`∧-zeroʳ`/`∨-zeroʳ` and `¬true⇒false` are stdlib
-  (`∨-identityʳ`, …, `¬-not`); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum`
-  uses `[_,_]′`, `inj₁-injective`, `inj₂-injective`.  Not done: `Interleave.if-same`/`pick′-id`, because stdlib 2.3 has
-  no `if-eta`/`if-cong₂`.
+* **E.3 done.**  `Clopen`'s `∨-idʳ`/`∧-idʳ`/`∧-zeroʳ`/`∨-zeroʳ` and `¬true⇒false` are stdlib
+  (`∨-identityʳ`, …, `¬-not`); `Interleave.if-same`/`pick′-id` are `B.if-eta`/`B.if-cong₂` (the two branch proofs swap
+  places); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum` uses `[_,_]′`,
+  `inj₁-injective`, `inj₂-injective`.
