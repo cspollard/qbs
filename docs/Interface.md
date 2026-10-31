@@ -8,8 +8,8 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 
 ### `QBS.Core`
 - `idH` — `idH S {X}`: the identity morphism (`S` explicit).
-- `RandomSource` — the sample space "reals" `R` with measurable endomorphisms and partitions `R → ℕ`, assembled from `Measurability` (`R`, `Meas` and its closure), `Partitions` (`Idx`, gluing) and `NatPairing` (`pair`/`unpair`) plus `idx-glue`; their fields are re-exported.
-- `QBS` — a quasi-Borel space: a setoid `Carrier` with `Random` elements `R → X`, closed under constants, precomposition, gluing.
+- `RandomSource` — the sample space "reals" with measurable endomorphisms and partitions `R → ℕ`, assembled from `Measurability` (a setoid `Rˢ` with carrier `R` and equality `≈ᴿ`, `Meas`, its closure, and `meas-resp`: measurable maps respect `≈ᴿ`), `Partitions` (`Idx`, `idx-resp`, gluing) and `NatPairing` (`pair`/`unpair`) plus `idx-glue`; their fields are re-exported.
+- `QBS` — a quasi-Borel space: a setoid `Carrier` with `Random` elements `R → X`, closed under constants, precomposition, gluing, and respecting `≈ᴿ` (`random-cong`). The core never assumes `≡` on `R`: each source chooses its equality.
 - `Hom` — a setoid map `map` preserving random elements (`map-random`).
 
 ### `QBS.Category`, `QBS.Limits`, `QBS.Colimits`, `QBS.Complete`, `QBS.Exponential`

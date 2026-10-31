@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Quasi-Borel spaces over an abstract random source.
---   RandomSource S : the "reals" R (a type with measurable endomorphisms and countable partitions R → ℕ).
+--   RandomSource S : the "reals" R (a setoid with measurable endomorphisms and countable partitions R → ℕ).
 --   QBS S          : a setoid with a set of random elements R → X, closed under constants, precomposition, gluing.
 --   Hom X Y        : setoid maps preserving random elements.   Also identity and composition.
 module QBS.Core where
@@ -23,11 +23,14 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 -- the reals and their measurable endomorphisms: closed under identity, composition, extensionality, constants
 record Measurability (ℓ : Level) : Set (suc ℓ) where
   field
-    R : Set ℓ
+    Rˢ : Setoid ℓ ℓ
+  open Setoid Rˢ public using () renaming (Carrier to R; _≈_ to _≈ᴿ_)
+  field
     Meas : (R → R) → Set ℓ
     meas-id : Meas id
     meas-∘ : ∀ {f g} → Meas f → Meas g → Meas (f ∘ g)
-    meas-ext : ∀ {f g} → (∀ r → f r ≡ g r) → Meas f → Meas g
+    meas-resp : ∀ {f} → Meas f → ∀ {r r′} → r ≈ᴿ r′ → f r ≈ᴿ f r′
+    meas-ext : ∀ {f g} → (∀ r → f r ≈ᴿ g r) → Meas f → Meas g
     meas-const : ∀ r → Meas (const r)
 
 -- measurable index functions R → ℕ (i.e. measurable countable partitions), along which measurable
@@ -36,6 +39,7 @@ record Partitions {ℓ} (M : Measurability ℓ) : Set (suc ℓ) where
   open Measurability M
   field
     Idx : (R → ℕ) → Set ℓ
+    idx-resp : ∀ {j} → Idx j → ∀ {r r′} → r ≈ᴿ r′ → j r ≡ j r′
     meas-glue : ∀ {j} {f : ℕ → R → R} → Idx j → (∀ n → Meas (f n)) → Meas (λ r → f (j r) r)
     idx-const : ∀ n → Idx (const n)
     idx-pre : ∀ {i f} → Idx i → Meas f → Idx (i ∘ f)
@@ -75,6 +79,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     field
       Random : (R → ∣_∣) → Set ℓ
       random-resp : ∀ {α β} → (∀ r → α r ≈ˣ β r) → Random α → Random β
+      random-cong : ∀ {α} → Random α → ∀ {r r′} → r ≈ᴿ r′ → α r ≈ˣ α r′
       const-random : ∀ x → Random (const x)
       pre-random : ∀ {α f} → Random α → Meas f → Random (α ∘ f)
       glue-random : ∀ {i} → Idx i → (α : ℕ → R → ∣_∣) →

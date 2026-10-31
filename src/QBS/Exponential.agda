@@ -10,6 +10,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.CartesianClosed.Canonical using (CartesianClosed)
@@ -41,7 +42,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       -- the measurable map R → R as a morphism ℛ ⇒ ℛ
       measHom : ∀ {f} → Meas f → Hom S (ℛQ S) (ℛQ S)
       measHom {f} m = record
-        { map = record { to = f ; cong = λ { refl → refl } }
+        { map = record { to = f ; cong = meas-resp m }
         ; map-random = meas-∘ m
         }
 
@@ -55,7 +56,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
       glueRX {j} ij u = record
         { map = record
             { to = λ (r , x) → map (u (j r)) ⟨$⟩ (r , x)
-            ; cong = λ { {r , x} {.r , y} (refl , e) → Func.cong (map (u (j r))) (refl , e) }
+            ; cong = λ { {r , x} {r′ , y} (er , e) →
+                Setoid.trans (Carrier Y) (Func.cong (map (u (j r))) (er , e))
+                  (Setoid.reflexive (Carrier Y) (≡.cong (λ n → map (u n) ⟨$⟩ (r′ , y)) (idx-resp ij er))) }
             }
         ; map-random = λ {α} (pβ , pγ) →
             glue-random Y (idx-pre ij pβ) (λ n s → map (u n) ⟨$⟩ (proj₁ (α s) , proj₂ (α s)))
@@ -70,6 +73,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
           ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α r) ⟨$⟩ x)
       ; random-resp = λ e (u , q) →
           u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r x)
+      ; random-cong = λ (u , q) {r} {r′} er x →
+          Setoid.trans (Carrier Y) (Setoid.sym (Carrier Y) (q r x))
+            (Setoid.trans (Carrier Y) (Func.cong (map u) (er , Setoid.refl (Carrier X))) (q r′ x))
       ; const-random = λ φ →
           _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y)
       ; pre-random = λ (u , q) m →

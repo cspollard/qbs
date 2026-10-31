@@ -10,6 +10,8 @@
 module QBS.Continuous.SignedTests where
 
 open import Data.Empty using (⊥)
+open import Relation.Binary.Bundles using (Setoid)
+import Relation.Binary.PropositionalEquality.Core as ≡
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
@@ -43,6 +45,7 @@ module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { Carrier = Aˢ
     ; Random = Meas
     ; random-resp = λ e m → Meas-ext e m
+    ; random-cong = λ _ e → Setoid.reflexive Aˢ (≡.cong _ e)
     ; const-random = λ c → Meas-const c
     ; pre-random = λ m mf → Meas-pre m mf
     ; glue-random = λ pj α m → Meas-glue pj m

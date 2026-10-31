@@ -34,6 +34,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { Carrier = setoid (⊤ {ℓ})
     ; Random = λ _ → ⊤
     ; random-resp = λ _ _ → tt
+    ; random-cong = λ _ _ → refl
     ; const-random = λ _ → tt
     ; pre-random = λ _ _ → tt
     ; glue-random = λ _ _ _ → tt
@@ -48,6 +49,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   _×Q_ X Y .QBS.Random = λ α → Random X (proj₁ ∘ α) × Random Y (proj₂ ∘ α)
   _×Q_ X Y .QBS.random-resp = λ e (p , q) →
     random-resp X (λ r → proj₁ (e r)) p , random-resp Y (λ r → proj₂ (e r)) q
+  _×Q_ X Y .QBS.random-cong = λ (p , q) e → random-cong X p e , random-cong Y q e
   _×Q_ X Y .QBS.const-random = λ _ → const-random X _ , const-random Y _
   _×Q_ X Y .QBS.pre-random = λ (p , q) m → pre-random X p m , pre-random Y q m
   _×Q_ X Y .QBS.glue-random = λ i α p →
@@ -68,6 +70,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
         }
     ; Random = λ α → Random X (proj₁ ∘ α)
     ; random-resp = λ e → random-resp X e
+    ; random-cong = λ p e → random-cong X p e
     ; const-random = λ (x , _) → const-random X x
     ; pre-random = pre-random X
     ; glue-random = λ i α p → glue-random X i (λ n → proj₁ ∘ α n) p

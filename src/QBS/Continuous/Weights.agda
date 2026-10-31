@@ -8,6 +8,8 @@ module QBS.Continuous.Weights where
 open import Level using (lift)
 import Level as L
 open import Function.Base using (const)
+open import Relation.Binary.Bundles using (Setoid)
+import Relation.Binary.PropositionalEquality.Core as ≡
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Empty using (⊥)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
@@ -33,6 +35,7 @@ module Weights (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { Carrier = setoid
     ; Random = Meas
     ; random-resp = λ {α} {β} e m → Meas-ext {α} {β} e m
+    ; random-cong = λ _ e → Setoid.reflexive setoid (≡.cong _ e)
     ; const-random = Meas-const
     ; pre-random = λ {α} {f} m mf → Meas-pre {α} {f} m mf
     ; glue-random = λ {j} pj α ms → Meas-glue {j} {α} pj ms

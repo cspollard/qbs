@@ -37,7 +37,7 @@ dependencies. File paths below are relative to `src/QBS/`.
 Start with the discrete model and `Example/Program.agda` for a working probabilistic program, or with
 "The fair-coin measure" for the continuous construction.
 
-- `Core.agda` – `RandomSource S` (the "reals": a type `R`, measurable maps `R → R`, measurable
+- `Core.agda` – `RandomSource S` (the "reals": a setoid `Rˢ`, measurable maps `R → R`, measurable
   countable partitions `R → ℕ`, kept abstract but with the closure laws the constructions
   use), `QBS S` (a *setoid* with random elements `R → X` respecting its equality), `Hom`
   (setoid maps preserving random elements), identity and composition.

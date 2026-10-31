@@ -65,6 +65,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     { Carrier = Aˢ
     ; Random = λ _ → ⊤
     ; random-resp = λ _ _ → tt
+    ; random-cong = λ _ e → Setoid.reflexive Aˢ (≡.cong _ e)
     ; const-random = λ _ → tt
     ; pre-random = λ _ _ → tt
     ; glue-random = λ _ _ _ → tt

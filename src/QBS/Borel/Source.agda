@@ -13,6 +13,7 @@ open import Data.Nat.Properties using (_≟_)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; cong₂; subst)
+open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
 open import QBS.Core using (RandomSource)
 open import QBS.Model.Pairing
@@ -55,15 +56,17 @@ private
 cantorSource : RandomSource (suc zero)
 cantorSource = record
   { measurable = record
-    { R = R₁
+    { Rˢ = setoid R₁
     ; Meas = λ f → Measurable (down f)
     ; meas-id = measurable-id
     ; meas-∘ = λ mf mg → measurable-∘ mg mf
+    ; meas-resp = λ _ e → cong _ e
     ; meas-ext = λ e mf → measurable-ext (λ x → cong lower (e (lift x))) mf
     ; meas-const = λ r → measurable-const (lower r)
     }
   ; partitions = record
     { Idx = λ i → Partition (downℕ i)
+    ; idx-resp = λ _ e → cong _ e
     ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ j} {λ k → down (f k)} pj mf
     ; idx-const = λ n k → borel-eq n k
     ; idx-pre = λ {i} {f} pi mf k → preimage mf (pi k)

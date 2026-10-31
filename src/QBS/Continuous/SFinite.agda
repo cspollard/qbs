@@ -179,6 +179,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
   TQ X .QBS.Carrier = PreMS X
   TQ X .QBS.Random = WitM {X}
   TQ X .QBS.random-resp = TQ-resp {X}
+  TQ X .QBS.random-cong {α} _ e = Setoid.reflexive (PreMS X) (≡.cong α e)
   TQ X .QBS.const-random p = TQ-const {X} p
   TQ X .QBS.pre-random w mf = TQ-pre {X} w mf
   TQ X .QBS.glue-random pi β ws = TQ-glue {X} pi β ws

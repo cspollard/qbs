@@ -180,6 +180,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     ; random-resp = λ e w → record
         { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
         ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
+    ; random-cong = λ {α} _ e → Setoid.reflexive (PreS X) (≡.cong α e)
     ; const-random = λ p → record
         { a = sndJ (α p) (α-random p)
         ; g = λ _ → m p

@@ -161,6 +161,7 @@ module UnitInterval (A : OmegaSemiring (L.suc L.zero)) where
     { Carrier = 𝕀
     ; Random = λ h → Fun (λ r → proj₁ (h r))
     ; random-resp = λ e f → Fun-ext e f
+    ; random-cong = λ {α} _ e → Setoid.reflexive 𝕀 (≡.cong α e)
     ; const-random = λ x → Fun-const (proj₁ x) (proj₂ x)
     ; pre-random = λ f mf → Fun-pre f mf
     ; glue-random = λ {i} pi hs fs → glueU pi (λ n r → proj₁ (hs n r)) fs

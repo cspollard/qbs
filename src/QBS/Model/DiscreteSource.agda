@@ -11,6 +11,8 @@ open import Function.Base using (id; _∘_; const)
 open import Data.Nat.Base using (ℕ)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+import Relation.Binary.PropositionalEquality.Core as ≡
+open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
 open import QBS.Core using (RandomSource)
 open import QBS.Model.Pairing
@@ -18,15 +20,17 @@ open import QBS.Model.Pairing
 discreteSource : ∀ ℓ → RandomSource ℓ
 discreteSource ℓ = record
   { measurable = record
-    { R = Lift ℓ ℕ
+    { Rˢ = setoid (Lift ℓ ℕ)
     ; Meas = λ _ → ⊤
     ; meas-id = tt
     ; meas-∘ = λ _ _ → tt
+    ; meas-resp = λ _ e → ≡.cong _ e
     ; meas-ext = λ _ _ → tt
     ; meas-const = λ _ → tt
     }
   ; partitions = record
     { Idx = λ _ → ⊤
+    ; idx-resp = λ _ e → ≡.cong _ e
     ; meas-glue = λ _ _ → tt
     ; idx-const = λ _ → tt
     ; idx-pre = λ _ _ → tt

@@ -17,6 +17,7 @@ import Relation.Binary.Construct.Closure.Equivalence as EqC
 open import Relation.Binary.Construct.Closure.Symmetric using (SymClosure; fwd; bwd)
 open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality.Core using (subst; sym)
+import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_)
 
@@ -41,6 +42,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { Carrier = setoid (⊥ {ℓ})
     ; Random = λ _ → ⊥ {ℓ}
     ; random-resp = λ _ p → p
+    ; random-cong = λ ()
     ; const-random = λ ()
     ; pre-random = λ p _ → p
     ; glue-random = λ _ α p → p 0
@@ -63,6 +65,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ⊎S : Setoid ℓ ℓ
     ⊎S = ⊎ʳ.⊎-setoid (Carrier X) (Carrier Y)
 
+    ev-cong : ∀ c {r r′} → r ≈ᴿ r′ → Setoid._≈_ ⊎S (ev c r) (ev c r′)
+    ev-cong (inj₁ (_ , p)) e = ⊎ʳ.inj₁ (random-cong X p e)
+    ev-cong (inj₂ (_ , p)) e = ⊎ʳ.inj₂ (random-cong Y p e)
+
     ev-pre : ∀ {f} (c : Piece) (m : Meas f) r → Setoid._≈_ ⊎S (ev (pre c m) r) (ev c (f r))
     ev-pre (inj₁ (a , _)) _ r = ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
     ev-pre (inj₂ (b , _)) _ r = ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
@@ -74,6 +80,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
         Σ (ℕ → Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (α r) (ev X Y (c (i r)) r)
     ; random-resp = λ e (i , ii , c , q) →
         i , ii , c , λ r → Setoid.trans (⊎S X Y) (Setoid.sym (⊎S X Y) (e r)) (q r)
+    ; random-cong = λ {_} (i , ii , c , q) {r} {r′} e →
+        Setoid.trans (⊎S X Y) (q r)
+          (Setoid.trans (⊎S X Y) (ev-cong X Y (c (i r)) e)
+            (Setoid.trans (⊎S X Y)
+              (Setoid.reflexive (⊎S X Y) (≡.cong (λ n → ev X Y (c n) r′) (idx-resp ii e)))
+              (Setoid.sym (⊎S X Y) (q r′))))
     ; const-random = λ where
         (inj₁ a) → const 0 , idx-const 0 , const (inj₁ (const a , const-random X a)) ,
                    λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
@@ -179,6 +191,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
             ∀ r → Setoid._≈_ CoeqS (α r) (proj₁ (c (i r)) r)
       ; random-resp = λ e (i , ii , c , q) →
           i , ii , c , λ r → Setoid.trans CoeqS (Setoid.sym CoeqS (e r)) (q r)
+      ; random-cong = λ (i , ii , c , q) {r} {r′} e →
+          Setoid.trans CoeqS (q r)
+            (Setoid.trans CoeqS (fwd (inj₁ (random-cong Y (proj₂ (c (i r))) e)) ◅ ε)
+              (Setoid.trans CoeqS
+                (Setoid.reflexive CoeqS (≡.cong (λ n → proj₁ (c n) r′) (idx-resp ii e)))
+                (Setoid.sym CoeqS (q r′))))
       ; const-random = λ x →
           const 0 , idx-const 0 , const (const x , const-random Y x) , λ _ → Setoid.refl CoeqS
       ; pre-random = λ {_} {m} (i , ii , c , q) mm →

@@ -10,6 +10,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; subst)
+import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Complete using (Complete)
@@ -45,6 +46,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           }
       ; Random = λ α → ∀ i → Random (P i) (λ r → α r i)
       ; random-resp = λ e p i → random-resp (P i) (λ r → e r i) (p i)
+      ; random-cong = λ p e i → random-cong (P i) (p i) e
       ; const-random = λ x i → const-random (P i) (x i)
       ; pre-random = λ p m i → pre-random (P i) (p i) m
       ; glue-random = λ ij α p i → glue-random (P i) ij (λ n r → α n r i) (λ n → p n i)
@@ -91,6 +93,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
     evΣ : PieceΣ → R → Σ I (λ i → ∣ P i ∣)
     evΣ (i , a , _) r = i , a r
 
+    evΣ-cong : ∀ c {r r′} → r ≈ᴿ r′ → Setoid._≈_ ΣS (evΣ c r) (evΣ c r′)
+    evΣ-cong (i , a , p) e = refl , random-cong (P i) p e
+
     preΣ : ∀ {f} → PieceΣ → Meas f → PieceΣ
     preΣ {f} (i , a , p) m = i , a ∘ f , pre-random (P i) p m
 
@@ -101,6 +106,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
           Σ (ℕ → PieceΣ) λ c → ∀ r → Setoid._≈_ ΣS (α r) (evΣ (c (i r)) r)
       ; random-resp = λ e (i , ii , c , q) →
           i , ii , c , λ r → Setoid.trans ΣS (Setoid.sym ΣS (e r)) (q r)
+      ; random-cong = λ (i , ii , c , q) {r} {r′} e →
+          Setoid.trans ΣS (q r)
+            (Setoid.trans ΣS (evΣ-cong (c (i r)) e)
+              (Setoid.trans ΣS
+                (Setoid.reflexive ΣS (≡.cong (λ n → evΣ (c n) r′) (idx-resp ii e)))
+                (Setoid.sym ΣS (q r′))))
       ; const-random = λ (i , x) →
           const 0 , idx-const 0 , const (i , const x , const-random (P i) x) ,
           λ _ → Setoid.refl ΣS

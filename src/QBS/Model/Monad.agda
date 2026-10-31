@@ -118,6 +118,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     ; random-resp = λ e w → record
         { wα = wα w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
         ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
+    ; random-cong = λ _ e → Setoid.reflexive (PreS X) (≡.cong _ e)
     ; const-random = λ x → record
         { wα = α x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
         ; w-eq = λ _ f → Setoid.refl Aˢ }

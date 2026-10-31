@@ -53,6 +53,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
     { Carrier = setoid T
     ; Random = λ _ → ⊤
     ; random-resp = λ _ _ → tt
+    ; random-cong = λ _ e → ≡.cong _ e
     ; const-random = λ _ → tt
     ; pre-random = λ _ _ → tt
     ; glue-random = λ _ _ _ → tt

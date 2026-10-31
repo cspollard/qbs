@@ -22,9 +22,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
   -- The space of random sources: its random elements are the measurable maps.
   ℛQ : QBS S
   ℛQ = record
-    { Carrier = setoid R
+    { Carrier = Rˢ
     ; Random = Meas
     ; random-resp = λ e → meas-ext e
+    ; random-cong = meas-resp
     ; const-random = meas-const
     ; pre-random = meas-∘
     ; glue-random = λ ij α p → meas-glue ij p
@@ -33,7 +34,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   -- A random element α of X is the same as a probe ℛQ ⇒ X.
   probe : ∀ {X α} → Random X α → Hom S ℛQ X
   probe {X} {α} p = record
-    { map = record { to = α ; cong = λ { refl → Setoid.refl (Carrier X) } }
+    { map = record { to = α ; cong = random-cong X p }
     ; map-random = pre-random X p
     }
 
