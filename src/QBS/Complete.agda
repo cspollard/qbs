@@ -124,7 +124,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           let i = λ n → proj₁ (p n)
               c = λ n → proj₁ (proj₂ (proj₂ (p n)))
               c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in glueₛ j (λ n → pairₛ n ∘ₛ i n)
+          in refineₛ j i
            , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
            , c′
            , λ r → subst (λ u → Setoid._≈_ ΣS (α (j ⟨$⟩ r) ⟨$⟩ r) (evΣ (c (proj₁ u) (proj₂ u)) r))

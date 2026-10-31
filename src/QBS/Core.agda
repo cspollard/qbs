@@ -102,6 +102,10 @@ record NatPairing : Set where
   pairₛ : ℕ → Func ℕˢ ℕˢ
   pairₛ n = record { to = pair n ; cong = ≡.cong (pair n) }
 
+  -- the composite cover of j by the i n: r ↦ pair (j r) (i (j r) r)
+  refineₛ : ∀ {a b} {A : Setoid a b} → Func A ℕˢ → (ℕ → Func A ℕˢ) → Func A ℕˢ
+  refineₛ j i = glueₛ j (λ n → pairₛ n ∘ₛ i n)
+
 record RandomSource (ℓ : Level) : Set (suc ℓ) where
   field
     measurable : Measurability ℓ
@@ -113,8 +117,8 @@ record RandomSource (ℓ : Level) : Set (suc ℓ) where
     pairing : NatPairing
   open NatPairing pairing public
   field
-    -- covers compose: refining each piece of j by i n is again a partition, r ↦ pair (j r) (i (j r) r)
-    idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (glueₛ j (λ n → pairₛ n ∘ₛ i n))
+    -- covers compose: refining each piece of j by i n is again a partition
+    idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S
