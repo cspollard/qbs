@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits).
+-- The index type is a plain `Set`, not a setoid, because agda-categories quantifies over `I : Set` in
+-- `AllProductsOf`/`AllCoproductsOf`; `≡` on `I` in `ΣEq` is then the equality of the indexing type itself.
 module QBS.Complete where
 
 open import Level using (Level; suc; _⊔_; Lift; lift; lower)

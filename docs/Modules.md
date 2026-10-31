@@ -17,7 +17,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 |---|---|---|---|
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
 | `QBS.Colimits` | 258 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
-| `QBS.Complete` | 193 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
+| `QBS.Complete` | 195 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
 | `QBS.Core` | 110 |  | Quasi-Borel spaces over an abstract random source. |
 | `QBS.Exponential` | 140 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 135 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |

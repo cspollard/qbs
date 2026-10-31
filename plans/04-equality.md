@@ -149,4 +149,8 @@ canary modules, as for the `Probability` recast.
 * Cost: the 17 `random-cong` proofs, and `lem` now reaches `UnitInterval` (`UnitInterval A lem`).  Timing, forced rechecks
   (new vs old): `SFiniteMonad` 4.66 s / 656 MB vs 4.83 s / 634 MB; `SFiniteNorm` 6.60 s / 882 MB vs 6.80 s / 878 MB;
   `Continuous/Monad` 3.59 s / 526 MB vs 3.48 s / 467 MB.
-* Not done: §2 (standard setoids for ℕ and `Bool`), and the `Complete.agda` index-type `≡` question.
+* Not done: §2 (standard setoids for ℕ and `Bool`).
+* `Complete.agda` index-type `≡`: rebutted, not changed.  agda-categories states `IndexedProductOf`, `AllProductsOf` and
+  the coproduct analogues for `I : Set`, so `Complete`/`Cocomplete` only ever see Set-indexed families.  A setoid-indexed
+  `ΣQ` would need a transport `P i → P j` along `i ≈ j` with coherence, and would not be the object those interfaces ask
+  for.  `≡` there is the identity type of the indexing set, which is what `Σ` equality is.
