@@ -18,7 +18,8 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.LowerReals
-open import QBS.Analysis.LowerRealsArch using (lowerRealsArch; hpC)
+open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
+open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.LowerRealsMin using (lowerRealsMin; _⊓_)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)
@@ -31,6 +32,7 @@ module Lebesgue (lem : LEM₀) where
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; ⨆; Increasing)
   open Integration A using (Measure; I)
   open Measurable A using (Fun)
+  open Arch (lowerRealsArch lem) using (hp)
   open Meas lem
   open MeasFun lem using (Meas→Fun)
   open LevelSets lem using (LS)
@@ -41,7 +43,7 @@ module Lebesgue (lem : LEM₀) where
 
   FunInf-Meas : ∀ {h} → Meas h → FunInf h
   FunInf-Meas {h} mh k = Meas→Fun {λ x → tr k (h x)} (λ x → tr-≤1 k (h x))
-    (Meas-⊗ {λ _ → hpC k} {λ x → h x ⊓ pw k} (Meas-const (hpC k))
+    (Meas-⊗ {λ _ → hp k} {λ x → h x ⊓ pw k} (Meas-const (hp k))
       (Meas-⊓ {h} {λ _ → pw k} mh (Meas-const (pw k))))
 
 

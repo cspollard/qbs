@@ -19,6 +19,7 @@ open Cut
 open _⊑_
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Archimedean
+open import QBS.Analysis.Half using (module Half)
 open import QBS.Classical using (LEM₀)
 
 ----------------------------------------------------------------------------
@@ -155,6 +156,10 @@ halfC-double = ≋-trans (qC-add 0<hf 0<hf) (qC-cong (pos+ 0<hf 0<hf) 0<1 hf+hf)
 module _ (lem : LEM₀) where
   open Classical lem
 
+  -- the rational tolerances are the powers of `halfC`
+  hpC≈ : ∀ n → hpC n ≋ Half.hp (LowerRealsOmega lem) halfC halfC-double n
+  hpC≈ = Half.hp-unique (LowerRealsOmega lem) halfC halfC-double hpC (⊑-refl , ⊑-refl) hpC-double
+
   arch-⊑ : ∀ {x y} → (∀ n → x ⊑ y ⊕ hpC n) → x ⊑ y
   arch-⊑ {x} {y} h = mk⊑ λ q m →
     let q′ , q<q′ , mq′ = open′ x m
@@ -179,10 +184,8 @@ module _ (lem : LEM₀) where
   lowerRealsArch = record
     { half = halfC
     ; half+half = halfC-double
-    ; hp = hpC
-    ; hp-zero = (mk⊑ (λ s x → x) , mk⊑ (λ s x → x))
-    ; hp-double = hpC-double
-    ; arch = arch-⊑
+    ; arch = λ h → arch-⊑ (λ n → ⊑-trans (h n) (⊕-mono ⊑-refl (proj₂ (hpC≈ n))))
     ; cancel≤ = cancel-⊑
-    ; way-below = λ c inc bd n → way-below-⊑ c bd n
+    ; way-below = λ c inc bd n →
+        let N , le = way-below-⊑ c bd n in N , ⊑-trans le (⊕-mono ⊑-refl (proj₁ (hpC≈ n)))
     }

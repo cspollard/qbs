@@ -58,7 +58,6 @@ module Opens {A : OmegaSemiring (L.suc L.zero)} (R : Arch A) (lem : LEM₀) wher
   open Premeasure R
   open Series A
   open Fan lem
-  open ArchLemmas R
   open SetoidReasoning setoid
 
   record Op : Set where

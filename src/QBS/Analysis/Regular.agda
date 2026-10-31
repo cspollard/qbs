@@ -40,7 +40,6 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
   open Arch R
   open Premeasure R
   open Series A
-  open ArchLemmas R
   open Opens R lem
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:*_; _:=_; con)

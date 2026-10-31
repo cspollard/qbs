@@ -20,7 +20,7 @@ open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.Archimedean using (Arch; module ArchLemmas)
+open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Min
@@ -28,8 +28,7 @@ open import QBS.Analysis.Min
 module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R
-  open ArchLemmas R using (hp-≤)
-  open HalfOrder A R using (half≤1; half-twice)
+  open HalfOrder A R using (half≤1)
   open Min M
   open Pow A public
   open Measurable A
@@ -98,11 +97,8 @@ module Unbounded (A : OmegaSemiring (suc zero)) (R : Arch A) (M : Min A) where
       incM n = mn-mono (inc n) ≤-refl
 
   -- halving relates consecutive truncations
-  half-hp : ∀ k → half * hp k ≈ hp (ℕ.suc k)
-  half-hp k = trans (*-cong refl (sym (hp-double k))) (half-twice _)
-
   half-tr-eq : ∀ k a → half * tr k a ≈ hp (ℕ.suc k) * mn a (pw k)
-  half-tr-eq k a = trans (sym (*-assoc half (hp k) (mn a (pw k)))) (*-cong (half-hp k) refl)
+  half-tr-eq k a = trans (sym (*-assoc half (hp k) (mn a (pw k)))) (*-cong refl refl)
 
   half-tr : ∀ k a → half * tr k a ≤ tr (ℕ.suc k) a
   half-tr k a = ≤-trans (≤-reflexive (half-tr-eq k a))

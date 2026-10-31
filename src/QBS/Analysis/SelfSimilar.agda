@@ -27,7 +27,7 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
     (F Z : OmegaSemiring.Carrier A → OmegaSemiring.Carrier A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R
-  open HalfOrder A R using (half≤1; half-twice)
+  open HalfOrder A R using (half≤1)
   open SetoidReasoning setoid
 
   module _
@@ -40,12 +40,6 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
     (FR : ∀ s → s ≤ 1# → F (half + half * s) ≈ half * F s + half * 1#)
     where
 
-    hp-half : ∀ n → half * hp n ≈ hp (ℕ.suc n)
-    hp-half n = begin
-      half * hp n                                ≈⟨ *-cong refl (sym (hp-double n)) ⟩
-      half * (hp (ℕ.suc n) + hp (ℕ.suc n))      ≈⟨ half-twice _ ⟩
-      hp (ℕ.suc n) ∎
-
     -- F 0 = 0
     F0≤half : F 0# ≤ half * F 0#
     F0≤half = ≤-trans (≤-reflexive (trans (F-cong (sym (zeroʳ half))) (FL 0# 0-least)))
@@ -54,7 +48,7 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
 
     F0≤hp : ∀ n → F 0# ≤ hp n
     F0≤hp ℕ.zero = ≤-trans (F-mono 0-least) (≤-reflexive (trans F-1 (sym hp-zero)))
-    F0≤hp (ℕ.suc n) = ≤-trans F0≤half (≤-trans (*-mono half (F0≤hp n)) (≤-reflexive (hp-half n)))
+    F0≤hp (ℕ.suc n) = ≤-trans F0≤half (≤-trans (*-mono half (F0≤hp n)) (≤-reflexive refl))
 
     F0≈0 : F 0# ≈ 0#
     F0≈0 = ≤-antisym (arch (λ n → ≤-trans (F0≤hp n) (≤-reflexive (sym (+-identityˡ _))))) 0-least
@@ -127,7 +121,7 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
         , ≤-trans (*-mono half d≤s) (≤-reflexive (half-twice t))
         , ≤-trans (≤-reflexive (sym (half-twice t))) (*-mono half s≤d′)
         , ≤-trans (*-mono half gap)
-            (≤-reflexive (trans (distribˡ half d (hp n)) (+-cong refl (hp-half n))))
+            (≤-reflexive (trans (distribˡ half d (hp n)) (+-cong refl refl)))
     approx (ℕ.suc n) t t≤1 | inj₂ h≤t with upper-half t h≤t t≤1
     ... | s , s≤1 , eq with approx n s s≤1
     ...   | d , d′ , Gd , Gd′ , d≤s , s≤d′ , gap =
@@ -137,7 +131,7 @@ module SelfSimilar (A : OmegaSemiring (suc zero)) (R : Arch A)
         , ≤-trans (+-mono ≤-refl (*-mono half gap))
             (≤-reflexive (begin
               half + half * (d + hp n)             ≈⟨ +-cong refl (distribˡ half d (hp n)) ⟩
-              half + (half * d + half * hp n)      ≈⟨ +-cong refl (+-cong refl (hp-half n)) ⟩
+              half + (half * d + half * hp n)      ≈⟨ +-cong refl (+-cong refl refl) ⟩
               half + (half * d + hp (ℕ.suc n))     ≈⟨ sym (+-assoc half (half * d) (hp (ℕ.suc n))) ⟩
               (half + half * d) + hp (ℕ.suc n) ∎))
 

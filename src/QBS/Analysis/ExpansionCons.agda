@@ -13,11 +13,13 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import QBS.Borel.Cons using (consR)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
+open import QBS.Analysis.Half using (module Half)
 
 module ExpansionCons (A : OmegaSemiring (suc zero)) (half : OmegaSemiring.Carrier A)
     (hh : OmegaSemiring._≈_ A (OmegaSemiring._+_ A half half) (OmegaSemiring.1# A)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Expansion A half hh
+  open Half A half hh using (hp)
   open SetoidReasoning setoid
 
   sel-scale : ∀ c h w → sel c (h * w) ≈ h * sel c w
@@ -35,7 +37,7 @@ module ExpansionCons (A : OmegaSemiring (suc zero)) (half : OmegaSemiring.Carrie
       lemma false = sym (trans (+-cong refl (zeroʳ half)) (+-identityʳ 0#))
   part-cons b (ℕ.suc N) r = begin
     part (ℕ.suc N) (consR b r) + bitW (ℕ.suc N) (consR b r)
-      ≈⟨ +-cong (part-cons b N r) (sel-scale (lower r N) half (half * hpow N)) ⟩
+      ≈⟨ +-cong (part-cons b N r) (sel-scale (lower r N) half (half * hp N)) ⟩
     (sel b half + half * part N r) + half * bitW N r
       ≈⟨ +-assoc _ _ _ ⟩
     sel b half + (half * part N r + half * bitW N r)

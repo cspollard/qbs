@@ -21,7 +21,7 @@ open import QBS.Analysis.Archimedean
 
 module Premeasure {A : OmegaSemiring (suc zero)} (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Arch R using (half) renaming (half+half to hh)
+  open Arch R using (half; half-twice)
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
 
@@ -63,11 +63,7 @@ module Premeasure {A : OmegaSemiring (suc zero)} (R : Arch A) where
       half * ((μ0 (∁ᶜ a) + μ0 a) + (μ0 (∁ᶜ b) + μ0 b))
         ≈⟨ *-cong refl (+-cong (μ0-∁ a) (μ0-∁ b)) ⟩
       half * (1# + 1#)
-        ≈⟨ distribˡ half 1# 1# ⟩
-      half * 1# + half * 1#
-        ≈⟨ +-cong (*-identityʳ half) (*-identityʳ half) ⟩
-      half + half
-        ≈⟨ hh ⟩
+        ≈⟨ half-twice 1# ⟩
       1# ∎
 
     μ0-≤1 : ∀ a → μ0 a ≤ 1#
@@ -78,11 +74,8 @@ module Premeasure {A : OmegaSemiring (suc zero)} (R : Arch A) where
     μ0-full (leaf true) h = ≤-refl
     μ0-full (leaf false) h with h (λ _ → false)
     ... | ()
-    μ0-full (split c d) h = ≤-trans (≤-reflexive (sym two))
+    μ0-full (split c d) h = ≤-trans (≤-reflexive (sym (half-twice 1#)))
       (*-mono half (+-mono (μ0-full c (λ y → h (cons false y))) (μ0-full d (λ y → h (cons true y)))))
-      where
-        two : half * (1# + 1#) ≈ 1#
-        two = trans (distribˡ half 1# 1#) (trans (+-cong (*-identityʳ half) (*-identityʳ half)) hh)
 
     μ0-empty : ∀ a → (∀ x → eval a x ≡ false) → μ0 a ≤ 0#
     μ0-empty (leaf true) h with h (λ _ → false)

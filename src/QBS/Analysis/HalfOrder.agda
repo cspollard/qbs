@@ -13,19 +13,11 @@ open import QBS.Analysis.Archimedean using (Arch)
 
 module HalfOrder (A : OmegaSemiring (suc zero)) (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Arch R using (half; cancel≤) renaming (half+half to hh)
+  open Arch R using (half; cancel≤; half-twice) renaming (half+half to hh)
   open SetoidReasoning setoid
 
   half≤1 : half ≤ 1#
   half≤1 = ≤-trans ≤-+ʳ (≤-reflexive hh)
-
-  half-twice : ∀ x → half * (x + x) ≈ x
-  half-twice x = begin
-    half * (x + x)       ≈⟨ distribˡ half x x ⟩
-    half * x + half * x  ≈⟨ sym (distribʳ x half half) ⟩
-    (half + half) * x    ≈⟨ *-cong hh refl ⟩
-    1# * x               ≈⟨ *-identityˡ x ⟩
-    x ∎
 
   -- halving reflects the order
   half-cancel : ∀ {x y} → half * x ≤ half * y → x ≤ y

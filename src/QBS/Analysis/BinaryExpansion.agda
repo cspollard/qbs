@@ -21,50 +21,33 @@ open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Series using (module Series)
+open import QBS.Analysis.Half using (module Half)
 
 module Expansion (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrier A)
     (hh : OmegaSemiring._≈_ A (OmegaSemiring._+_ A half half) (OmegaSemiring.1# A)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
   open Series A
+  open Half A half hh using (hp; geom)
   open SetoidReasoning setoid
   private R = R₁
-
-  -- 2^{-n} and 2^{-(n+1)}
-  hpow : ℕ → ∣A∣
-  hpow ℕ.zero = 1#
-  hpow (ℕ.suc n) = half * hpow n
 
   sel : Bool → ∣A∣ → ∣A∣
   sel true w = w
   sel false w = 0#
 
   bitW : ℕ → R → ∣A∣
-  bitW n r = sel (lower r n) (half * hpow n)
+  bitW n r = sel (lower r n) (half * hp n)
 
-  -- Σ_{n<N} 2^{-(n+1)} + 2^{-N} = 1
-  geom : ∀ N → psum (λ n → half * hpow n) N + hpow N ≈ 1#
-  geom ℕ.zero = +-identityˡ 1#
-  geom (ℕ.suc N) = begin
-    (psum (λ n → half * hpow n) N + half * hpow N) + half * hpow N
-      ≈⟨ +-assoc _ _ _ ⟩
-    psum (λ n → half * hpow n) N + (half * hpow N + half * hpow N)
-      ≈⟨ +-cong refl (sym (distribʳ (hpow N) half half)) ⟩
-    psum (λ n → half * hpow n) N + (half + half) * hpow N
-      ≈⟨ +-cong refl (trans (*-cong hh refl) (*-identityˡ _)) ⟩
-    psum (λ n → half * hpow n) N + hpow N
-      ≈⟨ geom N ⟩
-    1# ∎
-
-  psum-≤1 : ∀ N → psum (λ n → half * hpow n) N ≤ 1#
+  psum-≤1 : ∀ N → psum (λ n → half * hp n) N ≤ 1#
   psum-≤1 N = ≤-trans ≤-+ʳ (≤-reflexive (geom N))
 
-  bitW-≤ : ∀ n r → bitW n r ≤ half * hpow n
+  bitW-≤ : ∀ n r → bitW n r ≤ half * hp n
   bitW-≤ n r with lower r n
   ... | true = ≤-refl
   ... | false = 0-least
 
-  w≤1 : ∀ n → half * hpow n ≤ 1#
+  w≤1 : ∀ n → half * hp n ≤ 1#
   w≤1 n = ≤-trans (≤-trans ≤-+ʳ (≤-reflexive (+-comm _ _))) (psum-≤1 (ℕ.suc n))
 
   -- the partial sums of the expansion
@@ -72,7 +55,7 @@ module Expansion (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrie
   part ℕ.zero r = 0#
   part (ℕ.suc N) r = part N r + bitW N r
 
-  part-≤ : ∀ N r → part N r ≤ psum (λ n → half * hpow n) N
+  part-≤ : ∀ N r → part N r ≤ psum (λ n → half * hp n) N
   part-≤ ℕ.zero r = ≤-refl
   part-≤ (ℕ.suc N) r = +-mono (part-≤ N r) (bitW-≤ N r)
 
@@ -84,10 +67,10 @@ module Expansion (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrie
 
   -- the bit indicator is measurable
   Fun-bitW : ∀ n → Fun (bitW n)
-  Fun-bitW n = ind {U = λ x → x n ≡.≡ true} (half * hpow n) (w≤1 n) (gen n true) on off (λ r → ≤-trans (bitW-≤ n r) (w≤1 n))
+  Fun-bitW n = ind {U = λ x → x n ≡.≡ true} (half * hp n) (w≤1 n) (gen n true) on off (λ r → ≤-trans (bitW-≤ n r) (w≤1 n))
     where
-      on : ∀ r → lower r n ≡.≡ true → bitW n r ≈ half * hpow n
-      on r p = reflexive (≡.cong (λ b → sel b (half * hpow n)) p)
+      on : ∀ r → lower r n ≡.≡ true → bitW n r ≈ half * hp n
+      on r p = reflexive (≡.cong (λ b → sel b (half * hp n)) p)
       off : ∀ r → (lower r n ≡.≡ true → ⊥) → bitW n r ≈ 0#
       off r q with lower r n in e
       ... | true = ⊥-elim (q ≡.refl)

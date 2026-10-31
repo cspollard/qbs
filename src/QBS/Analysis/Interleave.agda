@@ -100,23 +100,15 @@ eval-interleave (leaf true) t₂ a s = eval-stutter t₂ a s
 
 module Product {A : OmegaSemiring (L.suc L.zero)} (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; refl to rfl; sym to sm; trans to tr)
-  open Arch R using (half) renaming (half+half to hh)
+  open Arch R using (half; half-twice)
   open Premeasure R using (μ0)
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
 
-  half-double : ∀ x → half * (x + x) ≈ x
-  half-double x = begin
-    half * (x + x)       ≈⟨ distribˡ half x x ⟩
-    half * x + half * x  ≈⟨ sm (distribʳ x half half) ⟩
-    (half + half) * x    ≈⟨ *-cong hh rfl ⟩
-    1# * x               ≈⟨ *-identityˡ x ⟩
-    x                    ∎
-
   μ0-stutter : ∀ t → μ0 (stutter t) ≈ μ0 t
   μ0-stutter (leaf b) = rfl
   μ0-stutter (split l r) = begin
-    half * (y + y)   ≈⟨ half-double y ⟩
+    half * (y + y)   ≈⟨ half-twice y ⟩
     y                ≈⟨ *-cong rfl (+-cong (μ0-stutter l) (μ0-stutter r)) ⟩
     half * (μ0 l + μ0 r) ∎
     where y = half * (μ0 (stutter l) + μ0 (stutter r))
