@@ -113,3 +113,23 @@ question: should `R` there be `ℕˢ` directly?).  Update `docs/Classical.md`, `
 **Order of work.**  §1 (independent, low risk) and §2 first, together on one worktree; §3 and §4 as one project, stage 0 to
 decide.  Each stage ends with `make check`, `make longcheck`, `make doccheck`, and the timing and memory figures for the
 canary modules, as for the `Probability` recast.
+
+## Stage 0 results (survey, no code changed)
+
+* **The root is one line.** `ℛQ` (`Probes.agda:25`) has `Carrier = setoid R`, the propositional-equality setoid on the
+  reals, and `probe`'s `cong` matches `refl`.  `meas-ext` has exactly four sites: its field (`Core:30`), `ℛQ`'s `random-resp`
+  (`Probes:27`), and the two sources (`Borel/Source:62`, `Model/DiscreteSource:25`).
+* **`funext` is called in exactly three places**: `split-merge`, `merge-evens`, `merge-odds` (`Continuous/Sample:132-138`).
+  The other 22 modules that mention it only thread the parameter.  The consumers of those three equalities are 34 uses
+  in 9 files, all in `Continuous/` (`Monad` 6, `SFiniteMonad` 6, `CoinCoords` 5, `ProbInstance` 3, `SFinite` 3, `Strong` 2, and
+  one each in `SFiniteCommute`, `SFiniteIncl`, `SFiniteNorm`), each as the argument of a `cong` on `R`.  Plus about 14
+  `(≡.refl , ≡.refl)` patterns on `R × R` (`Monad` 5, `Model/ProbInstance` 2, `Sample` 2, and singles in
+  `OpenMeasure`, `SFiniteMonad`, `Continuous/ProbInstance`, `SFiniteSum`).
+* **So stage 3 is much smaller than "19 modules" suggested**: three proofs lose `funext`, and 34 call sites change from
+  `cong F (merge-evens r s)` to a pointwise-setoid `cong`.  Deleting the parameter itself is then a mechanical sweep of
+  the 25 threading modules.
+* **Stage 1 is the real cost.** It changes `Measurability`, `Random` and `ℛQ`, so everything re-checks, and `lift`/`lower`
+  boilerplate (R = `Lift ℓ ℕ`) is spread over ~40 files (`ExtNat` 37, `Param` 33, `BoolSemiring` 26, …); most of that is
+  weight arithmetic that does not touch `R`'s equality.
+* **Go/no-go: go**, but stage 1 should keep `≡.setoid R` as the default so the discrete model is unchanged apart from one
+  wrapper, and only `cantorSource` adopts pointwise equality.
