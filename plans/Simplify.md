@@ -355,3 +355,29 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
   (`∨-identityʳ`, …, `¬-not`); `Interleave.if-same`/`pick′-id` are `B.if-eta`/`B.if-cong₂` (the two branch proofs swap
   places); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum` uses `[_,_]′`,
   `inj₁-injective`, `inj₂-injective`.
+
+## Stage 1a outcome (items 3, 5, 6 and half of 4; 1, 2, 7, 8 deferred)
+
+`make check` (141 files, 0 holes, 0 failures), `make longcheck` (36 flagged, unchanged from stage 1) and `make doccheck`
+pass; one commit per item.  Canaries (forced recheck, `--profile=modules`, warm interfaces, two runs each, on `main`
+before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 vs 2.81 s, `Continuous/Monad` 3.36 vs
+3.57 s, `SFiniteMonad` 4.42 vs 4.57 s, `SFiniteNorm` 6.28 vs 6.49 s, `SFiniteStrong` 4.89 vs 5.03 s, `StatInstance`
+10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  The slowdown is at most 8 % (`Exponential`, which
+this branch does not touch beyond `Core`), so within noise but not zero.
+
+* **6 done.**  `reassocR` is exported from `Continuous/Sample`; both local copies are gone.
+* **5 done, first half.**  `⇑` now lives in `Core` next to `constₛ`, for any `≡`-setoid.  The second half (one
+  constructor for `measₛ`/`idxₛ`/`witₛ`) is skipped: each is already just `record { to ; cong }` with its own `cong`
+  proof, so no lines would be saved.
+* **3 done.**  `refineₛ` (in `NatPairing`) names the composite cover; `idx-glue` and the three `glue-random` proofs use it.
+* **4 half done.**  `Probes.random-glue-∘` replaces the four glue-under-projection casts (`×Q` ×2, `EqQ`, `ΠQ`).  The
+  second root cause (the discrete model's raw `α : R → ∣X∣`) is deferred: making `Pre.α` and `Wit.wα` `Func`s rewrites
+  `α p r` into `α p ⟨$⟩ r` throughout `Model/{Monad,Strong,ProbInstance,StatInstance,SubProb}` (about 12 casts), and those
+  modules are compile-time sensitive.  The `Exponential` and `Continuous/Monad` casts are precomposition, not
+  projection, patterns and remain (18 `random-cast` sites left).
+* **1 and 2 partly done, rewrite deferred.**  80 `map-random =` sites in 28 files build `Hom` records, so redefining
+  `QBSCat` as a `SubCat` (a Σ-typed hom) would touch all of them and change the normal forms the CCC and monad
+  conversions rely on.  Instead `Category.agda` gains `Forget : Functor (QBSCat S) (Setoids ℓ ℓ)` and `Forget-faithful`.
+  `Measurability` as a one-object `SubCat` is untouched.
+* **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
+  circular `Idx`/`QBS` dependency broken first and was not attempted.
