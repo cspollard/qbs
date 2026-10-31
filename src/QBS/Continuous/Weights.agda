@@ -5,7 +5,7 @@
 -- structure of multiplication.
 module QBS.Continuous.Weights where
 
-open import Level using (lift)
+open import Level using (lift; lower)
 import Level as L
 open import Function.Base using (const)
 open import Relation.Binary.Bundles using (Setoid)
@@ -35,7 +35,7 @@ module Weights (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
     { Carrier = setoid
     ; Random = Meas
     ; random-resp = λ {α} {β} e m → Meas-ext {α} {β} e m
-    ; random-cong = λ _ e → Setoid.reflexive setoid (≡.cong _ e)
+    ; random-cong = λ m e → Meas-resp m (lower e)
     ; const-random = Meas-const
     ; pre-random = λ {α} {f} m mf → Meas-pre {α} {f} m mf
     ; glue-random = λ {j} pj α ms → Meas-glue {j} {α} pj ms

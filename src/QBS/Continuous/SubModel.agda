@@ -34,7 +34,7 @@ module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Exte
   open FairCoin lem₁ using (fairCoin)
   open Arch (lowerRealsArch (lemOf lem₁)) using (half) renaming (half+half to hh)
   open Expansion A half hh
-  open UnitInterval A using (AQ)
+  open UnitInterval A lem using (AQ)
   open ContinuousSub A (lemOf lem₁) funext
   open OmegaSemiring A using (_≈_; 1#; ≤-refl; refl; trans)
   open UniformMean lem₁ using (mean)

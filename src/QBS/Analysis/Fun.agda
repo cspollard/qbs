@@ -67,6 +67,18 @@ module Measurable (A : OmegaSemiring (suc zero)) where
   Fun-pre (supF hs fs inc q) mf = supF (λ n x → hs n (_)) (λ n → Fun-pre (fs n) mf) (λ x → inc _) (λ x → q _)
   Fun-pre (complF f q) mf = complF (Fun-pre f mf) (λ x → q _)
 
+  -- measurable functions do not distinguish points that agree everywhere (classically: `ind` is stated relationally)
+  Fun-resp : (∀ (P : Set) → P ⊎ (P → ⊥)) → ∀ {h} → Fun h → ∀ {x y} → ≡._≗_ (lower x) (lower y) → h x ≈ h y
+  Fun-resp lem (ind {U} c c≤1 bU e₀ e₁ b) {x} {y} e with lem (U (lower x))
+  ... | inj₁ u = trans (e₀ x u) (sym (e₀ y (proj₁ (borel-≗ bU e) u)))
+  ... | inj₂ nu = trans (e₁ x nu) (sym (e₁ y (λ v → nu (proj₂ (borel-≗ bU e) v))))
+  Fun-resp lem (sumF f₁ f₂ q b) {x} {y} e =
+    trans (q x) (trans (+-cong (Fun-resp lem f₁ e) (Fun-resp lem f₂ e)) (sym (q y)))
+  Fun-resp lem (supF hs fs inc q) {x} {y} e =
+    trans (q x) (trans (⨆-cong (inc x) (inc y) (λ n → Fun-resp lem (fs n) e)) (sym (q y)))
+  Fun-resp lem (complF {h} {h′} f q) {x} {y} e = cancel (Fun-≤1 f x)
+    (trans (+-comm _ _) (trans (q x) (trans (sym (q y)) (trans (+-comm _ _) (+-cong (sym (Fun-resp lem f e)) refl)))))
+
   ----------------------------------------------------------------------------
   -- restriction to a decidable Borel set
 

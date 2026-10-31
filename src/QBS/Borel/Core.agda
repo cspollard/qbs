@@ -20,7 +20,7 @@ open import Data.Unit.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; subst)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; subst)
 
 Cantor : Set
 Cantor = ℕ → Bool
@@ -100,10 +100,24 @@ measurable-const c n b with c n ≟ b
 ... | yes p = resp (λ x → (λ _ → p) , (λ _ → tt)) ⊤-borel
 ... | no ¬p = resp (λ x → (λ ()) , (λ e → ¬p e)) ⊥-borel
 
+-- Borel sets do not distinguish points that agree everywhere (`_≗_`, pointwise equality of sequences)
+borel-≗ : ∀ {U} → Borel U → ∀ {x y} → x ≗ y → (U x → U y) × (U y → U x)
+borel-≗ (gen n b) e = (λ p → trans (sym (e n)) p) , (λ p → trans (e n) p)
+borel-≗ (compl bu) e = (λ f v → f (proj₂ (borel-≗ bu e) v)) , (λ f u → f (proj₁ (borel-≗ bu e) u))
+borel-≗ (⋃ bu) e = (λ { (n , u) → n , proj₁ (borel-≗ (bu n) e) u }) , (λ { (n , v) → n , proj₂ (borel-≗ (bu n) e) v })
+borel-≗ (⋂ bu) e = (λ f n → proj₁ (borel-≗ (bu n) e) (f n)) , (λ f n → proj₂ (borel-≗ (bu n) e) (f n))
+borel-≗ (resp ee bu) {x} {y} e =
+  (λ v → proj₁ (ee y) (proj₁ (borel-≗ bu e) (proj₂ (ee x) v)))
+  , (λ v → proj₁ (ee x) (proj₂ (borel-≗ bu e) (proj₂ (ee y) v)))
+
+-- measurable maps respect `_≗_`
+measurable-≗ : ∀ {f} → Measurable f → ∀ {x y} → x ≗ y → f x ≗ f y
+measurable-≗ {f} mf {x} {y} e n = sym (proj₁ (borel-≗ (mf n (f x n)) e) refl)
+
 -- measurability depends only on values
-measurable-ext : ∀ {f g} → (∀ x → f x ≡ g x) → Measurable f → Measurable g
-measurable-ext e mf n b = resp (λ x → (λ p → trans (cong (λ y → y n) (sym (e x))) p)
-                                    , (λ p → trans (cong (λ y → y n) (e x)) p)) (mf n b)
+measurable-ext : ∀ {f g} → (∀ x → f x ≗ g x) → Measurable f → Measurable g
+measurable-ext e mf n b = resp (λ x → (λ p → trans (sym (e x n)) p)
+                                    , (λ p → trans (e x n) p)) (mf n b)
 
 -- countable partitions: j : Cantor → ℕ with Borel fibres
 Partition : (Cantor → ℕ) → Set₁

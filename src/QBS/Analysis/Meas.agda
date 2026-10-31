@@ -81,6 +81,10 @@ module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   Meas-ext : ∀ {h h′} → (∀ x → h x ≋ h′ x) → Meas h → Meas h′
   Meas-ext e m q = resp (λ c → ap (proj₁ (e (lift c))) q , ap (proj₂ (e (lift c))) q) (m q)
 
+  -- threshold-measurable functions do not distinguish points that agree everywhere
+  Meas-resp : ∀ {h} → Meas h → ∀ {x y} → ≡._≗_ (lower x) (lower y) → h x ≋ h y
+  Meas-resp m {x} {y} e = mk⊑ (λ q → proj₁ (borel-≗ (m q) e)) , mk⊑ (λ q → proj₂ (borel-≗ (m q) e))
+
   Meas-const : ∀ c → Meas (λ _ → c)
   Meas-const c q = borel-prop (mem c q)
 

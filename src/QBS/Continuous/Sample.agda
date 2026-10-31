@@ -14,6 +14,8 @@ open import Data.Nat.Base using (ℕ; _+_)
 import Data.Nat.Base as ℕ
 open import Data.Nat.Properties using (+-suc)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Sum.Base using (_⊎_)
+open import Data.Empty using (⊥)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -88,6 +90,9 @@ odds-merge : ∀ a b n → odds (mergeC a b) n ≡ b n
 odds-merge a b n = ≡.trans (≡.cong (λ e → mergeBit e (a h) (b h)) (ev-sdbl n)) (≡.cong b (hf-sdbl n))
   where h = hf (ℕ.suc (dbl n))
 
+merge-cong : ∀ {a a′ b b′} → ≡._≗_ a a′ → ≡._≗_ b b′ → ≡._≗_ (mergeC a b) (mergeC a′ b′)
+merge-cong ea eb n = ≡.cong₂ (mergeBit (ev n)) (ea (hf n)) (eb (hf n))
+
 ----------------------------------------------------------------------------
 -- at the level of the sample space R
 
@@ -110,12 +115,23 @@ measurable-merge {a} {b} ma mb n β with ev n
 ... | true = ma (hf n) β
 ... | false = mb (hf n) β
 
+module R≈ = Setoid (RandomSource.Rˢ S)
+
+evensR-cong : ∀ {r s} → r R≈.≈ s → evensR r R≈.≈ evensR s
+evensR-cong e = lift (λ n → lower e (dbl n))
+
+oddsR-cong : ∀ {r s} → r R≈.≈ s → oddsR r R≈.≈ oddsR s
+oddsR-cong e = lift (λ n → lower e (ℕ.suc (dbl n)))
+
+mergeR-cong : ∀ {a a′ b b′} → a R≈.≈ a′ → b R≈.≈ b′ → mergeR a b R≈.≈ mergeR a′ b′
+mergeR-cong e₁ e₂ = lift (merge-cong (lower e₁) (lower e₂))
+
 -- the isomorphism ℛ ≅ ℛ × ℛ in QBS
 fromH : Hom S (Probes.ℛQ S) (_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S))
 fromH = record
   { map = record
       { to = λ r → evensR r , oddsR r
-      ; cong = λ { ≡.refl → ≡.refl , ≡.refl } }
+      ; cong = λ e → evensR-cong e , oddsR-cong e }
   ; map-random = λ {α} mα → measurable-∘ mα measurable-evens , measurable-∘ mα measurable-odds
   }
 
@@ -123,24 +139,24 @@ toH : Hom S (_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)) (Probes.ℛQ S)
 toH = record
   { map = record
       { to = λ p → mergeR (proj₁ p) (proj₂ p)
-      ; cong = λ { (≡.refl , ≡.refl) → ≡.refl } }
+      ; cong = λ (e₁ , e₂) → mergeR-cong e₁ e₂ }
   ; map-random = λ {α} (m₁ , m₂) → measurable-merge m₁ m₂
   }
 
-module Split (funext : Extensionality L.zero L.zero) where
-  split-merge : ∀ r → mergeR (evensR r) (oddsR r) ≡ r
-  split-merge r = ≡.cong lift (funext (merge-split (lower r)))
+-- the round trips, up to `≈ᴿ` (pointwise equality of sequences): no function extensionality
+split-merge : ∀ r → Setoid._≈_ (RandomSource.Rˢ S) (mergeR (evensR r) (oddsR r)) r
+split-merge r = lift (merge-split (lower r))
 
-  merge-evens : ∀ r s → evensR (mergeR r s) ≡ r
-  merge-evens r s = ≡.cong lift (funext (evens-merge (lower r) (lower s)))
+merge-evens : ∀ r s → Setoid._≈_ (RandomSource.Rˢ S) (evensR (mergeR r s)) r
+merge-evens r s = lift (evens-merge (lower r) (lower s))
 
-  merge-odds : ∀ r s → oddsR (mergeR r s) ≡ s
-  merge-odds r s = ≡.cong lift (funext (odds-merge (lower r) (lower s)))
+merge-odds : ∀ r s → Setoid._≈_ (RandomSource.Rˢ S) (oddsR (mergeR r s)) s
+merge-odds r s = lift (odds-merge (lower r) (lower s))
 
 ----------------------------------------------------------------------------
 -- the unit interval: random elements are the measurable functions
 
-module UnitInterval (A : OmegaSemiring (L.suc L.zero)) where
+module UnitInterval (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
 
@@ -161,7 +177,7 @@ module UnitInterval (A : OmegaSemiring (L.suc L.zero)) where
     { Carrier = 𝕀
     ; Random = λ h → Fun (λ r → proj₁ (h r))
     ; random-resp = λ e f → Fun-ext e f
-    ; random-cong = λ {α} _ e → Setoid.reflexive 𝕀 (≡.cong α e)
+    ; random-cong = λ {α} f e → Fun-resp lem f (lower e)
     ; const-random = λ x → Fun-const (proj₁ x) (proj₂ x)
     ; pre-random = λ f mf → Fun-pre f mf
     ; glue-random = λ {i} pi hs fs → glueU pi (λ n r → proj₁ (hs n r)) fs

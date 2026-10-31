@@ -52,8 +52,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
   open MeasureClass K
   open Indicators A lem
   open Tensor A lem using (constK)
-  open Split funext
-  open UnitInterval A
+  open UnitInterval A lem
   module P₁ = Param A lem mergeC measurable-merge₁ Cyl-rect
   open RandomSource S using () renaming (meas-id to measId; meas-const to measConst; idx-pre to idxPre; meas-∘ to measComp)
   open QBS
@@ -124,13 +123,13 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
   -- joint probes from simple data
   sndJ : ∀ {X : QBS S} (α : R → ∣ X ∣) → Random X α → Joint X
   sndJ {X} α rα = record
-    { map = record { to = λ p → α (proj₂ p) ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier X) } }
+    { map = record { to = λ p → α (proj₂ p) ; cong = λ (_ , e₂) → random-cong X rα e₂ }
     ; map-random = λ {γ} (m₁ , m₂) → pre-random X {α} {λ x → proj₂ (γ x)} rα m₂
     }
 
   fstJ : ∀ {X : QBS S} (α : R → ∣ X ∣) → Random X α → Joint X
   fstJ {X} α rα = record
-    { map = record { to = λ p → α (proj₁ p) ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier X) } }
+    { map = record { to = λ p → α (proj₁ p) ; cong = λ (e₁ , _) → random-cong X rα e₁ }
     ; map-random = λ {γ} (m₁ , m₂) → pre-random X {α} {λ x → proj₁ (γ x)} rα m₁
     }
 
@@ -139,7 +138,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
   preJ {X} {f} mf a = record
     { map = record
         { to = λ p → map a ⟨$⟩ (f (proj₁ p) , proj₂ p)
-        ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier X) } }
+        ; cong = λ (e₁ , e₂) → Func.cong (map a) (lift (measurable-≗ {down f} mf (lower e₁)) , e₂) }
     ; map-random = λ {γ} (m₁ , m₂) → map-random a {λ x → f (proj₁ (γ x)) , proj₂ (γ x)} (measurable-∘ m₁ mf , m₂)
     }
 
@@ -148,7 +147,8 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
   glueJ {X} {i} pi a = record
     { map = record
         { to = λ p → map (a (i (proj₁ p))) ⟨$⟩ p
-        ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier X) } }
+        ; cong = λ {p} {p′} (e₁ , e₂) → Setoid.trans (Carrier X) (Func.cong (map (a (i (proj₁ p)))) (e₁ , e₂))
+            (Setoid.reflexive (Carrier X) (≡.cong (λ n → map (a n) ⟨$⟩ p′) (RandomSource.idx-resp S {i} pi e₁))) }
     ; map-random = λ {γ} (m₁ , m₂) →
         glue-random X {λ x → i (proj₁ (γ x))} (idxPre pi m₁)
           (λ n x → map (a n) ⟨$⟩ (proj₁ (γ x) , proj₂ (γ x))) (λ n → map-random (a n) (m₁ , m₂))
@@ -173,6 +173,17 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     (mk-cong {X} (sec-random {X} (a (ws (i r))) r) (sec-random {X} (glueJ {X} pi (λ n → a (ws n))) r)
        (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier X)) h)
 
+  -- a random family of measures does not distinguish equal parameters
+  Wit-cong : ∀ {X : QBS S} {β : R → Pre X} → Wit β → ∀ {r r′} → r R≈.≈ r′ → _≈ᵖ_ {X} (β r) (β r′)
+  Wit-cong {X} w {r} {r′} e f =
+    Setoid.trans Aˢ (w-eq w r f)
+      (Setoid.trans Aˢ
+        (mk-cong {X} (sec-random (a w) r) (sec-random (a w) r′) (g w r) (g-pr w r)
+           (λ s → Func.cong (map (a w)) (e , R≈.refl)) f)
+        (Setoid.trans Aˢ
+          (Fun-resp lem (g-ok w (map-random f (sec-random (a w) r′))) (lower e))
+          (Setoid.sym Aˢ (w-eq w r′ f))))
+
   TQ : QBS S → QBS S
   TQ X = record
     { Carrier = PreS X
@@ -180,7 +191,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     ; random-resp = λ e w → record
         { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
         ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
-    ; random-cong = λ {α} _ e → Setoid.reflexive (PreS X) (≡.cong α e)
+    ; random-cong = λ w e → Wit-cong w e
     ; const-random = λ p → record
         { a = sndJ (α p) (α-random p)
         ; g = λ _ → m p
@@ -296,8 +307,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     kK′ : KernelOk K′
     kK′ {h} fh = Fun-ext
       (λ k → I-cong (g w₂ k)
-               (λ t → Setoid.reflexive Aˢ (≡.cong h
-                  (≡.cong₂ mergeR (≡.cong oddsR (merge-evens k t)) (merge-odds k t)))) _ _)
+               (λ t → Fun-resp lem fh (lower (mergeR-cong (oddsR-cong (merge-evens k t)) (merge-odds k t)))) _ _)
       (P₁.PF (g w₂) (g-ok w₂) {λ x → h (φ x)} (Fun-pre {h} {φ} fh mφ))
       where
         φ : R → R
@@ -318,7 +328,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
     a′ = record
       { map = record
           { to = λ p → map a₂ ⟨$⟩ (mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p))
-          ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier X) } }
+          ; cong = λ (e₁ , e₂) → Func.cong (map a₂) (mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂) }
       ; map-random = λ {γ} (m₁ , m₂) → map-random a₂
           {λ x → mergeR (proj₁ (γ x)) (evensR (proj₂ (γ x))) , oddsR (proj₂ (γ x))}
           (measurable-merge m₁ (measurable-∘ m₂ measurable-evens) , measurable-∘ m₂ measurable-odds)
@@ -330,13 +340,13 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P 
         (Setoid.trans Aˢ (w-eq w r (∫ᶠ f))
           (I-cong (g w r) (λ s →
              Setoid.trans Aˢ
-               (Func.cong (map (a w)) (≡.sym (merge-evens r s) , ≡.sym (merge-odds r s)) f)
+               (Func.cong (map (a w)) (R≈.sym (merge-evens r s) , R≈.sym (merge-odds r s)) f)
                (Setoid.trans Aˢ (w-eq w₂ (mergeR r s) f)
                  (I-cong (g w₂ (mergeR r s))
                     (λ t → Func.cong (map f) (Func.cong (map a₂)
-                       (≡.sym (≡.trans (≡.cong (mergeR r) (merge-evens (oddsR (mergeR r s)) t))
-                                                     (≡.cong (mergeR r) (merge-odds r s)))
-                         , ≡.sym (merge-odds (oddsR (mergeR r s)) t)))) _ _))) _ _))
+                       (R≈.sym (R≈.trans (mergeR-cong (R≈.refl {r}) (merge-evens (oddsR (mergeR r s)) t))
+                                         (mergeR-cong (R≈.refl {r}) (merge-odds r s)))
+                         , R≈.sym (merge-odds (oddsR (mergeR r s)) t)))) _ _))) _ _))
 
   joinH : ∀ X → Hom S (TQ (TQ X)) (TQ X)
   joinH X = record

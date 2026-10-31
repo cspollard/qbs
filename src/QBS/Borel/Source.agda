@@ -12,8 +12,8 @@ open import Data.Unit.Base using (tt)
 open import Data.Nat.Properties using (_≟_)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Relation.Binary.PropositionalEquality.Properties using (setoid)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; cong₂; subst)
+open import Relation.Binary.Bundles using (Setoid)
 
 open import QBS.Core using (RandomSource)
 open import QBS.Model.Pairing
@@ -53,20 +53,32 @@ private
             where e₁ : unpair k ≡ (j x , i (j x) x)
                   e₁ = trans (cong unpair (sym h)) (unpair-pair (j x) (i (j x) x))
 
+-- points of Cantor space are equal when they agree everywhere: no function extensionality is needed
+R₁ˢ : Setoid (suc zero) (suc zero)
+R₁ˢ = record
+  { Carrier = R₁
+  ; _≈_ = λ x y → Lift (suc zero) (lower x ≗ lower y)
+  ; isEquivalence = record
+      { refl = lift (λ _ → refl)
+      ; sym = λ e → lift (λ n → sym (lower e n))
+      ; trans = λ e e′ → lift (λ n → trans (lower e n) (lower e′ n))
+      }
+  }
+
 cantorSource : RandomSource (suc zero)
 cantorSource = record
   { measurable = record
-    { Rˢ = setoid R₁
+    { Rˢ = R₁ˢ
     ; Meas = λ f → Measurable (down f)
     ; meas-id = measurable-id
     ; meas-∘ = λ mf mg → measurable-∘ mg mf
-    ; meas-resp = λ _ e → cong _ e
-    ; meas-ext = λ e mf → measurable-ext (λ x → cong lower (e (lift x))) mf
+    ; meas-resp = λ {f} mf {r} {r′} e → lift (measurable-≗ {down f} mf {lower r} {lower r′} (lower e))
+    ; meas-ext = λ e mf → measurable-ext (λ x → lower (e (lift x))) mf
     ; meas-const = λ r → measurable-const (lower r)
     }
   ; partitions = record
     { Idx = λ i → Partition (downℕ i)
-    ; idx-resp = λ _ e → cong _ e
+    ; idx-resp = λ {i} pi {r} {r′} e → sym (proj₁ (borel-≗ (pi (i r)) {lower r} {lower r′} (lower e)) refl)
     ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ j} {λ k → down (f k)} pj mf
     ; idx-const = λ n k → borel-eq n k
     ; idx-pre = λ {i} {f} pi mf k → preimage mf (pi k)

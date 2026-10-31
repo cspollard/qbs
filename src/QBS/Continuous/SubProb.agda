@@ -36,7 +36,7 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) →
   open Measurable A
   open Integration A
   open Tensor A lem using (constK)
-  open UnitInterval A using (AQ)
+  open UnitInterval A lem using (AQ)
   open Continuous A lem funext subClass public
   open Strength A lem funext subClass public using (strongMonad; commutative)
   open Hom

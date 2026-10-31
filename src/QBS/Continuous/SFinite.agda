@@ -49,7 +49,7 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
   open Measurable A
   open Tensor A lem using (constK)
   open Split funext
-  open UnitInterval A using (AQ)
+  open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   module C = Continuous A lem funext probClass
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)

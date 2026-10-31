@@ -44,7 +44,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
   open Indicators A lem
   open Tensor A lem
   open Split funext
-  open UnitInterval A
+  open UnitInterval A lem
   open Continuous A lem funext K
   open QBS
   open Hom
