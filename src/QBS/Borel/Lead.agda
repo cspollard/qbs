@@ -17,6 +17,7 @@ open import Function.Base using (_∘_)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong)
 
 open import QBS.Borel.Core
+open import QBS.Classical using (LEM₀)
 
 -- the first n bits are true
 Pre : ℕ → Cantor → Set
@@ -81,7 +82,7 @@ decBool (no _) = false
 pt : ℕ → Cantor
 pt n i = decBool (i <? n)
 
-module Lead (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Lead (lem : LEM₀) where
   Ex : Cantor → Set
   Ex k = Σ ℕ (λ m → k m ≡ false)
 

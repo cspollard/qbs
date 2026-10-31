@@ -28,8 +28,9 @@ open import QBS.Analysis.Uniqueness using (module Uniqueness)
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Functional using (module Functional)
+open import QBS.Classical using (LEM₁)
 
-module Riesz (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module Riesz (lem₁ : LEM₁) where
   private A = LowerRealsOmega (lemOf lem₁)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A using (Fun; Fun-const)

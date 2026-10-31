@@ -23,6 +23,7 @@ open import QBS.Analysis.Series
 open import QBS.Analysis.Archimedean
 open import QBS.Analysis.Clopen
 open import QBS.Analysis.ClopenMeasure
+open import QBS.Classical using (LEM₀)
 
 ----------------------------------------------------------------------------
 -- Boolean helpers
@@ -51,7 +52,7 @@ not-true false e = ≡.refl
 not-false : ∀ a → a ≡ false → not a ≡ true
 not-false .false ≡.refl = ≡.refl
 
-module Opens {A : OmegaSemiring (L.suc L.zero)} (R : Arch A) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Opens {A : OmegaSemiring (L.suc L.zero)} (R : Arch A) (lem : LEM₀) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R
   open Premeasure R

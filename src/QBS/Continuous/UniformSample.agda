@@ -28,8 +28,9 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.CoinCoords using (module CoinCoords)
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
+open import QBS.Classical using (LEM₁)
 
-module UniformSample (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformSample (lem₁ : LEM₁) where
   open UniformVariance lem₁ using (u; u-bdd; uu; varU; pm; vf; variance; mean-u; moment-u)
   open Lebesgue (lemOf lem₁) using (A)
   open CoinCoords lem₁ using (coordSF; coordSF-bdd; E-coord; E-indep)

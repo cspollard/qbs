@@ -35,8 +35,9 @@ open import QBS.Analysis.Variance using (module Variance)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
+open import QBS.Classical using (LEM₀)
 
-module BoundedRing (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module BoundedRing (lem : LEM₀) where
   open Lebesgue lem using (A; J; J-add)
   open Meas lem using (Meas-⊗)
   open Integration A using (Measure; IsProb)

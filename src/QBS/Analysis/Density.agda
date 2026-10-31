@@ -20,8 +20,9 @@ open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.JParam using (module JParam)
+open import QBS.Classical using (LEM₀)
 
-module Density (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Density (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open LevelSets lem using (LS)

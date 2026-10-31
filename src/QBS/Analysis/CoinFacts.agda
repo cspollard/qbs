@@ -22,8 +22,9 @@ open import QBS.Analysis.Series
 open import QBS.Analysis.Clopen
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.BorelMeasure
+open import QBS.Classical using (LEM₀)
 
-module Facts (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure lem) where
+module Facts (lem : LEM₀) (B : BM.BorelMeasure lem) where
   A : OmegaSemiring (L.suc L.zero)
   A = LowerRealsOmega lem
   open OmegaSemiring A renaming (Carrier to ∣A∣; zero to zero-sr)

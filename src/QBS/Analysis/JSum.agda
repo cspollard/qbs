@@ -25,8 +25,9 @@ open import QBS.Analysis.SeriesSup using (module SeriesSup)
 open import QBS.Analysis.MixtureN using (module MixtureN)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.JParam using (module JParam)
+open import QBS.Classical using (LEM₀)
 
-module JSum (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module JSum (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; 1#; ⨆; Increasing; refl; sym; trans; +-cong; *-cong; ⨆-cong;

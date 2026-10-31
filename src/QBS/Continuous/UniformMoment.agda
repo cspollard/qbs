@@ -35,6 +35,7 @@ open import QBS.Analysis.MeasFun using (module MeasFun)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Analysis.HalfOrder using (module HalfOrder)
+open import QBS.Classical using (LEM₁)
 
 -- the semiring algebra behind the second moment, over an abstract commutative semiring (the solver
 -- is slow on the concrete cut semiring)
@@ -83,7 +84,7 @@ module Alg {c ℓ} (S : CommutativeSemiring c ℓ) (half : CommutativeSemiring.C
                                 refl half m
 
 
-module UniformMoment (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformMoment (lem₁ : LEM₁) where
   open JParam (lemOf lem₁)
   open Meas (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)

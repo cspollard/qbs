@@ -38,8 +38,9 @@ open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Continuous.Sample
 open import QBS.Continuous.Monad using (module Continuous)
 open import QBS.Continuous.Weights using (module Weights)
+open import QBS.Classical using (LEM₀)
 
-module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SFinite (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)

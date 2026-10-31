@@ -48,8 +48,9 @@ open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Continuous.Monad using (module Continuous)
+open import QBS.Classical using (LEM₁)
 
-module UniformSetup (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformSetup (lem₁ : LEM₁) where
   A = LowerRealsOmega (lemOf lem₁)                    -- values: [0,∞] as lower cuts of ℚ
   open UnitInterval A public using (AQ)               -- the unit interval as a quasi-Borel space
   open Integration A using (probClass)

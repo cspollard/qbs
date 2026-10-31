@@ -10,5 +10,6 @@ open import Data.Sum.Base using (_⊎_)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Regular
+open import QBS.Classical using (LEM₀)
 
-module CoinSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) = Regularity (lowerRealsArch lem) lem
+module CoinSets (lem : LEM₀) = Regularity (lowerRealsArch lem) lem

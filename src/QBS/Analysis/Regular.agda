@@ -31,9 +31,10 @@ open import QBS.Analysis.Archimedean
 open import QBS.Analysis.Clopen
 open import QBS.Analysis.ClopenMeasure
 open import QBS.Analysis.OpenMeasure
+open import QBS.Classical using (LEM₀)
 
 module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
-    (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+    (lem : LEM₀) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R
   open Premeasure R

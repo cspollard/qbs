@@ -22,11 +22,12 @@ open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.Series using (module Series)
+open import QBS.Classical using (LEM₀)
 
 open Cut
 open _⊑_
 
-module Pieces (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Pieces (lem : LEM₀) where
   A = LowerRealsOmega lem
   open OmegaSemiring A using (_≈_; _*_; 0#; 1#; trans; sym; refl; zeroˡ) renaming
       (*-cong to *ᴬ-cong; *-identityˡ to *ᴬ-identityˡ; *-assoc to *ᴬ-assoc)

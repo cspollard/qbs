@@ -24,8 +24,9 @@ open import QBS.Analysis.Series
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinFacts
+open import QBS.Classical using (LEM₀)
 
-module Simple (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure lem) where
+module Simple (lem : LEM₀) (B : BM.BorelMeasure lem) where
   open Facts lem B public using (A; μ-null; μ-part; μ-add; μ-mono)
   open OmegaSemiring A renaming (Carrier to ∣A∣; zero to zero-sr)
   open Series A

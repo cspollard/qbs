@@ -26,8 +26,9 @@ open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Signed
 open import QBS.Analysis.SignedOmega using (module Bounded)
+open import QBS.Classical using (LEM₀)
 
-module SignedIntegral (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SignedIntegral (lem : LEM₀) where
   open Lebesgue lem
   open Meas lem
   open Integration A using (Measure; IsProb; I)

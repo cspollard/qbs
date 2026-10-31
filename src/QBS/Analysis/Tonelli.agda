@@ -18,8 +18,9 @@ open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
+open import QBS.Classical using (LEM₀)
 
-module Tonelli (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Tonelli (lem : LEM₀) where
   open Lebesgue lem
   open Meas lem
   open LevelSets lem using (LS)

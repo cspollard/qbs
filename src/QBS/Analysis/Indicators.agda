@@ -25,8 +25,9 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Series using (module Series)
+open import QBS.Classical using (LEM₀)
 
-module Indicators (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Indicators (A : OmegaSemiring (suc zero)) (lem : LEM₀) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
   open Integration A

@@ -24,8 +24,9 @@ open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.MeasFun using (module MeasFun)
 open import QBS.Analysis.Unbounded using (module Unbounded)
+open import QBS.Classical using (LEM₀)
 
-module Lebesgue (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Lebesgue (lem : LEM₀) where
   A = LowerRealsOmega lem
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; ⨆; Increasing)
   open Integration A using (Measure; I)

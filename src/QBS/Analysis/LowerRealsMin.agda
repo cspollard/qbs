@@ -18,6 +18,7 @@ open _⊑_
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.LowerRealsArch using (qC; qC-add; pos+; ≤-+ʳ′)
 open import QBS.Analysis.Min
+open import QBS.Classical using (LEM₀)
 
 infixl 7 _⊓_
 
@@ -79,7 +80,7 @@ ntwo-big : ∀ q → Σ ℕ (λ k → q < ntwo k)
 ntwo-big q with nat-bound q
 ... | k , le = k , ≤-<-trans le (nat-lt k)
 
-module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module _ (lem : LEM₀) where
   open Pow (LowerRealsOmega lem) using (pw)
 
   pw-qC : ∀ k → pw k ≋ qC (ntwo k) (ntwo-pos k)

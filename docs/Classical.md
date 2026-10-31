@@ -13,8 +13,8 @@ instantiated inside Agda itself.
 
 | Parameter | Statement | Where |
 |---|---|---|
-| `lem` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules, mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
-| `lem₁` | the same at `Set₁` | 13 modules (`Analysis/CutSum`, `CoinIntegral`, `Functional`, `Riesz`, `Model/AdditiveSemiring`, `Continuous/FairCoin`, `Uniform*`, `CoinIndep`, `FirstBit`, `SubModel`, `Example/Probability`) |
+| `lem : LEM₀` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules, mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
+| `lem₁ : LEM₁` | the same at `Set₁` | 13 modules (`Analysis/CutSum`, `CoinIntegral`, `Functional`, `Riesz`, `Model/AdditiveSemiring`, `Continuous/FairCoin`, `Uniform*`, `CoinIndep`, `FirstBit`, `SubModel`, `Example/Probability`) |
 | `lemOf` | `lem₁ ⇒ lem` (by `Lift`) | `Analysis/CoinIntegral` |
 | `NormalizableSemiring.invertible?` | a decision `(Σ n, m·n ≈ 1) ⊎ ¬(…)` as a record field | `Model/Semiring.agda:42`, consumed in `Model/StatInstance.agda` |
 | `dec` argument to `Mask` | a decision procedure for a Borel set | `Analysis/Fun.agda` (`module Mask`) |
@@ -22,6 +22,9 @@ instantiated inside Agda itself.
 Not assumed anywhere: the axiom of choice (countable or dependent), propositional extensionality,
 UIP, Markov's principle, or a resizing axiom. Resizing is derived from `lem₁` (§3.6) and UIP at `Set₁`
 is derived from `lem₁` (§3.7).
+
+The statements are named once, in `QBS/Classical.agda`: `LEM₀` and `LEM₁` as above, and `LEM ℓ` for `Set ℓ` with
+refutation into `⊥` at level `ℓ` (`Model/*Semiring`, `Model/*Model`).  They are aliases, so nothing changes in the logic.
 
 Two points about the form of `lem`:
 

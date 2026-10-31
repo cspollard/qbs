@@ -45,8 +45,9 @@ open import QBS.Analysis.Indicators
 open import QBS.Analysis.Param
 open import QBS.Analysis.Tensor
 open import QBS.Continuous.Sample
+open import QBS.Classical using (LEM₀)
 
-module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (K : Integration.MeasureClass A) where
+module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integration.MeasureClass A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Measurable A
   open Integration A

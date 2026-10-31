@@ -152,8 +152,9 @@ module Reindex {I J : Set₁} where
 open import Axiom.UniquenessOfIdentityProofs using (module Decidable⇒UIP; UIP)
 open import Data.Product.Properties using (,-injectiveʳ-UIP)
 open import Relation.Nullary using (Dec; yes; no)
+open import QBS.Classical using (LEM₁)
 
-module CSum (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module CSum (lem₁ : LEM₁) where
 
   -- with excluded middle for `Set₁`, equality on `Set₁`-types is decidable, hence proof-irrelevant
   dec≡ : ∀ {A : Set₁} (a b : A) → Dec (a ≡ b)

@@ -38,6 +38,7 @@ open import QBS.Analysis.CoinSimple
 open import QBS.Analysis.CoinCont
 open import QBS.Analysis.LevelSets
 open import QBS.Analysis.CoinGrid
+open import QBS.Classical using (LEM₀; LEM₁)
 open Cut
 open _⊑_
 
@@ -47,13 +48,13 @@ smallprod {N} 0<N 0<y r<N y≤tk Ntk<tn le =
   RL.≤-<-trans le (RL.<-trans (RL.<-≤-trans (RL.*-mono-<-posʳ 0<y r<N) (RL.*-mono-≤-nn (RL.<-≤ 0<N) y≤tk)) Ntk<tn)
 
 -- classical logic at `Set` from classical logic at `Set₁`
-lemOf : (∀ (P : Set₁) → P ⊎ (P → ⊥)) → ∀ (P : Set) → P ⊎ (P → ⊥)
+lemOf : LEM₁ → LEM₀
 lemOf lem₁ P with lem₁ (Lift (L.suc L.zero) P)
 ... | inj₁ (lift p) = inj₁ p
 ... | inj₂ n = inj₂ (λ p → n (lift p))
 
 -- the Daniell integral of the Borel measure `B`
-module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure (lemOf lem₁)) where
+module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
 
   open Simple (lemOf lem₁) B
   open Sf
@@ -440,4 +441,4 @@ module DaniellB (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelM
     L-sup = ≤-antisym sup≤ sup≥
 
 -- the fair coin
-module Daniell (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) = DaniellB lem₁ (BM.coinBM (lemOf lem₁))
+module Daniell (lem₁ : LEM₁) = DaniellB lem₁ (BM.coinBM (lemOf lem₁))

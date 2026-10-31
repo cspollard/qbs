@@ -16,6 +16,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; subst)
 
 open import QBS.Borel.Core using (Cantor; Pred)
+open import QBS.Classical using (LEM₀)
 
 tl : Cantor → Cantor
 tl x n = x (suc n)
@@ -180,7 +181,7 @@ Decreasing G = ∀ N x → eval (G (suc N)) x ≡ true → eval (G N) x ≡ true
 true≢false : true ≡ false → ⊥
 true≢false ()
 
-module Fan (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Fan (lem : LEM₀) where
 
   Bad : (ℕ → Cl) → Set
   Bad G = ∀ N → Ne (G N)

@@ -35,8 +35,9 @@ open import QBS.Analysis.CoinIntegral
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.Functional
+open import QBS.Classical using (LEM₁)
 
-module FairCoin (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module FairCoin (lem₁ : LEM₁) where
   private A = LowerRealsOmega (lemOf lem₁)
   module F = Functional lem₁ (BM.coinBM (lemOf lem₁))
   open Integration A

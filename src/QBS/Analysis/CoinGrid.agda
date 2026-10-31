@@ -33,6 +33,7 @@ open import QBS.Analysis.LowerRealsArch using (tp; tp-pos; nat-nonneg; ≤-+ʳ�
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinSimple
 open import QBS.Analysis.LevelSets
+open import QBS.Classical using (LEM₀)
 open Cut
 open _⊑_
 
@@ -91,7 +92,7 @@ th-zero k = *-zeroˡ (tp k)
 rC-th-suc : ∀ k a → rC (th k (suc a)) ⊑ rC (th k a) ⊕ rC (tp k)
 rC-th-suc k a = ⊑-trans (⊑-≋ (rC-cong (th-suc k a))) (rC-add-⊑ (th k a) (tp k))
 
-module Grid (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure lem) where
+module Grid (lem : LEM₀) (B : BM.BorelMeasure lem) where
   open Simple lem B
   open LevelSets lem using (Lvl; LS)
   open Sf

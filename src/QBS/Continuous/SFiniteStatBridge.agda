@@ -58,8 +58,9 @@ open import Categories.Functor using () renaming (id to idF)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
+open import QBS.Classical using (LEM₀)
 
-module SFiniteStatBridge (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SFiniteStatBridge (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)

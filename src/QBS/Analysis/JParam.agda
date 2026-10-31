@@ -20,8 +20,9 @@ open import QBS.Analysis.Param using (module Param)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Tonelli using (module Tonelli)
+open import QBS.Classical using (LEM₀)
 
-module JParam (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module JParam (lem : LEM₀) where
   open Lebesgue lem public
   open Meas lem
   open Tonelli lem using (Meas-J)

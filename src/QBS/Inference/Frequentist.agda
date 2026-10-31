@@ -24,6 +24,7 @@ open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.Estimator using (module Estimator)
+open import QBS.Classical using (LEM₁)
 
 ----------------------------------------------------------------------------
 -- statistics: ring terms in the observations
@@ -63,7 +64,7 @@ ssT n = nat n *ₜ sqT n +ₜ -ₜ (sumT n *ₜ sumT n)
 ----------------------------------------------------------------------------
 -- experiments and their inference quantities
 
-module Frequentist (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module Frequentist (lem₁ : LEM₁) where
   open import QBS.Analysis.CoinIntegral using (lemOf)
   open Lebesgue (lemOf lem₁) using (A)
   open Integration A using (Measure; IsProb)

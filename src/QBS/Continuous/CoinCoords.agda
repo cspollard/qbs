@@ -33,8 +33,9 @@ open import QBS.Borel.Core using (measurable-∘)
 open import QBS.Borel.Merge using (measurable-merge₁)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.CoinIndep
+open import QBS.Classical using (LEM₁)
 
-module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module CoinCoords (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J; J-cong; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas; Meas-pre; Meas-⊗; Meas-const; Meas-resp)
   open OmegaSemiring A using (_≈_; _*_; 1#; refl; sym; trans; *-cong; *-comm; *-identityʳ; *-identityˡ)

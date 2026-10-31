@@ -33,8 +33,9 @@ open import QBS.Analysis.Interleave
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
 open import QBS.Continuous.Sample using (evens; odds; merge-split)
 open import QBS.Continuous.FairCoin
+open import QBS.Classical using (LEM₁)
 
-module CoinIndep (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module CoinIndep (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   open FairCoin lem₁

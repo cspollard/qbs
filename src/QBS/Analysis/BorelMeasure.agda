@@ -20,8 +20,9 @@ open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Clopen using (leaf)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.CoinSets using (module CoinSets)
+open import QBS.Classical using (LEM₀)
 
-module BM (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module BM (lem : LEM₀) where
   A : OmegaSemiring (L.suc L.zero)
   A = LowerRealsOmega lem
   open OmegaSemiring A renaming (Carrier to ∣A∣)

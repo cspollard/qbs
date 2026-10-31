@@ -10,6 +10,7 @@ open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.LowerRealsMin using (lowerRealsMin)
 open import QBS.Analysis.Unbounded using (module Unbounded)
+open import QBS.Classical using (LEM₀)
 
-module LowerRealsUnbounded (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module LowerRealsUnbounded (lem : LEM₀) where
   open Unbounded (LowerRealsOmega lem) (lowerRealsArch lem) (lowerRealsMin lem) public

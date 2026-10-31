@@ -26,6 +26,7 @@ open import QBS.Model.Pairing
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.LowerReals
+open import QBS.Classical using (LEM₀)
 open Cut
 open _⊑_
 
@@ -47,7 +48,7 @@ enumQ-surj : ∀ q → Σ ℕ (λ k → enumQ k ≡ q)
 enumQ-surj (mkℚᵘ (+ a) b) = pair (pair 0 a) b , enumQ-pair 0 a b
 enumQ-surj (mkℚᵘ -[1+ a ] b) = pair (pair 1 a) b , enumQ-pair 1 a b
 
-module LevelSets (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module LevelSets (lem : LEM₀) where
   A : OmegaSemiring (L.suc L.zero)
   A = LowerRealsOmega lem
   open Measurable A using (Fun; ind; sumF; supF; complF)

@@ -28,8 +28,9 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Continuous.SubProb
 open import QBS.Continuous.Uniform using (module Uniform)
+open import QBS.Classical using (LEM₁)
 
-module SubModel (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module SubModel (lem₁ : LEM₁) where
   A = LowerRealsOmega (lemOf lem₁)
   open FairCoin lem₁ using (fairCoin)
   open Arch (lowerRealsArch (lemOf lem₁)) using (half) renaming (half+half to hh)

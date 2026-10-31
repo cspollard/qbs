@@ -44,8 +44,9 @@ open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Continuous.SubProb
 open import QBS.Continuous.SubModel using (module SubModel)
 open import QBS.Continuous.Uniform using (module Uniform)
+open import QBS.Classical using (LEM₁)
 
-module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformCDF (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)

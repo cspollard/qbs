@@ -20,8 +20,9 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
 open import QBS.Continuous.UniformInterval using (module UniformInterval)
 open import QBS.Inference.Frequentist
+open import QBS.Classical using (LEM₁)
 
-module UniformExperiment (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformExperiment (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
   open Bounded A using (Sg; _+S_; _*S_; -S_)
   open SignedIntegral (lemOf lem₁) using (E)

@@ -25,8 +25,9 @@ open import QBS.Analysis.Series
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinFacts
 open import QBS.Analysis.CoinSimple
+open import QBS.Classical using (LEM₀)
 
-module Cont (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure lem) where
+module Cont (lem : LEM₀) (B : BM.BorelMeasure lem) where
   open Simple lem B
   open OmegaSemiring A renaming (Carrier to ∣A∣; zero to zero-sr)
   open Series A

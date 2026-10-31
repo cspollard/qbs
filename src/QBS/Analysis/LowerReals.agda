@@ -283,8 +283,9 @@ union-lub c le = mk⊑ (λ q (n , m) → ap (le n) q m)
 -- classical part: subtraction below 1 and cancellation
 
 open import Data.Rational.Unnormalised.Base using (_+_)
+open import QBS.Classical using (LEM₀)
 
-module Classical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Classical (lem : LEM₀) where
 
   -- a bounded cut has an element within ε of its supremum
   near-sup : ∀ c {ε} → c ⊑ oneC → 0ℚᵘ < ε →
@@ -398,7 +399,7 @@ cutSemiring = record
       ; zeroˡ = ⊗-zeroˡ }
   }
 
-LowerRealsOmega : (∀ (P : Set) → P ⊎ (P → ⊥)) → OmegaSemiring (L.suc L.zero)
+LowerRealsOmega : LEM₀ → OmegaSemiring (L.suc L.zero)
 LowerRealsOmega lem = record
   { ordered = record
         { commutativeSemiring = cutSemiring

@@ -76,9 +76,10 @@ import Data.Nat.Properties as ℕP
 import Data.Unit.Base as U1
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 open import Data.Empty using (⊥-elim)
+open import QBS.Classical using (LEM₀)
 open Cut renaming (mem to memC; down to downC; open′ to openC; neg to negC)
 
-module SFiniteDecomp (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SFiniteDecomp (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)

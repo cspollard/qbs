@@ -22,8 +22,9 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Continuous.Sample using (S)
+open import QBS.Classical using (LEM₀)
 
-module Weights (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Weights (lem : LEM₀) where
   A = LowerRealsOmega lem
   open OmegaSemiring A using (_*_; 0#; 1#; setoid)
   open Meas lem

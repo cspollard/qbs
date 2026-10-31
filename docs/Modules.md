@@ -16,19 +16,20 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | module | lines | hyp | purpose |
 |---|---|---|---|
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
+| `QBS.Classical` | 23 |  | Excluded middle, named once. |
 | `QBS.Colimits` | 248 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.Complete` | 196 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
 | `QBS.Core` | 151 |  | Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site. |
 | `QBS.Exponential` | 139 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 135 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.CoinBias` | 78 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
-| `QBS.Inference.Frequentist` | 192 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
-| `QBS.Inference.UniformExperiment` | 63 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
+| `QBS.Inference.Frequentist` | 193 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
+| `QBS.Inference.UniformExperiment` | 64 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
-| `QBS.Limits` | 151 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 266 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Limits` | 144 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
+| `QBS.Probability` | 267 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 39 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
 | `QBS.Statistical` | 233 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
@@ -49,7 +50,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.ProbInstance` | 138 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 44 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
 | `QBS.Model.StatInstance` | 582 |  | The discrete measure monad is a model of `StatisticalInterface`. |
-| `QBS.Model.Strong` | 173 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
+| `QBS.Model.Strong` | 172 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 118 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
 | `QBS.Model.ViterbiModel` | 20 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
@@ -63,10 +64,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Borel.Category` | 36 |  | QBS over Cantor space: the category of quasi-Borel spaces (HKSV, Def. |
 | `QBS.Borel.Cons` | 21 |  | Prepending a bit to a sequence is a measurable map of Cantor space. |
 | `QBS.Borel.Core` | 134 |  | The Borel σ-algebra on Cantor space 2^ℕ, generated by the sets {x \| x n = b}, and the measurable maps Cantor → Cantor (Billingsley, *Probability and Measure*, §1–§2 and §13; the topology of 2^ℕ is generated by the sam... |
-| `QBS.Borel.Lead` | 158 | lem | A countable Borel partition of Cantor space with infinitely many pieces: `lead k` is the number of leading `true`s (0 for the constant `true` sequence, where it is a classical default). |
+| `QBS.Borel.Lead` | 159 | lem | A countable Borel partition of Cantor space with infinitely many pieces: `lead k` is the number of leading `true`s (0 for the constant `true` sequence, where it is a classical default). |
 | `QBS.Borel.Measure` | 65 |  | Measures on the Borel σ-algebra of Cantor space, valued in a complete semiring (Billingsley §2; Affeldt–Cohen–Saito, *Measure Construction by Extension in Dependent Type Theory with Application to Integration*, for th... |
 | `QBS.Borel.Merge` | 115 |  | Bit interleaving on Cantor space: merge a b takes its even bits from a and its odd bits from b. |
-| `QBS.Borel.PiLambda` | 238 | lem | Dynkin's π–λ theorem for the Borel σ-algebra of Cantor space (Billingsley, Thm. |
+| `QBS.Borel.PiLambda` | 239 | lem | Dynkin's π–λ theorem for the Borel σ-algebra of Cantor space (Billingsley, Thm. |
 | `QBS.Borel.Source` | 98 |  | Cantor space with its Borel σ-algebra is a random source: quasi-Borel spaces over it are quasi-Borel spaces in the sense of Heunen–Kammar–Staton–Yang (Def. |
 
 ## Analysis
@@ -75,99 +76,99 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 |---|---|---|---|
 | `QBS.Analysis.Archimedean` | 55 |  | The extra structure of the extended non-negative reals that the construction of Lebesgue-type measures needs, beyond `OmegaSemiring`: a half, Archimedean closure, cancellation for the order, and tails of convergent se... |
 | `QBS.Analysis.BinaryExpansion` | 109 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
-| `QBS.Analysis.BorelMeasure` | 51 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
+| `QBS.Analysis.BorelMeasure` | 52 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
 | `QBS.Analysis.BoundedCancel` | 58 |  | Cancellation of elements bounded by a natural number: `a ≤ n`, `a + x = a + y` give `x = y`. |
-| `QBS.Analysis.BoundedRing` | 170 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
-| `QBS.Analysis.Clopen` | 281 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
-| `QBS.Analysis.ClopenMeasure` | 111 |  | The dyadic premeasure on clopen sets (finite trees), with values in an `OmegaSemiring` that has a half: μ0 (leaf true) = 1, μ0 (leaf false) = 0, μ0 (split a b) = ½ (μ0 a + μ0 b). |
-| `QBS.Analysis.CoinCont` | 140 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
-| `QBS.Analysis.CoinFacts` | 91 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
-| `QBS.Analysis.CoinGrid` | 164 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
-| `QBS.Analysis.CoinIntegral` | 444 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
-| `QBS.Analysis.CoinSets` | 15 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
-| `QBS.Analysis.CoinSimple` | 140 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
-| `QBS.Analysis.CutSum` | 464 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
-| `QBS.Analysis.Density` | 143 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
+| `QBS.Analysis.BoundedRing` | 171 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
+| `QBS.Analysis.Clopen` | 282 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
+| `QBS.Analysis.ClopenMeasure` | 110 |  | The dyadic premeasure on clopen sets (finite trees), with values in an `OmegaSemiring` that has a half: μ0 (leaf true) = 1, μ0 (leaf false) = 0, μ0 (split a b) = ½ (μ0 a + μ0 b). |
+| `QBS.Analysis.CoinCont` | 141 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
+| `QBS.Analysis.CoinFacts` | 92 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
+| `QBS.Analysis.CoinGrid` | 165 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
+| `QBS.Analysis.CoinIntegral` | 445 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
+| `QBS.Analysis.CoinSets` | 16 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
+| `QBS.Analysis.CoinSimple` | 141 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
+| `QBS.Analysis.CutSum` | 465 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
+| `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.Estimator` | 271 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.ExpansionCons` | 68 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
-| `QBS.Analysis.ExtNat` | 330 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
-| `QBS.Analysis.Fun` | 261 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
+| `QBS.Analysis.ExtNat` | 331 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
+| `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 108 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
 | `QBS.Analysis.HalfOrder` | 66 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
-| `QBS.Analysis.Indicators` | 182 | lem | Indicator functions of Borel sets (classically decided), and the measure of a disjoint union as the supremum of the partial sums. |
+| `QBS.Analysis.Indicators` | 178 | lem | Indicator functions of Borel sets (classically decided), and the measure of a disjoint union as the supremum of the partial sums. |
 | `QBS.Analysis.Interleave` | 142 | lem | Interleaving of clopen trees: `interleave t₁ t₂` is the clopen set {merge a s \| a ∈ t₁, s ∈ t₂} (even coordinates read by t₁, odd ones by t₂), with its dyadic measure the product `μ0 t₁ * μ0 t₂`. |
-| `QBS.Analysis.JFubini` | 71 | lem | Fubini for unbounded integrands: the iterated integrals `J μ (r ↦ J ν (s ↦ Φ (merge r s)))` and `J ν (s ↦ J μ (r ↦ Φ (merge r s)))` of a threshold-measurable `Φ` agree. |
-| `QBS.Analysis.JParam` | 76 | lem | The unbounded integral `J` against push-forwards and against measures that agree on `Fun`, and parametric measurability of `r ↦ J (g r) (s ↦ φ (merge r s))` for a kernel `g`. |
-| `QBS.Analysis.JSum` | 114 | lem | The unbounded integral of countable sums and mixtures: `J (∑ aₙ) = ∑ J aₙ` (monotone convergence along the partial sums) and `J (∑ cₙ μₙ) = ∑ cₙ J μₙ`, and the geometric series `∑ hp (n+1) = 1`. |
-| `QBS.Analysis.Lebesgue` | 101 | lem | The integral of threshold-measurable functions R → [0,∞] (lower cuts) against a measure: `J m φ` is the unbounded integral `Iinf` of `Analysis/Unbounded`, with `FunInf φ` obtained from `Meas φ` (`Analysis/Meas`, `Anal... |
-| `QBS.Analysis.LevelSets` | 168 | lem | The strict level sets {x \| q < h x} of a measurable function h : R → [0,1] (values lower cuts) are Borel, by induction on the derivation that h is measurable. |
-| `QBS.Analysis.LowerInverse` | 259 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
-| `QBS.Analysis.LowerReals` | 423 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
-| `QBS.Analysis.LowerRealsArch` | 188 | lem | The `Arch` structure (a half, tolerances 2⁻ⁿ, Archimedean closure, order cancellation, tails) on the extended non-negative reals as lower cuts of the rationals. |
-| `QBS.Analysis.LowerRealsMin` | 104 | lem | The minimum of two lower cuts is their intersection: the `Min` structure on the extended non-negative reals as lower cuts of the rationals. |
-| `QBS.Analysis.Meas` | 122 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |
-| `QBS.Analysis.MeasFun` | 222 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
-| `QBS.Analysis.Measure` | 131 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
+| `QBS.Analysis.JFubini` | 72 | lem | Fubini for unbounded integrands: the iterated integrals `J μ (r ↦ J ν (s ↦ Φ (merge r s)))` and `J ν (s ↦ J μ (r ↦ Φ (merge r s)))` of a threshold-measurable `Φ` agree. |
+| `QBS.Analysis.JParam` | 77 | lem | The unbounded integral `J` against push-forwards and against measures that agree on `Fun`, and parametric measurability of `r ↦ J (g r) (s ↦ φ (merge r s))` for a kernel `g`. |
+| `QBS.Analysis.JSum` | 113 | lem | The unbounded integral of countable sums and mixtures: `J (∑ aₙ) = ∑ J aₙ` (monotone convergence along the partial sums) and `J (∑ cₙ μₙ) = ∑ cₙ J μₙ`, and the geometric series `∑ hp (n+1) = 1`. |
+| `QBS.Analysis.Lebesgue` | 102 | lem | The integral of threshold-measurable functions R → [0,∞] (lower cuts) against a measure: `J m φ` is the unbounded integral `Iinf` of `Analysis/Unbounded`, with `FunInf φ` obtained from `Meas φ` (`Analysis/Meas`, `Anal... |
+| `QBS.Analysis.LevelSets` | 169 | lem | The strict level sets {x \| q < h x} of a measurable function h : R → [0,1] (values lower cuts) are Borel, by induction on the derivation that h is measurable. |
+| `QBS.Analysis.LowerInverse` | 260 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
+| `QBS.Analysis.LowerReals` | 424 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
+| `QBS.Analysis.LowerRealsArch` | 189 | lem | The `Arch` structure (a half, tolerances 2⁻ⁿ, Archimedean closure, order cancellation, tails) on the extended non-negative reals as lower cuts of the rationals. |
+| `QBS.Analysis.LowerRealsMin` | 105 | lem | The minimum of two lower cuts is their intersection: the `Min` structure on the extended non-negative reals as lower cuts of the rationals. |
+| `QBS.Analysis.Meas` | 123 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |
+| `QBS.Analysis.MeasFun` | 223 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
+| `QBS.Analysis.Measure` | 132 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
 | `QBS.Analysis.Min` | 36 |  | A binary minimum on the values of an `OmegaSemiring`, with exactly the properties that the dyadic truncations `min (a, 2ᵏ) / 2ᵏ` of `Analysis/Unbounded` need: greatest lower bound, continuity along increasing suprema,... |
-| `QBS.Analysis.Mixture` | 93 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, as a functional: it is again a measure (with total mass at most 1). |
-| `QBS.Analysis.MixtureN` | 86 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |
+| `QBS.Analysis.Mixture` | 92 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, as a functional: it is again a measure (with total mass at most 1). |
+| `QBS.Analysis.MixtureN` | 83 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |
 | `QBS.Analysis.Omega` | 105 |  | Values for measures: a commutative semiring with a compatible partial order (for the extended non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences preserved by + and ×, and ca... |
-| `QBS.Analysis.OpenMeasure` | 273 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
-| `QBS.Analysis.Param` | 216 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
-| `QBS.Analysis.Pieces` | 157 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
+| `QBS.Analysis.OpenMeasure` | 274 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
+| `QBS.Analysis.Param` | 219 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
+| `QBS.Analysis.Pieces` | 158 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
 | `QBS.Analysis.RationalLemmas` | 255 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
-| `QBS.Analysis.Regular` | 312 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
+| `QBS.Analysis.Regular` | 313 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 115 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
-| `QBS.Analysis.Riesz` | 84 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |
+| `QBS.Analysis.Riesz` | 70 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |
 | `QBS.Analysis.SelfSimilar` | 154 |  | A self-similar distribution function is the identity. |
-| `QBS.Analysis.Series` | 458 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
+| `QBS.Analysis.Series` | 450 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
 | `QBS.Analysis.SeriesSup` | 62 |  | Countable sums commute with suprema of increasing sequences (monotone convergence for series). |
 | `QBS.Analysis.Signed` | 243 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
-| `QBS.Analysis.SignedIntegral` | 185 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
+| `QBS.Analysis.SignedIntegral` | 186 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
 | `QBS.Analysis.SignedOmega` | 48 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
-| `QBS.Analysis.Tensor` | 124 | lem | The product of two measures, integrated in either order, and Fubini's theorem: the two iterated integrals agree. |
-| `QBS.Analysis.Threshold` | 73 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
-| `QBS.Analysis.Tonelli` | 62 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |
+| `QBS.Analysis.Tensor` | 125 | lem | The product of two measures, integrated in either order, and Fubini's theorem: the two iterated integrals agree. |
+| `QBS.Analysis.Threshold` | 74 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
+| `QBS.Analysis.Tonelli` | 63 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |
 | `QBS.Analysis.Unbounded` | 442 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
-| `QBS.Analysis.UnboundedLowerReals` | 16 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
-| `QBS.Analysis.Uniqueness` | 118 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.Variance` | 251 | lem | Variance of a signed random variable (skeleton: holes first). |
+| `QBS.Analysis.UnboundedLowerReals` | 17 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
+| `QBS.Analysis.Uniqueness` | 117 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
+| `QBS.Analysis.Variance` | 252 | lem | Variance of a signed random variable (skeleton: holes first). |
 
 ## Continuous model
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS.Continuous.CoinCoords` | 198 | lem | Independent coordinates of the fair coin. |
-| `QBS.Continuous.CoinIndep` | 126 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
-| `QBS.Continuous.ExtNatModel` | 24 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
-| `QBS.Continuous.FairCoin` | 55 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
-| `QBS.Continuous.FirstBit` | 155 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
-| `QBS.Continuous.Monad` | 418 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
-| `QBS.Continuous.ProbInstance` | 133 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
-| `QBS.Continuous.RealModel` | 22 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
-| `QBS.Continuous.SFinite` | 360 | lem | The s-finite measure monad of the continuous model. |
+| `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
+| `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
+| `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
+| `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
+| `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
+| `QBS.Continuous.Monad` | 419 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
+| `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
+| `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
+| `QBS.Continuous.SFinite` | 361 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 252 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
-| `QBS.Continuous.SFiniteDecomp` | 456 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
-| `QBS.Continuous.SFiniteIncl` | 226 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
-| `QBS.Continuous.SFiniteMonad` | 298 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
+| `QBS.Continuous.SFiniteDecomp` | 457 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
+| `QBS.Continuous.SFiniteIncl` | 227 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
+| `QBS.Continuous.SFiniteMonad` | 299 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 510 | lem | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
-| `QBS.Continuous.SFiniteStat` | 182 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
-| `QBS.Continuous.SFiniteStatBridge` | 290 | lem | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
-| `QBS.Continuous.SFiniteStrong` | 179 | lem | Strength and commutativity of the s-finite measure monad. |
-| `QBS.Continuous.SFiniteSum` | 262 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
+| `QBS.Continuous.SFiniteStat` | 183 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
+| `QBS.Continuous.SFiniteStatBridge` | 291 | lem | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
+| `QBS.Continuous.SFiniteStrong` | 180 | lem | Strength and commutativity of the s-finite measure monad. |
+| `QBS.Continuous.SFiniteSum` | 263 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 185 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
-| `QBS.Continuous.SignedTests` | 86 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
-| `QBS.Continuous.Strong` | 162 | lem | Strength and commutativity of the continuous probability monad. |
-| `QBS.Continuous.SubModel` | 68 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
-| `QBS.Continuous.SubProb` | 97 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
-| `QBS.Continuous.Uniform` | 57 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
-| `QBS.Continuous.UniformCDF` | 193 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
-| `QBS.Continuous.UniformInterval` | 115 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
-| `QBS.Continuous.UniformMean` | 134 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½. |
-| `QBS.Continuous.UniformMoment` | 180 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
-| `QBS.Continuous.UniformSample` | 124 | lem | Estimation from independent uniform draws. |
-| `QBS.Continuous.UniformVariance` | 151 | lem | The variance of the uniform distribution. |
-| `QBS.Continuous.Weights` | 60 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
+| `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
+| `QBS.Continuous.Strong` | 163 | lem | Strength and commutativity of the continuous probability monad. |
+| `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
+| `QBS.Continuous.SubProb` | 96 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
+| `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
+| `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
+| `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
+| `QBS.Continuous.UniformMean` | 135 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½. |
+| `QBS.Continuous.UniformMoment` | 181 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
+| `QBS.Continuous.UniformSample` | 125 | lem | Estimation from independent uniform draws. |
+| `QBS.Continuous.UniformVariance` | 152 | lem | The variance of the uniform distribution. |
+| `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
 ## Examples
 
@@ -178,5 +179,5 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Example.HardConditioning` | 97 |  | Hard conditioning in the discrete model: restrict a sub-probability measure to the points where a Boolean observation holds (disintegration along a Boolean-valued function). |
 | `QBS.Example.Probability` | 86 | lem | Real probabilities with `do`-notation: the programs of `Example/Program.agda` over the additive semiring ([0,∞], +, ×) of lower cuts. |
 | `QBS.Example.Program` | 198 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |
-| `QBS.Example.Recipes` | 63 | lem | Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in ... |
+| `QBS.Example.Recipes` | 64 | lem | Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in ... |
 

@@ -21,10 +21,11 @@ open import QBS.Analysis.Fun
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsArch using (halfC; hf; 0<hf)
 open import QBS.Analysis.LevelSets
+open import QBS.Classical using (LEM₀)
 open Cut
 open _⊑_
 
-module Threshold (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Threshold (lem : LEM₀) where
   open LevelSets lem using (LS; Lvl; borel-prop)
   open Measurable (LowerRealsOmega lem) using (Fun)
 

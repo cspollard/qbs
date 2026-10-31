@@ -27,8 +27,9 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Continuous.Sample using (S)
+open import QBS.Classical using (LEM₀)
 
-module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SignedTests (lem : LEM₀) where
   open Lebesgue lem using (A; J; J-mono)
   open Meas lem using (Meas; Meas-ext; Meas-const; Meas-pre; Meas-glue)
   open Integration A using (Measure; IsProb)

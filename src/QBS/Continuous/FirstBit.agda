@@ -38,6 +38,7 @@ open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
 open import QBS.Analysis.CoinSets using (module CoinSets)
 open import QBS.Continuous.FairCoin
+open import QBS.Classical using (LEM₁)
 
 ----------------------------------------------------------------------------
 -- prepending a bit pulls cylinders back to cylinders
@@ -83,7 +84,7 @@ split-eval t t₁ t₂ h₁ h₂ x with x 0 in e
         go zero = e
         go (suc n) = ≡.refl
 
-module FirstBit (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module FirstBit (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)

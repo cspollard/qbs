@@ -24,8 +24,9 @@ open import QBS.Analysis.BinaryExpansion
 open import QBS.Continuous.Sample using (module UnitInterval; S)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.FairCoin
+open import QBS.Classical using (LEM₁)
 
-module Uniform (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module Uniform (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   open FairCoin lem₁ using (fairCoin)

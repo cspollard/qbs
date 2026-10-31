@@ -32,8 +32,9 @@ open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformMean using (module UniformMean)
 open import QBS.Continuous.UniformMoment using (module UniformMoment)
+open import QBS.Classical using (LEM₁)
 
-module UniformVariance (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformVariance (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J; J-fun; J-cong; J-irrel)
   open UniformMoment lem₁ using (e²; Meas-e²; Fun-e²; m; second-moment; m≤1)
   open SignedIntegral (lemOf lem₁)

@@ -26,8 +26,9 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
 open import QBS.Continuous.UniformSample using (module UniformSample)
+open import QBS.Classical using (LEM₁)
 
-module UniformInterval (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformInterval (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
   open UniformVariance lem₁ using (u; varU; pm; variance; mean-u)
   module US = UniformSample lem₁

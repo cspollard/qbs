@@ -33,8 +33,9 @@ open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
 open import QBS.Analysis.BinaryExpansion
 open import QBS.Continuous.FairCoin
+open import QBS.Classical using (LEM₁)
 
-module UniformMean (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
+module UniformMean (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)

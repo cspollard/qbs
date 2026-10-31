@@ -28,8 +28,9 @@ open import QBS.Analysis.CoinCont using (module Cont)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.CoinSimple using (module Simple)
 open import QBS.Analysis.CoinIntegral
+open import QBS.Classical using (LEM₁)
 
-module Functional (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.BorelMeasure (lemOf lem₁)) where
+module Functional (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
   open DaniellB lem₁ B
   open Simple (lemOf lem₁) B
   open Integration A

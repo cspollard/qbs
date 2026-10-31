@@ -24,8 +24,9 @@ open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators
 open import QBS.Analysis.Uniqueness
 open import QBS.Analysis.Param
+open import QBS.Classical using (LEM₀)
 
-module Tensor (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Tensor (A : OmegaSemiring (suc zero)) (lem : LEM₀) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Measurable A
   open Integration A

@@ -17,8 +17,9 @@ open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tensor using (module Tensor)
+open import QBS.Classical using (LEM₀)
 
-module JFubini (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module JFubini (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)

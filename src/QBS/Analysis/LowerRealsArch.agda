@@ -19,6 +19,7 @@ open Cut
 open _⊑_
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Archimedean
+open import QBS.Classical using (LEM₀)
 
 ----------------------------------------------------------------------------
 -- the rationals ½ⁿ
@@ -151,7 +152,7 @@ halfC-double = ≋-trans (qC-add 0<hf 0<hf) (qC-cong (pos+ 0<hf 0<hf) 0<1 hf+hf)
 ----------------------------------------------------------------------------
 -- the instance
 
-module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module _ (lem : LEM₀) where
   open Classical lem
 
   arch-⊑ : ∀ {x y} → (∀ n → x ⊑ y ⊕ hpC n) → x ⊑ y

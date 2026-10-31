@@ -104,6 +104,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality.Core using (subst)
+open import QBS.Classical using (LEM₀)
 
 infix 4 _⊑_
 data _⊑_ : ℕ∞ → ℕ∞ → Set where
@@ -183,7 +184,7 @@ cancel {fin (suc zero)} {∞} {∞} _ _ = refl
 cancel {fin (suc (suc a))} (fin⊑fin (ℕ.s≤s ()))
 cancel {∞} ()
 
-module Sups (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Sups (lem : LEM₀) where
 
   Inc : (ℕ → ℕ∞) → Set
   Inc c = ∀ n → c n ⊑ c (suc n)
@@ -248,7 +249,7 @@ import Algebra.Structures as AS
 open import Relation.Binary.PropositionalEquality.Properties using (isEquivalence)
 open import QBS.Analysis.Omega
 
-module Instance (ℓ : Level) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Instance (ℓ : Level) (lem : LEM₀) where
   private
     C = Lift ℓ ℕ∞
     _⊕_ _⊗_ : C → C → C

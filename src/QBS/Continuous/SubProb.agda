@@ -28,8 +28,9 @@ open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Continuous.Sample
 open import QBS.Continuous.Monad
 open import QBS.Continuous.Strong
+open import QBS.Classical using (LEM₀)
 
-module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Measurable A
   open Integration A

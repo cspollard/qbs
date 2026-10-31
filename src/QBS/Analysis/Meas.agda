@@ -26,10 +26,11 @@ open import QBS.Borel.Source using (R₁; downℕ) renaming (down to downR)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsMin using (_⊓_)
 open import QBS.Analysis.LevelSets using (enumQ; enumQ-surj; module LevelSets)
+open import QBS.Classical using (LEM₀)
 open Cut
 open _⊑_
 
-module Meas (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Meas (lem : LEM₀) where
   open LevelSets lem using (Lvl; borel-prop)
 
   Meas : (R₁ → Cut) → Set₁

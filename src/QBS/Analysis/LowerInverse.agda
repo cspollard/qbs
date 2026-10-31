@@ -136,8 +136,9 @@ le-of-scaled {q} {r} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s with ≤-or-> q (r * s
 -- the boundary of a bounded cut is approximated by its elements (classical)
 
 open import Data.Sum.Base using ()
+open import QBS.Classical using (LEM₀)
 
-module InvClassical (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module InvClassical (lem : LEM₀) where
   open import Data.Rational.Unnormalised.Solver using (module +-*-Solver)
   open +-*-Solver using (solve; _:+_; _:*_; :-_; _:=_; con)
 

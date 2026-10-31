@@ -74,8 +74,9 @@ open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
 import Categories.Category.Core as Cat
+open import QBS.Classical using (LEM₀)
 
-module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module SFiniteStat (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)

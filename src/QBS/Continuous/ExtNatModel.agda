@@ -15,8 +15,9 @@ open import QBS.IsQBSLike using (IsQBSLike)
 open import QBS.Borel.Source using (cantorSource)
 open import QBS.Analysis.ExtNat using (module Instance)
 open import QBS.Continuous.ProbInstance
+open import QBS.Classical using (LEM₀)
 
-module _ (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module _ (lem : LEM₀) where
   open ContinuousProb (Instance.ExtNatOmega (L.suc L.zero) lem) lem public
 
   extNatQBSLike : IsQBSLike (L.suc L.zero) (QBSCat cantorSource)

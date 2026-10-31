@@ -27,8 +27,9 @@ open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators
 open import QBS.Analysis.Series using (module Series)
+open import QBS.Classical using (LEM₀)
 
-module Param (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P → ⊥))
+module Param (A : OmegaSemiring (suc zero)) (lem : LEM₀)
              (m : Cantor → Cantor → Cantor) (m₁ : ∀ a → Measurable (m a))
              (rect : ∀ {U} → Cyl U → Rect m U) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)

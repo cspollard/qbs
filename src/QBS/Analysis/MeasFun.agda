@@ -26,6 +26,7 @@ open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsMin using (_⊓_)
 open import QBS.Analysis.LevelSets using (enumQ; enumQ-surj; module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)
+open import QBS.Classical using (LEM₀)
 open Cut
 open _⊑_
 
@@ -75,7 +76,7 @@ pick-nW q b (inj₁ p) (inj₂ lt) nw = ⊥-elim (nw (p , λ le → <-irrefl ≃
 pick-nW q b (inj₁ p) (inj₁ _) nw = ≡.refl
 pick-nW q b (inj₂ _) _ nw = ≡.refl
 
-module MeasFun (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module MeasFun (lem : LEM₀) where
   A = LowerRealsOmega lem
   open Measurable A using (Fun; supF; sumF; Fun-const; Fun-ext; module Mask)
   open Meas lem using (Meas; all-enum; imp-borel)

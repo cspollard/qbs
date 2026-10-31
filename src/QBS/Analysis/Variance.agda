@@ -25,6 +25,7 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Signed
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
+open import QBS.Classical using (LEM₀)
 
 -- the pointwise identity behind  (f − μ)² = f² − μ f − μ f + μ²,  over an abstract commutative semiring
 -- (a, b: parts of f; p, n: parts of μ)
@@ -130,7 +131,7 @@ module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) whe
       x4N = ≃-trans (solve 1 (λ μ → (μ :* μ :+ μ :* μ) :+ (μ :* μ :+ μ :* μ) := (μ :+ μ) :* (μ :+ μ)) ≃-refl μ)
                     (≃-trans (*S-cong hμ hμ) (*S-identityˡ 1S))
 
-module Variance (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
+module Variance (lem : LEM₀) where
   open Lebesgue lem
   open Meas lem
   open SignedIntegral lem

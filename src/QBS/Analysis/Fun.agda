@@ -25,6 +25,7 @@ open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁; down; downℕ)
 open import QBS.Analysis.Omega
+open import QBS.Classical using (LEM₀)
 
 module Measurable (A : OmegaSemiring (suc zero)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
@@ -68,7 +69,7 @@ module Measurable (A : OmegaSemiring (suc zero)) where
   Fun-pre (complF f q) mf = complF (Fun-pre f mf) (λ x → q _)
 
   -- measurable functions do not distinguish points that agree everywhere (classically: `ind` is stated relationally)
-  Fun-resp : (∀ (P : Set) → P ⊎ (P → ⊥)) → ∀ {h} → Fun h → ∀ {x y} → ≡._≗_ (lower x) (lower y) → h x ≈ h y
+  Fun-resp : LEM₀ → ∀ {h} → Fun h → ∀ {x y} → ≡._≗_ (lower x) (lower y) → h x ≈ h y
   Fun-resp lem (ind {U} c c≤1 bU e₀ e₁ b) {x} {y} e with lem (U (lower x))
   ... | inj₁ u = trans (e₀ x u) (sym (e₀ y (proj₁ (borel-≗ bU e) u)))
   ... | inj₂ nu = trans (e₁ x nu) (sym (e₁ y (λ v → nu (proj₂ (borel-≗ bU e) v))))
