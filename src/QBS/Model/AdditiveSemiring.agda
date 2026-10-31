@@ -25,11 +25,12 @@ open _⊑_
 open import QBS.Analysis.CutSum
 open Basic
 open import QBS.Model.Semiring
+open import QBS.Classical using (LEM)
 
 private
   ℓ₁ = L.suc L.zero
 
-module _ (lem₁ : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
+module _ (lem₁ : LEM ℓ₁) where
   private
     lem′ : ∀ (P : Set₁) → P ⊎ (P → E.⊥)
     lem′ P with lem₁ P

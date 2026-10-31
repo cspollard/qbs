@@ -13,7 +13,8 @@ open import QBS.IsStatisticalQBSLike using (IsStatisticalQBSLike)
 open import QBS.Model.DiscreteSource using (discreteSource)
 open import QBS.Model.ViterbiSemiring
 open import QBS.Model.Discrete
+open import QBS.Classical using (LEM)
 
-viterbiStatisticalQBSLike : (∀ (P : Set (L.suc L.zero)) → P ⊎ (P → ⊥ {L.suc L.zero})) →
+viterbiStatisticalQBSLike : LEM (L.suc L.zero) →
   IsStatisticalQBSLike (L.suc L.zero) (QBSCat (discreteSource (L.suc L.zero)))
 viterbiStatisticalQBSLike lem = discreteStatisticalQBSLike (viterbiNormalizable lem)

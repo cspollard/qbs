@@ -25,6 +25,7 @@ open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Example.Program
+open import QBS.Classical using (LEM)
 
 module Calculation {ℓ} (A : CompleteSemiring ℓ) (half : CompleteSemiring.Carrier A)
     (hh : CompleteSemiring._≈_ A (CompleteSemiring._+_ A half half) (CompleteSemiring.1# A)) where
@@ -74,7 +75,7 @@ module Calculation {ℓ} (A : CompleteSemiring ℓ) (half : CompleteSemiring.Car
 private
   ℓ₁ = L.suc L.zero
 
-module Additive (lem₁ : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
+module Additive (lem₁ : LEM ℓ₁) where
   private
     lemS : ∀ (P : Set) → P ⊎ (P → E.⊥)
     lemS P with lem₁ (L.Lift ℓ₁ P)

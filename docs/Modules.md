@@ -22,7 +22,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Core` | 151 |  | Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site. |
 | `QBS.Exponential` | 139 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 135 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
-| `QBS.Inference.CoinBias` | 78 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
+| `QBS.Inference.CoinBias` | 79 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
 | `QBS.Inference.Frequentist` | 193 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.UniformExperiment` | 64 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
@@ -38,10 +38,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS.Model.AdditiveModel` | 20 | lem | The discrete statistical model with additive real weights over [0,∞]: ordinary (countably additive) discrete measures with real-valued weights, with `normalize`. |
-| `QBS.Model.AdditiveSemiring` | 81 | lem | The additive extended non-negative reals ([0,∞], +, ×) as lower cuts of the rationals, as a normalisable complete semiring: sums over arbitrary index sets are genuine sums (finite sub-sums of distinct indices, see `An... |
-| `QBS.Model.BoolModel` | 20 | lem | The discrete statistical model with Boolean (possibilistic) weights: a concrete instance of `IsStatisticalQBSLike`, so the abstract interface and the discrete model are non-vacuous. |
-| `QBS.Model.BoolSemiring` | 141 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
+| `QBS.Model.AdditiveModel` | 21 | lem | The discrete statistical model with additive real weights over [0,∞]: ordinary (countably additive) discrete measures with real-valued weights, with `normalize`. |
+| `QBS.Model.AdditiveSemiring` | 82 | lem | The additive extended non-negative reals ([0,∞], +, ×) as lower cuts of the rationals, as a normalisable complete semiring: sums over arbitrary index sets are genuine sums (finite sub-sums of distinct indices, see `An... |
+| `QBS.Model.BoolModel` | 21 | lem | The discrete statistical model with Boolean (possibilistic) weights: a concrete instance of `IsStatisticalQBSLike`, so the abstract interface and the discrete model are non-vacuous. |
+| `QBS.Model.BoolSemiring` | 142 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
 | `QBS.Model.Cantor` | 47 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 25 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
 | `QBS.Model.DiscreteSource` | 51 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
@@ -53,8 +53,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Strong` | 172 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 118 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
-| `QBS.Model.ViterbiModel` | 20 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
-| `QBS.Model.ViterbiSemiring` | 187 | lem | The Viterbi semiring ([0,∞], max, ×) on lower cuts of the rationals as a normalisable complete semiring. |
+| `QBS.Model.ViterbiModel` | 21 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
+| `QBS.Model.ViterbiSemiring` | 188 | lem | The Viterbi semiring ([0,∞], max, ×) on lower cuts of the rationals as a normalisable complete semiring. |
 | `QBS.Model.WeightClasses` | 49 |  | The two weight classes: probability measures (total mass 1) and all measures. |
 
 ## Borel structure on Cantor space
@@ -132,7 +132,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Unbounded` | 442 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
 | `QBS.Analysis.UnboundedLowerReals` | 17 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 117 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.Variance` | 252 | lem | Variance of a signed random variable (skeleton: holes first). |
+| `QBS.Analysis.Variance` | 246 | lem | Variance of a signed random variable (skeleton: holes first). |
 
 ## Continuous model
 
@@ -177,7 +177,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Example.Bayes` | 58 |  | Bayes' rule for the discrete model, generic in the normalisable semiring. |
 | `QBS.Example.Conditioning` | 76 |  | Rejection-style conditioning with `do`-notation: the programs of `Example/Program.agda` over the sub-probability measures of `Model/SubProb.agda`, where `guard` discards runs and the missing mass is the probability of... |
 | `QBS.Example.HardConditioning` | 97 |  | Hard conditioning in the discrete model: restrict a sub-probability measure to the points where a Boolean observation holds (disintegration along a Boolean-valued function). |
-| `QBS.Example.Probability` | 86 | lem | Real probabilities with `do`-notation: the programs of `Example/Program.agda` over the additive semiring ([0,∞], +, ×) of lower cuts. |
-| `QBS.Example.Program` | 198 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |
+| `QBS.Example.Probability` | 87 | lem | Real probabilities with `do`-notation: the programs of `Example/Program.agda` over the additive semiring ([0,∞], +, ×) of lower cuts. |
+| `QBS.Example.Program` | 199 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |
 | `QBS.Example.Recipes` | 64 | lem | Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in ... |
 

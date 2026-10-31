@@ -32,6 +32,7 @@ open import QBS.Model.Sums
 open import QBS.Model.WeightClasses using (probClass)
 open import QBS.Model.Monad
 open import QBS.Model.BoolSemiring using (boolComplete)
+open import QBS.Classical using (LEM)
 
 -- `K` is the weight class (probability measures, or sub-probability measures); `ok1` says that a
 -- weight function of total mass 1 is admissible.
@@ -183,7 +184,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
 ----------------------------------------------------------------------------
 -- Boolean (possibilistic) instance: which outcomes are possible?
 
-module BoolDemo (lem : ∀ (P : Set) → P ⊎ (P → ⊥ {L.zero})) where
+module BoolDemo (lem : LEM L.zero) where
   open Programs (boolComplete L.zero lem) (probClass (boolComplete L.zero lem)) (λ p → p)
   open Flip (lift true) ≡.refl Bool true false _∧_
 

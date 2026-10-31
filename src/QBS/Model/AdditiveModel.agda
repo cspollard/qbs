@@ -13,7 +13,8 @@ open import QBS.IsStatisticalQBSLike using (IsStatisticalQBSLike)
 open import QBS.Model.DiscreteSource using (discreteSource)
 open import QBS.Model.AdditiveSemiring
 open import QBS.Model.Discrete
+open import QBS.Classical using (LEM)
 
-additiveStatisticalQBSLike : (∀ (P : Set (L.suc L.zero)) → P ⊎ (P → ⊥ {L.suc L.zero})) →
+additiveStatisticalQBSLike : LEM (L.suc L.zero) →
   IsStatisticalQBSLike (L.suc L.zero) (QBSCat (discreteSource (L.suc L.zero)))
 additiveStatisticalQBSLike lem = discreteStatisticalQBSLike (additiveNormalizable lem)

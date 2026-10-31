@@ -25,6 +25,7 @@ open Cut
 open _⊑_
 open import QBS.Model.Semiring
 import Algebra.Structures.Biased {A = Cut} _≋_ as Bi
+open import QBS.Classical using (LEM)
 
 private
   ℓ₁ = L.suc L.zero
@@ -87,7 +88,7 @@ viterbiSemiring = record
 ----------------------------------------------------------------------------
 -- arbitrary suprema, resized classically
 
-module _ (lem : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
+module _ (lem : LEM ℓ₁) where
   private
     dec : Set ℓ₁ → Bool
     dec P with lem P

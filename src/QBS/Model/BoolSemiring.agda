@@ -21,8 +21,9 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; 
 open import Relation.Binary.PropositionalEquality.Properties using (isEquivalence)
 
 open import QBS.Model.Semiring
+open import QBS.Classical using (LEM)
 
-module _ (ℓ : Level) (lem : ∀ (P : Set ℓ) → P ⊎ (P → ⊥ {ℓ})) where
+module _ (ℓ : Level) (lem : LEM ℓ) where
   private
     C = Lift ℓ Bool
     module S = CommutativeSemiring B.∨-∧-commutativeSemiring

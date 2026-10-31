@@ -285,19 +285,20 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
   `Riesz.Bridge` are gone (`Fun-fsum` became `Fun-psum`).  `Riesz.μ-⋃` is now just `I-⋃`.
 * **A.4 done.**  `I-cong` is a lemma in `Integration` (`I-mono` both ways, `≤-antisym`), with `m` still the first
   explicit argument; the field is dropped from all `Measure` instances (eight modules, ten records).
-* **A.6 done, partly.**  `swap`/`mid`/`swap3`/`swap*` in `JSum`, `MixtureN`, `Density`, `Model/Strong`,
+* **A.6 done.**  `swap`/`mid`/`swap3`/`swap*` in `JSum`, `MixtureN`, `Density`, `Model/Strong`,
   `SFiniteCommute`, `SFiniteNorm` are `Algebra.Properties.CommutativeSemigroup.x∙yz≈y∙xz` over
   `*-commutativeSemigroup`; `Series.+-interchange` and `ClopenMeasure.swap4` are `interchange` over
-  `+-commutativeSemigroup` (`swap4` is re-exported, `OpenMeasure` uses it).  Not done: `Variance`'s `(-x)·x`, which
-  is proved in the Grothendieck ring `Signed` via a solver on its parts, not by a `RingWithoutOne` lemma.
+  `+-commutativeSemigroup` (`swap4` is re-exported, `OpenMeasure` uses it).  `Variance.neg-mul` is `-‿distribˡ-*`
+  from `Algebra.Properties.Ring` on `Signed.signedRing`, and `AlgNeg` is gone.
 * **C.1 done.**  In `Probability`, `σ` is now the left strength and `τ` the right (`σ-unit`, `τ-point`, … swapped with
   them); `ψ` is documented as Kock's double strength.
 * **C.4 done.**  `Limits.EqS` is `On.setoid (Carrier X) proj₁`.
 * **D.1 done, alias only.**  New `QBS.Classical`: `LEM₀` (`Set`), `LEM₁` (`Set₁`, refuting into level-0 `⊥`) and
-  `LEM ℓ` (refuting into `⊥ {ℓ}`).  `LEM ℓ` at `ℓ = zero` is *not* `LEM₀`: Polymorphic `⊥` is `Lift ⊥`.  So the
-  `⊥ {L.zero}` hypothesis in `Example/Program.BoolDemo` and the `Set (L.suc L.zero)` hypotheses in
-  `Model/{Viterbi,Additive}Model` stay as written.  `dec`/`from-true`/`exfalso` in `BoolSemiring`/`ViterbiSemiring` are
-  untouched.
+  `LEM ℓ` (refuting into the level-polymorphic `⊥ {ℓ}`).  `LEM ℓ` at `ℓ = zero` is *not* `LEM₀`, because the
+  polymorphic `⊥` is `Lift ⊥`, so the three aliases are kept apart and each hypothesis keeps its original form.
+  `LEM ℓ` is used in `Model/{Bool,Additive,Viterbi}{Semiring,Model}`, `Example/{Program,Probability}` and
+  `Inference/CoinBias`.  Not touched: `dec`/`from-true`/`exfalso` in `BoolSemiring`/`ViterbiSemiring`, and the
+  decision *arguments* (`pick*`, `borel-const`), which are not hypotheses.
 * **E.3 done, partly.**  `Clopen`'s `∨-idʳ`/`∧-idʳ`/`∧-zeroʳ`/`∨-zeroʳ` and `¬true⇒false` are stdlib
   (`∨-identityʳ`, …, `¬-not`); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum`
   uses `[_,_]′`, `inj₁-injective`, `inj₂-injective`.  Not done: `Interleave.if-same`/`pick′-id`, because stdlib 2.3 has

@@ -13,7 +13,7 @@ import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_)
 open import Data.Empty using (⊥)
-open import Algebra using (CommutativeSemiring)
+open import Algebra using (CommutativeSemiring; CommutativeRing)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Source using (R₁)
@@ -39,14 +39,6 @@ module Alg {c ℓ} (S : CommutativeSemiring c ℓ) where
   expand-alg a b p n = solve 4 (λ a b p n →
     ((a :+ n) :* (a :+ n) :+ (b :+ p) :* (b :+ p)) :+ ((((a :* b :+ b :* a) :+ (n :* b :+ p :* a)) :+ (n :* b :+ p :* a)) :+ (p :* n :+ n :* p))
     := ((((a :* a :+ b :* b) :+ (n :* a :+ p :* b)) :+ (n :* a :+ p :* b)) :+ (p :* p :+ n :* n)) :+ ((a :+ n) :* (b :+ p) :+ (b :+ p) :* (a :+ n))) refl a b p n
-
--- (−x)·x = −(x·x) on the parts of x = p − n
-module AlgNeg {c ℓ} (S : CommutativeSemiring c ℓ) where
-  open CommutativeSemiring S
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default S
-
-  neg-mul-alg : ∀ p n → (n * p + p * n) + (p * p + n * n) + 0# ≈ (p * n + n * p) + (n * n + p * p) + 0#
-  neg-mul-alg p n = solve 2 (λ p n → (n :* p :+ p :* n) :+ (p :* p :+ n :* n) :+ con 0 := (p :* n :+ n :* p) :+ (n :* n :+ p :* p) :+ con 0) refl p n
 
 -- 12·(M − μ²) = 1 when 3M = 1 and 2μ = 1, in an abstract signed ring
 module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) where
@@ -230,8 +222,10 @@ module Variance (lem : LEM₀) where
         (+S-cong {E (F +SF S1)} {E F +S E S1} {E S1} {E S1} (E-+ F S1) ≃-refl))
       eK)
 
+  open import Algebra.Properties.Ring (CommutativeRing.ring signedRing) using (-‿distribˡ-*)
+
   neg-mul : ∀ x → (-S x) *S x ≃ -S (x *S x)
-  neg-mul x = mk≃ 0# (SubSemiring.Is-0 finite) (AlgNeg.neg-mul-alg (OmegaSemiring.commutativeSemiring A) (pos x) (neg x))
+  neg-mul x = ≃-sym (-‿distribˡ-* x x)
 
   -- everything abstract: the variance identity from the pointwise expansion
   var-gen : ∀ {m} (CC F S1 K : SF m) (t : Sg) →

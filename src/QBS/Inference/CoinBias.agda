@@ -24,6 +24,7 @@ open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Example.Program using (module Programs)
 open import QBS.Example.Bayes using (posteriorU; evidence; _·_; bayes-numerator)
+open import QBS.Classical using (LEM)
 
 module CoinBias {ℓ} (N : NormalizableSemiring ℓ) (half : NormalizableSemiring.Carrier N)
     (hh : NormalizableSemiring._≈_ N (NormalizableSemiring._+_ N half half) (NormalizableSemiring.1# N)) where
@@ -66,7 +67,7 @@ module CoinBias {ℓ} (N : NormalizableSemiring ℓ) (half : NormalizableSemirin
 private
   ℓ₁ = L.suc L.zero
 
-module Additive (lem₁ : ∀ (P : Set ℓ₁) → P ⊎ (P → ⊥ {ℓ₁})) where
+module Additive (lem₁ : LEM ℓ₁) where
   private
     lemS : ∀ (P : Set) → P ⊎ (P → E.⊥)
     lemS P with lem₁ (L.Lift ℓ₁ P)

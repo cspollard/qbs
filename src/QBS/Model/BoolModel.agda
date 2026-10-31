@@ -13,7 +13,8 @@ open import QBS.IsStatisticalQBSLike using (IsStatisticalQBSLike)
 open import QBS.Model.DiscreteSource using (discreteSource)
 open import QBS.Model.BoolSemiring
 open import QBS.Model.Discrete
+open import QBS.Classical using (LEM)
 
-boolStatisticalQBSLike : ∀ (ℓ : Level) → (∀ (P : Set ℓ) → P ⊎ (P → ⊥ {ℓ})) →
+boolStatisticalQBSLike : ∀ (ℓ : Level) → LEM ℓ →
   IsStatisticalQBSLike ℓ (QBSCat (discreteSource ℓ))
 boolStatisticalQBSLike ℓ lem = discreteStatisticalQBSLike (boolNormalizable ℓ lem)
