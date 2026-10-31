@@ -85,7 +85,6 @@ module SFiniteStat (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open Split funext
   open SFinite lem funext
   open WitM
   open SFiniteMonad lem funext

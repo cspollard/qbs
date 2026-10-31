@@ -84,7 +84,6 @@ module SFiniteNorm (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensi
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open Split funext
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   open SFinite lem funext

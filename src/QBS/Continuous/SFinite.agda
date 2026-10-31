@@ -48,7 +48,6 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
-  open Split funext
   open UnitInterval A lem using (AQ)
   open RandomSource S using () renaming (meas-id to measId)
   module C = Continuous A lem funext probClass
@@ -175,11 +174,43 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
              (C.mk-cong {XW X} (sec-random (a (ws (i r))) r) (sec-random (glueJ pi (λ n → a (ws n))) r)
                 (g (ws (i r)) r) (g-pr (ws (i r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
 
+  -- the weighted test function of a joint probe at the merged parameter
+  φJ : ∀ {X : QBS S} → Joint (XW X) → Hom S X WQ → R₁ → Cut
+  φJ a f k = proj₁ (map a ⟨$⟩ (evensR k , oddsR k)) * (map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k)))
+
+  -- a joint probe is random in the merged parameter
+  paJ : ∀ {X : QBS S} (a : Joint (XW X)) → Random (XW X) (λ k → map a ⟨$⟩ (evensR k , oddsR k))
+  paJ {X} a = map-random (_∘H_ S a fromH) {λ k → k} measId
+
+  abstract
+    mφJ : ∀ {X : QBS S} (a : Joint (XW X)) (f : Hom S X WQ) → Meas (φJ {X} a f)
+    mφJ {X} a f = Meas-⊗ {λ k → proj₁ (map a ⟨$⟩ (evensR k , oddsR k))}
+      {λ k → map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k))}
+      (proj₁ (paJ {X} a)) (map-random f {λ k → proj₂ (map a ⟨$⟩ (evensR k , oddsR k))} (proj₂ (paJ {X} a)))
+
+  -- the integral of a measure given by a section of a joint probe, as a parametric integral
+  secEq : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} (w : WitM {X} β) (f : Hom S X WQ) (r : R₁) →
+    ∫ᴹ {X} (β r) f ≈ J (g w r) (λ s → φJ {X} (a w) f (mergeR r s))
+      (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))
+  secEq {X} {β} w f r = trans (w-eq w r f)
+    (J-cong (g w r) {ψ {X} (kerP {X} (a w) (g w) (g-pr w) r) f} {λ s → φJ {X} (a w) f (mergeR r s)}
+      (mψ {X} (kerP {X} (a w) (g w) (g-pr w) r) f)
+      (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))
+      (λ s → *-cong (proj₁ (Func.cong (map (a w)) (R≈.sym (merge-evens r s) , R≈.sym (merge-odds r s))))
+                    (Func.cong (map f) (proj₂ (Func.cong (map (a w)) (R≈.sym (merge-evens r s) , R≈.sym (merge-odds r s)))))))
+
+  -- the integral against a random family of measures is measurable in the parameter
+  ∫ᴹ-Meas : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} (w : WitM {X} β) (f : Hom S X WQ) → Meas (λ r → ∫ᴹ {X} (β r) f)
+  ∫ᴹ-Meas {X} {β} w f = Meas-ext {λ r → J (g w r) (λ s → φJ {X} (a w) f (mergeR r s))
+          (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))}
+        {λ r → ∫ᴹ {X} (β r) f} (λ r → sym (secEq {X} {β} w f r))
+        (Meas-Jsec (g w) (g-ok w) {φJ {X} (a w) f} (mφJ {X} (a w) f))
+
   TQ : QBS S → QBS S
   TQ X .QBS.Carrier = PreMS X
   TQ X .QBS.Random = WitM {X}
   TQ X .QBS.random-resp = TQ-resp {X}
-  TQ X .QBS.random-cong {α} _ e = Setoid.reflexive (PreMS X) (≡.cong α e)
+  TQ X .QBS.random-cong {β} w e f = Meas-resp (∫ᴹ-Meas {X} {β} w f) (lower e)
   TQ X .QBS.const-random p = TQ-const {X} p
   TQ X .QBS.pre-random w mf = TQ-pre {X} w mf
   TQ X .QBS.glue-random pi β ws = TQ-glue {X} pi β ws
@@ -240,38 +271,10 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
   ----------------------------------------------------------------------------
   -- integration as a test function on measures
 
-  -- the weighted test function of a joint probe at the merged parameter
-  φJ : ∀ {X : QBS S} → Joint (XW X) → Hom S X WQ → R₁ → Cut
-  φJ a f k = proj₁ (map a ⟨$⟩ (evensR k , oddsR k)) * (map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k)))
-
-  -- a joint probe is random in the merged parameter
-  paJ : ∀ {X : QBS S} (a : Joint (XW X)) → Random (XW X) (λ k → map a ⟨$⟩ (evensR k , oddsR k))
-  paJ {X} a = map-random (_∘H_ S a fromH) {λ k → k} measId
-
-  abstract
-    mφJ : ∀ {X : QBS S} (a : Joint (XW X)) (f : Hom S X WQ) → Meas (φJ {X} a f)
-    mφJ {X} a f = Meas-⊗ {λ k → proj₁ (map a ⟨$⟩ (evensR k , oddsR k))}
-      {λ k → map f ⟨$⟩ proj₂ (map a ⟨$⟩ (evensR k , oddsR k))}
-      (proj₁ (paJ {X} a)) (map-random f {λ k → proj₂ (map a ⟨$⟩ (evensR k , oddsR k))} (proj₂ (paJ {X} a)))
-
-  -- the integral of a measure given by a section of a joint probe, as a parametric integral
-  secEq : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} (w : WitM {X} β) (f : Hom S X WQ) (r : R₁) →
-    ∫ᴹ {X} (β r) f ≈ J (g w r) (λ s → φJ {X} (a w) f (mergeR r s))
-      (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))
-  secEq {X} {β} w f r = trans (w-eq w r f)
-    (J-cong (g w r) {ψ {X} (kerP {X} (a w) (g w) (g-pr w) r) f} {λ s → φJ {X} (a w) f (mergeR r s)}
-      (mψ {X} (kerP {X} (a w) (g w) (g-pr w) r) f)
-      (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))
-      (λ s → *-cong (proj₁ (Func.cong (map (a w)) (≡.sym (merge-evens r s) , ≡.sym (merge-odds r s))))
-                    (Func.cong (map f) (proj₂ (Func.cong (map (a w)) (≡.sym (merge-evens r s) , ≡.sym (merge-odds r s)))))))
-
   ∫ᶠ : ∀ {X : QBS S} → Hom S X WQ → Hom S (TQ X) WQ
   ∫ᶠ {X} f = record
     { map = record { to = λ p → ∫ᴹ {X} p f ; cong = λ e → e f }
-    ; map-random = λ {β} w → Meas-ext {λ r → J (g w r) (λ s → φJ {X} (a w) f (mergeR r s))
-          (Meas-pre {φJ {X} (a w) f} {mergeR r} (mφJ {X} (a w) f) (measurable-merge₁ (lower r)))}
-        {λ r → ∫ᴹ {X} (β r) f} (λ r → sym (secEq {X} {β} w f r))
-        (Meas-Jsec (g w) (g-ok w) {φJ {X} (a w) f} (mφJ {X} (a w) f))
+    ; map-random = λ {β} w → ∫ᴹ-Meas {X} {β} w f
     }
 
   ----------------------------------------------------------------------------
@@ -303,9 +306,9 @@ module SFinite (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extensional
     ∫ᴹ-join-pt : ∀ {X : QBS S} (p : Pre (XW (TQ X))) (f : Hom S X WQ) (r s : R₁) → ψ {X} (joinPre {X} p) f (mergeR r s)
                  ≈ proj₁ (α p r) * ψ {X} (joinKer {X} p r) f s
     ∫ᴹ-join-pt {X} p f r s = trans
-      (Setoid.reflexive Aˢ (≡.cong₂ (λ r′ s′ → (proj₁ (α p r′) * proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′)))
-                                                * (map f ⟨$⟩ proj₂ (map (a (wmOf {X} p)) ⟨$⟩ (r′ , s′))))
-                                (merge-evens r s) (merge-odds r s)))
+      (*-cong (*-cong (proj₁ (random-cong (XW (TQ X)) (α-random p) (merge-evens r s)))
+                      (proj₁ (Func.cong (map (a (wmOf {X} p))) (merge-evens r s , merge-odds r s))))
+              (Func.cong (map f) (proj₂ (Func.cong (map (a (wmOf {X} p))) (merge-evens r s , merge-odds r s)))))
       (*-assoc _ _ _)
 
 

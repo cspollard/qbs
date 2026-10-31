@@ -26,7 +26,7 @@ open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.Variance using (module Variance)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Analysis.Signed using (SubSemiring)
-open import QBS.Continuous.Sample using (evens; odds; evensR; oddsR; mergeR; measurable-evens; measurable-odds; module Split)
+open import QBS.Continuous.Sample using (evens; odds; evensR; oddsR; mergeR; measurable-evens; measurable-odds; merge-evens; merge-odds)
 open import QBS.Analysis.JFubini using (module JFubini)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tensor using (module Tensor)
@@ -37,14 +37,13 @@ open import QBS.Continuous.CoinIndep
 
 module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
   open Lebesgue (lemOf lem₁) using (A; J; J-cong; J-irrel; J-scale)
-  open Meas (lemOf lem₁) using (Meas; Meas-pre; Meas-⊗; Meas-const)
+  open Meas (lemOf lem₁) using (Meas; Meas-pre; Meas-⊗; Meas-const; Meas-resp)
   open OmegaSemiring A using (_≈_; _*_; 1#; refl; sym; trans; *-cong; *-comm; *-identityʳ; *-identityˡ)
   open FairCoin lem₁ using (fairCoin)
   open CoinIndep lem₁ using (fairCoin-indep; fairCoin-prob)
   open JFubini (lemOf lem₁) using (J-tensor₁)
   open JParam (lemOf lem₁) using (J-agree)
   open Tensor A (lemOf lem₁) using (tensor₁)
-  open Split funext using (merge-evens; merge-odds)
   open SignedIntegral (lemOf lem₁) using (J-const)
 
   ≡⇒≈ : ∀ {a b} → a ≡.≡ b → a ≈ b
@@ -77,9 +76,8 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
   split-meas {φ} {ψ} p q = Meas-⊗ {λ r → φ (evensR r)} {λ r → ψ (oddsR r)} (pe {φ} p) (po {ψ} q)
 
   -- merging the two halves back together recovers both factors
-  split-merge : ∀ {φ ψ} r s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)) ≈ φ r * ψ s
-  split-merge {φ} {ψ} r s = trans (*-cong (≡⇒≈ (≡.cong φ (merge-evens r s))) refl)
-                                  (*-cong refl (≡⇒≈ (≡.cong ψ (merge-odds r s))))
+  split-merge : ∀ {φ ψ} → Meas φ → Meas ψ → ∀ r s → φ (evensR (mergeR r s)) * ψ (oddsR (mergeR r s)) ≈ φ r * ψ s
+  split-merge {φ} {ψ} p q r s = *-cong (Meas-resp p (lower (merge-evens r s))) (Meas-resp q (lower (merge-odds r s)))
 
   -- the inner integral: φ is constant in the inner variable
   split-inner : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) r →
@@ -87,7 +85,7 @@ module CoinCoords (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
       (Meas-pre {λ r′ → φ (evensR r′) * ψ (oddsR r′)} {mergeR r} (split-meas p q) (measurable-merge₁ (lower r)))
       ≈ φ r * J fairCoin ψ q
   split-inner {φ} {ψ} p q r =
-    trans (J-cong fairCoin _ (Meas-⊗ {λ _ → φ r} {ψ} (Meas-const (φ r)) q) (split-merge {φ} {ψ} r)) (J-scale fairCoin (φ r) {ψ} q)
+    trans (J-cong fairCoin _ (Meas-⊗ {λ _ → φ r} {ψ} (Meas-const (φ r)) q) (split-merge {φ} {ψ} p q r)) (J-scale fairCoin (φ r) {ψ} q)
 
   -- the outer integral of `φ · const`
   split-outer : ∀ {φ ψ} (p : Meas φ) (q : Meas ψ) →

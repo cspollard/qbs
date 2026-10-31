@@ -43,7 +43,6 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
   open Integration A
   open Indicators A lem
   open Tensor A lem
-  open Split funext
   open UnitInterval A lem
   open Continuous A lem funext K
   open QBS
@@ -149,8 +148,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) → P �
   hmerge : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Hom S (_×Q_ S X Y) AQ) (k r : R) →
     hF s t g (mergeR k r) ≈ proj₁ (map g ⟨$⟩ (α s k , α t r))
   hmerge {X} {Y} s t g k r = Func.cong (map g)
-    (Setoid.reflexive (Carrier X) (≡.cong (α s) (merge-evens k r)) ,
-     Setoid.reflexive (Carrier Y) (≡.cong (α t) (merge-odds k r)))
+    (random-cong X (α-random s) (merge-evens k r) , random-cong Y (α-random t) (merge-odds k r))
 
   commutative : Commutative braided strongMonad
   commutative = record { commutes = λ {X} {Y} (s , t) g →

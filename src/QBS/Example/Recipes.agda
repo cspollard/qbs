@@ -52,7 +52,7 @@ open import QBS.Continuous.Monad using (module Continuous)
 
 module UniformSetup (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Extensionality L.zero L.zero) where
   A = LowerRealsOmega (lemOf lem₁)                    -- values: [0,∞] as lower cuts of ℚ
-  open UnitInterval A lem public using (AQ)               -- the unit interval as a quasi-Borel space
+  open UnitInterval A (lemOf lem₁) public using (AQ)               -- the unit interval as a quasi-Borel space
   open Integration A using (probClass)
   open Continuous A (lemOf lem₁) funext probClass public using (∫)
   open OmegaSemiring A public using (_≈_)

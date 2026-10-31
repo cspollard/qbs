@@ -38,7 +38,6 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : âˆ€ (P : Set) â†
   open Integration A
   open Tensor A lem
   open Indicators A lem using (I-const)
-  open Split funext
   open Continuous A lem funext probClass
   open Strength A lem funext probClass using (strongMonad; commutative)
   open QBS

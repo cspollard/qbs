@@ -49,7 +49,7 @@ module UniformCDF (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (funext : Ex
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)
-  open UnitInterval A lem using (AQ)
+  open UnitInterval A (lemOf lem₁) using (AQ)
   open ContinuousSub A (lemOf lem₁) funext
   open SubModel lem₁ funext using (uniformSub)
   open OmegaSemiring A renaming (Carrier to ∣A∣)

@@ -31,7 +31,7 @@ open import QBS.Continuous.Sample using (S)
 
 module SignedTests (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   open Lebesgue lem using (A; J; J-mono)
-  open Meas lem using (Meas; Meas-ext; Meas-const; Meas-pre; Meas-glue)
+  open Meas lem using (Meas; Meas-ext; Meas-resp; Meas-const; Meas-pre; Meas-glue)
   open Integration A using (Measure; IsProb)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ) using (_≤_; ≤-trans; ≤-reflexive)
   open Bounded A using (nat; Bnd)
