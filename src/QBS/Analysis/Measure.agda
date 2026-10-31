@@ -27,7 +27,6 @@ module Integration (A : OmegaSemiring (suc zero)) where
   record Measure : Set₁ where
     field
       I : ∀ h → Fun h → ∣A∣
-      I-cong : ∀ {h h′} (e : ∀ x → h x ≈ h′ x) (f : Fun h) (f′ : Fun h′) → I h f ≈ I h′ f′
       I-mono : ∀ {h h′} (f : Fun h) (f′ : Fun h′) → (∀ x → h x ≤ h′ x) → I h f ≤ I h′ f′
       I-add : ∀ {h h₁ h₂} (f : Fun h) (f₁ : Fun h₁) (f₂ : Fun h₂) →
         (∀ x → h x ≈ h₁ x + h₂ x) → I h f ≈ I h₁ f₁ + I h₂ f₂
@@ -40,6 +39,11 @@ module Integration (A : OmegaSemiring (suc zero)) where
       I-sub : ∀ (f : Fun (const 1#)) → I (const 1#) f ≤ 1#
 
   open Measure public
+
+  -- `I` ignores the proof of measurability and respects pointwise equality: both follow from monotonicity
+  I-cong : ∀ (m : Measure) {h h′} (e : ∀ x → h x ≈ h′ x) (f : Fun h) (f′ : Fun h′) → I m h f ≈ I m h′ f′
+  I-cong m e f f′ = ≤-antisym (I-mono m f f′ (λ x → ≤-reflexive (e x)))
+                              (I-mono m f′ f (λ x → ≤-reflexive (sym (e x))))
 
   -- total mass
   mass : Measure → ∣A∣
@@ -55,7 +59,6 @@ module Integration (A : OmegaSemiring (suc zero)) where
   dirac : R → Measure
   dirac r₀ = record
     { I = λ h _ → h r₀
-    ; I-cong = λ e _ _ → e r₀
     ; I-mono = λ _ _ le → le r₀
     ; I-add = λ _ _ _ e → e r₀
     ; I-scale = λ c _ _ e → e r₀
@@ -69,7 +72,6 @@ module Integration (A : OmegaSemiring (suc zero)) where
   push : ∀ {f} → Measurable (down f) → Measure → Measure
   push {f} mf m = record
     { I = λ h fh → I m (h ∘ f) (Fun-pre fh mf)
-    ; I-cong = λ e fh fh′ → I-cong m (λ x → e (f x)) _ _
     ; I-mono = λ fh fh′ le → I-mono m _ _ (λ x → le (f x))
     ; I-add = λ fh f₁ f₂ e → I-add m _ _ _ (λ x → e (f x))
     ; I-scale = λ c fh fh′ e → I-scale m c _ _ (λ x → e (f x))
@@ -88,7 +90,6 @@ module Integration (A : OmegaSemiring (suc zero)) where
   bind : (m : Measure) (g : R → Measure) → KernelOk g → Measure
   bind m g kg = record
     { I = λ h fh → I m (λ r → I (g r) h fh) (kg fh)
-    ; I-cong = λ e fh fh′ → I-cong m (λ r → I-cong (g r) e fh fh′) _ _
     ; I-mono = λ fh fh′ le → I-mono m _ _ (λ r → I-mono (g r) fh fh′ le)
     ; I-add = λ fh f₁ f₂ e → I-add m _ _ _ (λ r → I-add (g r) fh f₁ f₂ e)
     ; I-scale = λ c fh fh′ e → I-scale m c _ _ (λ r → I-scale (g r) c fh fh′ e)

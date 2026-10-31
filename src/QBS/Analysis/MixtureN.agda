@@ -71,7 +71,6 @@ module MixtureN (A : OmegaSemiring (suc zero)) where
   mixN : ∀ (c : ℕ → ∣A∣) → ∑ᶠ c ≤ 1# → (ℕ → Measure) → Measure
   mixN c sub μ = record
     { I = λ h f → mixI c μ f
-    ; I-cong = λ e f f′ → ∑ᶠ-cong (λ n → *-cong refl (I-cong (μ n) e f f′))
     ; I-mono = mixN-mono c μ
     ; I-add = mixN-add c μ
     ; I-scale = mixN-scale c μ

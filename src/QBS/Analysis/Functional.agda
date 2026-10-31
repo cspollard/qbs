@@ -45,7 +45,6 @@ module Functional (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) (B : BM.Bore
   functional : Measure
   functional = record
     { I = λ h f → L h
-    ; I-cong = λ e f f′ → L-cong e
     ; I-mono = λ f f′ le → L-mono le
     ; I-add = λ {h} {h₁} {h₂} f f₁ f₂ e →
         Add.L-add {h} {h₁} {h₂} e (LS f₁) (LS f₂) (Fun-≤1 f₁) (Fun-≤1 f₂)

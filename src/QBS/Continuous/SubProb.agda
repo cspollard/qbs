@@ -45,7 +45,6 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) →
   zeroM : Measure
   zeroM = record
     { I = λ _ _ → 0#
-    ; I-cong = λ _ _ _ → refl
     ; I-mono = λ _ _ _ → ≤-refl
     ; I-add = λ _ _ _ _ → sym (+-identityˡ 0#)
     ; I-scale = λ c _ _ _ → sym (zeroʳ c)
@@ -57,7 +56,6 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) →
   scaleM : ∀ c → c ≤ 1# → Measure → Measure
   scaleM c c≤1 μ = record
     { I = λ h f → c * I μ h f
-    ; I-cong = λ e f f′ → *-cong refl (I-cong μ e f f′)
     ; I-mono = λ f f′ le → *-mono c (I-mono μ f f′ le)
     ; I-add = λ f f₁ f₂ e → trans (*-cong refl (I-add μ f f₁ f₂ e)) (distribˡ c _ _)
     ; I-scale = λ d f f′ e → trans (*-cong refl (I-scale μ d f f′ e))

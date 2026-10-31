@@ -85,7 +85,6 @@ module Restrict (A : OmegaSemiring (suc zero)) (lem : ∀ (P : Set) → P ⊎ (P
   restrictM : ∀ {U} → Borel U → Measure → Measure
   restrictM {U} bU m = record
     { I = λ h f → I m (λ x → χ U x * h x) (Fun-χ· bU f)
-    ; I-cong = λ e f f′ → I-cong m (λ x → *-cong refl (e x)) (Fun-χ· bU f) (Fun-χ· bU f′)
     ; I-mono = λ f f′ le → I-mono m (Fun-χ· bU f) (Fun-χ· bU f′) (χ-mono U le)
     ; I-add = λ f f₁ f₂ e → I-add m (Fun-χ· bU f) (Fun-χ· bU f₁) (Fun-χ· bU f₂)
         (λ x → trans (*-cong refl (e x)) (distribˡ _ _ _))

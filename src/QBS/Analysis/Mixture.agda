@@ -64,7 +64,6 @@ module Mixture (A : OmegaSemiring (suc zero)) (half : OmegaSemiring.Carrier A)
   mix : Measure → Measure → Measure
   mix m₁ m₂ = record
     { I = λ h f → half * I m₁ h f + half * I m₂ h f
-    ; I-cong = λ e f f′ → +-cong (*-cong refl (I-cong m₁ e f f′)) (*-cong refl (I-cong m₂ e f f′))
     ; I-mono = mix-mono m₁ m₂
     ; I-add = mix-add m₁ m₂
     ; I-scale = mix-scale m₁ m₂

@@ -35,7 +35,6 @@ module Riesz (lem₁ : ∀ (P : Set₁) → P ⊎ (P → ⊥)) where
   open Measurable A using (Fun; Fun-const)
   open Integration A
   open Indicators A (lemOf lem₁) using (χ; Fun-χ; χ-cong; χ-⊤; I-⋃; I-χ-⊥)
-  open Series A using (∑ᶠ; psum; psum-inc)
   open Uniqueness A (lemOf lem₁) using (agree-fun)
 
   -- a probability functional restricted to indicators is a Borel probability measure

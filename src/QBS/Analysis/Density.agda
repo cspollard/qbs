@@ -59,8 +59,6 @@ module Density (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) where
   densM : ∀ (m : Measure) (v : R₁ → Cut) (mv : Meas v) (d : Cut) → d * J m v mv ≤ 1# → Measure
   densM m v mv d bd = record
     { I = λ h f → d * J m (λ r → v r * h r) (Mvh {v} {h} mv f)
-    ; I-cong = λ {h} {h′} e f f′ → *-cong refl
-        (J-cong m (Mvh {v} {h} mv f) (Mvh {v} {h′} mv f′) (λ r → *-cong refl (e r)))
     ; I-mono = λ {h} {h′} f f′ le → *-mono d
         (J-mono m (Mvh {v} {h} mv f) (Mvh {v} {h′} mv f′) (λ r → *-mono (v r) (le r)))
     ; I-add = λ {h} {h₁} {h₂} f f₁ f₂ e →
