@@ -76,8 +76,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
               }
           ; map-random = λ p i → map-random (f i) p
           }
-      ; commute = λ {_} {f} {i} x → Setoid.refl (Carrier (P i))
-      ; unique = λ p x i → Setoid.sym (Carrier (P i)) (p x)
+      ; commute = λ {_} {f} {i} → Setoid.refl (Carrier (P i))
+      ; unique = λ p {x} i → Setoid.sym (Carrier (P i)) (p {i} {x})
       }
 
     -- Indexed coproduct: locally on a measurable countable partition, a
@@ -162,8 +162,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
               constₛ 0 , idx-const 0 , const (i , α , p) , λ _ → Setoid.refl ΣS
           }
       ; [_] = copairΣ
-      ; commute = λ {Y} {f} {i} x → Setoid.refl (Carrier Y)
-      ; unique = λ {Y} p → λ { (i , x) → Setoid.sym (Carrier Y) (p x) }
+      ; commute = λ {Y} {f} {i} → Setoid.refl (Carrier Y)
+      ; unique = λ {Y} p → λ { {i , x} → Setoid.sym (Carrier Y) (p {i} {x}) }
       }
 
   -- All small (co)limits, from indexed (co)products and (co)equalizers.

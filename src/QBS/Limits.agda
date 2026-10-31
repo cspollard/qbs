@@ -98,7 +98,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   terminal : Terminal (QBSCat S)
   terminal = record
     { ⊤ = 1Q
-    ; ⊤-is-terminal = record { ! = !Q ; !-unique = λ _ _ → refl }
+    ; ⊤-is-terminal = record { ! = !Q ; !-unique = λ _ → refl }
     }
 
   product : ∀ {X Y} → Product (QBSCat S) X Y
@@ -107,9 +107,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; π₁ = fstQ {X} {Y}
     ; π₂ = sndQ {X} {Y}
     ; ⟨_,_⟩ = λ f g → pairQ f g
-    ; project₁ = λ _ → Setoid.refl (Carrier X)
-    ; project₂ = λ _ → Setoid.refl (Carrier Y)
-    ; unique = λ p q x → Setoid.sym (Carrier X) (p x) , Setoid.sym (Carrier Y) (q x)
+    ; project₁ = Setoid.refl (Carrier X)
+    ; project₂ = Setoid.refl (Carrier Y)
+    ; unique = λ p q → Setoid.sym (Carrier X) p , Setoid.sym (Carrier Y) q
     }
 
   equalizer : ∀ {X Y} (f g : Hom S X Y) → Equalizer (QBSCat S) f g
@@ -120,16 +120,16 @@ module _ {ℓ} (S : RandomSource ℓ) where
         ; map-random = λ p → p
         }
     ; isEqualizer = record
-        { equality = λ x → proj₂ x
+        { equality = λ {x} → proj₂ x
         ; equalize = λ {_} {h} eq → record
             { map = record
-                { to = λ x → map h ⟨$⟩ x , eq x
+                { to = λ x → map h ⟨$⟩ x , eq {x}
                 ; cong = Func.cong (map h)
                 }
             ; map-random = map-random h
             }
-        ; universal = λ {_} {h} {eq} x → Setoid.refl (Carrier X)
-        ; unique = λ {_} {h} {i} {eq} p x → Setoid.sym (Carrier X) (p x)
+        ; universal = λ {_} {h} {eq} → Setoid.refl (Carrier X)
+        ; unique = λ {_} {h} {i} {eq} p → Setoid.sym (Carrier X) p
         }
     }
 

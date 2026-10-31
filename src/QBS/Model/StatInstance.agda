@@ -105,15 +105,15 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   inclN : NaturalTransformation MP.TF MA.TF
   inclN = record
     { η = inclH
-    ; commute = λ _ _ _ → Setoid.refl Aˢ
-    ; sym-commute = λ _ _ _ → Setoid.refl Aˢ
+    ; commute = λ _ {_} _ → Setoid.refl Aˢ
+    ; sym-commute = λ _ {_} _ → Setoid.refl Aˢ
     }
 
   inclusion : Monad⇒-id MA.TM MP.TM
   inclusion = record
     { α = inclN
-    ; unit-comp = λ _ _ → Setoid.refl Aˢ
-    ; mult-comp = λ {U} p f →
+    ; unit-comp = λ {_} {_} _ → Setoid.refl Aˢ
+    ; mult-comp = λ {U} {p} f →
         Setoid.trans Aˢ (MP.∫-join p f)
           (Setoid.sym Aˢ (MA.∫-join (forgetPre (MP.mapPre (inclH U) p)) f))
     }
@@ -430,14 +430,14 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     open Setoid Aˢ using () renaming (trans to infixr 5 _⟫_; sym to infix 8 ~_)
 
     zero-bind-law : ∀ (k : 𝟙 ⇒ᵏ M.F.F₀ 𝟙) → M.μ.η 𝟙 ∘ᵏ M.F.F₁ k ∘ᵏ constE zeroP ≈ᵏ constE zeroP
-    zero-bind-law k pt f =
+    zero-bind-law k {pt} f =
       ∫-join (mapPre k zeroP) f ⟫ ∑-zero _ (λ _ → zeroˡ _) ⟫ ~ ∫-zero f
 
     score-zero-law : scoreE ∘ᵏ constH 0# ≈ᵏ constE zeroP
-    score-zero-law pt f = ∫-score 0# f ⟫ zeroˡ _ ⟫ ~ ∫-zero f
+    score-zero-law {pt} f = ∫-score 0# f ⟫ zeroˡ _ ⟫ ~ ∫-zero f
 
     score-mul-law : ∀ (a b : 𝟙 ⇒ᵏ WQ) → scoreE ∘ᵏ mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ M.μ.η 𝟙 ∘ᵏ M.F.F₁ (scoreE ∘ᵏ b ∘ᵏ !) ∘ᵏ scoreE ∘ᵏ a
-    score-mul-law a b pt f =
+    score-mul-law a b {pt} f =
       let x = map a ⟨$⟩ pt
           y = map b ⟨$⟩ pt
           c = f ⟨$⟩ tt
@@ -447,7 +447,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
     bind-sumK-law : ∀ {X Y} (ks : ℕ → X ⇒ᵏ M.F.F₀ Y) (t : 𝟙 ⇒ᵏ M.F.F₀ X) →
       M.μ.η Y ∘ᵏ M.F.F₁ (sumKH ks) ∘ᵏ t ≈ᵏ sumE (λ n → M.μ.η Y ∘ᵏ M.F.F₁ (ks n) ∘ᵏ t)
-    bind-sumK-law {X} {Y} ks t pt f =
+    bind-sumK-law {X} {Y} ks t {pt} f =
       let p = map t ⟨$⟩ pt
       in ∫-join (mapPre (sumKH ks) p) f
          ⟫ ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-sum (λ n → map (ks n) ⟨$⟩ α p r) f))
@@ -456,24 +456,24 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
          ⟫ ~ (∫-sum (λ n → joinPre (mapPre (ks n) p)) f ⟫ ∑-cong (λ n → ∫-join (mapPre (ks (lower n)) p) f))
 
     score-one-law : scoreE ∘ᵏ constH 1# ≈ᵏ M.η.η 𝟙
-    score-one-law pt f = ∫-score 1# f ⟫ *-identityˡ _ ⟫ ~ ∫-η {1Q S} pt f
+    score-one-law {pt} f = ∫-score 1# f ⟫ *-identityˡ _ ⟫ ~ ∫-η {1Q S} pt f
 
     -- scaling a measure by a weight is a bind through `score`
     scale-def : ∀ {X} (a : 𝟙 ⇒ᵏ WQ) (t : 𝟙 ⇒ᵏ M.F.F₀ X) → scaleE a t ≈ᵏ M.μ.η X ∘ᵏ M.F.F₁ t ∘ᵏ scoreE ∘ᵏ a
-    scale-def {X} a t pt f =
+    scale-def {X} a t {pt} f =
       ∫-scale {X} (map a ⟨$⟩ pt) (map t ⟨$⟩ pt) f
       ⟫ ~ (∫-join (mapPre t (scoreP (map a ⟨$⟩ pt))) f ⟫ ∫-score (map a ⟨$⟩ pt) (Comp.function (map t) (∫ᶠ f)))
 
     sum-join-law : ∀ {X} (ts : ℕ → 𝟙 ⇒ᵏ M.F.F₀ (M.F.F₀ X)) → M.μ.η X ∘ᵏ sumE ts ≈ᵏ sumE (λ n → M.μ.η X ∘ᵏ ts n)
-    sum-join-law {X} ts pt f =
+    sum-join-law {X} ts {pt} f =
       let t = λ n → map (ts n) ⟨$⟩ tt
       in ∫-join (sumP t) f ⟫ ∫-sum t (∫ᶠ f) ⟫ ∑-cong (λ n → ~ ∫-join (t (lower n)) f) ⟫ ~ ∫-sum (λ n → joinPre (t n)) f
 
     normalize-prob-law : ∀ X → normH X ∘ᵏ Monad⇒-id.α.η inclusion X ≈ᵏ i₁
-    normalize-prob-law X p = normProb p (NormalizableSemiring.invertible? N (mass (forgetPre p)))
+    normalize-prob-law X {p} = normProb p (NormalizableSemiring.invertible? N (mass (forgetPre p)))
 
     normalize-zero-law : ∀ {X} (x : 𝟙 ⇒ᵏ X) → normH X ∘ᵏ M.F.F₁ x ∘ᵏ constE zeroP ≈ᵏ i₂
-    normalize-zero-law {X} x pt =
+    normalize-zero-law {X} x {pt} =
       normZero (mapPre x zeroP) (∑-zero _ (λ _ → refl))
       (NormalizableSemiring.invertible? N (mass (mapPre x zeroP)))
 
@@ -485,17 +485,17 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     ; mulW = mulH
     ; oneW = constH 1#
     ; zero⇒ = constH 0#
-    ; mul-assoc = λ a b c z → *-assoc _ _ _
-    ; mul-comm = λ a b z → *-comm _ _
-    ; mul-one = λ a z → *-identityʳ _
-    ; mul-zero = λ a z → zeroʳ _
+    ; mul-assoc = λ a b c {z} → *-assoc _ _ _
+    ; mul-comm = λ a b {z} → *-comm _ _
+    ; mul-one = λ a {z} → *-identityʳ _
+    ; mul-zero = λ a {z} → zeroʳ _
     }
 
   discreteMeasures : SubMonad (discreteProb A)
   discreteMeasures = record
     { commutativeMonad = record { strongMonad = SA.strongMonad ; commutative = SA.commutative }
     ; inclusion = inclusion
-    ; inclusion-strong = λ _ _ _ _ → Setoid.refl Aˢ
+    ; inclusion-strong = λ _ _ {_} _ → Setoid.refl Aˢ
     }
 
   discreteScore : Score discreteWeights discreteMeasures
@@ -511,9 +511,9 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   discreteSums : CountableSums discreteMeasures
   discreteSums = record
     { sumK = sumKH
-    ; sumK-point = λ ks x pt f → Setoid.refl Aˢ
+    ; sumK-point = λ ks x {pt} f → Setoid.refl Aˢ
     ; bind-sumK = bind-sumK-law
-    ; sum-nat = λ {X} {Y} f ts pt g →
+    ; sum-nat = λ {X} {Y} f ts {pt} g →
         Setoid.trans Aˢ (∫-sum (λ n → map (ts n) ⟨$⟩ tt) (Comp.function (map f) g))
           (Setoid.sym Aˢ (∫-sum (λ n → mapPre f (map (ts n) ⟨$⟩ tt)) g))
     ; sum-join = sum-join-law
@@ -546,19 +546,19 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
           μN = λ (n : ℕ) → dirac (lift n) , WeightClass.ok-dirac (probClass A) (lift n)
           D = λ (n : ℕ) → DS′.scaleM (wN n) (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n))
       in aN , wN , μN
-       , (λ pt f → ~
+       , (λ {pt} f → ~
            (sumM-∫ D fam
            (λ n f′ → ~ scale-def (wN n)
-           (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n)) tt f′) f
+           (Monad⇒-id.α.η inclusion X ∘ᵏ ProbabilityInterface.law (discreteProb A) (aN n) (μN n)) {tt} f′) f
                       ⟫ ∫-sum fam f ⟫ ∑-cong (λ n → ∫-scale (μ p n) (lawA (lower n)) f
                                        ⟫ *-cong refl (dirac-∑ n (λ k → f ⟨$⟩ α p k)))))
 
     normalize-scale-law : ∀ {X} (a b : 𝟙 ⇒ᵏ WQ) → mulH ∘ᵏ ⟨ a , b ⟩ ≈ᵏ constH 1# →
       ∀ (t : 𝟙 ⇒ᵏ M.F.F₀ X) → normH X ∘ᵏ DS′.scaleM a t ≈ᵏ normH X ∘ᵏ t
-    normalize-scale-law {X} a b hab t pt =
+    normalize-scale-law {X} a b hab t {pt} =
       Setoid.trans (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S)))
-        (Func.cong (map (normH X)) (λ f → ~ scale-def a t pt f))
-        (normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab pt) (map t ⟨$⟩ pt)
+        (Func.cong (map (normH X)) (λ f → ~ scale-def a t {pt} f))
+        (normScale (map a ⟨$⟩ pt) (map b ⟨$⟩ pt) (hab {pt}) (map t ⟨$⟩ pt)
           (NormalizableSemiring.invertible? N (mass (scaleP (map a ⟨$⟩ pt) (map t ⟨$⟩ pt))))
           (NormalizableSemiring.invertible? N (mass (map t ⟨$⟩ pt))))
 

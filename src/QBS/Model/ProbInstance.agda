@@ -90,14 +90,14 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     { Measure = Σ (R → ∣A∣) Ok
     ; pushforward = λ m (μ , ok) → push (λ r → map m ⟨$⟩ r) μ , ok-push _ ok
     ; measure = lawH (idH S)
-    ; measure-push = λ m (μ , ok) _ g → Setoid.sym Aˢ (push-∑ (λ r → map m ⟨$⟩ r) μ (λ k → g ⟨$⟩ k))
-    ; measure-total = λ (μ , ok) pt f →
+    ; measure-push = λ m (μ , ok) {_} g → Setoid.sym Aˢ (push-∑ (λ r → map m ⟨$⟩ r) μ (λ k → g ⟨$⟩ k))
+    ; measure-total = λ (μ , ok) {pt} f →
         Setoid.sym Aˢ (Setoid.trans Aˢ (∫-η {1Q S} pt f)
           (Setoid.sym Aˢ (trans (sym (∑-distribʳ μ (f ⟨$⟩ pt)))
             (trans (*-cong ok refl) (*-identityˡ _)))))
     ; law-surjective = λ {X} t →
         let p = map t ⟨$⟩ tt
-        in probe S (α-random p) , (μ p , μ-ok p) , (λ pt f → Setoid.refl Aˢ)
+        in probe S (α-random p) , (μ p , μ-ok p) , (λ {pt} f → Setoid.refl Aˢ)
     }
 
   discreteProbFubini : Fubini ℓ (ℛQ S) (cartesianClosed S) commutativeMonad discreteProbLaws
@@ -112,8 +112,8 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
                 ; cong = λ { (≡.refl , ≡.refl) → ≡.refl } }
             ; map-random = λ _ → tt }
         ; iso = record
-            { isoˡ = λ r → ≡.cong lift (pair-unpair (lower r))
-            ; isoʳ = λ { (r₁ , r₂) →
+            { isoˡ = λ {r} → ≡.cong lift (pair-unpair (lower r))
+            ; isoʳ = λ { {r₁ , r₂} →
                 ≡.cong (λ u → lift (proj₁ u)) (unpair-pair (lower r₁) (lower r₂))
                 , ≡.cong (λ u → lift (proj₂ u)) (unpair-pair (lower r₁) (lower r₂)) }
             }
@@ -122,7 +122,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
         tensorW μ ν
         , trans (cantor (λ a b → μ a * ν b))
             (trans (∑-prod μ ν) (trans (*-cong okμ okν) (*-identityˡ 1#)))
-    ; measure-tensor = λ (μ , okμ) (ν , okν) pt f →
+    ; measure-tensor = λ (μ , okμ) (ν , okν) {pt} f →
         Setoid.trans Aˢ (cantor (λ a b → (μ a * ν b) * (f ⟨$⟩ (a , b))))
           (Setoid.trans Aˢ (∑-cong (λ a → ∑-cong (λ b → *-assoc (μ a) (ν b) _)))
             (Setoid.trans Aˢ (∑-cong (λ a → ∑-scale (μ a) _))

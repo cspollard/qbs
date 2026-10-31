@@ -2,7 +2,7 @@
 
 -- The forgetful functor `QBSCat S → Setoids`.  It is faithful (a hom is its underlying setoid map plus a
 -- property), which is what makes QBS concrete: a subcategory of Setoids in the sense of `SubCategory`,
--- though not defined as one.  Kept apart from `QBS.Category` so that the modules importing the category
+-- though not defined as one (`QBS.Category.Concrete` proves the equivalence and the adjoints).  Kept apart from `QBS.Category` so that the modules importing the category
 -- do not also load agda-categories' `Setoids`.
 module QBS.Category.Forget where
 
@@ -26,8 +26,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; F₁ = map
     ; identity = λ {A} → Setoid.refl (Carrier A)
     ; homomorphism = λ {_} {_} {C} → Setoid.refl (Carrier C)
-    ; F-resp-≈ = λ p {x} → p x
+    ; F-resp-≈ = λ p → p
     }
 
   Forget-faithful : Faithful Forget
-  Forget-faithful eq x = eq {x}
+  Forget-faithful eq = eq

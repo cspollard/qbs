@@ -15,7 +15,7 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 - `glueₛ`, `constₛ`, `⇑`, `_∘ₛ_`, `ℕˢ` — gluing a family of setoid maps along an index map, constant maps, any function out of a `≡`-setoid, composition, discrete ℕ. `refineₛ j i` (in `NatPairing`) is the composite cover of `j` by the `i n`.
 
 ### `QBS.Category`, `QBS.Limits`, `QBS.Colimits`, `QBS.Complete`, `QBS.Exponential`
-- `QBSCat` — `QBSCat S`, the category (agda-categories `Category`); `QBS.Category.Forget`: `Forget` and `Forget-faithful`, the faithful forgetful functor to `Setoids`.
+- `QBSCat` — `QBSCat S`, the category (agda-categories `Category`); `QBS.Category.Forget`: `Forget` and `Forget-faithful`, the faithful forgetful functor to `Setoids`; `QBS.Category.Concrete`: `QBSSub` (the `SubCategory` of `Setoids` of probe-preserving maps) with the strong equivalence `QBS≃Sub`, the codiscrete and discrete QBS `CodiscQ`/`DiscQ`, the adjoint triple `Disc⊣Forget`, `Forget⊣Codisc`, and the preservation theorems `Forget-continuous`, `Forget-cocontinuous`, `Codisc-continuous`, `Disc-cocontinuous`.
 - `QBS.Exponential`: `cartesianClosed` — `CartesianClosed (QBSCat S)`; `QBS.Limits`: terminal object and products; `QBS.Colimits`: coproducts.
 - `QBS.Complete`: `countableProduct`, `countableCoproduct` — indexed products and coproducts.
 

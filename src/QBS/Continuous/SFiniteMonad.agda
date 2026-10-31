@@ -64,14 +64,14 @@ module SFiniteMonad (lem : LEM₀) where
   TF = record
     { F₀ = TQ
     ; F₁ = TH
-    ; identity = λ {X} p f → trans (∫ᴹ-map {X} {X} (idH S) p f) (∫ᴹ-cong {X} p (λ x → refl))
-    ; homomorphism = λ {X} {Y} {Z} {f} {h} p k →
+    ; identity = λ {X} {p} f → trans (∫ᴹ-map {X} {X} (idH S) p f) (∫ᴹ-cong {X} p (λ x → refl))
+    ; homomorphism = λ {X} {Y} {Z} {f} {h} {p} k →
         trans (∫ᴹ-map {X} {Z} (_∘H_ S h f) p k)
           (trans (∫ᴹ-cong {X} p (λ x → refl))
             (sym (trans (∫ᴹ-map {Y} {Z} h (mapM {X} {Y} f p) k) (∫ᴹ-map {X} {Y} f p (_∘H_ S k h)))))
-    ; F-resp-≈ = λ {X} {Y} {f} {h} e p k →
+    ; F-resp-≈ = λ {X} {Y} {f} {h} e {p} k →
         trans (∫ᴹ-map {X} {Y} f p k)
-          (trans (∫ᴹ-cong {X} p (λ x → Func.cong (map k) (e x))) (sym (∫ᴹ-map {X} {Y} h p k)))
+          (trans (∫ᴹ-cong {X} p (λ x → Func.cong (map k) (e {x}))) (sym (∫ᴹ-map {X} {Y} h p k)))
     }
 
   {-# INLINE TF #-}
@@ -265,17 +265,17 @@ module SFiniteMonad (lem : LEM₀) where
   ηN : NaturalTransformation idF TF
   ηN = record
     { η = ηM
-    ; commute = λ {X} {Y} f x h →
+    ; commute = λ {X} {Y} f {x} h →
         trans (∫ᴹ-η (map f ⟨$⟩ x) h) (sym (trans (∫ᴹ-map f (C.ηPre {XW X} (1# , x)) h) (∫ᴹ-η x (_∘H_ S h f))))
-    ; sym-commute = λ {X} {Y} f x h →
+    ; sym-commute = λ {X} {Y} f {x} h →
         trans (∫ᴹ-map f (C.ηPre {XW X} (1# , x)) h) (trans (∫ᴹ-η x (_∘H_ S h f)) (sym (∫ᴹ-η (map f ⟨$⟩ x) h)))
     }
 
   μN : NaturalTransformation TT TF
   μN = record
     { η = joinT
-    ; commute = λ {X} {Y} f p h → join-nat f p h
-    ; sym-commute = λ {X} {Y} f p h → sym (join-nat f p h)
+    ; commute = λ {X} {Y} f {p} h → join-nat f p h
+    ; sym-commute = λ {X} {Y} f {p} h → sym (join-nat f p h)
     }
 
   TM : Monad (QBSCat S)
@@ -283,10 +283,10 @@ module SFiniteMonad (lem : LEM₀) where
     { F = TF
     ; η = ηN
     ; μ = μN
-    ; assoc = λ {X} p f → join-assoc {X} p f
-    ; sym-assoc = λ {X} p f → sym (join-assoc {X} p f)
-    ; identityˡ = λ {X} p f → join-unitˡ p f
-    ; identityʳ = λ {X} p f → join-unitʳ p f
+    ; assoc = λ {X} {p} f → join-assoc {X} p f
+    ; sym-assoc = λ {X} {p} f → sym (join-assoc {X} p f)
+    ; identityˡ = λ {X} {p} f → join-unitˡ p f
+    ; identityʳ = λ {X} {p} f → join-unitʳ p f
     }
 
   {-# INLINE TM #-}

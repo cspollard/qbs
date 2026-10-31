@@ -22,16 +22,16 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; _≈_ = _≈H_ S
     ; id = idH S
     ; _∘_ = _∘H_ S
-    ; assoc = λ {_} {_} {_} {D} _ → Setoid.refl (Carrier D)
-    ; sym-assoc = λ {_} {_} {_} {D} _ → Setoid.refl (Carrier D)
-    ; identityˡ = λ {_} {B} _ → Setoid.refl (Carrier B)
-    ; identityʳ = λ {_} {B} _ → Setoid.refl (Carrier B)
-    ; identity² = λ {A} _ → Setoid.refl (Carrier A)
+    ; assoc = λ {_} {_} {_} {D} → Setoid.refl (Carrier D)
+    ; sym-assoc = λ {_} {_} {_} {D} → Setoid.refl (Carrier D)
+    ; identityˡ = λ {_} {B} → Setoid.refl (Carrier B)
+    ; identityʳ = λ {_} {B} → Setoid.refl (Carrier B)
+    ; identity² = λ {A} → Setoid.refl (Carrier A)
     ; equiv = λ {_} {B} → record
-        { refl = λ _ → Setoid.refl (Carrier B)
-        ; sym = λ p x → Setoid.sym (Carrier B) (p x)
-        ; trans = λ p q x → Setoid.trans (Carrier B) (p x) (q x)
+        { refl = Setoid.refl (Carrier B)
+        ; sym = λ p → Setoid.sym (Carrier B) p
+        ; trans = λ p q → Setoid.trans (Carrier B) p q
         }
-    ; ∘-resp-≈ = λ {_} {_} {C} {f} {h} p q x →
-        Setoid.trans (Carrier C) (p _) (Func.cong (map h) (q x))
+    ; ∘-resp-≈ = λ {_} {_} {C} {f} {h} p q →
+        Setoid.trans (Carrier C) p (Func.cong (map h) q)
     }

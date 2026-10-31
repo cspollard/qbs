@@ -113,27 +113,27 @@ module SFiniteStat (lem : LEM₀) where
     ; mulW = mulW
     ; oneW = oneW
     ; zero⇒ = zero⇒
-    ; mul-assoc = λ a b c z → *-assoc _ _ _
-    ; mul-comm = λ a b z → *-comm _ _
-    ; mul-one = λ a z → *-identityʳ _
-    ; mul-zero = λ a z → zeroʳ _
+    ; mul-assoc = λ a b c {z} → *-assoc _ _ _
+    ; mul-comm = λ a b {z} → *-comm _ _
+    ; mul-one = λ a {z} → *-identityʳ _
+    ; mul-zero = λ a {z} → zeroʳ _
     }
 
   continuousMeasures : SubMonad CP.continuousProb
   continuousMeasures = record
     { commutativeMonad = record { strongMonad = strongMonad ; commutative = commutative }
     ; inclusion = inclusion
-    ; inclusion-strong = λ A B p h → ι-strong (proj₁ p) (proj₂ p) h
+    ; inclusion-strong = λ A B {p} h → ι-strong (proj₁ p) (proj₂ p) h
     }
 
   continuousScore : Score continuousWeights continuousMeasures
   continuousScore = record
     { zero = zeroH
-    ; zero-bind = λ k pt h → zero-bind k pt h
+    ; zero-bind = λ k {pt} h → zero-bind k pt h
     ; score = scoreH
-    ; score-zero = λ pt h → refl
-    ; score-one = λ pt f → scoreOneG pt f
-    ; score-mul = λ a b pt h → scoreMulPre (map a ⟨$⟩ pt) b h
+    ; score-zero = λ {pt} h → refl
+    ; score-one = λ {pt} f → scoreOneG pt f
+    ; score-mul = λ a b {pt} h → scoreMulPre (map a ⟨$⟩ pt) b h
     }
 
   module ScI = Score continuousScore
@@ -148,16 +148,16 @@ module SFiniteStat (lem : LEM₀) where
 
   bindSumKI : ∀ {X Y : QBS S} (ks : ℕ → Hom S X (TQ Y)) (t : Hom S (1Q S) (TQ X)) →
     MI.μ.η Y ∘ᵏ MI.F.F₁ (sumK ks) ∘ᵏ t ≈ᵏ sumK {1Q S} {Y} (λ n → MI.μ.η Y ∘ᵏ MI.F.F₁ (ks n) ∘ᵏ t)
-  bindSumKI ks t pt f = bindSumKG ks t pt f
+  bindSumKI ks t {pt} f = bindSumKG ks t pt f
 
 
   continuousSums : CountableSums continuousMeasures
   continuousSums = record
     { sumK = sumK
-    ; sumK-point = λ {X} {Y} ks x pt f → sumKPointG {X} {Y} ks x pt f
+    ; sumK-point = λ {X} {Y} ks x {pt} f → sumKPointG {X} {Y} ks x pt f
     ; bind-sumK = bindSumKI
-    ; sum-nat = λ {X} {Y} f ts pt g → sumNatG {X} {Y} f ts pt g
-    ; sum-join = λ {X} ts pt h → sumJoinG {X} ts pt h
+    ; sum-nat = λ {X} {Y} f ts {pt} g → sumNatG {X} {Y} f ts pt g
+    ; sum-join = λ {X} ts {pt} h → sumJoinG {X} ts pt h
     }
 
   module SumI = CountableSums continuousSums
@@ -165,9 +165,9 @@ module SFiniteStat (lem : LEM₀) where
   continuousNormalization : Normalization (Cocartesian.Cocartesian.coproducts (cocartesian S)) continuousScore
   continuousNormalization = record
     { normalize = normH
-    ; normalize-prob = λ X p → normProb {X} p (invDec (massP {X} (ιPre {X} p)))
-    ; normalize-zero = λ x pt → normZeroGlobal x
-    ; normalize-scale = λ {X} a b hab t pt → normScaleD {X} a b (hab pt) t
+    ; normalize-prob = λ X {p} → normProb {X} p (invDec (massP {X} (ιPre {X} p)))
+    ; normalize-zero = λ x {pt} → normZeroGlobal x
+    ; normalize-scale = λ {X} a b hab t {pt} → normScaleD {X} a b (hab {pt}) t
     }
 
   continuousStat : StatisticalInterface (L.suc L.zero) (QBSCat S) (Probes.ℛQ S) (cartesianClosed S)
@@ -177,6 +177,7 @@ module SFiniteStat (lem : LEM₀) where
     ; measures = continuousMeasures
     ; scoring = continuousScore
     ; sums = continuousSums
-    ; scaled-laws = scaledLaws-derived
+    ; scaled-laws = λ t → let r = scaledLaws-derived t in
+        proj₁ r , proj₁ (proj₂ r) , proj₁ (proj₂ (proj₂ r)) , λ {pt} f → proj₂ (proj₂ (proj₂ r)) pt f
     ; normalization = continuousNormalization
     }

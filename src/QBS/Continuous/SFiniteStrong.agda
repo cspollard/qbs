@@ -149,25 +149,25 @@ module SFiniteStrong (lem : LEM₀) where
   strength = record
     { strengthen = record
         { η = λ { (X , Y) → σH X Y }
-        ; commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) (x , q) h →
+        ; commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) {(x , q)} h →
             σ-nat _ f₁ f₂ (λ x y → Setoid.refl (Carrier (_×Q_ S Y₁ Y₂))) x q h }
-        ; sym-commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) (x , q) h →
+        ; sym-commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) {(x , q)} h →
             sym (σ-nat _ f₁ f₂ (λ x y → Setoid.refl (Carrier (_×Q_ S Y₁ Y₂))) x q h) }
         }
-    ; identityˡ = λ {A} (t , q) h →
+    ; identityˡ = λ {A} {(t , q)} h →
         trans (∫ᴹ-map _ (σPre {_} {A} (t , q)) h)
           (trans (∫ᴹ-σ {_} {A} t q _) (∫ᴹ-cong q (λ y → refl)))
-    ; η-comm = λ {A} {B} (a , b) h →
+    ; η-comm = λ {A} {B} {(a , b)} h →
         trans (∫ᴹ-σ {A} {B} a (C.ηPre {XW B} (1# , b)) h)
           (trans (∫ᴹ-η {B} b (fixH {A} {B} a h)) (sym (∫ᴹ-η {_×Q_ S A B} (a , b) h)))
-    ; μ-η-comm = λ {A} {B} (a , P) g →
+    ; μ-η-comm = λ {A} {B} {(a , P)} g →
         trans (∫ᴹ-join (mapM (σH A B) (σPre {A} {TQ B} (a , P))) g)
           (trans (∫ᴹ-map (σH A B) (σPre {A} {TQ B} (a , P)) (∫ᶠ g))
             (trans (∫ᴹ-σ {A} {TQ B} a P (_∘H_ S (∫ᶠ g) (σH A B)))
               (trans (∫ᴹ-cong {TQ B} P {fixH {A} {TQ B} a (_∘H_ S (∫ᶠ g) (σH A B))} {∫ᶠ (fixH {A} {B} a g)}
                         (λ ν → ∫ᴹ-σ {A} {B} a ν g))
                 (sym (trans (∫ᴹ-σ {A} {B} a (joinPre P) g) (∫ᴹ-join P (fixH {A} {B} a g)))))))
-    ; strength-assoc = λ {A} {B} {C} ((x , y) , q) h →
+    ; strength-assoc = λ {A} {B} {C} {((x , y) , q)} h →
         trans (∫ᴹ-map _ (σPre {_} {C} ((x , y) , q)) h)
           (trans (∫ᴹ-σ {_×Q_ S A B} {C} (x , y) q _)
             (trans (∫ᴹ-cong q (λ z → refl))

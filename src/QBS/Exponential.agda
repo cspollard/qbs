@@ -72,7 +72,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           { Random = λ α → Σ (Hom S RX Y) λ u →
               ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α ⟨$⟩ r) ⟨$⟩ x)
           ; random-resp = λ e (u , q) →
-              u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r x)
+              u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r {x})
           ; const-random = λ φ →
               _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y)
           ; pre-random = λ (u , q) m →
@@ -89,7 +89,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { map = record
         { to = λ (φ , x) → map φ ⟨$⟩ x
         ; cong = λ { {φ , x} {φ′ , x′} (e , ex) →
-            Setoid.trans (Carrier Y) (e x) (Func.cong (map φ′) ex) }
+            Setoid.trans (Carrier Y) (e {x}) (Func.cong (map φ′) ex) }
         }
     ; map-random = λ {α} ((u , q) , pγ) →
         random-resp Y (λ r → q r (proj₂ (α ⟨$⟩ r)))
@@ -106,7 +106,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
                 }
             ; map-random = λ p → map-random g (const-random C c , p)
             }
-        ; cong = λ e x → Func.cong (map g) (e , Setoid.refl (Carrier X))
+        ; cong = λ e {x} → Func.cong (map g) (e , Setoid.refl (Carrier X))
         }
     ; map-random = λ {α} p →
         _∘H_ S g (pairQ S {_×Q_ S (ℛQ S) X} {C} {X} (_∘H_ S (probe S p) (fstQ S {ℛQ S} {X})) (sndQ S {ℛQ S} {X}))
@@ -116,7 +116,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   curry-uniq : ∀ {C X Y : QBS S} (f : Hom S C (_⇨Q_ X Y)) (g : Hom S (_×Q_ S C X) Y) →
     _≈H_ S (_∘H_ S evalQ (pairQ S (_∘H_ S f (fstQ S {C} {X})) (_∘H_ S (idH S) (sndQ S {C} {X})))) g →
     _≈H_ S f (curryQ g)
-  curry-uniq f g p c x = p (c , x)
+  curry-uniq f g p {c} {x} = p {c , x}
 
   cartesianClosed : CartesianClosed (QBSCat S)
   cartesianClosed = record
@@ -126,13 +126,13 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; π₁ = λ {A} {B} → fstQ S {A} {B}
     ; π₂ = λ {A} {B} → sndQ S {A} {B}
     ; ⟨_,_⟩ = λ f g → pairQ S f g
-    ; !-unique = λ _ _ → refl
-    ; π₁-comp = λ {_} {A} _ → Setoid.refl (Carrier A)
-    ; π₂-comp = λ {_} {_} {_} {B} {_} _ → Setoid.refl (Carrier B)
-    ; ⟨,⟩-unique = λ {_} {A} {B} p q x → Setoid.sym (Carrier A) (p x) , Setoid.sym (Carrier B) (q x)
+    ; !-unique = λ _ → refl
+    ; π₁-comp = λ {_} {A} → Setoid.refl (Carrier A)
+    ; π₂-comp = λ {_} {_} {_} {B} {_} → Setoid.refl (Carrier B)
+    ; ⟨,⟩-unique = λ {_} {A} {B} p q → Setoid.sym (Carrier A) p , Setoid.sym (Carrier B) q
     ; _^_ = λ B A → _⇨Q_ A B
     ; eval = λ {B} {A} → evalQ {A} {B}
     ; curry = λ {C} {A} {B} g → curryQ {C} {A} {B} g
-    ; eval-comp = λ {B} _ → Setoid.refl (Carrier B)
+    ; eval-comp = λ {B} → Setoid.refl (Carrier B)
     ; curry-unique = λ {C} {B} {A} {f} {g} → curry-uniq {C} {A} {B} f g
     }
