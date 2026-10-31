@@ -17,7 +17,7 @@ open import QBS.Probability using (ProbabilityInterface)
 open import QBS.Statistical
 
 module _ {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ C ℛ CC} {CP : Cocartesian.BinaryCoproducts C}
+    {P : ProbabilityInterface ℓ ℛ CC} {CP : Cocartesian.BinaryCoproducts C}
     (St : StatisticalInterface ℓ C ℛ CC P CP) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤)

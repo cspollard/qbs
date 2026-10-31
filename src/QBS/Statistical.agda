@@ -48,7 +48,7 @@ record CommutativeMonoidWithZero {o h e} (C : Category o h e) (CC : Canonical.Ca
 
 -- A commutative strong monad M of measures containing the probability monad as a sub-monad.
 record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    (P : ProbabilityInterface ℓ C ℛ CC) : Set (o ⊔ h ⊔ e) where
+    (P : ProbabilityInterface ℓ ℛ CC) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (_×_; ⟨_,_⟩; π₁; π₂)
   private
@@ -73,7 +73,7 @@ record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Ca
 -- conditioning `score : W ⇒ M 1`, multiplicative, with weight 0 the zero measure and weight 1 the unit.
 -- Scaling a global measure by a weight is derived: `scaleM a t` is `t` bound through `score a`.
 record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ C ℛ CC} (WM : CommutativeMonoidWithZero C CC) (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
+    {P : ProbabilityInterface ℓ ℛ CC} (WM : CommutativeMonoidWithZero C CC) (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤; _×_; !; ⟨_,_⟩; !-unique)
   open CommutativeMonoidWithZero WM
@@ -161,7 +161,7 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
 -- natural in the target, commute with join, and bind is linear in the kernel.  The sum of global measures
 -- `sumM` is the case of kernels out of 1.
 record CountableSums {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ C ℛ CC} (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
+    {P : ProbabilityInterface ℓ ℛ CC} (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤)
   private module M = Monad (CommutativeMonad.M (SubMonad.commutativeMonad SM))
@@ -182,7 +182,7 @@ record CountableSums {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC
 -- Normalisation M X ⇒ Prob X + 1: probabilities are fixed, the zero measure fails, and scaling by an
 -- invertible weight does not change the result; the degenerate infinite-mass case is left unspecified.
 record Normalization {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ C ℛ CC} (CP : Cocartesian.BinaryCoproducts C)
+    {P : ProbabilityInterface ℓ ℛ CC} (CP : Cocartesian.BinaryCoproducts C)
     {WM : CommutativeMonoidWithZero C CC} {SM : SubMonad P} (Sc : Score WM SM) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤; _×_; ⟨_,_⟩)
@@ -203,7 +203,7 @@ record Normalization {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC
 -- Prob, `score`, countable sums, under which every measure is a countable sum of scaled laws
 -- (s-finiteness), and normalisation.  The fields of the parts are re-exported.
 record StatisticalInterface {o h e} ℓ (C : Category o h e) (ℛ : Category.Obj C)
-    (CC : Canonical.CartesianClosed C) (P : ProbabilityInterface ℓ C ℛ CC)
+    (CC : Canonical.CartesianClosed C) (P : ProbabilityInterface ℓ ℛ CC)
     (CP : Cocartesian.BinaryCoproducts C) : Set (o ⊔ h ⊔ e ⊔ suc ℓ) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤)

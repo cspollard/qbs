@@ -85,7 +85,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
           }
       }
 
-  discreteProbLaws : ProbLaws ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) commutativeMonad
+  discreteProbLaws : ProbLaws ℓ (ℛQ S) (cartesianClosed S) commutativeMonad
   discreteProbLaws = record
     { Measure = Σ (R → ∣A∣) Ok
     ; pushforward = λ m (μ , ok) → push (λ r → map m ⟨$⟩ r) μ , ok-push _ ok
@@ -100,7 +100,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
         in probe S (α-random p) , (μ p , μ-ok p) , (λ pt f → Setoid.refl Aˢ)
     }
 
-  discreteProbFubini : Fubini ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) commutativeMonad discreteProbLaws
+  discreteProbFubini : Fubini ℓ (ℛQ S) (cartesianClosed S) commutativeMonad discreteProbLaws
   discreteProbFubini = record
     { split = record
         { from = record
@@ -129,7 +129,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
               (Setoid.sym Aˢ (∫-join _ f))))
     }
 
-  discreteProb : ProbabilityInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S)
+  discreteProb : ProbabilityInterface ℓ (ℛQ S) (cartesianClosed S)
   discreteProb = record
     { commutativeMonad = commutativeMonad
     ; laws = discreteProbLaws
