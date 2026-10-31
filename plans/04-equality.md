@@ -84,7 +84,7 @@ with `Meas : Func Rˢ Rˢ → Set ℓ` (measurable maps respect `≈ᴿ`), and p
 (closing the gap in point 2 above).  The stdlib's function setoid (`Function.Relation.Binary.Setoid.Equality`) and `_⇨_`
 supply composition and identity (`Core` already uses `Comp.function`/`Id.function` for `Hom`).
 `_≈H_` is unchanged, since `Hom` is already setoid-based.
-Compatibility: `Rˢ = ≡.setoid R` recovers the current definition, so `discreteSource` changes by one wrapper.
+No default: the core types and lemmas are parametric in `Rˢ` and never mention `≡` on `R`.  Only a concrete source chooses an equality: `discreteSource` supplies `≡.setoid (Lift ℓ ℕ)`, `cantorSource` supplies pointwise equality of sequences.
 
 **Stage 2 — Cantor with pointwise equality.**  `Borel/Core` defines `Cantor = ℕ → Bool` and its measurable maps
 as `Measurable f = ∀ n b → Borel (λ x → f x n ≡ b)`.  Change the carrier setoid to pointwise `≈` (Bool `≡-setoid`
@@ -131,5 +131,10 @@ canary modules, as for the `Probability` recast.
 * **Stage 1 is the real cost.** It changes `Measurability`, `Random` and `ℛQ`, so everything re-checks, and `lift`/`lower`
   boilerplate (R = `Lift ℓ ℕ`) is spread over ~40 files (`ExtNat` 37, `Param` 33, `BoolSemiring` 26, …); most of that is
   weight arithmetic that does not touch `R`'s equality.
-* **Go/no-go: go**, but stage 1 should keep `≡.setoid R` as the default so the discrete model is unchanged apart from one
-  wrapper, and only `cantorSource` adopts pointwise equality.
+* **Where the core mentions `≡` on `R`** (abstract layer, grepped): `Core:30` (`meas-ext`), `Probes` (`ℛQ.Carrier = setoid R`;
+  `probe`'s `cong = λ { refl → … }`) and `Exponential` (lines 44 and 58: `cong` and the `(refl , e)` match on `R × X`).  `Limits`,
+  `Colimits`, `Category`, `Probability`, `Statistical*` and the `Is*QBSLike` files do not.  `Complete` uses `≡` on *index types*
+  `I`, not on `R`; that is a separate question (indexed products over a bare `Set`) and is out of scope here.
+* **Go/no-go: go.**  The core becomes parametric in `Rˢ`, with no default; the discrete model supplies `≡.setoid (Lift ℓ ℕ)`
+  and Cantor supplies pointwise equality.  The core changes are the three files above; the instances change in their
+  `RandomSource` records and in the proofs that matched on `refl` over `R`.
