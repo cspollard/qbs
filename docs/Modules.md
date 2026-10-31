@@ -46,12 +46,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Cantor` | 47 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 25 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
 | `QBS.Model.DiscreteSource` | 51 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
-| `QBS.Model.Monad` | 305 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
+| `QBS.Model.Monad` | 310 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 138 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 44 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
 | `QBS.Model.StatInstance` | 582 |  | The discrete measure monad is a model of `StatisticalInterface`. |
-| `QBS.Model.Strong` | 172 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
+| `QBS.Model.Strong` | 170 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 118 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
 | `QBS.Model.ViterbiModel` | 21 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
@@ -176,7 +176,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | module | lines | hyp | purpose |
 |---|---|---|---|
 | `QBS.Example.Bayes` | 58 |  | Bayes' rule for the discrete model, generic in the normalisable semiring. |
-| `QBS.Example.Conditioning` | 76 |  | Rejection-style conditioning with `do`-notation: the programs of `Example/Program.agda` over the sub-probability measures of `Model/SubProb.agda`, where `guard` discards runs and the missing mass is the probability of... |
+| `QBS.Example.Conditioning` | 77 |  | Rejection-style conditioning with `do`-notation: the programs of `Example/Program.agda` over the sub-probability measures of `Model/SubProb.agda`, where `guard` discards runs and the missing mass is the probability of... |
 | `QBS.Example.HardConditioning` | 97 |  | Hard conditioning in the discrete model: restrict a sub-probability measure to the points where a Boolean observation holds (disintegration along a Boolean-valued function). |
 | `QBS.Example.Probability` | 87 | lem | Real probabilities with `do`-notation: the programs of `Example/Program.agda` over the additive semiring ([0,∞], +, ×) of lower cuts. |
 | `QBS.Example.Program` | 199 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |

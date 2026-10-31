@@ -384,3 +384,22 @@ well under the 20 % threshold and the work was left as is.
   `Measurability` as a one-object `SubCat` is untouched.
 * **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
   circular `Idx`/`QBS` dependency broken first and was not attempted.
+
+## Stage 1b outcome (item 4, second half; 7 and 8 still deferred)
+
+`make check` (142 files, 0 holes, 0 failures), `make longcheck` (36 flagged) and `make doccheck` pass.
+
+* **4b done.**  In `Model/Monad`, `Pre.α` and `Wit.wα` became `Func`s, `αₛ` and `wαₛ`; `α p r` and `wα w r` remain as
+  functions defined from them, so most uses are unchanged.  Constructing a `Pre` now takes a `Func` (`map f ∘ₛ αₛ p`,
+  `constₛ x`, `< constₛ x , αₛ q >ₛ`, `⇑ face`), and the discrete model's `random-cast`s are gone (22 sites before,
+  4 left, none in the discrete model).  Touched: `Model/{Monad,Strong,ProbInstance,StatInstance}`,
+  `Example/{Program,Bayes,HardConditioning,Conditioning}` and `Inference/Bayesian`.
+  Canaries, this branch vs `main` (two runs each): `Probability` 5.00 vs 5.25 s, `Exponential` 2.64 vs 2.81 s,
+  `Continuous/Monad` 3.43 vs 3.57 s, `SFiniteMonad` 4.55 vs 4.56 s, `SFiniteNorm` 6.45 vs 6.44 s,
+  `SFiniteStrong` 5.02 vs 5.04 s, `StatInstance` 9.32 vs 10.58 s (-12 %); memory unchanged.  The earlier 5 % Stage 1a
+  cost on `Exponential`/`Probability` shows up as drift here, so treat the small differences as noise.
+* **7 still deferred.**  Re-indexing `Wit` by a `Func Rˢ (PreS X)` would touch `Model/{Monad,Strong,StatInstance}`
+  and, through `WitM`, 16 files in all, to remove only the `β ⟨$⟩_` eta noise.  The plan's earlier attempt failed on
+  `C.PreS`/`PreMS` equalities, and B.1/B.2 can proceed without it by parameterising `Wit` by `_≋_` directly.  Revisit
+  only if B.2 needs it.
+* **8 still deferred**, as before.
