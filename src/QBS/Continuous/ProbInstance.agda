@@ -64,7 +64,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
 
     kerH : ∀ {X : QBS S} → Joint X → PM → Hom S (ℛQ S) (TQ X)
     kerH {X} γ νp@(ν , pν) = record
-      { map = record { to = kerPre γ νp ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
+      { map = record { to = kerPre γ νp ; cong = λ e f → I-cong ν (λ s → Func.cong (map f) (Func.cong (map γ) (e , R≈.refl))) _ _ }
       ; map-random = λ {β} mβ → record
           { a = _∘H_ S γ (pairH β mβ)
           ; g = λ _ → ν
@@ -76,7 +76,7 @@ module ContinuousProb (A : OmegaSemiring (L.suc L.zero)) (lem : ∀ (P : Set) �
       where
         pairH : ∀ (β : R → R) → Measurable (down β) → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) (_×Q_ S (ℛQ S) (ℛQ S))
         pairH β mβ = record
-          { map = record { to = λ p → β (proj₁ p) , proj₂ p ; cong = λ { (≡.refl , ≡.refl) → ≡.refl , ≡.refl } }
+          { map = record { to = λ p → β (proj₁ p) , proj₂ p ; cong = λ (e₁ , e₂) → lift (measurable-≗ {down β} mβ (lower e₁)) , e₂ }
           ; map-random = λ {γ′} (m₁ , m₂) → measurable-∘ m₁ mβ , m₂
           }
 

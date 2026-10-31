@@ -99,8 +99,7 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
     kK′ : KernelOk K′
     kK′ {h} fh = Fun-ext
       (λ k → I-cong (g w₂ k)
-               (λ t → Setoid.reflexive Aˢ (≡.cong h
-                  (≡.cong₂ mergeR (≡.cong oddsR (merge-evens k t)) (merge-odds k t)))) _ _)
+               (λ t → Fun-resp lem fh (lower (mergeR-cong (oddsR-cong (merge-evens k t)) (merge-odds k t)))) _ _)
       (P₁.PF (g w₂) (g-ok w₂) {λ x → h (φ x)} (Fun-pre {h} {φ} fh mφ))
       where
         φ : R₁ → R₁
@@ -130,7 +129,10 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
       { map = record
           { to = λ p → let k = mergeR (proj₁ p) (evensR (proj₂ p)) ; u = oddsR (proj₂ p) in
               Ww k * proj₁ (map a₂ ⟨$⟩ (k , u)) , proj₂ (map a₂ ⟨$⟩ (k , u))
-          ; cong = λ { (≡.refl , ≡.refl) → Setoid.refl (Carrier (XW X)) } }
+          ; cong = λ (e₁ , e₂) →
+              let ek = mergeR-cong e₁ (evensR-cong e₂)
+                  ca = Func.cong (map a₂) (ek , oddsR-cong e₂)
+              in *-cong (proj₁ (Func.cong (map (a w)) (evensR-cong ek , oddsR-cong ek))) (proj₁ ca) , proj₂ ca }
       ; map-random = λ {γ} (m₁ , m₂) →
           let mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
               mτ = measurable-∘ m₂ measurable-odds
@@ -167,16 +169,25 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
       ptt : ∀ r s t → ψ {X} (KP r) f (mergeR (oddsR (mergeR r s)) t)
                       ≈ Ww (mergeR r s) * φJ {X} a₂ f (mergeR (mergeR r s) t)
       ptt r s t = trans
-        (Setoid.reflexive Aˢ (≡.cong₂ Gq
-          (≡.trans (≡.cong (mergeR r) (merge-evens (oddsR (mergeR r s)) t)) (≡.cong (mergeR r) (merge-odds r s)))
-          (merge-odds (oddsR (mergeR r s)) t)))
+        (Gq-cong (R≈.trans (mergeR-cong (R≈.refl {r}) (merge-evens (oddsR (mergeR r s)) t))
+                           (mergeR-cong (R≈.refl {r}) (merge-odds r s)))
+                 (merge-odds (oddsR (mergeR r s)) t))
         (trans (*-assoc _ _ _)
-          (*-cong refl (sym (Setoid.reflexive Aˢ (≡.cong₂ Hq (merge-evens (mergeR r s) t) (merge-odds (mergeR r s) t))))))
+          (*-cong refl (sym (Hq-cong (merge-evens (mergeR r s) t) (merge-odds (mergeR r s) t)))))
         where
           Gq : R₁ → R₁ → Cut
           Gq k u = (Ww k * proj₁ (map a₂ ⟨$⟩ (k , u))) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
           Hq : R₁ → R₁ → Cut
           Hq k u = proj₁ (map a₂ ⟨$⟩ (k , u)) * (map f ⟨$⟩ proj₂ (map a₂ ⟨$⟩ (k , u)))
+
+          Gq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Gq k u ≈ Gq k′ u′
+          Gq-cong ek eu =
+            let ca = Func.cong (map a₂) (ek , eu)
+            in *-cong (*-cong (proj₁ (Func.cong (map (a w)) (evensR-cong ek , oddsR-cong ek))) (proj₁ ca))
+                      (Func.cong (map f) (proj₂ ca))
+
+          Hq-cong : ∀ {k k′ u u′} → k R≈.≈ k′ → u R≈.≈ u′ → Hq k u ≈ Hq k′ u′
+          Hq-cong ek eu = let ca = Func.cong (map a₂) (ek , eu) in *-cong (proj₁ ca) (Func.cong (map f) (proj₂ ca))
 
       -- the right-hand side as an integral over r
       stepC : ∀ r → ∫ᴹ {X} (KP r) f ≈ J (g w r) (Bf r) (mBf r)
@@ -204,8 +215,8 @@ module SFiniteMonad (lem : ∀ (P : Set) → P ⊎ (P → ⊥)) (funext : Extens
       stepA r = trans (∫ᴹ-join {X} (β r) f) (trans (w-eq w r (∫ᶠ {X} f))
         (J-cong (g w r) {ψ {TQ X} (kerP {TQ X} (a w) (g w) (g-pr w) r) (∫ᶠ {X} f)} {Bf r}
           (mψ {TQ X} (kerP {TQ X} (a w) (g w) (g-pr w) r) (∫ᶠ {X} f)) (mBf r)
-          (λ s → *-cong (proj₁ (Func.cong (map (a w)) (≡.sym (merge-evens r s) , ≡.sym (merge-odds r s))))
-                   (trans (proj₂ (Func.cong (map (a w)) (≡.sym (merge-evens r s) , ≡.sym (merge-odds r s))) f)
+          (λ s → *-cong (proj₁ (Func.cong (map (a w)) (R≈.sym (merge-evens r s) , R≈.sym (merge-odds r s))))
+                   (trans (proj₂ (Func.cong (map (a w)) (R≈.sym (merge-evens r s) , R≈.sym (merge-odds r s))) f)
                           (secEq {X} {νw} w₂ f (mergeR r s))))))
 
     eq′ : ∀ r → _≈ᴹ_ {X} (joinPre {X} (β r)) (kerP {X} a′ g′ gpr′ r)
