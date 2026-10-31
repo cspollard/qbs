@@ -10,6 +10,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; <_,_>ₛ)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
@@ -44,8 +45,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (_×Q_ S X Y)
   σPre {X} {Y} (x , q) =
-    mk (λ r → x , α q r)
-      (random-cast X (λ _ → ≡.refl) (QBS.const-random X x) , random-cast Y (λ _ → ≡.refl) (α-random q))
+    mk < constₛ x , αₛ q >ₛ (QBS.const-random X x , α-random q)
       (μ q) (μ-ok q)
 
   private
@@ -75,10 +75,8 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
                 (Func.cong f (ex , Setoid.refl (Carrier Y)))))
         }
     ; map-random = λ {β} (pb , w) → record
-        { wα = λ k → B (β ⟨$⟩_) w (unpairᴺ (lower k))
-        ; wα-random =
-            random-cast X (λ _ → ≡.refl) (QBS.pre-random X {f = ⇑ ιR} pb tt) ,
-            random-cast Y (λ _ → ≡.refl) (QBS.pre-random Y {f = ⇑ ρ} (wα-random w) tt)
+        { wαₛ = < (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρ >ₛ
+        ; wα-random = QBS.pre-random X {f = ⇑ ιR} pb tt , QBS.pre-random Y {f = ⇑ ρ} (wα-random w) tt
         ; wg = λ r → push (φ (lower r)) (wg w r)
         ; wg-ok = λ r → ok-push (φ (lower r)) (wg-ok w r)
         ; w-eq = λ r f →

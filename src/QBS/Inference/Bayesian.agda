@@ -114,7 +114,7 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
     posterior-exchangeable : ∀ (prior : Pre Θ) xs ys → successes xs ≡ successes ys → failures xs ≡ failures ys →
       posteriorU N prior (likSeq xs) ≈ᵖ posteriorU N prior (likSeq ys)
     posterior-exchangeable prior xs ys hs hf f = trans (bayes-numerator N prior (likSeq xs) f)
-      (trans (∑-cong (λ r → *-cong refl (*-cong (same (MA.Pre.α prior r)) refl)))
+      (trans (∑-cong (λ r → *-cong refl (*-cong (same (MA.α prior r)) refl)))
         (sym (bayes-numerator N prior (likSeq ys) f)))
       where
         same : ∀ θ → (likSeq xs ⟨$⟩ θ) ≈ (likSeq ys ⟨$⟩ θ)
@@ -128,7 +128,7 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
     -- probability prior (this is where `p θ + q θ = 1` is used)
     evidence-total : ∀ (prior : Pre Θ) → evidence N prior p + evidence N prior q ≈ ∫ prior one
     evidence-total prior = trans (sym (∑-+ _ _))
-      (∑-cong (λ r → trans (sym (distribˡ _ _ _)) (*-cong refl (pq (MA.Pre.α prior r)))))
+      (∑-cong (λ r → trans (sym (distribˡ _ _ _)) (*-cong refl (pq (MA.α prior r)))))
 
     evidence-total-prob : ∀ (prior : Pre Θ) → ∫ prior one ≈ 1# → evidence N prior p + evidence N prior q ≈ 1#
     evidence-total-prob prior h = trans (evidence-total prior) h

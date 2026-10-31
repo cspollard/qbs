@@ -28,7 +28,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
   open Sums A
   open SetoidReasoning Aˢ
   module MS = Measures A (subClass A)
-  open MS using (Pre; mk; ∫)
+  open MS using (Pre; mk; α; ∫)
   open Pre
 
   private
@@ -68,7 +68,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
 
   -- the conditioned (unnormalised) measure: keep the runs where the observation c is true
   condition : ∀ {X : QBS (discreteSource ℓ)} → Pre X → Obs X → Pre X
-  condition {X} p c = mk (α p) (α-random p) (kept p c)
+  condition {X} p c = mk (αₛ p) (α-random p) (kept p c)
     ( proj₁ (μ-ok p) + ∑ (kept p (negate {X} c))
     , (begin
         ∑ (kept p c) + (proj₁ (μ-ok p) + ∑ (kept p (negate {X} c))) ≈⟨ +-cong refl (+-comm _ _) ⟩

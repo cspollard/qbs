@@ -88,13 +88,13 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   -- Prob ⊆ M
 
   forgetPre : ∀ {X : QBS S} → MP.Pre X → MA.Pre X
-  forgetPre p = MA.mk (MP.Pre.α p) (MP.Pre.α-random p) (MP.Pre.μ p) tt
+  forgetPre p = MA.mk (MP.Pre.αₛ p) (MP.Pre.α-random p) (MP.Pre.μ p) tt
 
   inclH : ∀ X → Hom S (MP.TQ X) (MA.TQ X)
   inclH X = record
     { map = record { to = forgetPre ; cong = λ e f → e f }
     ; map-random = λ {β} w → record
-        { wα = MP.Wit.wα w
+        { wαₛ = MP.Wit.wαₛ w
         ; wα-random = MP.Wit.wα-random w
         ; wg = MP.Wit.wg w
         ; wg-ok = λ _ → tt
@@ -125,7 +125,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     r₀ : R
     r₀ = lift 0
 
-  open MA using (Pre; mk; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
+  open MA using (Pre; mk; α; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
   open MA.Pre
 
   -- constant elements ⊤ ⇒ M X
@@ -136,13 +136,13 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     }
 
   zeroP : Pre (1Q S)
-  zeroP = mk (const tt) tt (λ _ → 0#) tt
+  zeroP = mk (constₛ tt) tt (λ _ → 0#) tt
 
   ∫-zero : ∀ f → ∫ zeroP f ≈ 0#
   ∫-zero f = ∑-zero _ (λ _ → zeroˡ _)
 
   scoreP : ∣A∣ → Pre (1Q S)
-  scoreP a = mk (const tt) tt (λ r → a * dirac r₀ r) tt
+  scoreP a = mk (constₛ tt) tt (λ r → a * dirac r₀ r) tt
 
   weight-sum : ∀ a c → ∑ (λ r → (a * dirac r₀ r) * c) ≈ a * c
   weight-sum a c = begin
@@ -162,7 +162,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
         ; cong = λ e f → ∑-cong (λ r → *-cong (*-cong e refl) refl)
         }
     ; map-random = λ {α} _ → record
-        { wα = const tt
+        { wαₛ = constₛ tt
         ; wα-random = tt
         ; wg = λ r k → (α ⟨$⟩ r) * dirac r₀ k
         ; wg-ok = λ _ → tt
@@ -171,7 +171,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     }
 
   scaleP : ∀ {X : QBS S} → ∣A∣ → Pre X → Pre X
-  scaleP c p = mk (α p) (α-random p) (λ r → c * μ p r) tt
+  scaleP c p = mk (αₛ p) (α-random p) (λ r → c * μ p r) tt
 
   ∫-scale : ∀ {X : QBS S} (c : ∣A∣) (p : Pre X) f → ∫ (scaleP c p) f ≈ c * ∫ p f
   ∫-scale c p f = begin
@@ -186,9 +186,9 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- countable sums of measures: glue the probes through the Cantor pairing
   sumP : ∀ {X : QBS S} → (ℕ → Pre X) → Pre X
-  sumP {X} t = mk (λ k → α (t (lower (ιR k))) (ρR k))
-    (random-cast X (λ _ → ≡.refl) (QBS.glue-random X {⇑ (λ k → lower (ιR k))} tt (λ n → ⇑ (α (t n)) ∘ₛ ⇑ ρR)
-      (λ n → QBS.pre-random X (α-random (t n)) tt)))
+  sumP {X} t = mk (glueₛ (⇑ (λ k → lower (ιR k))) (λ n → αₛ (t n) ∘ₛ ⇑ ρR))
+    (QBS.glue-random X {⇑ (λ k → lower (ιR k))} tt (λ n → αₛ (t n) ∘ₛ ⇑ ρR)
+      (λ n → QBS.pre-random X (α-random (t n)) tt))
     (λ k → μ (t (lower (ιR k))) (ρR k)) tt
 
   ∫-sum : ∀ {X : QBS S} (t : ℕ → Pre X) f →
@@ -210,9 +210,9 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
         }
     ; map-random = λ {β} rβ →
         let w = λ n → map-random (ks n) rβ
-            t′ = λ (r : R) (n : ℕ) → mk {Y} (MA.Wit.wα (w n)) (MA.Wit.wα-random (w n)) (MA.Wit.wg (w n) r) tt
+            t′ = λ (r : R) (n : ℕ) → mk {Y} (MA.Wit.wαₛ (w n)) (MA.Wit.wα-random (w n)) (MA.Wit.wg (w n) r) tt
         in record
-          { wα = α (sumP (t′ r₀))
+          { wαₛ = αₛ (sumP (t′ r₀))
           ; wα-random = α-random (sumP (t′ r₀))
           ; wg = λ r → μ (sumP (t′ r))
           ; wg-ok = λ _ → tt
@@ -256,7 +256,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- normalising by a given inverse of the mass
   normP : ∀ {X : QBS S} (n : ∣A∣) (p : Pre X) → mass p * n ≈ 1# → MP.Pre X
-  normP n p h = MP.mk (α p) (α-random p) (λ r → n * μ p r)
+  normP n p h = MP.mk (αₛ p) (α-random p) (λ r → n * μ p r)
     (trans (∑-scale n (μ p)) (trans (*-comm n (mass p)) h))
 
   ∫-normP : ∀ {X : QBS S} n (p : Pre X) (h : mass p * n ≈ 1#) f →
@@ -305,11 +305,11 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     idxᵈ r = idx′ (d r)
 
     massWg : ∀ r → ∑ (wg r) ≈ mass (β r)
-    massWg r = sym (mass-cong {X} {β r} {mk {X} wα wα-random (wg r) tt} (w-eq r))
+    massWg r = sym (mass-cong {X} {β r} {mk {X} wαₛ wα-random (wg r) tt} (w-eq r))
 
     γ′ : ∀ r → InvDec (mass (β r)) → MP.Pre X
     γ′ r (inj₁ (n , h)) = normP n (β r) h
-    γ′ r (inj₂ _) = MP.ηPre (wα r₀)
+    γ′ r (inj₂ _) = MP.ηPre (wαₛ ⟨$⟩ r₀)
 
     wgγ′ : ∀ r → InvDec (mass (β r)) → R → ∣A∣
     wgγ′ r (inj₁ (n , _)) = λ k → n * wg r k
@@ -321,17 +321,17 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     wgγ-ok′ r (inj₂ _) = WeightClass.ok-dirac (probClass A) r₀
 
     γ-eq′ : ∀ r (e : InvDec (mass (β r))) →
-      MP._≈ᵖ_ (γ′ r e) (MP.mk {X} wα wα-random (wgγ′ r e) (wgγ-ok′ r e))
+      MP._≈ᵖ_ (γ′ r e) (MP.mk {X} wαₛ wα-random (wgγ′ r e) (wgγ-ok′ r e))
     γ-eq′ r (inj₁ (n , h)) f =
       Setoid.trans Aˢ (∫-normP n (β r) h f)
         (Setoid.trans Aˢ (*-cong refl (w-eq r f))
-          (Setoid.sym Aˢ (∫-scale n (mk {X} wα wα-random (wg r) tt) f)))
+          (Setoid.sym Aˢ (∫-scale n (mk {X} wαₛ wα-random (wg r) tt) f)))
     γ-eq′ r (inj₂ _) f =
-      Setoid.trans Aˢ (MP.∫-η {X} (wα r₀) f) (Setoid.sym Aˢ (dirac-∑ r₀ (λ k → f ⟨$⟩ wα k)))
+      Setoid.trans Aˢ (MP.∫-η {X} (wαₛ ⟨$⟩ r₀) f) (Setoid.sym Aˢ (dirac-∑ r₀ (λ k → f ⟨$⟩ (wαₛ ⟨$⟩ k))))
 
     Wγ : MP.Wit (λ r → γ′ r (d r))
     Wγ = record
-      { wα = wα ; wα-random = wα-random
+      { wαₛ = wαₛ ; wα-random = wα-random
       ; wg = λ r → wgγ′ r (d r) ; wg-ok = λ r → wgγ-ok′ r (d r)
       ; w-eq = λ r → γ-eq′ r (d r) }
 
@@ -539,7 +539,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
     scaled-laws-law {X} t =
       let p = map t ⟨$⟩ tt
-          lawA = λ (n : ℕ) → mk {X} (λ r → α p r) (α-random p) (dirac (lift n)) tt
+          lawA = λ (n : ℕ) → mk {X} (αₛ p) (α-random p) (dirac (lift n)) tt
           fam = λ (n : ℕ) → scaleP (μ p (lift n)) (lawA n)
           aN = λ (n : ℕ) → probe S (α-random p)
           wN = λ (n : ℕ) → constH (μ p (lift n))

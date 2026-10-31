@@ -13,6 +13,7 @@ open import Data.Product.Base using (_,_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
+open import QBS.Core using (constₛ)
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
 open import QBS.Model.SubProb
@@ -27,7 +28,7 @@ module Conditioning (A : CompleteSemiring L.zero) where
 
   -- discard the run
   reject : Prog ⊤
-  reject = mk (λ _ → tt) ttᵖ (λ _ → 0#)
+  reject = mk (constₛ tt) ttᵖ (λ _ → 0#)
     (1# , trans (+-cong (∑-zero (λ _ → 0#) (λ _ → refl)) refl) (+-identityˡ 1#))
 
   guard : Bool → Prog ⊤

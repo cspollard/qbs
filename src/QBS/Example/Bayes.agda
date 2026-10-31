@@ -21,7 +21,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   open Sums A
   module MA = Measures A (allClass A)
   module MP = Measures A (probClass A)
-  open MA using (Pre; mk; ∫)
+  open MA using (Pre; mk; α; ∫)
   open Pre
 
   -- pointwise product of test functions
@@ -33,7 +33,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- the unnormalised posterior: weight each point of the prior by the likelihood of the data there
   posteriorU : ∀ {X : QBS (discreteSource ℓ)} → Pre X → Func (QBS.Carrier X) Aˢ → Pre X
-  posteriorU p w = mk (α p) (α-random p) (λ r → μ p r * (w ⟨$⟩ α p r)) _
+  posteriorU p w = mk (αₛ p) (α-random p) (λ r → μ p r * (w ⟨$⟩ α p r)) _
 
   -- the evidence Z = ∫ prior · likelihood
   evidence : ∀ {X : QBS (discreteSource ℓ)} → Pre X → Func (QBS.Carrier X) Aˢ → ∣A∣
@@ -48,7 +48,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   -- ∫ posterior f = n · ∫ prior (_·_ {X} w f)
   posterior : ∀ {X : QBS (discreteSource ℓ)} (p : Pre X) (w : Func (QBS.Carrier X) Aˢ) (n : ∣A∣) →
     evidence p w * n ≈ 1# → MP.Pre X
-  posterior p w n h = MP.mk (α p) (α-random p) (λ r → n * (μ p r * (w ⟨$⟩ α p r)))
+  posterior p w n h = MP.mk (αₛ p) (α-random p) (λ r → n * (μ p r * (w ⟨$⟩ α p r)))
     (trans (∑-scale n _) (trans (*-comm n _) h))
 
   bayes : ∀ {X : QBS (discreteSource ℓ)} (p : Pre X) (w f : Func (QBS.Carrier X) Aˢ) (n : ∣A∣)

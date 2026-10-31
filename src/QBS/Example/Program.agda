@@ -44,7 +44,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
   private
     open DS ℓ using (S)
     R = L.Lift ℓ ℕ
-  open Measures A K using (Pre; mk; ∫; ηPre; mapPre; joinPre; TQ; ∫-η; ∫-join; ∫ᶠ) public
+  open Measures A K using (Pre; mk; α; ∫; ηPre; mapPre; joinPre; TQ; ∫-η; ∫-join; ∫ᶠ) public
   open Pre
   open QBS using (glue-random; const-random)
 
@@ -136,7 +136,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
       face r = if lower r ≡ᵇ 0 then tB else fB
 
     flip : Prog B
-    flip = mk face tt weights (ok1 total)
+    flip = mk (⇑ face) tt weights (ok1 total)
 
     -- E[g(flip)] = ½ g(true) + ½ g(false)
     ∫-flip : ∀ (g : B → ∣A∣) → ∫ flip (test g) ≈ half * g tB + half * g fB
