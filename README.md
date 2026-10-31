@@ -7,6 +7,7 @@ An extrinsic formalisation of the category **QBS** (Heunen, Kammar, Staton, Yang
 
 | Read | For |
 |---|---|
+| [src/QBS.agda](src/QBS.agda) | the library overview: one section per area, importing its main modules |
 | [docs/Guide.md](docs/Guide.md) | task-oriented tour: which model to use, write a program, condition, continuous integrals, what is missing |
 | [docs/Interface.md](docs/Interface.md) | the public names, by module, with one-line meanings |
 | [docs/Architecture.md](docs/Architecture.md) | layers, dependencies, hypotheses, compile time, where to add things |
