@@ -125,7 +125,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     r₀ : R
     r₀ = lift 0
 
-  open MA using (⇑; Pre; mk; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
+  open MA using (Pre; mk; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
   open MA.Pre
 
   -- constant elements ⊤ ⇒ M X

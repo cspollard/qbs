@@ -331,16 +331,10 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
 
     a′ : Joint X
     a′ = record
-      { map = map a₂ ∘ₛ reassoc
-      ; map-random = λ {γ} (m₁ , m₂) → map-random a₂ {reassoc ∘ₛ γ}
+      { map = map a₂ ∘ₛ reassocR
+      ; map-random = λ {γ} (m₁ , m₂) → map-random a₂ {reassocR ∘ₛ γ}
           (measurable-merge m₁ (measurable-∘ m₂ measurable-evens) , measurable-∘ m₂ measurable-odds)
       }
-      where
-        -- (r , s) ↦ (merge r (evens s) , odds s)
-        reassoc : Func (Rˢ ×ₛ Rˢ) (Rˢ ×ₛ Rˢ)
-        reassoc = record
-          { to = λ p → mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p)
-          ; cong = λ (e₁ , e₂) → mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂ }
 
     eq′ : ∀ r → joinPre (β r) ≈ᵖ mk (sec a′ r) (sec-random a′ r) (g′ r) (gpr′ r)
     eq′ r f =

@@ -30,6 +30,10 @@ g ∘ₛ f = Comp.function f g
 constₛ : ∀ {a b c d} {A : Setoid a b} {B : Setoid c d} → Setoid.Carrier B → Func A B
 constₛ {B = B} b = record { to = λ _ → b ; cong = λ _ → Setoid.refl B }
 
+-- every function out of a ≡-setoid is a setoid map
+⇑ : ∀ {a c d} {A : Set a} {B : Setoid c d} → (A → Setoid.Carrier B) → Func (setoid A) B
+⇑ {B = B} f = record { to = f ; cong = λ e → Setoid.reflexive B (≡.cong f e) }
+
 ℕˢ : Setoid 0ℓ 0ℓ
 ℕˢ = setoid ℕ
 
@@ -73,6 +77,11 @@ module _ {ℓ} (M : Measurability ℓ) where
     random-cast : ∀ {α β} → (∀ r → α ⟨$⟩ r ≡ β ⟨$⟩ r) → Random α → Random β
     random-cast e = random-resp (λ r → Setoid.reflexive X (e r))
 
+    -- gluing under a map g: glue (g ∘ αₙ) is g ∘ (glue α)
+    random-glue-∘ : ∀ {a b} {A : Setoid a b} {j : Func Rˢ ℕˢ} (g : Func A X) (α : ℕ → Func Rˢ A) →
+      Random (glueₛ j (λ n → g ∘ₛ α n)) → Random (g ∘ₛ glueₛ j α)
+    random-glue-∘ g α = random-cast (λ _ → refl)
+
   -- the measurable maps are the probes of R itself (the representable)
   measProbes : Probes Rˢ
   measProbes = record
@@ -98,6 +107,10 @@ record NatPairing : Set where
   pairₛ : ℕ → Func ℕˢ ℕˢ
   pairₛ n = record { to = pair n ; cong = ≡.cong (pair n) }
 
+  -- the composite cover of j by the i n: r ↦ pair (j r) (i (j r) r)
+  refineₛ : ∀ {a b} {A : Setoid a b} → Func A ℕˢ → (ℕ → Func A ℕˢ) → Func A ℕˢ
+  refineₛ j i = glueₛ j (λ n → pairₛ n ∘ₛ i n)
+
 record RandomSource (ℓ : Level) : Set (suc ℓ) where
   field
     measurable : Measurability ℓ
@@ -109,8 +122,8 @@ record RandomSource (ℓ : Level) : Set (suc ℓ) where
     pairing : NatPairing
   open NatPairing pairing public
   field
-    -- covers compose: refining each piece of j by i n is again a partition, r ↦ pair (j r) (i (j r) r)
-    idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (glueₛ j (λ n → pairₛ n ∘ₛ i n))
+    -- covers compose: refining each piece of j by i n is again a partition
+    idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S

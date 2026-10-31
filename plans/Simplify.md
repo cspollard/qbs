@@ -2,9 +2,8 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Stage 1 of "Suggested order" is done on branch `simplify-stage1` (see "Stage 1 outcome" at the end); the rest is not.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
-`refineₛ`, the `random-cast` casts, `⇑`, `reassoc`, `Wit` indexing, `ℕQ`) are in `plans/04-equality.md`, "Further
-simplifications noticed during the sweep", and are not repeated here.
+definitions.  Stage 1 of "Suggested order" is done and merged; Stage 1a is partly done on branch `simplify-stage1a` (see "Stage 1 outcome" and "Stage 1a outcome" at the end); the rest is not.  Items specific to `Core`/probes (QBSCat as a `SubCategory` of `Setoids`,
+`refineₛ`, the `random-cast` casts, `⇑`, `reassoc`, `Wit` indexing, `ℕQ`) are in "Stage 1a" below, moved from `plans/04-equality.md`.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
 exists.  When no library has it (an ordered semiring, a continuation monad on setoids), keep a local record but
@@ -129,7 +128,7 @@ sections are in suggested order of work.
    - Sites: `SFinite.agda:126-182` (`WitM`, `TQ-resp/const/pre/glue`) against `Continuous/Monad.agda:116-123,
      150-169, 193-226`.  The only difference is `≈ᴹ` instead of `≈ᵖ`.
    - Do: parameterise `Wit` and the probes of `TQ` by an equivalence `_≋_` on `Pre X` with `≈ᵖ ⊆ ≋`.  Do this
-     together with plan 4's "index `Wit` by `Func`".
+     together with Stage 1a item 7 (index `Wit` by `Func`).
    - Payoff: about 60 lines; `fromWit` goes.
    - Risk: keep the `abstract` blocks for compile time.
 3. **Colimits are one construction written three times.**
@@ -251,6 +250,57 @@ sections are in suggested order of work.
 - `Borel/Core.agda:28-40` could use `Relation.Unary` (`Pred`, `∁`, `⋃`, `⋂`).  Keep the local pointwise `_≐_`,
   which is not stdlib's.
 
+## Stage 1a: simplifications in `Core` and the probes site
+
+Moved here from `plans/04-equality.md` ("Further simplifications noticed during the sweep").  Items 4, 5, 6 and 7 touch compile-critical code, so time the canaries (plan 4, "Canary timings") before and after.  Ordered by payoff; suggested execution order is 6, 5, 3, 4, then 1 and 2 together, then 7, then 8.
+
+Ordered by payoff.  Each one swaps a local definition for a standard structure, or removes a repeated idiom.
+
+1. **`QBSCat` as an agda-categories `SubCategory` of `Setoids`.**  A `Hom` is a setoid map plus a property
+   (`map-random`) that is closed under `id` and `∘`.  That is exactly `Categories.Category.SubCategory.SubCat`:
+   take `U = Carrier`, `R f = ∀ {α} → Random X α → Random Y (f ∘ₛ α)`, `Rid = id`, and `_∘R_` = composition.
+   `Category.agda` would then get `assoc`/`identity`/`equiv`/`∘-resp-≈` for free.  It would also get the faithful
+   forgetful functor to `Setoids`, which is the "concrete" in concrete sheaf.  `_≈H_` would become
+   `Function.Relation.Binary.Setoid.Equality._≈_` on `map`.
+2. **`Measurability` as the same construction, with one object.**  `Meas` with `meas-id`/`meas-∘` is
+   `SubCat ⊤` of `Setoids` with `U _ = Rˢ`: the site's single-object category, i.e. a submonoid of
+   `Function.Relation.Binary.Setoid.Equality.setoid Rˢ Rˢ`.  `meas-ext` is the statement that `R` respects that
+   setoid.  `Probes M X` is then a subfunctor of `Hom(−, X)` restricted to that category: a sub-presheaf of the
+   representable, as the comment in `Core` already says in words.  Doing (1) and (2) together makes `probe`/`unprobe`
+   literally Yoneda in agda-categories terms.
+3. **Name the composite cover.**  `glueₛ j (λ n → pairₛ n ∘ₛ i n)` is written out four times (`Core.idx-glue`,
+   `Colimits` ×2, `Complete`).  A `refineₛ j i` in `Core` (the composite cover of `j` by the `i n`) would make
+   `idx-glue : Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)` read as the coverage axiom it is.
+4. **Remove the `random-cast X (λ _ → refl)` casts (22 sites, 11 files).**  Every one has a `refl` proof: the two
+   `Func`s share `to` and differ only in `cong`.  There are two root causes:
+   * Gluing under a projection.  `glue-random` returns `glueₛ i (λ n → g ∘ₛ α n)` where `g ∘ₛ glueₛ i α` is
+     wanted (`×Q`, `EqQ`, `ΠQ`, `glueRX`).  One naturality lemma, `random-glue-∘ : Random (glueₛ i (g ∘ₛ α n)) →
+     Random (g ∘ₛ glueₛ i α)`, stated once in `Core`, would replace them.
+   * The discrete model's `⇑` versus a composite (`Model/Monad`, `Strong`, `ProbInstance`, `StatInstance`).  These
+     would disappear if `Model` stored `Pre.α` as a `Func`, as `Continuous/Monad` now does, instead of a raw `α`
+     with `α-random : Random X (⇑ α)`.
+   The alternative is to index `Random` by `to` alone and keep `Func` only at the interface.  That would kill both
+   the casts and the "implicit `Func` is not inferable" pitfall, but it reintroduces a `cong` field.  It is worth
+   trying only if the two fixes above do not clear most sites.
+5. **One raw-function-to-`Func` constructor.**  `⇑` (`Model/Monad`, for `≡`-discrete `R`), `measₛ`/`idxₛ`
+   (`Borel/Source`) and `witₛ` (`Continuous/Monad`) all have the shape "`to` plus a proof that it respects `≈`".
+   `⇑` is the stdlib's `→-to-⟶`, which is deprecated with no `Func` successor.  So keep `⇑`, but move it to `Core`
+   next to `constₛ`.
+6. **`reassoc` is defined twice** (`Continuous/Monad`, `SFiniteMonad`): `(r , s) ↦ (merge r (evens s) , odds s)`.
+   Export it once from `Continuous/Sample`, next to `mergeR`/`evensR`/`oddsR`.
+7. **Witness indexing.**  `Wit β` is indexed by the raw family, while `Wit-cong`/`witₛ` show that every witness
+   already yields a `Func`.  Once (4) lands, try indexing `Wit`/`WitM` by `Func Rˢ (PreS X)`.  The earlier attempt
+   failed only because `C.PreS` and `PreMS` put different equalities on one carrier.  Indexing by the carrier map
+   `Func Rˢ (Carrier X)`, with `≈ᵖ` kept separate, may avoid that.
+8. **`Idx` is the probes of a discrete QBS.**  `Partitions` is `Probes M ℕˢ` plus gluing, which is `glue-random` for
+   the coproduct `∐ℕ 1`.  The circularity (a `QBS` needs `Idx`) prevents defining it as a QBS in `Core`.  But
+   `Colimits` could expose `ℕQ` with `probes = partitions` and `glue-random = idx-glue`-derived, so countable
+   coproducts and `idx-*` lemmas share one source.
+
+Kept local on purpose: `constₛ` (stdlib `Function.Construct.Constant.function` requires both setoids to have the same
+equality level, and `Rˢ`/carriers differ); `glueₛ` (no stdlib counterpart); setoid products are already the
+stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`, `swapₛ`, `_×-function_`).
+
 ## Checked and already standard
 
 - `LowerReals.cutSemiring` builds a stdlib `CommutativeSemiring` via `Algebra.Structures.Biased`.
@@ -266,13 +316,15 @@ sections are in suggested order of work.
 ## Suggested order
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
-2. Then A.1 and A.2 together: one `Half` module, then the `Poset` record.  This is the biggest readability gain in
+2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
+   cleaned casts, and item 7 is the `Wit` work that B.1/B.2 wait for.
+3. Then A.1 and A.2 together: one `Half` module, then the `Poset` record.  This is the biggest readability gain in
    Analysis.
-3. Then A.5 together with the `nat` and `½` cleanup.
-4. Then B.3 and B.5 (colimits, codiscrete), and E.1.
-5. Then B.1 and B.2, after plan 4's `Wit` item.  Time the canaries before and after (see plan 4, "To do: canary
+4. Then A.5 together with the `nat` and `½` cleanup.
+5. Then B.3 and B.5 (colimits, codiscrete), and E.1.
+6. Then B.1 and B.2, after Stage 1a item 7.  Time the canaries before and after (see plan 4, "To do: canary
    timings").
-6. B.4, E.2 (full option), F.1 and F.2 as time allows.
+7. B.4, E.2 (full option), F.1 and F.2 as time allows.
 
 Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regenerate `docs/Modules.md` and update
 `docs/Interface.md` when public names change.
@@ -303,3 +355,32 @@ Each step ends with `make check`, `make longcheck` and `make doccheck`.  Regener
   (`∨-identityʳ`, …, `¬-not`); `Interleave.if-same`/`pick′-id` are `B.if-eta`/`B.if-cong₂` (the two branch proofs swap
   places); `Merge.bool-dec` is `toSum (x ≟ y)`; `Lead` uses `isYes`, `n≮0`, `s<s⁻¹`; `CutSum` uses `[_,_]′`,
   `inj₁-injective`, `inj₂-injective`.
+
+## Stage 1a outcome (items 3, 5, 6 and half of 4; 1, 2, 7, 8 deferred)
+
+`make check` (141 files, 0 holes, 0 failures), `make longcheck` (36 flagged, unchanged from stage 1) and `make doccheck`
+pass; one commit per item.  Canaries (forced recheck, `--profile=modules`, warm interfaces, two runs each, on `main`
+before vs this branch after): `Probability` 4.86 vs 5.07 s, `Exponential` 2.59 vs 2.81 s, `Continuous/Monad` 3.36 vs
+3.57 s, `SFiniteMonad` 4.42 vs 4.57 s, `SFiniteNorm` 6.28 vs 6.49 s, `SFiniteStrong` 4.89 vs 5.03 s, `StatInstance`
+10.55 vs 10.49 s; memory within 10 % (`SFiniteMonad` 516 vs 567 MB).  Re-timed on the same machine state, the baseline had itself
+drifted up 2–3 % (`Exponential` 2.65 s, `Probability` 4.98 s), so the residual cost of this branch is about 5–6 % on
+`Exponential` and `Probability`, and 3–4 % elsewhere.  Moving `Forget` into its own module `QBS.Category.Forget`
+made no difference, so the cost is the extra definitions in `Core` (which every module loads), not the import.  It is
+well under the 20 % threshold and the work was left as is.
+
+* **6 done.**  `reassocR` is exported from `Continuous/Sample`; both local copies are gone.
+* **5 done, first half.**  `⇑` now lives in `Core` next to `constₛ`, for any `≡`-setoid.  The second half (one
+  constructor for `measₛ`/`idxₛ`/`witₛ`) is skipped: each is already just `record { to ; cong }` with its own `cong`
+  proof, so no lines would be saved.
+* **3 done.**  `refineₛ` (in `NatPairing`) names the composite cover; `idx-glue` and the three `glue-random` proofs use it.
+* **4 half done.**  `Probes.random-glue-∘` replaces the four glue-under-projection casts (`×Q` ×2, `EqQ`, `ΠQ`).  The
+  second root cause (the discrete model's raw `α : R → ∣X∣`) is deferred: making `Pre.α` and `Wit.wα` `Func`s rewrites
+  `α p r` into `α p ⟨$⟩ r` throughout `Model/{Monad,Strong,ProbInstance,StatInstance,SubProb}` (about 12 casts), and those
+  modules are compile-time sensitive.  The `Exponential` and `Continuous/Monad` casts are precomposition, not
+  projection, patterns and remain (18 `random-cast` sites left).
+* **1 and 2 partly done, rewrite deferred.**  80 `map-random =` sites in 28 files build `Hom` records, so redefining
+  `QBSCat` as a `SubCat` (a Σ-typed hom) would touch all of them and change the normal forms the CCC and monad
+  conversions rely on.  Instead the new module `QBS.Category.Forget` has `Forget : Functor (QBSCat S) (Setoids ℓ ℓ)` and `Forget-faithful`.
+  `Measurability` as a one-object `SubCat` is untouched.
+* **7 deferred**, since it follows the unfinished half of 4.  **8 deferred**: a `ℕQ` in `Colimits` would need the
+  circular `Idx`/`QBS` dependency broken first and was not attempted.

@@ -9,13 +9,13 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Core`
 - `idH` — `idH S {X}`: the identity morphism (`S` explicit).
 - `RandomSource` — a one-object site: `Measurability` (a setoid `Rˢ` with carrier `R` and equality `≈ᴿ`, and `Meas`, a monoid of setoid maps `Func Rˢ Rˢ` closed under `≈` and containing the constants), `Partitions` (`Idx`, the probes of discrete `ℕˢ`, along which `Meas` glues: `meas-glue`) and `NatPairing` (`pair`/`unpair`) plus `idx-glue` (covers compose); their fields are re-exported.
-- `Probes` — `Probes M X`: a predicate `Random` on setoid maps `Func Rˢ X`, closed under `≈` (`random-resp`), constants and precomposition by `Meas`; `measProbes` is `Meas` itself (the representable); `random-cast` re-types a probe along pointwise `≡`.
+- `Probes` — `Probes M X`: a predicate `Random` on setoid maps `Func Rˢ X`, closed under `≈` (`random-resp`), constants and precomposition by `Meas`; `measProbes` is `Meas` itself (the representable); `random-cast` re-types a probe along pointwise `≡`; `random-glue-∘` says gluing commutes with postcomposition by a setoid map.
 - `QBS` — a quasi-Borel space: a setoid `Carrier` with `probes` that glue along partitions (`glue-random`, the sheaf condition). The core never assumes `≡` on `R`: each source chooses its equality.
 - `Hom` — a setoid map `map` preserving random elements (`map-random`).
-- `glueₛ`, `constₛ`, `_∘ₛ_`, `ℕˢ` — gluing a family of setoid maps along an index map, constant maps, composition, discrete ℕ.
+- `glueₛ`, `constₛ`, `⇑`, `_∘ₛ_`, `ℕˢ` — gluing a family of setoid maps along an index map, constant maps, any function out of a `≡`-setoid, composition, discrete ℕ. `refineₛ j i` (in `NatPairing`) is the composite cover of `j` by the `i n`.
 
 ### `QBS.Category`, `QBS.Limits`, `QBS.Colimits`, `QBS.Complete`, `QBS.Exponential`
-- `QBSCat` — `QBSCat S`, the category (agda-categories `Category`).
+- `QBSCat` — `QBSCat S`, the category (agda-categories `Category`); `QBS.Category.Forget`: `Forget` and `Forget-faithful`, the faithful forgetful functor to `Setoids`.
 - `QBS.Exponential`: `cartesianClosed` — `CartesianClosed (QBSCat S)`; `QBS.Limits`: terminal object and products; `QBS.Colimits`: coproducts.
 - `QBS.Complete`: `countableProduct`, `countableCoproduct` — indexed products and coproducts.
 

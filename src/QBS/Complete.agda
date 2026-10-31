@@ -59,7 +59,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           ; pre-random = λ p m i → pre-random (P i) (p i) m
           }
       ; glue-random = λ ij α p i →
-          random-cast (P i) (λ _ → refl) (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
+          random-glue-∘ (P i) (πₛ i) α (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
       }
 
     indexedProduct : IndexedProductOf (QBSCat S) P
@@ -124,7 +124,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
           let i = λ n → proj₁ (p n)
               c = λ n → proj₁ (proj₂ (proj₂ (p n)))
               c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-          in glueₛ j (λ n → pairₛ n ∘ₛ i n)
+          in refineₛ j i
            , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
            , c′
            , λ r → subst (λ u → Setoid._≈_ ΣS (α (j ⟨$⟩ r) ⟨$⟩ r) (evΣ (c (proj₁ u) (proj₂ u)) r))
