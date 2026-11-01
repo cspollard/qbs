@@ -496,16 +496,16 @@ Everything is within 3 %, slightly faster if anything; no regression from B.2's 
 
 | Module | before | after |
 |---|---|---|
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
-| `%s` | %s / %s | %s / %s |
+| `Probability` | 5.20 / 5.13 | 4.95 / 4.95 |
+| `Exponential` | 2.75 / 2.75 | 2.66 / 2.68 |
+| `Model/Monad` | 2.61 / 2.64 | 2.63 / 2.55 |
+| `Model/ProbInstance` | 5.02 / 5.02 | 4.94 / 4.93 |
+| `Model/StatInstance` | 6.98 / 6.97 | 6.90 / 6.89 |
+| `Continuous/Monad` | 3.57 / 3.46 | 3.47 / 3.48 |
+| `Continuous/SFiniteMonad` | 4.68 / 4.68 | 4.60 / 4.64 |
+| `Continuous/SFiniteNorm` | 6.56 / 6.54 | 6.48 / 6.39 |
+| `Continuous/SFiniteStrong` | 5.14 / 5.14 | 5.04 / 5.02 |
+| `Continuous/SFiniteStat` | 6.49 / 6.47 | 6.31 / 6.33 |
 
 Note: three of the four Stage 3 worktrees were first cut from a stale `main` (`7064e52`, before Stage 2); all were rebased or merged onto current
 `main`, and the merged tree passes `make check` (145 files), `make longcheck` (36 flagged) and `make doccheck`.
