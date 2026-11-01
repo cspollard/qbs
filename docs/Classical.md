@@ -16,7 +16,7 @@ instantiated inside Agda itself.
 | `lem : LEM₀` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules, mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
 | `lem₁ : LEM₁` | the same at `Set₁` | 13 modules (`Analysis/CutSum`, `CoinIntegral`, `Functional`, `Riesz`, `Model/AdditiveSemiring`, `Continuous/FairCoin`, `Uniform*`, `CoinIndep`, `FirstBit`, `SubModel`, `Example/Probability`) |
 | `lemOf` | `lem₁ ⇒ lem` (by `Lift`) | `Analysis/CoinIntegral` |
-| `NormalizableSemiring.invertible?` | a decision `(Σ n, m·n ≈ 1) ⊎ ¬(…)` as a record field | `Model/Semiring.agda:42`, consumed in `Model/StatInstance.agda` |
+| `NormalizableSemiring.invertible?` | a decision `(Σ n, m·n ≈ 1) ⊎ ¬(…)` as a record field | `Model/Semiring.agda:47` (`InvDec`, :37), consumed in `Model/StatInstance.agda` |
 | `dec` argument to `Mask` | a decision procedure for a Borel set | `Analysis/Fun.agda` (`module Mask`) |
 
 Not assumed anywhere: the axiom of choice (countable or dependent), propositional extensionality,
