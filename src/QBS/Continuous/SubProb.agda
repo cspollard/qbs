@@ -24,6 +24,7 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators using (module Indicators)
+open import QBS.Analysis.Cone using (module Cone)
 open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Continuous.Sample
 open import QBS.Continuous.Monad
@@ -42,31 +43,7 @@ module ContinuousSub (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) where
 
   -- the sub-probability monad `TM` of `Continuous/Monad` is commutative and strong (inherited).
 
-  -- the zero measure
-  zeroM : Measure
-  zeroM = record
-    { I = λ _ _ → 0#
-    ; I-mono = λ _ _ _ → ≤-refl
-    ; I-add = λ _ _ _ _ → sym (+-identityˡ 0#)
-    ; I-scale = λ c _ _ _ → sym (zeroʳ c)
-    ; I-sup = λ hs fs inc f e → sym (⨆-const 0# _)
-    ; I-sub = λ _ → 0-least
-    }
-
-  -- scaling a measure by a weight ≤ 1
-  scaleM : ∀ c → c ≤ 1# → Measure → Measure
-  scaleM c c≤1 μ = record
-    { I = λ h f → c * I μ h f
-    ; I-mono = λ f f′ le → *-mono c (I-mono μ f f′ le)
-    ; I-add = λ f f₁ f₂ e → trans (*-cong refl (I-add μ f f₁ f₂ e)) (distribˡ c _ _)
-    ; I-scale = λ d f f′ e → trans (*-cong refl (I-scale μ d f f′ e))
-        (trans (sym (*-assoc c d _)) (trans (*-cong (*-comm c d) refl) (*-assoc d c _)))
-    ; I-sup = λ hs fs inc f e →
-        let incI = λ n → I-mono μ (fs n) (fs (suc n)) (λ x → inc x n)
-        in trans (*-cong refl (I-sup μ hs fs inc f e))
-             (*-⨆ c (λ n → I μ (hs n) (fs n)) incI (λ n → *-mono c (incI n)))
-    ; I-sub = λ f → ≤-trans (≤-trans (*-mono c (I-sub μ f)) (≤-reflexive (*-identityʳ c))) c≤1
-    }
+  open Cone A using (zeroM; scaleM)
 
   -- failure: the zero measure (a run that is discarded)
   failPre : Pre (1Q S)
