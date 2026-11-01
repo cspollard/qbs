@@ -33,6 +33,8 @@ open import QBS.Probability using (ProbabilityInterface)
 
 -- A commutative monoid object of weights, with an absorbing zero (`zero⇒ : ⊤ ⇒ W`, an absorbing element
 -- of the multiplication, not a zero object of the category).
+-- Kept local: agda-categories' `Categories.Object.Monoid` has no commutativity field, so a commutative monoid
+-- object (and the absorbing zero) would have to be added on top of it anyway.
 record CommutativeMonoidWithZero {o h e} (C : Category o h e) (CC : Canonical.CartesianClosed C) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤; _×_; !; ⟨_,_⟩)

@@ -73,6 +73,11 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   _≈ᵖ_ : ∀ {X} → Pre X → Pre X → Set ℓ
   p ≈ᵖ q = ∀ f → ∫ p f ≈ ∫ q f
 
+  -- `PreS X` is the pullback of the pointwise setoid on test functions `Func (Carrier X) Aˢ → ∣A∣` along
+  -- `p ↦ (f ↦ ∫ p f)`, the same thing as `Relation.Binary.Construct.On.setoid` (not used literally: the target
+  -- is a family of `Aˢ`-valued values indexed by `f`, so the pointwise setoid would have to be built first).
+  -- It is the carrier equality that `QBS.IntegralMonad` axiomatises: `Integral.∫-ext` says that two elements
+  -- of `TQ X` with equal integrals against every test are equal in `TQ X`.
   PreS : QBS S → Setoid ℓ ℓ
   PreS X = record
     { Carrier = Pre X

@@ -23,13 +23,10 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Strong using (Strength; StrongMonad)
-import Categories.Category.Cartesian.Monoidal as CM
-import Categories.Category.CartesianClosed.Canonical as Canonical
 
 open import QBS.Core
 open import QBS.Category using (QBSCat)
 open import QBS.Limits using (_×Q_)
-open import QBS.Exponential using (cartesianClosed)
 
 -- Tests: the functions that are integrated, with values in the setoid V, and their precomposition with maps.
 record Tests {ℓ c e} (S : RandomSource ℓ) (V : Setoid c e) (t : Level) : Set (suc ℓ ⊔ c ⊔ e ⊔ suc t) where
@@ -176,11 +173,7 @@ module StrongLaws {ℓ c e t} {S : RandomSource ℓ} {V : Setoid c e} (I : Integ
   private module V = Setoid V
   open V using () renaming (sym to ≈ˢ)
 
-  private
-    cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
-    Vm = CM.CartesianMonoidal.monoidal cartesian
-    {-# INLINE cartesian #-}
-    {-# INLINE Vm #-}
+  open import QBS.Category.Cartesian S using () renaming (V to Vm)
 
   -- naturality of σ along a map F that is f₁ × f₂
   σ-nat : ∀ {X Y X′ Y′} (F : Hom S (_×Q_ S X Y) (_×Q_ S X′ Y′)) (f₁ : Hom S X X′) (f₂ : Hom S Y Y′) →
