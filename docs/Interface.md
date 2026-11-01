@@ -115,6 +115,13 @@ Expectations of bounded signed statistics under the monad's measures (module par
 - `ITest p`, `E-atᴵ p g`, `fromSTest`, `E-atᴵ-fromSTest`, `truncHom`, `J-resp∞`, `transportI`, `E-respᴵ`, `_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`, `E-atᴵ-scale`, `valI`, `E-atᴵ-η`, `precompI`, `E-atᴵ-map` (`QBS.Inference.ExpectationInt`) — expectations of integrable (possibly unbounded) signed statistics: `J-resp∞ : p ≈ᵖ q → J (m p) (h ∘ α p) ≈ J (m q) (h ∘ α q)` (via the truncations `truncHom h k`), `E-respᴵ : p ≈ᵖ q → E-atᴵ p g ≃ E-atᴵ q (transportI e g)`.
 - `idT`, `sqT : STest AQ`, `E-at-uniform-id`, `E-at-uniform-sq`, `bern : Pre AQ`, `E-at-bern`, `E-at-bern²`, `E-at-bern²-quarter` (`QBS.Inference.ExpectationExamples`) — worked examples: `E-at uniform idT ≃ ι ½`, `E-at uniform sqT ≃ ι m` (`3m = 1`), Bernoulli(½) as the first bit of the fair coin with `E-at bern idT ≃ ι ½`, and independence `E-at (bern ⊗ᵖ bern) (idT ⊗T idT) ≃ ι ½ *S ι ½` (four copies add up to 1).
 
+### `QBS.Inference.Sampler`, `QBS.Inference.UniformSampler`
+Statistical models as samplers (module parameter `lem₁ : LEM₁`; the `Sampler` module of `Inference/Sampler`).
+- `Sampler Θ X` — a joint probe `Θ × ℛ ⇒ X`; `draw s θ`, `draw-random`, `single s g θ` — the bounded signed statistic of one draw on the fair coin; `obsAt`, `iidExperiment s g` — the iid experiment over the coordinates of the coin.
+- `SingleMoments s g μ σ²` (`MeanAt`, `SecondAt`), `iid-moments`, `sampler-mean-unbiased` — the moments of one draw give those of the iid sample, so the unbiasedness theorems of `Inference/Frequentist` hold for every sampler.
+- `Model Θ X`, `lawAt`, `samplerModel`, `E-at-sampler` — the kernel `Θ ⇒ TQ X` of a sampler; its `E-at` is the expectation of the single draw.
+- `uniformSampler`, `idTest`, `singleMoments`, `moments`, `sample-mean-unbiased`, `sample-variance-unbiased` (`QBS.Inference.UniformSampler`) — validation: the uniform distribution as a sampler has the single-draw moments `E u`, `Var u`.
+
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.

@@ -98,6 +98,13 @@ module UniformVariance (lem₁ : LEM₁) where
       ; f⁻-int = 0 , ≤-reflexive jneg
       }
 
+    -- the parts of `u`, for modules that cannot see through `abstract`
+    u⁺ : ∀ x → f⁺ u x ≈ expansion x
+    u⁺ x = refl
+
+    u⁻ : ∀ x → f⁻ u x ≈ 0#
+    u⁻ x = refl
+
     u-bdd : Bdd u
     u-bdd = 1 , λ x → ≤-trans (expansion≤1 x) (≤-reflexive (sym (+-identityʳ 1#))) , OmegaSemiring.0-least A
 
