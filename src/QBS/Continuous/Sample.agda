@@ -10,12 +10,11 @@ open import Level using (Lift; lift; lower)
 open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Bool.Base using (Bool; true; false; if_then_else_)
-open import Data.Nat.Base using (ℕ; _+_; ⌊_/2⌋)
+open import Data.Nat.Base using (ℕ; zero; _+_)
 import Data.Nat.Base as ℕ
-open import Data.Nat.Properties using (+-suc; n≡⌊n+n/2⌋)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
@@ -38,56 +37,25 @@ R = R₁
 ----------------------------------------------------------------------------
 -- even and odd bits
 
-dbl : ℕ → ℕ
-dbl n = n + n
-
-dbl-suc : ∀ n → dbl (ℕ.suc n) ≡ ℕ.suc (ℕ.suc (dbl n))
-dbl-suc n = ≡.cong ℕ.suc (+-suc n n)
-
-ev-dbl : ∀ n → ev (dbl n) ≡ true
-ev-dbl ℕ.zero = ≡.refl
-ev-dbl (ℕ.suc n) = ≡.trans (≡.cong ev (dbl-suc n)) (ev-dbl n)
-
-ev-sdbl : ∀ n → ev (ℕ.suc (dbl n)) ≡ false
-ev-sdbl ℕ.zero = ≡.refl
-ev-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → ev (ℕ.suc m)) (dbl-suc n)) (ev-sdbl n)
-
-half-sdbl : ∀ n → ⌊ ℕ.suc (dbl n) /2⌋ ≡ n
-half-sdbl ℕ.zero = ≡.refl
-half-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → ⌊ ℕ.suc m /2⌋) (dbl-suc n)) (≡.cong ℕ.suc (half-sdbl n))
-
--- every index is double its half, or one more
-even-split : ∀ n → ev n ≡ true → n ≡ dbl ⌊ n /2⌋
-even-split ℕ.zero _ = ≡.refl
-even-split (ℕ.suc ℕ.zero) ()
-even-split (ℕ.suc (ℕ.suc n)) e = ≡.trans (≡.cong (λ x → ℕ.suc (ℕ.suc x)) (even-split n e)) (≡.sym (dbl-suc ⌊ n /2⌋))
-
-odd-split : ∀ n → ev n ≡ false → n ≡ ℕ.suc (dbl ⌊ n /2⌋)
-odd-split ℕ.zero ()
-odd-split (ℕ.suc ℕ.zero) _ = ≡.refl
-odd-split (ℕ.suc (ℕ.suc n)) e = ≡.trans (≡.cong (λ x → ℕ.suc (ℕ.suc x)) (odd-split n e))
-                                   (≡.cong ℕ.suc (≡.sym (dbl-suc ⌊ n /2⌋)))
-
 evens odds : Cantor → Cantor
-evens k n = k (dbl n)
-odds k n = k (ℕ.suc (dbl n))
+evens k n = k (n + n)
+odds k n = k (ℕ.suc (n + n))
 
 -- pointwise laws
 merge-split : ∀ k n → mergeC (evens k) (odds k) n ≡ k n
-merge-split k n with ev n in en
-... | true = ≡.cong k (≡.sym (even-split n en))
-... | false = ≡.cong k (≡.sym (odd-split n en))
+merge-split k n with even-or-odd n
+... | j , inj₁ ≡.refl = mergeC-even j (evens k) (odds k)
+... | j , inj₂ ≡.refl = mergeC-odd j (evens k) (odds k)
 
 evens-merge : ∀ a b n → evens (mergeC a b) n ≡ a n
-evens-merge a b n = ≡.trans (≡.cong (λ e → if e then a h else b h) (ev-dbl n)) (≡.cong a (≡.sym (n≡⌊n+n/2⌋ n)))
-  where h = ⌊ dbl n /2⌋
+evens-merge a b n = mergeC-even n a b
 
 odds-merge : ∀ a b n → odds (mergeC a b) n ≡ b n
-odds-merge a b n = ≡.trans (≡.cong (λ e → if e then a h else b h) (ev-sdbl n)) (≡.cong b (half-sdbl n))
-  where h = ⌊ ℕ.suc (dbl n) /2⌋
+odds-merge a b n = mergeC-odd n a b
 
 merge-cong : ∀ {a a′ b b′} → ≡._≗_ a a′ → ≡._≗_ b b′ → ≡._≗_ (mergeC a b) (mergeC a′ b′)
-merge-cong ea eb n = ≡.cong₂ (λ x y → if ev n then x else y) (ea ⌊ n /2⌋) (eb ⌊ n /2⌋)
+merge-cong ea eb zero = ea zero
+merge-cong ea eb (ℕ.suc n) = merge-cong eb (λ k → ea (ℕ.suc k)) n
 
 ----------------------------------------------------------------------------
 -- at the level of the sample space R
@@ -100,24 +68,18 @@ evensR r = lift (evens (lower r))
 oddsR r = lift (odds (lower r))
 
 measurable-evens : Measurable evens
-measurable-evens n b = gen (dbl n) b
+measurable-evens n b = gen (n + n) b
 
 measurable-odds : Measurable odds
-measurable-odds n b = gen (ℕ.suc (dbl n)) b
-
-measurable-merge : ∀ {a b : Cantor → Cantor} → Measurable a → Measurable b →
-  Measurable (λ k → mergeC (a k) (b k))
-measurable-merge {a} {b} ma mb n β with ev n
-... | true = ma ⌊ n /2⌋ β
-... | false = mb ⌊ n /2⌋ β
+measurable-odds n b = gen (ℕ.suc (n + n)) b
 
 module R≈ = Setoid (RandomSource.Rˢ S)
 
 evensR-cong : ∀ {r s} → r R≈.≈ s → evensR r R≈.≈ evensR s
-evensR-cong e = lift (λ n → lower e (dbl n))
+evensR-cong e = lift (λ n → lower e (n + n))
 
 oddsR-cong : ∀ {r s} → r R≈.≈ s → oddsR r R≈.≈ oddsR s
-oddsR-cong e = lift (λ n → lower e (ℕ.suc (dbl n)))
+oddsR-cong e = lift (λ n → lower e (ℕ.suc (n + n)))
 
 mergeR-cong : ∀ {a a′ b b′} → a R≈.≈ a′ → b R≈.≈ b′ → mergeR a b R≈.≈ mergeR a′ b′
 mergeR-cong e₁ e₂ = lift (merge-cong (lower e₁) (lower e₂))
