@@ -1,110 +1,99 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence
--- over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½.
+-- The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by self-similarity (split
+-- off the first bit, as `UniformMoment` and `SelfSimilar` do) and cancellation.
 -- Consequently the soft-conditioned uniform draw (weight u) has total mass ½.
 module QBS.Continuous.UniformMean where
 
-import Level as L
-open import Data.Empty using (⊥)
 open import Data.Bool.Base using (true; false)
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Product.Base using (_,_; proj₁)
-import Relation.Binary.PropositionalEquality.Core as ≡
-open ≡ using (_≡_)
+open import Algebra using (CommutativeSemiring)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import QBS.Borel.Core
-open import QBS.Borel.PiLambda using (Cyl; cylTop; cylAnd; cylResp)
-open import QBS.Borel.Merge using (Cyl-borel)
+open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.Indicators using (module Indicators)
-open import QBS.Analysis.Series using (module Series)
-open import QBS.Analysis.Clopen using (Cl; leaf; split)
-open import QBS.Analysis.ClopenMeasure using (module Premeasure)
-open import QBS.Analysis.Regular using (module Regularity)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
 open import QBS.Analysis.BinaryExpansion
+open import QBS.Analysis.Indicators using (module Indicators)
+open import QBS.Analysis.ExpansionCons using (module ExpansionCons)
+open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Continuous.FairCoin
+open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Classical using (LEM₁)
+
+-- the semiring algebra behind the mean, over an abstract commutative semiring (the solver is slow on
+-- the concrete cut semiring)
+module Alg {c ℓ} (S : CommutativeSemiring c ℓ) (half : CommutativeSemiring.Carrier S)
+    (hh : CommutativeSemiring._≈_ S (CommutativeSemiring._+_ S half half) (CommutativeSemiring.1# S)) where
+  open CommutativeSemiring S
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default S
+  open SetoidReasoning setoid
+
+  -- m = ½(½ + ½m) + ½(½m) gives m + m = ½ + m
+  double : ∀ m → m ≈ half * (half + half * m) + half * (half * m) → m + m ≈ half + m
+  double m E = begin
+    m + m ≈⟨ +-cong E E ⟩
+    X + X ≈⟨ polyEq ⟩
+    (half + half) * half + ((half + half) * half * m + (half + half) * half * m) ≈⟨ +-cong (*-cong hh refl) (+-cong (*-cong (*-cong hh refl) refl) (*-cong (*-cong hh refl) refl)) ⟩
+    1# * half + ((1# * half) * m + (1# * half) * m) ≈⟨ +-cong (*-identityˡ half) (+-cong (*-cong (*-identityˡ half) refl) (*-cong (*-identityˡ half) refl)) ⟩
+    half + (half * m + half * m) ≈⟨ +-cong refl (trans (sym (distribʳ m half half)) (trans (*-cong hh refl) (*-identityˡ m))) ⟩
+    half + m ∎
+    where
+      X = half * (half + half * m) + half * (half * m)
+      polyEq : X + X ≈ (half + half) * half + ((half + half) * half * m + (half + half) * half * m)
+      polyEq = solve 2 (λ h x → let X′ = h :* (h :+ h :* x) :+ h :* (h :* x)
+                              in X′ :+ X′ := (h :+ h) :* h :+ ((h :+ h) :* h :* x :+ (h :+ h) :* h :* x)) refl half m
 
 module UniformMean (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
   A = LowerRealsOmega (lemOf lem₁)
   R = lowerRealsArch (lemOf lem₁)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Arch R using (half; hp; ∑hp≈1; half-twice) renaming (half+half to hh)
+  open Arch R using (half) renaming (half+half to hh)
   open Integration A
-  open Measurable A using (Fun)
-  open FairCoin lem₁ using (fairCoin; fairCoin-cyl)
+  open Measurable A using (Fun; Fun-const; Fun-scale; Fun-pre; Fun-≤1)
+  open FairCoin lem₁ using (fairCoin)
+  open FirstBit lem₁ using (firstBit-fun)
   open Expansion A half hh
-  open Series A
-  open Indicators A (lemOf lem₁) using (χ; χ-in; χ-out; Fun-χ; I-const-mass)
-  open Premeasure R using (μ0)
-  open Regularity R (lemOf lem₁) using (bitT)
+  open ExpansionCons A half hh using (expansion-cons)
+  open HalfOrder A R using (half≤1)
+  open Indicators A (lemOf lem₁) using (I-const)
   open SetoidReasoning setoid
 
   ----------------------------------------------------------------------------
-  -- the probability of a single bit is ½
+  -- the expectation of the binary expansion, by self-similarity (as for the CDF and the second
+  -- moment): splitting off the first bit, with e(true :: s) = ½ + ½ e(s) and e(false :: s) = ½ e(s),
+  --   M = ½(½ + ½M) + ½(½M),   so   M + M = M + ½   and M = ½ by cancellation (M ≤ 1)
 
-  μ0-bitT : ∀ n b → μ0 (bitT n b) ≈ half
-  μ0-bitT zero true = trans (*-cong refl (+-identityˡ 1#)) (*-identityʳ half)
-  μ0-bitT zero false = trans (*-cong refl (+-identityʳ 1#)) (*-identityʳ half)
-  μ0-bitT (suc n) b = trans (half-twice (μ0 (bitT n b))) (μ0-bitT n b)
+  M : ∣A∣
+  M = I fairCoin expansion Fun-expansion
 
-  bitU : ℕ → Pred
-  bitU n x = x n ≡ true
+  M≤1 : M ≤ 1#
+  M≤1 = ≤-trans (I-mono fairCoin Fun-expansion (Fun-const 1# ≤-refl) (Fun-≤1 Fun-expansion))
+                (≤-reflexive (I-const fairCoin L-one 1# ≤-refl))
 
-  bitCyl : ∀ n → Cyl (bitU n)
-  bitCyl n = cylResp (λ x → (λ (_ , p) → p) , (λ p → _ , p)) (cylAnd cylTop n true)
+  private
+    Fhe : Fun (λ x → half * expansion x)
+    Fhe = Fun-scale half half≤1 Fun-expansion
+    ET : Fun (λ x → expansion (consR true x))
+    ET = Fun-pre {f = consR true} Fun-expansion (measurable-cons true)
+    EF : Fun (λ x → expansion (consR false x))
+    EF = Fun-pre {f = consR false} Fun-expansion (measurable-cons false)
 
-  ----------------------------------------------------------------------------
-  -- the expectation of the binary expansion
+  I-true : I fairCoin (λ x → expansion (consR true x)) ET ≈ half + half * M
+  I-true = trans (I-add fairCoin ET (Fun-const half half≤1) Fhe (expansion-cons true))
+    (+-cong (I-const fairCoin L-one half half≤1) (I-scale fairCoin half Fun-expansion Fhe (λ _ → refl)))
 
-  sel-scale : ∀ b w c → (b ≡ true → c ≈ 1#) → (b ≡ false → c ≈ 0#) → sel b w ≈ w * c
-  sel-scale true w c t f = trans (sym (*-identityʳ w)) (*-cong refl (sym (t ≡.refl)))
-  sel-scale false w c t f = sym (trans (*-cong refl (f ≡.refl)) (zeroʳ w))
+  I-false : I fairCoin (λ x → expansion (consR false x)) EF ≈ half * M
+  I-false = I-scale fairCoin half Fun-expansion EF (λ r → trans (expansion-cons false r) (+-identityˡ _))
 
-  -- the weighted bit is the scaled indicator of the cylinder {rₙ = true}
-  bit-scale : ∀ n r → bitW n r ≈ (half * hp n) * χ (bitU n) r
-  bit-scale n r = sel-scale (lower′ r n) (half * hp n) (χ (bitU n) r)
-    (λ e → χ-in (bitU n) r e)
-    (λ e → χ-out (bitU n) r (λ p → absurd (≡.trans (≡.sym e) p)))
-    where
-      lower′ = λ r n → L.lower r n
-      absurd : ∀ {B : Set} → false ≡ true → B
-      absurd ()
-
-  I-bit : ∀ n → I fairCoin (bitW n) (Fun-bitW n) ≈ (half * hp n) * half
-  I-bit n = trans (I-scale fairCoin (half * hp n) (Fun-χ (Cyl-borel (bitCyl n))) (Fun-bitW n) (bit-scale n))
-                  (*-cong refl (trans (fairCoin-cyl (bitCyl n)) (μ0-bitT n true)))
-
-  I-part : ∀ N → I fairCoin (part N) (Fun-part N) ≈ psum (λ n → (half * hp n) * half) N
-  I-part zero = trans (I-const-mass fairCoin 0# 0-least) (zeroˡ (mass fairCoin))
-  I-part (suc N) = trans (I-add fairCoin (Fun-part (suc N)) (Fun-part N) (Fun-bitW N) (λ r → refl))
-                         (+-cong (I-part N) (I-bit N))
+  E : M ≈ half * (half + half * M) + half * (half * M)
+  E = trans (firstBit-fun Fun-expansion) (+-cong (*-cong refl I-true) (*-cong refl I-false))
 
   -- E[U] = ½
   mean : I fairCoin expansion Fun-expansion ≈ half
-  mean = begin
-    I fairCoin expansion Fun-expansion
-      ≈⟨ I-sup fairCoin part Fun-part part-inc Fun-expansion (λ r → refl) ⟩
-    ⨆ (λ N → I fairCoin (part N) (Fun-part N)) incI
-      ≈⟨ ⨆-cong incI (psum-inc b) I-part ⟩
-    ∑ᶠ b
-      ≈⟨ ∑ᶠ-cong (λ n → *-comm (half * hp n) half) ⟩
-    ∑ᶠ (λ n → half * (half * hp n))
-      ≈⟨ sym (∑ᶠ-scale half (λ n → half * hp n)) ⟩
-    half * ∑ᶠ (λ n → half * hp n)
-      ≈⟨ *-cong refl ∑hp≈1 ⟩
-    half * 1#
-      ≈⟨ *-identityʳ half ⟩
-    half ∎
-    where b = λ n → (half * hp n) * half
-          incI = λ n → I-mono fairCoin (Fun-part n) (Fun-part (suc n)) (λ x → part-inc x n)
+  mean = cancel M≤1 (trans (Alg.double commutativeSemiring half hh M E) (+-comm half M))
