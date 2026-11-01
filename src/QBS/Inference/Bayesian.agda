@@ -12,6 +12,7 @@
 -- `Example/Bayes`.
 module QBS.Inference.Bayesian where
 
+import Algebra.Properties.Semiring.Exp as Exp
 open import Level using (Level)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Bool.Base using (Bool; true; false; if_then_else_)
@@ -36,10 +37,8 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
   module MA = Measures A (allClass A)
   open MA using (Pre; mk; ∫; _≈ᵖ_)
 
-  -- powers
-  pow : ∣A∣ → ℕ → ∣A∣
-  pow x zero = 1#
-  pow x (suc n) = x * pow x n
+  -- powers: `x ^ suc n = x * x ^ n`
+  open Exp semiring using (_^_; y*x^m*y^n≈x^m*y^[n+1])
 
   ----------------------------------------------------------------------------
   -- sequential updating and the posterior predictive
@@ -92,11 +91,11 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
     failures (false ∷ xs) = suc (failures xs)
 
     -- the likelihood of a sequence is `p^s q^f`: it depends on the data only through the counts
-    likSeq-counts : ∀ xs θ → (likSeq xs ⟨$⟩ θ) ≈ pow (p ⟨$⟩ θ) (successes xs) * pow (q ⟨$⟩ θ) (failures xs)
+    likSeq-counts : ∀ xs θ → (likSeq xs ⟨$⟩ θ) ≈ (p ⟨$⟩ θ) ^ successes xs * (q ⟨$⟩ θ) ^ failures xs
     likSeq-counts [] θ = sym (*-identityˡ 1#)
     likSeq-counts (true ∷ xs) θ = trans (*-cong refl (likSeq-counts xs θ)) (sym (*-assoc _ _ _))
     likSeq-counts (false ∷ xs) θ = trans (*-cong refl (likSeq-counts xs θ))
-      (trans (sym (*-assoc _ _ _)) (trans (*-cong (*-comm _ _) refl) (*-assoc _ _ _)))
+      (y*x^m*y^n≈x^m*y^[n+1] (*-comm _ _) (successes xs) (failures xs))
 
     -- updating one observation at a time is updating with the sequence
     update : Pre Θ → List Bool → Pre Θ
@@ -120,9 +119,9 @@ module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
         same : ∀ θ → (likSeq xs ⟨$⟩ θ) ≈ (likSeq ys ⟨$⟩ θ)
         same θ = trans (likSeq-counts xs θ) (trans (counts θ) (sym (likSeq-counts ys θ)))
           where
-            counts : ∀ θ → pow (p ⟨$⟩ θ) (successes xs) * pow (q ⟨$⟩ θ) (failures xs)
-                           ≈ pow (p ⟨$⟩ θ) (successes ys) * pow (q ⟨$⟩ θ) (failures ys)
-            counts θ = reflexive (≡.cong₂ (λ s f → pow (p ⟨$⟩ θ) s * pow (q ⟨$⟩ θ) f) hs hf)
+            counts : ∀ θ → (p ⟨$⟩ θ) ^ successes xs * (q ⟨$⟩ θ) ^ failures xs
+                           ≈ (p ⟨$⟩ θ) ^ successes ys * (q ⟨$⟩ θ) ^ failures ys
+            counts θ = reflexive (≡.cong₂ (λ s f → (p ⟨$⟩ θ) ^ s * (q ⟨$⟩ θ) ^ f) hs hf)
 
     -- the evidence is a distribution on the data: Z(heads) + Z(tails) is the total mass of the prior, which is 1 for a
     -- probability prior (this is where `p θ + q θ = 1` is used)
