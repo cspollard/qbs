@@ -130,7 +130,7 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 
 ### 3c status
 
-Status: `Inference/Sampler` and `Inference/UniformSampler` live on branch `plan3c-sampler` only (removed from `main`: `Sampler` is far too expensive to check, >12 CPU-minutes and several GB, until it is fixed).  Done there: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`. `E-resp` (well-definedness of `E-at` on `TQ X`) is done on `main` in `Inference/ExpectationResp`, without truncation or monotone convergence: a statistic bounded by `N` is rescaled by `2⁻ᴺ` to a [0,1]-valued test, so `p ≈ᵖ q` applies directly, and `J-scale` plus cancelling `2⁻ᴺ` recovers its integrals.  That module defines `E-at` itself (the same formula as `Sampler.E-at`), so it does not depend on `Sampler`.  `Inference/BernoulliCompare` (Bayesian vs frequentist on the fair or two-headed coin) needs `Sampler` and stays parked on branch `orphaned-wip`.
+Status: `Inference/Sampler` and `Inference/UniformSampler` are back on `main` (2026-11-01, see "3d step 4 outcome"); they were off it for a while because `Sampler` took >12 CPU-minutes and several GB to check.  Done there: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`. `E-resp` (well-definedness of `E-at` on `TQ X`) is done on `main` in `Inference/ExpectationResp`, without truncation or monotone convergence: a statistic bounded by `N` is rescaled by `2⁻ᴺ` to a [0,1]-valued test, so `p ≈ᵖ q` applies directly, and `J-scale` plus cancelling `2⁻ᴺ` recovers its integrals.  That module defines `E-at` itself (the same formula as `Sampler.E-at`), so it does not depend on `Sampler`.  `Inference/BernoulliCompare` (Bayesian vs frequentist on the fair or two-headed coin) is a skeleton with holes on branch `orphaned-wip`.
 
 ### 3d: expectations over continuous measures (roadmap, 2026-11-01)
 
@@ -158,7 +158,7 @@ Steps, in order of effort:
 3. **[partly done, see outcome below]** **More distributions.**  Bernoulli is nearly free.  Density-defined ones (exponential, Gaussian) need the density
    (`e^{−x}`, …) as a measurable `[0,∞]`-valued function, which the library does not have yet; `Density.densM` then
    gives the measure.
-4. **The sampler–monad bridge.**  `Inference/Sampler` is off `main` (over 12 CPU-minutes to check, see "3c status");
+4. **[done except `BernoulliCompare`, see outcome below]** **The sampler–monad bridge.**  `Inference/Sampler` is off `main` (over 12 CPU-minutes to check, see "3c status");
    making it cheap would bring back `BernoulliCompare` (branch `orphaned-wip`) and the frequentist results stated over
    samplers.
 
@@ -203,3 +203,17 @@ What an exponential distribution would need (assessment, not started):
    `E-atᴵ`, `J-resp∞` and `E-respᴵ` apply.
 The CDF route (push the uniform along `−log(1−u)`) avoids 1–3 but needs `log` as a measurable `AQ → [0,∞]`, with the
 same series obstacles.
+
+3d step 4 outcome (2026-11-01): `Inference/Sampler` and `Inference/UniformSampler` are back on `main`, about 9 s and
+under 1 GB each (dependencies built).
+- Diagnosis: the cost was declaring a `record` inside the parameterised `Sampler` module.  `record SingleMoments`
+  (two fields) exhausted a 3 GB cap after about 60 s, mostly GC; it still did with one field, `no-eta-equality`, or the
+  field type factored out, while the same type as a plain definition was cheap, and a trivial record at top level
+  outside the module was cheap.  `record Model` cost about 25 s and 0.8 GB extra the same way.  Cause inside Agda
+  unknown.  **Lesson: avoid declaring records inside heavily parameterised modules here; use Σ/× or synonyms.**
+- Changes: `SingleMoments` is a pair `(∀ θ → MeanAt θ) × (∀ θ → SecondAt θ)`; `Model Θ X` is the synonym
+  `Hom S Θ (TQ X)`; `E-at` comes from `ExpectationResp`; ported to `Func`-valued `α`, `LEM₁`, no `funext`;
+  `Frequentist.Moments` is per-θ.  `UniformVariance` gained `u⁺`/`u⁻` (its `u` is `abstract`).
+- Not done: `BernoulliCompare`.  The `orphaned-wip` version is a skeleton (the two samplers and the theorem are holes),
+  so it needs new proofs: the head indicator `[expansion r ≤ t]` as an `STest`, its expectation from `UniformCDF`, and
+  the link to `CoinBias.Additive`.
