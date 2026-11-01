@@ -23,7 +23,7 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Analysis.SignedOmega using (module Bounded)
-open import QBS.Analysis.Estimator using (module Estimator)
+open import QBS.Analysis.Estimator using (module Estimator; module NatIn)
 open import QBS.Classical using (LEM₁)
 
 ----------------------------------------------------------------------------
@@ -42,9 +42,7 @@ data Term : Set where
 module Eval {c ℓ} (R : CommutativeRing c ℓ) where
   private module R = CommutativeRing R
 
-  natR : ℕ → R.Carrier
-  natR zero = R.0#
-  natR (suc n) = natR n R.+ R.1#
+  open NatIn R renaming (nat to natR) using ()
 
   eval : Term → (ℕ → R.Carrier) → R.Carrier
   eval (var i) X = X i
@@ -117,72 +115,52 @@ module Frequentist (lem₁ : LEM₁) where
   ScaledUnbiased : ∀ {Θ} → Experiment Θ → (Θ → Sg) → (Θ → Sg) → Term → Set₁
   ScaledUnbiased ex k τ t = ∀ θ → expect ex θ t ≃ k θ *S τ θ
 
-  -- the moment hypotheses on the observations at every parameter (cf. `Estimator.Moments`): identically distributed
-  -- up to second moments, with mean μ θ and variance σ² θ, and pairwise uncorrelated
-  record Moments {Θ : Set₁} (ex : Experiment Θ) (μ σ² : Θ → Sg) : Set₂ where
-    open Experiment ex
-    field
-      mean : ∀ θ i → E-B (space θ) (prob θ) (obs θ i) ≃ μ θ
-      second : ∀ θ i → E-B (space θ) (prob θ) (CommutativeRing._*_ (RV ex θ) (obs θ i) (obs θ i)) ≃ σ² θ +S (μ θ *S μ θ)
-      uncorr : ∀ θ i j → i < j →
-        E-B (space θ) (prob θ) (CommutativeRing._*_ (RV ex θ) (obs θ i) (obs θ j)) ≃ μ θ *S μ θ
+  -- the estimator layer at the parameter θ (see `Analysis/Estimator`)
+  module Est {Θ : Set₁} (ex : Experiment Θ) (θ : Θ) =
+    Estimator signedRing (RV ex θ) (E-B (Experiment.space ex θ) (Experiment.prob ex θ))
+      (E-B-cong (Experiment.space ex θ) (Experiment.prob ex θ)) (E-B-+ (Experiment.space ex θ) (Experiment.prob ex θ))
 
-  -- the theorems of the estimator layer, for every experiment with moments.  (The scaling by n stays division-free:
-  -- the natural number n appears as a signed constant, `natS n`.)
+  -- the moment hypotheses on the observations at every parameter: identically distributed up to second moments, with
+  -- mean μ θ and variance σ² θ, and pairwise uncorrelated
+  Moments : ∀ {Θ : Set₁} → Experiment Θ → (Θ → Sg) → (Θ → Sg) → Set₁
+  Moments ex μ σ² = ∀ θ → Est.Moments ex θ (Experiment.obs ex θ) (μ θ) (σ² θ)
+
+  -- the natural numbers as signed constants: the scaling by n stays division-free
+  natS : ℕ → Sg
+  natS = NatIn.nat signedRing
+
+  -- the theorems of the estimator layer, for every experiment with moments
   module _ {Θ : Set₁} {ex : Experiment Θ} {μ σ² : Θ → Sg} (mo : Moments ex μ σ²) where
-    natS : ℕ → Sg
-    natS zero = 0S
-    natS (suc n) = natS n +S 1S
 
-    -- the estimator layer at the parameter θ, and the evaluation of the statistics against it
+    -- the evaluation of the statistics against the observations at θ
     module At (θ : Θ) where
       open Experiment ex
-      module Est = Estimator signedRing (RV ex θ) (E-B (space θ) (prob θ))
-        (E-B-cong (space θ) (prob θ)) (E-B-+ (space θ) (prob θ))
+      private module RVm = CommutativeRing (RV ex θ)
 
-      est : Est.Moments (obs θ) (μ θ) (σ² θ)
-      est = record { mean = Moments.mean mo θ ; second = Moments.second mo θ ; uncorr = Moments.uncorr mo θ }
-
-      natS-eq : ∀ n → Est.natS n ≡ natS n
-      natS-eq zero = refl
-      natS-eq (suc n) = cong (λ x → x +S 1S) (natS-eq n)
-
-      natR-eq : ∀ n → Eval.natR (RV ex θ) n ≡ Est.natR n
-      natR-eq zero = refl
-      natR-eq (suc n) = cong (λ x → x RVm.+ RVm.1#) (natR-eq n)
-        where module RVm = CommutativeRing (RV ex θ)
-
-      sum-eq : ∀ n → Eval.eval (RV ex θ) (sumT n) (obs θ) ≡ Est.sumR (obs θ) n
+      sum-eq : ∀ n → Eval.eval (RV ex θ) (sumT n) (obs θ) ≡ Est.sumR ex θ (obs θ) n
       sum-eq zero = refl
       sum-eq (suc n) = cong (λ x → x RVm.+ obs θ n) (sum-eq n)
-        where module RVm = CommutativeRing (RV ex θ)
 
-      sq-eq : ∀ n → Eval.eval (RV ex θ) (sqT n) (obs θ) ≡ Est.sumR (Est.sq (obs θ)) n
+      sq-eq : ∀ n → Eval.eval (RV ex θ) (sqT n) (obs θ) ≡ Est.sumR ex θ (Est.sq ex θ (obs θ)) n
       sq-eq zero = refl
       sq-eq (suc n) = cong (λ x → x RVm.+ obs θ n RVm.* obs θ n) (sq-eq n)
-        where module RVm = CommutativeRing (RV ex θ)
 
-      ss-eq : ∀ n → Eval.eval (RV ex θ) (ssT n) (obs θ) ≡ Est.SS (obs θ) n
+      ss-eq : ∀ n → Eval.eval (RV ex θ) (ssT n) (obs θ) ≡ Est.SS ex θ (obs θ) n
       ss-eq n = cong₂ (λ a b → a RVm.+ RVm.- b)
-        (cong₂ RVm._*_ (natR-eq n) (sq-eq n))
+        (cong₂ RVm._*_ refl (sq-eq n))
         (cong₂ RVm._*_ (sum-eq n) (sum-eq n))
-        where module RVm = CommutativeRing (RV ex θ)
 
     -- E Sₙ = n μ  (so the sample mean Sₙ/n is unbiased for μ)
     expect-sum : ∀ θ n → expect ex θ (sumT n) ≃ natS n *S μ θ
     expect-sum θ n =
       subst (λ v → E-B (Experiment.space ex θ) (Experiment.prob ex θ) v ≃ natS n *S μ θ) (sym (At.sum-eq θ n))
-        (subst (λ k → E-B (Experiment.space ex θ) (Experiment.prob ex θ) (At.Est.sumR θ (Experiment.obs ex θ) n) ≃ k *S μ θ)
-          (At.natS-eq θ n) (At.Est.E-sum θ (At.est θ) n))
+        (Est.E-sum ex θ (mo θ) n)
 
     -- E (n Qₙ − Sₙ²) = (n² − n) σ²
     expect-ss : ∀ θ n → expect ex θ (ssT n) ≃ (natS n *S natS n +S -S natS n) *S σ² θ
     expect-ss θ n =
       subst (λ v → E-B (Experiment.space ex θ) (Experiment.prob ex θ) v ≃ (natS n *S natS n +S -S natS n) *S σ² θ)
-        (sym (At.ss-eq θ n))
-        (subst (λ k → E-B (Experiment.space ex θ) (Experiment.prob ex θ) (At.Est.SS θ (Experiment.obs ex θ) n)
-                        ≃ (k *S k +S -S k) *S σ² θ)
-          (At.natS-eq θ n) (At.Est.E-SS θ (At.est θ) n))
+        (sym (At.ss-eq θ n)) (Est.E-SS ex θ (mo θ) n)
 
     -- Sₙ / n is unbiased for μ, and (n Qₙ − Sₙ²) / (n² − n) is unbiased for σ²
     sample-mean-unbiased : ∀ n → ScaledUnbiased ex (λ _ → natS n) μ (sumT n)

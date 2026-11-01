@@ -22,6 +22,14 @@ import Algebra.Properties.Ring
 import Algebra.Solver.Ring.NaturalCoefficients.Default as Solver
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
+-- the natural numbers in a ring (`0`, `n + 1`); shared with `Inference/Frequentist`
+module NatIn {c ℓ} (R : CommutativeRing c ℓ) where
+  private module R = CommutativeRing R
+
+  nat : ℕ → R.Carrier
+  nat zero = R.0#
+  nat (suc n) = nat n R.+ R.1#
+
 module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : CommutativeRing c′ ℓ′)
   (E : CommutativeRing.Carrier R → CommutativeRing.Carrier S)
   (E-cong : ∀ {x y} → CommutativeRing._≈_ R x y → CommutativeRing._≈_ S (E x) (E y))
@@ -38,12 +46,10 @@ module Estimator {c ℓ c′ ℓ′} (S : CommutativeRing c ℓ) (R : Commutativ
 
   -- the natural numbers in each ring
   natS : ℕ → S.Carrier
-  natS zero = S.0#
-  natS (suc n) = natS n S.+ S.1#
+  natS = NatIn.nat S
 
   natR : ℕ → R.Carrier
-  natR zero = R.0#
-  natR (suc n) = natR n R.+ R.1#
+  natR = NatIn.nat R
 
   -- partial sums of a sequence
   sumR : (ℕ → R.Carrier) → ℕ → R.Carrier

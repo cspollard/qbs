@@ -48,16 +48,13 @@ module UniformExperiment (lem₁ : LEM₁) where
   variance (a , c) = UI.σc a c
 
   moments : F.Moments uniformExp mean variance
-  moments = record
-    { mean = λ { (a , c) i → UI.US.Est.Moments.mean (UI.momentsY a c) i }
-    ; second = λ { (a , c) i → UI.US.Est.Moments.second (UI.momentsY a c) i }
-    ; uncorr = λ { (a , c) i j h → UI.US.Est.Moments.uncorr (UI.momentsY a c) i j h } }
+  moments = λ { (a , c) → UI.momentsY a c }
 
   -- the sample mean is unbiased for a + c/2
-  sample-mean-unbiased : ∀ n → F.ScaledUnbiased uniformExp (λ _ → F.natS moments n) mean (sumT n)
+  sample-mean-unbiased : ∀ n → F.ScaledUnbiased uniformExp (λ _ → F.natS n) mean (sumT n)
   sample-mean-unbiased = F.sample-mean-unbiased moments
 
   -- the sample variance is unbiased for c² σ²
   sample-variance-unbiased : ∀ n → F.ScaledUnbiased uniformExp
-    (λ _ → F.natS moments n *S F.natS moments n +S -S F.natS moments n) variance (ssT n)
+    (λ _ → F.natS n *S F.natS n +S -S F.natS n) variance (ssT n)
   sample-variance-unbiased = F.sample-variance-unbiased moments

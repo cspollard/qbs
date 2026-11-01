@@ -26,8 +26,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Exponential` | 139 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 134 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.CoinBias` | 79 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
-| `QBS.Inference.Frequentist` | 193 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
-| `QBS.Inference.UniformExperiment` | 64 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
+| `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
+| `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
@@ -92,7 +92,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinSimple` | 141 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.CutSum` | 450 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
-| `QBS.Analysis.Estimator` | 271 |  | The generic estimator theorem, over an abstract ring of random variables. |
+| `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.ExpansionCons` | 70 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 334 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
@@ -168,7 +168,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
-| `QBS.Continuous.UniformMean` | 111 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by monotone convergence over the partial sums Σ_{k<n} rₖ 2^{-(k+1)} and the bit probability P(rₖ = true) = ½. |
+| `QBS.Continuous.UniformMean` | 100 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by self-similarity (split off the first bit, as `UniformMoment` and `SelfSimilar` do) and cancellation. |
 | `QBS.Continuous.UniformMoment` | 181 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
 | `QBS.Continuous.UniformSample` | 125 | lem | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 152 | lem | The variance of the uniform distribution. |
