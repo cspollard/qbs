@@ -75,14 +75,15 @@ module _ {ℓ} (M : Measurability ℓ) where
       const-random : ∀ x → Random (constₛ x)
       pre-random : ∀ {α f} → Random α → Meas f → Random (α ∘ₛ f)
 
-    -- probes are determined by their underlying functions
-    random-cast : ∀ {α β} → (∀ r → α ⟨$⟩ r ≡ β ⟨$⟩ r) → Random α → Random β
-    random-cast e = random-resp (λ r → Setoid.reflexive X (e r))
-
     -- gluing under a map g: glue (g ∘ αₙ) is g ∘ (glue α)
     random-glue-∘ : ∀ {a b} {A : Setoid a b} {j : Func Rˢ ℕˢ} (g : Func A X) (α : ℕ → Func Rˢ A) →
       Random (glueₛ j (λ n → g ∘ₛ α n)) → Random (g ∘ₛ glueₛ j α)
-    random-glue-∘ g α = random-cast (λ _ → refl)
+    random-glue-∘ g α = random-resp (λ _ → Setoid.refl X)
+
+    -- gluing then precomposing: (glue j f) ∘ γ is the glue of the f n ∘ γ along j ∘ γ
+    random-glue-pre : ∀ {a b} {A : Setoid a b} {j : Func A ℕˢ} (f : ℕ → Func A X) (γ : Func Rˢ A) →
+      Random (glueₛ (j ∘ₛ γ) (λ n → f n ∘ₛ γ)) → Random (glueₛ j f ∘ₛ γ)
+    random-glue-pre f γ = random-resp (λ _ → Setoid.refl X)
 
   -- the measurable maps are the probes of R itself (the representable)
   measProbes : Probes Rˢ
