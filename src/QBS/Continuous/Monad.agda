@@ -410,4 +410,23 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     ; ∫-join = λ X → ∫-join {X}
     }
 
-  open Laws integral monadData public using (TF; ηN; μN; TM)
+  open Laws integral monadData public using (TF; ηN; μN)
+
+  -- `TM` is written out (not `Laws.TM`): with the generic `TM`, `Continuous/Strong` was ~17 % slower to check
+  TM : Monad (QBSCat S)
+  TM = record
+    { F = TF
+    ; η = ηN
+    ; μ = μN
+    ; assoc = λ {X} {p} f →
+        Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
+          (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)
+            (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))))
+    ; sym-assoc = λ {X} {p} f →
+        Setoid.trans Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))
+          (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
+            (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)))
+    ; identityˡ = λ {X} {p} f →
+        Setoid.trans Aˢ (∫-join (mapPre (ηH X) p) f) (I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
+    ; identityʳ = λ {X} {p} f → ∫-join (ηPre p) f
+    }
