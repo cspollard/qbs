@@ -158,7 +158,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   glueJ : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → Idx i → (ℕ → Joint X) → Joint X
   glueJ {X} {i} pi a = record
     { map = glueₛ (i ∘ₛ proj₁ₛ) (λ n → map (a n))
-    ; map-random = λ {γ} (m₁ , m₂) → random-cast X (λ _ → ≡.refl)
+    ; map-random = λ {γ} (m₁ , m₂) → random-glue-pre X (λ n → map (a n)) γ
         (glue-random X {i ∘ₛ (proj₁ₛ ∘ₛ γ)} (idxPre {i} {proj₁ₛ ∘ₛ γ} pi m₁) (λ n → map (a n) ∘ₛ γ) (λ n → map-random (a n) (m₁ , m₂)))
     }
 

@@ -8,7 +8,7 @@ open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ; <_,_>ₛ)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 import Function.Construct.Identity as Id
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
@@ -53,14 +53,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
       -- glue a family of morphisms ℛ × X ⇒ Y along a measurable partition
       glueRX : ∀ {j} → Idx j → (u : ℕ → Hom S RX Y) → Hom S RX Y
       glueRX {j} ij u = record
-        { map = record
-            { to = λ (r , x) → map (u (j ⟨$⟩ r)) ⟨$⟩ (r , x)
-            ; cong = λ { {r , x} {r′ , y} (er , e) →
-                Setoid.trans (Carrier Y) (Func.cong (map (u (j ⟨$⟩ r))) (er , e))
-                  (Setoid.reflexive (Carrier Y) (≡.cong (λ n → map (u n) ⟨$⟩ (r′ , y)) (Func.cong j er))) }
-            }
+        { map = glueₛ (j ∘ₛ proj₁ₛ) (λ n → map (u n))
         ; map-random = λ {α} (pβ , pγ) →
-            random-cast Y (λ _ → refl)
+            random-glue-pre Y (λ n → map (u n)) α
               (glue-random Y (idx-pre ij pβ) (λ n → map (u n) ∘ₛ α) (λ n → map-random (u n) (pβ , pγ)))
         }
 
