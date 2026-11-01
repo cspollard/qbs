@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Status (2026-11-01): Stages 1, 1a, 2 (A.1, A.2, B.3, B.5, E.1) and 3 (A.5, A.7, B.2, C.3, D.2, E.2 cheap, F.1, F.2) are complete and merged; everything else is open.  See
+definitions.  Status (2026-11-01): Stages 1, 1a, 2 (A.1, A.2, B.3, B.5, E.1) 3 (A.5, A.7, B.2, C.3, D.2, E.2 cheap, F.1, F.2) and 4 (B.1 partly, B.4, G partly) are complete and merged; everything else is open.  See
 "Status at a glance" below, and the outcome sections at the end for details.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
@@ -24,11 +24,12 @@ sections are in suggested order of work.
   - Item 2 is a direct one-object `SubCategory` (`QBS.Category.Measurable`) with a full and faithful `yoneda` embedding.
 - Stage 2: A.1, A.2, B.3, B.5, E.1 (see the "Stage 2 outcome" sections).
 - Stage 3: A.5, A.7, B.2, C.3, D.2, E.2 (cheap option), F.1, F.2 (see the "Stage 3 outcome" sections).
+- Stage 4: B.1 (monad and strength laws; commutativity and `Model/Strong` left), B.4, G (rename and doc remarks; `Borel/Core` left).  See the "Stage 4 outcome" sections.
 
 **Open:**
 - A.8 (uncertain).
-- B.1 (largest), B.4.
-- C.2, C.5; E.2 (full option only); G.
+- B.1 remainder: commutativity is not generic (see Stage 4 outcome); `Continuous/Strong` got 17% slower.
+- C.2, C.5; E.2 (full option only); G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
 - Stage 1a item 5, second half: `measₛ`/`idxₛ` (`Borel/Source`) and `witₛ` are still separate constructors.
 - Stage 1a item 4: 2 `random-cast` sites remain (`Exponential`, `Continuous/Monad`); B.2 removed the `SFinite*` ones.
 
@@ -121,7 +122,7 @@ sections are in suggested order of work.
 
 ## B. Measures and monads: one construction instead of three
 
-1. **The monad presented by its integral (the largest single item).**
+1. **[monad and strength laws done]** **The monad presented by its integral (the largest single item).**
    - In all three models, measure equality is "all integrals agree" (`_≈ᵖ_`, `_≈ᴹ_`, `Model/Monad.PreS`).  Every
      functor, monad and strength law is then the same `trans` chain over five equations: `∫-cong`, `∫-map`,
      `∫-η`, `∫-join`, `∫-σ`.  Commutativity is one Fubini equation in about 60 lines of plumbing.
@@ -160,7 +161,7 @@ sections are in suggested order of work.
      structure generated on coproducts and quotients.
    - Payoff: about 60 lines.
    - Risk: low to moderate.  `_+Q_` needs a case split for `ev-pre`.
-4. **Measures form a cone.**
+4. **[done]** **Measures form a cone.**
    - Now: `Mixture.agda:25-77` proves all six `Measure` laws for `½m₁ + ½m₂` by hand.  `MixtureN`, `Density`,
      `Restrict` and `SubProb` repeat the scaling pattern.
    - Standard: valuations form a cone, a module over [0,∞] (Jones–Plotkin 1989; Keimel–Plotkin).
@@ -262,6 +263,8 @@ sections are in suggested order of work.
 
 ## G. Naming and documentation
 
+[done except `Borel/Core`; see the Stage 4 outcome.]
+
 - `Regular.Meas U m` (:63) means "U is ν-regular with measure m", and clashes with `Analysis.Meas`.  Rename it
   `Regular`.
 - `ExtNat` is the classical `fin | ∞` encoding, not Escardó's ℕ∞; the docs should not suggest otherwise.  `Lead`
@@ -335,7 +338,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1–5 are done; in step 6, B.2 is done and B.1 is open; in step 7, F.1, F.2 and E.2 (cheap) are done, and B.4 and the full E.2 are open.
+Status: steps 1–6 are done (B.1 without generic commutativity); in step 7, B.4, F.1, F.2 and E.2 (cheap) are done, and the full E.2 is open.
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -564,3 +567,62 @@ Note: three of the four Stage 3 worktrees were first cut from a stale `main` (`7
 * **F.2 done.**  `Analysis/Estimator` has a top-level `NatIn R` with `nat`; `Estimator.natS`/`natR` and `Frequentist`'s copies are instances,
   so `natS-eq`/`natR-eq` and their `subst` chains are gone.  `Frequentist.Moments` is `∀ θ → Est.Moments …` (now in `Set₁`); `F.natS` no longer
   takes `moments`.  Kept: `sum-eq`/`sq-eq`/`ss-eq`, which relate `Term` evaluation to `Estimator.sumR`/`sq`/`SS` rather than bridging copies.
+
+## Stage 4 canaries (B.1, B.4, G)
+
+Forced recheck (delete the module's `.agdai`, warm dependencies), timed by the orchestrator on a quiet machine,
+interleaved before/after, two runs each, in seconds.  Before = `2f35ffa`, after = main with B.1, B.4 and G merged.
+`Continuous/Strong` was added as a canary because B.1 changes it.
+
+| Module | Before | After |
+|---|---|---|
+| `Probability` | 5.04 / 5.03 | 4.96 / 4.96 |
+| `Exponential` | 2.74 / 2.73 | 2.64 / 2.63 |
+| `Model/Monad` | 2.60 / 2.58 | 3.00 / 2.97 |
+| `Model/ProbInstance` | 5.03 / 5.00 | 4.96 / 4.94 |
+| `Model/StatInstance` | 7.09 / 7.01 | 6.92 / 6.90 |
+| `Continuous/Monad` | 3.49 / 3.51 | 3.55 / 3.56 |
+| `Continuous/SFiniteMonad` | 4.67 / 4.75 | 4.76 / 4.79 |
+| `Continuous/SFiniteNorm` | 6.56 / 6.55 | 6.42 / 6.39 |
+| `Continuous/SFiniteStrong` | 5.15 / 5.16 | 4.44 / 4.44 |
+| `Continuous/SFiniteStat` | 6.47 / 6.50 | 6.36 / 6.43 |
+| `Continuous/Strong` | 41.65 / 41.29 | 48.59 / 48.43 |
+
+`Continuous/Strong` is 17% slower (about 41.5 s to 48.5 s) and `Model/Monad` 15% slower (2.6 s to 3.0 s), both
+from B.1.  `SFiniteStrong` is 14% faster.  The others are within 3%.
+
+## Stage 4 outcome (B.1)
+
+- New `QBS/IntegralMonad.agda` (229 lines), citing Kock (TAC 2012), Jacobs and Ścibior et al. 2018.  Records
+  `Tests` (tests, `eval`, precomposition), `Integral` (`∫`, `∫-ext`, `∫-cong`), `MonadData` (`TH`, `ηH`,
+  `joinH`, `∫-map`, `∫-η`, `∫-join`) and `IntegralStrength` (`σH`, `∫-σ`).  `module Laws` gives `TF`, `ηN`,
+  `μN`, `TM`; `module StrongLaws` gives `σ-nat`, `strength`, `strongMonad`.  An 18-field single record pushed
+  `longcheck` up by one, hence the split.
+- Instantiated in `Model/Monad`, `Continuous/Monad`, `SFiniteMonad` (monad laws) and `Continuous/Strong`,
+  `SFiniteStrong` (strength laws).  Downstream names are unchanged; `mapM`/`joinPre` stay `abstract`.
+- Net +101 lines, not −180: the models lose about 235 and the generic module costs 229.  The gain is that a new
+  model gets the monad and strength laws from about 40 lines of data.
+- Left: `Model/Strong` (its strength laws are `refl`); commutativity everywhere (each proof is already
+  `trans ∫-join (fubini …) (sym ∫-join)`, and a generic version needs the iterated integrals as `Test`s, which
+  the Continuous models only have as raw integrals over R, with new measurability obligations).
+- Cost: `Continuous/Strong` +17% and `Model/Monad` +15% (see the canaries).  The `INLINE` pragmas on `TM`/`TF`
+  in `SFiniteMonad` went, since those are now definitions inside `Laws`.  Some unused imports remain.
+
+## Stage 4 outcome (B.4)
+
+- New `Analysis/Cone` (69 lines, citing Jones–Plotkin 1989 and Keimel–Plotkin): `zeroM`, `scaleM c (c ≤ 1#)`
+  and `addM` with a mass bound.  `zeroM`/`scaleM` moved out of `Continuous/SubProb`.
+- `Mixture.mix = addM (scaleM half half≤1 m₁) (scaleM half half≤1 m₂) (mix-bound …)`; the hand proofs and the ring
+  solver go.  Net +87/−76 (the new module's header and citations); `longcheck` 36 → 35.
+- Left: `MixtureN` is already the countable sum; `Density` scales a pre-measure without `I-sub`, so `scaleM` does
+  not apply; `Restrict` composes with χ and does not scale; `Model/SubProb` has no `Measure` records.
+
+## Stage 4 outcome (G)
+
+- `Regular.Meas` is now `IsRegular` (no other module used the name).
+- `ExtNat` and `Lead` headers say that `ExtNat` is the classical `fin n | ∞` encoding, not Escardó's ℕ∞, and that
+  `Lead` needs `lem` only for the all-true sequence.
+- Left: `Borel/Core` onto `Relation.Unary`.  54 modules import it, its `⋃`/`⋂` are constructors used in about 58
+  places and clash with stdlib's names, and stdlib's `Pred A ℓ` differs from the local `Pred`.  No cheap partial
+  adoption.
+- C.4 was already done in Stage 1.
