@@ -28,7 +28,7 @@ sections are in suggested order of work.
 
 **Open:**
 - A.8 (uncertain).
-- B.1 remainder: commutativity is not generic (see Stage 4 outcome); `Continuous/Strong` got 17% slower.
+- B.1 remainder: commutativity is not generic, and the Continuous model keeps its own `TM` and strength (see the Stage 4 follow-up).
 - C.2, C.5; E.2 (full option only); G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
 - Stage 1a item 5, second half: `measₛ`/`idxₛ` (`Borel/Source`) and `witₛ` are still separate constructors.
 - Stage 1a item 4: 2 `random-cast` sites remain (`Exponential`, `Continuous/Monad`); B.2 removed the `SFinite*` ones.
@@ -626,3 +626,34 @@ from B.1.  `SFiniteStrong` is 14% faster.  The others are within 3%.
   places and clash with stdlib's names, and stdlib's `Pred A ℓ` differs from the local `Pred`.  No cheap partial
   adoption.
 - C.4 was already done in Stage 1.
+
+## Stage 4 follow-up (B.1: the `Continuous/Strong` slowdown)
+
+- The 17% is spent checking `commutative` in `Continuous/Strong` (about 45 s of 48 s).  It appears whenever
+  `Continuous.TM` is the generic `Laws.TM`, even if only the four monad-law fields are projections of it.  The
+  mechanism is unknown.  `abstract` seals, `INLINE` on either side, and explicit implicit arguments in
+  `commutative` did not help (several made it worse, up to 58 s).
+- Fix: `Continuous/Monad` takes `TF`, `ηN`, `μN` from `Laws` but writes `TM` out with the original law proofs (with
+  a comment saying why), and `Continuous/Strong` keeps its local `strength`/`strongMonad`.  About 47 lines stay
+  model-side.  `Model/Monad`, `SFiniteMonad` and `SFiniteStrong` still use `Laws`/`StrongLaws`.
+- Re-timed against `2f35ffa` the same way as above.  The machine was about 10% slower than for the Stage 4 table,
+  so compare columns within this table only:
+
+| Module | Before | After |
+|---|---|---|
+| `Deleted` | branch / (was | worktree-agent-adc866cd98e1b5a66 / ce63aed). |
+| `Probability` | 5.56 / 5.54 | 5.45 / 5.45 |
+| `Exponential` | 3.03 / 3.03 | 2.94 / 2.93 |
+| `Model/Monad` | 2.87 / 2.87 | 3.29 / 3.28 |
+| `Model/ProbInstance` | 5.50 / 5.51 | 5.43 / 5.42 |
+| `Model/StatInstance` | 7.66 / 7.67 | 7.53 / 7.52 |
+| `Continuous/Monad` | 3.87 / 3.87 | 4.14 / 4.11 |
+| `Continuous/SFiniteMonad` | 5.17 / 5.16 | 5.27 / 5.27 |
+| `Continuous/SFiniteNorm` | 7.27 / 7.34 | 7.11 / 7.15 |
+| `Continuous/SFiniteStrong` | 5.69 / 5.75 | 5.02 / 4.96 |
+| `Continuous/SFiniteStat` | 7.32 / 7.25 | 7.10 / 7.13 |
+| `Continuous/Strong` | 44.94 / 44.81 | 44.54 / 45.03 |
+
+`Continuous/Strong` is back to baseline.  `Model/Monad` (+14%, 0.4 s) and `Continuous/Monad` (+7%, 0.25 s) are
+slower by small absolute amounts, the price of instantiating `Laws`; `SFiniteStrong` is 13% faster.  The rest are
+within 3% or faster.
