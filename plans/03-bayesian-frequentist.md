@@ -152,7 +152,7 @@ Steps, in order of effort:
    `E-at (join P) g ≃ E-at P (λ q → E-at q g)` (needs `q ↦ E-at q g` as an `STest (TQ X)`, as `∫ᶠ` is for `∫`) and
    independence under the strength (`E[f(x) g(y)] = E f · E g`, via the Fubini already proved for `∫`).  Expected to
    reuse the rescaling trick of `E-resp`: prove for [0,1] tests through the `∫` laws, rescale by `2⁻ᴺ`, cancel.
-2. **Unbounded statistics.**  `STest` requires one natural-number bound, so `E-at` cannot express, e.g., `E[x²]` for a
+2. **[done, see outcome below]** **Unbounded statistics.**  `STest` requires one natural-number bound, so `E-at` cannot express, e.g., `E[x²]` for a
    distribution with unbounded support.  Extend `E-at` and `E-resp` to integrable tests; `SignedIntegral` already
    allows integrable parts, and monotone convergence exists.  Real work.
 3. **More distributions.**  Bernoulli is nearly free.  Density-defined ones (exponential, Gaussian) need the density
@@ -172,3 +172,11 @@ Independence (`Inference/ExpectationProduct`, about 9 s to check): the product t
 `f⁺g⁻ + f⁻g⁺`, bound `2NM`, `valT-⊗T` by `≃-refl`); `E-at-cong` (pointwise `≃` tests have `≃` expectations, via
 `cancel-bnd`); `E-at-σ` (`E-at (σPre (x , q)) (f ⊗T g) ≃ valT f x *S E-at q g`); and `E-at-⊗`
 (`E-at (p ⊗ᵖ q) (f ⊗T g) ≃ E-at p f *S E-at q g`) for `p ⊗ᵖ q = joinPre (mapPre (σq q) p)`, the left-strength product.
+
+3d step 2 outcome (2026-11-01): `Inference/ExpectationInt` (about 8 s).  `ITest p` (parts `Hom X CutQ` whose pulled-back
+integrals under `p` are finite), `E-atᴵ`, `fromSTest` with `E-atᴵ-fromSTest` (agrees with `E-at`, `≃-refl`),
+`truncHom h k` (the truncation `tr k ∘ h` as a [0,1] test), `J-resp∞` (`p ≈ᵖ q` equates `J` of any unbounded
+`h : Hom X CutQ`, infinite values included: `J-def` unfolds `J` to `⨆ₖ 2ᵏ · ∫ (tr k ∘ h)`, and each truncated
+integral is an `∫` of a test), `transportI`, `E-respᴵ`, and linearity (`_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`,
+`E-atᴵ-scale`).  No new lemma about `J` was needed.  Not done: `E-atᴵ-map`, `E-atᴵ-η` (expected to follow the bounded
+pattern).  Callers pass `{p = p} {q = q}` to `J-resp∞`/`transportI` (`_≈ᵖ_` is a function, so they are not inferable).
