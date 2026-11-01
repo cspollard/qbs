@@ -33,7 +33,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpectationProduct` | 135 | lem | Independence for products: expectations against the product measure of the continuous probability monad. |
 | `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
+| `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
+| `QBS.Inference.UniformSampler` | 97 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IntegralMonad` | 223 |  | A monad on quasi-Borel spaces presented by its integral. |
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
@@ -179,7 +181,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformMean` | 107 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by self-similarity (split off the first bit, as `UniformMoment` and `SelfSimilar` do) and cancellation. |
 | `QBS.Continuous.UniformMoment` | 181 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
 | `QBS.Continuous.UniformSample` | 125 | lem | Estimation from independent uniform draws. |
-| `QBS.Continuous.UniformVariance` | 152 | lem | The variance of the uniform distribution. |
+| `QBS.Continuous.UniformVariance` | 159 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
 ## Examples
