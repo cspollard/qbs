@@ -38,7 +38,7 @@ open import QBS.Limits using (_×Q_; 1Q)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
+open import QBS.Borel.Merge using (mergeC; measurable-merge; measurable-merge₁; Cyl-rect)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure

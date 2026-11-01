@@ -23,7 +23,7 @@ open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable; measurable-∘)
 open import QBS.Borel.Source using (R₁; cantorSource; down)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
+open import QBS.Borel.Merge using (measurable-merge; mergeC; measurable-merge₁; Cyl-rect)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
