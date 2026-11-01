@@ -404,7 +404,7 @@ module SFiniteNorm (lem : LEM₀) where
 
   normPre-random : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → WitM {X} β →
     (inv : ∀ r → massP (β r) * invOf (massP (β r)) ≈ 1#) →
-    C.Wit {X} (λ r → normPre (β r) (invOf (massP (β r))) (inv r))
+    C.Wit {X} C._≈ᵖ_ (λ r → normPre (β r) (invOf (massP (β r))) (inv r))
   normPre-random {X} {β} w inv = record
     { a = NormW.aN w inv ; g = NormW.gN w inv ; g-ok = NormW.g-ok-N w inv
     ; g-pr = NormW.gN-pr w inv ; w-eq = NormW.weqN w inv }
@@ -446,7 +446,7 @@ module SFiniteNorm (lem : LEM₀) where
     τ : R₁ → C.Pre X
     τ r = normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r)
 
-    τ-random : C.Wit {X}
+    τ-random : C.Wit {X} C._≈ᵖ_
         (λ r → normPre {X} (pick (caseIdx {X} (β r)) r) (invOf (massP {X} (pick (caseIdx {X} (β r)) r))) (inṽ r))
     τ-random = normPre-random {X} {λ r → pick (caseIdx {X} (β r)) r} w̃ inṽ
 

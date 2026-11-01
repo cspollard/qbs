@@ -124,59 +124,33 @@ module SFinite (lem : LEM₀) where
   kerP : ∀ {X : QBS S} (a : Joint (XW X)) (g : R₁ → Measure) → (∀ r → IsProb (g r)) → R₁ → Pre (XW X)
   kerP a g pr r = mk (sec a r) (sec-random a r) (g r) (pr r)
 
-  record WitM {X : QBS S} (β : R₁ → Pre (XW X)) : Set₁ where
-    field
-      a : Joint (XW X)
-      g : R₁ → Measure
-      g-ok : KernelOk g
-      g-pr : ∀ r → IsProb (g r)
-      w-eq : ∀ r → _≈ᴹ_ {X} (β r) (kerP {X} a g g-pr r)
+  -- random families of measures are `C.Wit` for the weighted equivalence; the probes of `TQ` are
+  -- `C.WitProbes` at `≈ᴹ`, so `TQ-resp/const/pre/glue` need no restating
+  WitM : ∀ {X : QBS S} → (R₁ → Pre (XW X)) → Set₁
+  WitM {X} β = C.Wit (_≈ᴹ_ {X}) β
 
+  module WitM = C.Wit
   open WitM
 
-  fromWit : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} → C.Wit {XW X} β → WitM {X} β
-  fromWit {X} {β} w = record
-    { a = C.Wit.a {XW X} {β} w ; g = C.Wit.g {XW X} {β} w ; g-ok = C.Wit.g-ok {XW X} {β} w
-    ; g-pr = C.Wit.g-pr {XW X} {β} w
-    ; w-eq = λ r → ≈ᵖ⇒≈ᴹ {X} (β r) (kerP {X} (C.Wit.a {XW X} {β} w) (C.Wit.g {XW X} {β} w) (C.Wit.g-pr {XW X} {β} w) r)
-                    (C.Wit.w-eq {XW X} {β} w r) }
+  module WP {X : QBS S} =
+    C.WitProbes {XW X} (_≈ᴹ_ {X}) (λ {p q} e f → sym (e f)) (λ {p q r} e e′ f → trans (e f) (e′ f)) (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q)
 
-  -- The proofs of randomness are produced by `abstract` helpers: conversions at nested measure
-  -- spaces (`TQ (X ×Q TQ Y)`, ...) must never unfold these witnesses (see TODO, compile time).
+  -- The proofs of randomness are `abstract`: conversions at nested measure spaces
+  -- (`TQ (X ×Q TQ Y)`, ...) must never unfold these witnesses (see TODO, compile time).
   abstract
     TQ-resp : ∀ {X : QBS S} {α β : R₁ → Pre (XW X)} → (∀ r → _≈ᴹ_ {X} (α r) (β r)) → WitM {X} α → WitM {X} β
-    TQ-resp {X} e w = record
-      { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
-      ; w-eq = λ r f → trans (sym (e r f)) (w-eq w r f) }
+    TQ-resp {X} = WP.TQ-resp {X}
 
     TQ-const : ∀ {X : QBS S} (p : Pre (XW X)) → WitM {X} (const p)
-    TQ-const {X} p = fromWit {X} (QBS.const-random (C.TQ (XW X)) p)
+    TQ-const {X} = WP.TQ-const {X}
 
     TQ-pre : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} {f : Func Rˢ Rˢ} → WitM {X} β → RandomSource.Meas S f →
       WitM {X} (λ r → β (f ⟨$⟩ r))
-    TQ-pre {X} {β} {f} w mf = record
-      { a = preJ {f = f} mf (a w)
-      ; g = λ r → g w (f ⟨$⟩ r)
-      ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
-      ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
-      ; w-eq = λ r h → trans (w-eq w (f ⟨$⟩ r) h)
-          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a w) (g w) (g-pr w) (f ⟨$⟩ r))
-             (kerP {X} (preJ {f = f} mf (a w)) (λ r′ → g w (f ⟨$⟩ r′)) (λ r′ → g-pr w (f ⟨$⟩ r′)) r)
-             (C.mk-cong {XW X} (sec-random (a w) (f ⟨$⟩ r)) (sec-random (preJ {f = f} mf (a w)) r)
-                (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier (XW X)))) h) }
+    TQ-pre {X} {β} {f} = WP.TQ-pre {X} {β} {f}
 
     TQ-glue : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
       (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i ⟨$⟩ r) r)
-    TQ-glue {X} {i} pi β ws = record
-      { a = glueJ {i = i} pi (λ n → a (ws n))
-      ; g = λ r → g (ws (i ⟨$⟩ r)) r
-      ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-      ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
-      ; w-eq = λ r h → trans (w-eq (ws (i ⟨$⟩ r)) r h)
-          (≈ᵖ⇒≈ᴹ {X} (kerP {X} (a (ws (i ⟨$⟩ r))) (g (ws (i ⟨$⟩ r))) (g-pr (ws (i ⟨$⟩ r))) r)
-             (kerP {X} (glueJ {i = i} pi (λ n → a (ws n))) (λ r′ → g (ws (i ⟨$⟩ r′)) r′) (λ r′ → g-pr (ws (i ⟨$⟩ r′)) r′) r)
-             (C.mk-cong {XW X} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
-                (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier (XW X)))) h) }
+    TQ-glue {X} {i} = WP.TQ-glue {X} {i}
 
   -- the weighted test function of a joint probe at the merged parameter
   φJ : ∀ {X : QBS S} → Joint (XW X) → Hom S X WQ → R₁ → Cut
@@ -266,7 +240,8 @@ module SFinite (lem : LEM₀) where
         { to = λ x → C.ηPre {XW X} (1# , x)
         ; cong = λ {x} {y} e → ≈ᵖ⇒≈ᴹ {X} (C.ηPre {XW X} (1# , x)) (C.ηPre {XW X} (1# , y))
             (Func.cong (map (C.ηH (XW X))) {1# , x} {1# , y} (refl , e)) }
-    ; map-random = λ {γ} rγ → fromWit {X} (map-random (C.ηH (XW X)) {< constₛ 1# , γ >ₛ} (Meas-const 1# , rγ))
+    ; map-random = λ {γ} rγ → C.Wit-mono (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q)
+        (map-random (C.ηH (XW X)) {< constₛ 1# , γ >ₛ} (Meas-const 1# , rγ))
     }
 
   ∫ᴹ-η : ∀ {X : QBS S} (x : ∣ X ∣) (f : Hom S X WQ) → ∫ᴹ {X} (C.ηPre {XW X} (1# , x)) f ≈ map f ⟨$⟩ x
@@ -305,7 +280,7 @@ module SFinite (lem : LEM₀) where
       ( Meas-⊗ {λ k → proj₁ (α p ⟨$⟩ evensR k)} {λ k → proj₁ (map (a (wmOf {X} p)) ⟨$⟩ (evensR k , oddsR k))}
           (Meas-pre {λ r → proj₁ (α p ⟨$⟩ r)} {evensR} (proj₁ (α-random p)) measurable-evens)
           (proj₁ (paJ {X} (a (wmOf {X} p))))
-      , random-cast X (λ _ → ≡.refl) (proj₂ (paJ {X} (a (wmOf {X} p)))))
+      , proj₂ (paJ {X} (a (wmOf {X} p))))
       (bind (m p) (P₁.pushMerge (g (wmOf {X} p))) (P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))))
       (IsProb-bind {m p} {P₁.pushMerge (g (wmOf {X} p))} {P₁.KernelOk-pushMerge {g (wmOf {X} p)} (g-ok (wmOf {X} p))} (ok p)
          (λ r → IsProb-push {mergeR r} (measurable-merge₁ (lower r)) {g (wmOf {X} p) r} (g-pr (wmOf {X} p) r)))
