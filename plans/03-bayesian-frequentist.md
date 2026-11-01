@@ -155,7 +155,7 @@ Steps, in order of effort:
 2. **[done, see outcome below]** **Unbounded statistics.**  `STest` requires one natural-number bound, so `E-at` cannot express, e.g., `E[x²]` for a
    distribution with unbounded support.  Extend `E-at` and `E-resp` to integrable tests; `SignedIntegral` already
    allows integrable parts, and monotone convergence exists.  Real work.
-3. **More distributions.**  Bernoulli is nearly free.  Density-defined ones (exponential, Gaussian) need the density
+3. **[partly done, see outcome below]** **More distributions.**  Bernoulli is nearly free.  Density-defined ones (exponential, Gaussian) need the density
    (`e^{−x}`, …) as a measurable `[0,∞]`-valued function, which the library does not have yet; `Density.densM` then
    gives the measure.
 4. **The sampler–monad bridge.**  `Inference/Sampler` is off `main` (over 12 CPU-minutes to check, see "3c status");
@@ -178,5 +178,28 @@ integrals under `p` are finite), `E-atᴵ`, `fromSTest` with `E-atᴵ-fromSTest`
 `truncHom h k` (the truncation `tr k ∘ h` as a [0,1] test), `J-resp∞` (`p ≈ᵖ q` equates `J` of any unbounded
 `h : Hom X CutQ`, infinite values included: `J-def` unfolds `J` to `⨆ₖ 2ᵏ · ∫ (tr k ∘ h)`, and each truncated
 integral is an `∫` of a test), `transportI`, `E-respᴵ`, and linearity (`_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`,
-`E-atᴵ-scale`).  No new lemma about `J` was needed.  Not done: `E-atᴵ-map`, `E-atᴵ-η` (expected to follow the bounded
-pattern).  Callers pass `{p = p} {q = q}` to `J-resp∞`/`transportI` (`_≈ᵖ_` is a function, so they are not inferable).
+`E-atᴵ-scale`).  No new lemma about `J` was needed.  Callers pass `{p = p} {q = q}` to `J-resp∞`/`transportI` (`_≈ᵖ_` is a function, so they are not inferable).
+
+3d step 3 outcome (2026-11-01): `Inference/ExpectationExamples` (about 7 s) and additions to `ExpectationInt`.
+- `ExpectationInt`: `J-η`, `valI`, `E-atᴵ-η`, `precompI`, `E-atᴵ-map` (step 2 is now complete).
+- Uniform through `E-at`: `idT`, `sqT : STest AQ`; `E-at-uniform-id : E-at uniform idT ≃ ι ½` (reusing `UniformMean`)
+  and `E-at-uniform-sq` (the second moment, reusing `UniformMoment`).
+- Bernoulli(½): `bern : Pre AQ`, the first bit of the fair coin valued in {0,1} ⊆ [0,1]; `E-at-bern : E-at bern idT ≃ ι ½`;
+  `E-at-bern²` (two independent draws, by `E-at-⊗`: `≃ ι ½ *S ι ½`) and its multiplied-out quarter.
+- Not done: Bernoulli as a `Pre` on a Boolean QBS.  The library has no Boolean QBS with measurable indicators
+  (`CodiscQ Bool` makes them non-measurable; `1Q +Q 1Q` in `Colimits` would work but needs a copairing into `CutQ`).
+
+What an exponential distribution would need (assessment, not started):
+1. `e^{−x}` as a lower cut.  Lower cuts have only non-negative sums and no division, so `e^{−x}` needs a direct cut
+   (`q < e^{−x}` iff `q · e^{x} < 1`) or an inverse.  Missing: `exp` as a `⨆` of partial sums with `exp-add` (a Cauchy
+   product; `Series`/`SeriesSup` have `psum` and monotone convergence but no Cauchy product), monotonicity, and
+   `exp x * exp (−x) ≈ 1`.
+2. Measurability of `r ↦ e^{−x(r)}` (`Meas-⨆` with `Meas-⊗`/`Meas-pre` on the partial sums).
+3. A base measure on [0,∞): every measure lives on Cantor space, so either push the uniform along an unbounded map
+   (needs `log` or `1/u`) or use the s-finite Lebesgue measure (`SFinite*`, `Tonelli`).  Normalisation needs
+   `∫₀^∞ e^{−x} dx = 1` as the limit of `1 − e^{−N}`.
+4. The mean `E[X] = 1` from `x e^{−x}`: integration by parts, or a self-similarity recursion like `UniformMean`.
+5. Transfer: `densM` gives a `Measure`; a `Pre` on a QBS of [0,∞) with the statistic `x` as an `ITest`, after which
+   `E-atᴵ`, `J-resp∞` and `E-respᴵ` apply.
+The CDF route (push the uniform along `−log(1−u)`) avoids 1–3 but needs `log` as a measurable `AQ → [0,∞]`, with the
+same series obstacles.
