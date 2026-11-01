@@ -143,7 +143,7 @@ module SFiniteMonad (lem : LEM₀) where
                 {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))) , oddsR (proj₂ (γ ⟨$⟩ x))))}
                 (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x)))} (proj₁ (paJ {TQ X} (a w))) mκ)
                 (proj₁ pr)
-           , random-cast X (λ _ → ≡.refl) (proj₂ pr)
+           , proj₂ pr
       }
 
     -- the inner integral at the merged parameter, as a parametric function

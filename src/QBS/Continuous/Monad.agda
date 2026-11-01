@@ -115,16 +115,23 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   sec-random : ∀ {X : QBS S} (a : Joint X) r → Random X (sec a r)
   sec-random a r = map-random a {at r} (measConst r , measId)
 
-  -- witness that β : R → Pre X is a random family of measures
-  record Wit {X : QBS S} (β : R → Pre X) : Set₁ where
+  -- witness that β : R → Pre X is a random family of measures, up to an equivalence ≋ of
+  -- pre-measures containing `≈ᵖ` (`≈ᵖ` here, the weighted `≈ᴹ` in `Continuous/SFinite`)
+  record Wit {X : QBS S} (_≋_ : Pre X → Pre X → Set₁) (β : R → Pre X) : Set₁ where
     field
       a : Joint X
       g : R → Measure
       g-ok : KernelOk g
       g-pr : ∀ r → Ok (g r)
-      w-eq : ∀ r → β r ≈ᵖ mk (sec a r) (sec-random a r) (g r) (g-pr r)
+      w-eq : ∀ r → β r ≋ mk (sec a r) (sec-random a r) (g r) (g-pr r)
 
   open Wit
+
+  -- a witness for a finer equivalence is a witness for a coarser one
+  Wit-mono : ∀ {X : QBS S} {_≋₁_ _≋₂_ : Pre X → Pre X → Set₁} {β : R → Pre X} →
+    (∀ {p q} → p ≋₁ q → p ≋₂ q) → Wit _≋₁_ β → Wit _≋₂_ β
+  Wit-mono sub w = record
+    { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w ; w-eq = λ r → sub (w-eq w r) }
 
   -- joint probes from simple data
   sndJ : ∀ {X : QBS S} (α : Func Rˢ (Carrier X)) → Random X α → Joint X
@@ -158,24 +165,53 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     _≈ᵖ_ {X} p (mk {X} (sec {X} (sndJ {X} (α p) (α-random p)) r) (sec-random {X} (sndJ {X} (α p) (α-random p)) r) (m p) (ok p))
   const-eq {X} p r h = rand-irrel {X} {α p} (α-random p) (sec-random {X} (sndJ {X} (α p) (α-random p)) r) (m p) (ok p) h
 
-  pre-eq : ∀ {X : QBS S} {β : R → Pre X} {f : Func Rˢ Rˢ} (w : Wit β) (mf : Meas f) r →
-    _≈ᵖ_ {X} (β (f ⟨$⟩ r))
-      (mk {X} (sec {X} (preJ {X} mf (a w)) r) (sec-random {X} (preJ {X} mf (a w)) r) (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)))
-  pre-eq {X} {β} {f} w mf r h = Setoid.trans Aˢ (w-eq w (f ⟨$⟩ r) h)
-    (mk-cong {X} (sec-random {X} (a w) (f ⟨$⟩ r)) (sec-random {X} (preJ {X} {f} mf (a w)) r)
-        (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier X)) h)
+  -- the probes of `TQ`, for any equivalence ≋ on pre-measures of Y that contains `≈ᵖ`.  The proofs
+  -- are `abstract`: conversions at nested measure spaces must never unfold these witnesses
+  -- (compile time).
+  module WitProbes {Y : QBS S} (_≋_ : Pre Y → Pre Y → Set₁)
+    (≋-sym : ∀ {p q} → p ≋ q → q ≋ p) (≋-trans : ∀ {p q r} → p ≋ q → q ≋ r → p ≋ r)
+    (incl : ∀ {p q} → _≈ᵖ_ {Y} p q → p ≋ q) where
 
-  glue-eq : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} (pi : Idx i) {β : ℕ → R → Pre X}
-    (ws : ∀ n → Wit (β n)) r →
-    _≈ᵖ_ {X} (β (i ⟨$⟩ r) r)
-      (mk {X} (sec {X} (glueJ {X} {i} pi (λ n → a (ws n))) r) (sec-random {X} (glueJ {X} {i} pi (λ n → a (ws n))) r)
-          (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r))
-  glue-eq {X} {i} pi {β} ws r h = Setoid.trans Aˢ (w-eq (ws (i ⟨$⟩ r)) r h)
-    (mk-cong {X} (sec-random {X} (a (ws (i ⟨$⟩ r))) r) (sec-random {X} (glueJ {X} {i} pi (λ n → a (ws n))) r)
-       (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier X)) h)
+    abstract
+      TQ-resp : ∀ {α β : R → Pre Y} → (∀ r → α r ≋ β r) → Wit _≋_ α → Wit _≋_ β
+      TQ-resp e w = record
+        { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
+        ; w-eq = λ r → ≋-trans (≋-sym (e r)) (w-eq w r) }
+
+      TQ-const : (p : Pre Y) → Wit _≋_ (const p)
+      TQ-const p = record
+        { a = sndJ (α p) (α-random p)
+        ; g = λ _ → m p
+        ; g-ok = constK (m p)
+        ; g-pr = λ _ → ok p
+        ; w-eq = λ r → incl (const-eq p r) }
+
+      TQ-pre : ∀ {β : R → Pre Y} {f : Func Rˢ Rˢ} → Wit _≋_ β → Meas f → Wit _≋_ (λ r → β (f ⟨$⟩ r))
+      TQ-pre {β} {f} w mf = record
+        { a = preJ mf (a w)
+        ; g = λ r → g w (f ⟨$⟩ r)
+        ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
+        ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
+        ; w-eq = λ r → ≋-trans (w-eq w (f ⟨$⟩ r))
+            (incl (mk-cong {Y} (sec-random (a w) (f ⟨$⟩ r)) (sec-random (preJ {f = f} mf (a w)) r)
+              (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier Y)))) }
+
+      TQ-glue : ∀ {i : Func Rˢ ℕˢ} → Idx i → (β : ℕ → R → Pre Y) →
+        (∀ n → Wit _≋_ (β n)) → Wit _≋_ (λ r → β (i ⟨$⟩ r) r)
+      TQ-glue {i} pi β ws = record
+        { a = glueJ {i = i} pi (λ n → a (ws n))
+        ; g = λ r → g (ws (i ⟨$⟩ r)) r
+        ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
+        ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
+        ; w-eq = λ r → ≋-trans (w-eq (ws (i ⟨$⟩ r)) r)
+            (incl (mk-cong {Y} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
+              (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier Y)))) }
+
+  module WitP (X : QBS S) = WitProbes {X} _≈ᵖ_ (λ {p q} e → Setoid.sym (PreS X) {p} {q} e)
+    (λ {p q r} e e′ → Setoid.trans (PreS X) {p} {q} {r} e e′) (λ {p q} e → e)
 
   -- a random family of measures does not distinguish equal parameters, so it is a setoid map
-  Wit-cong : ∀ {X : QBS S} {β : R → Pre X} → Wit β → ∀ {r r′} → r R≈.≈ r′ → _≈ᵖ_ {X} (β r) (β r′)
+  Wit-cong : ∀ {X : QBS S} {β : R → Pre X} → Wit _≈ᵖ_ β → ∀ {r r′} → r R≈.≈ r′ → _≈ᵖ_ {X} (β r) (β r′)
   Wit-cong {X} w {r} {r′} e f =
     Setoid.trans Aˢ (w-eq w r f)
       (Setoid.trans Aˢ
@@ -185,36 +221,19 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
           (Fun-resp lem (g-ok w (map-random f (sec-random (a w) r′))) (lower e))
           (Setoid.sym Aˢ (w-eq w r′ f))))
 
-  witₛ : ∀ {X : QBS S} {β : R → Pre X} → Wit β → Func Rˢ (PreS X)
+  witₛ : ∀ {X : QBS S} {β : R → Pre X} → Wit _≈ᵖ_ β → Func Rˢ (PreS X)
   witₛ {X} {β} w = record { to = β ; cong = Wit-cong {X} w }
 
   TQ : QBS S → QBS S
   TQ X = record
     { Carrier = PreS X
     ; probes = record
-        { Random = λ β → Wit (β ⟨$⟩_)
-        ; random-resp = λ e w → record
-            { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
-            ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
-        ; const-random = λ p → record
-            { a = sndJ (α p) (α-random p)
-            ; g = λ _ → m p
-            ; g-ok = constK (m p)
-            ; g-pr = λ _ → ok p
-            ; w-eq = const-eq p }
-        ; pre-random = λ {β} {f} w mf → record
-            { a = preJ mf (a w)
-            ; g = λ r → g w (f ⟨$⟩ r)
-            ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
-            ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
-            ; w-eq = pre-eq {β = β ⟨$⟩_} {f = f} w mf }
+        { Random = λ β → Wit _≈ᵖ_ (β ⟨$⟩_)
+        ; random-resp = λ e w → WitP.TQ-resp X e w
+        ; const-random = WitP.TQ-const X
+        ; pre-random = λ {β} {f} w mf → WitP.TQ-pre X {β ⟨$⟩_} {f} w mf
         }
-    ; glue-random = λ {i} pi β ws → record
-        { a = glueJ {i = i} pi (λ n → a (ws n))
-        ; g = λ r → g (ws (i ⟨$⟩ r)) r
-        ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-        ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
-        ; w-eq = glue-eq {i = i} pi {λ n → β n ⟨$⟩_} ws }
+    ; glue-random = λ {i} pi β ws → WitP.TQ-glue X {i} pi (λ n → β n ⟨$⟩_) ws
     }
 
   ----------------------------------------------------------------------------
@@ -264,7 +283,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     }
 
   -- the integral over the section at r, rewritten through the bit-splitting
-  section-eq : ∀ {X : QBS S} {β : R → Pre X} (w : Wit β) (f : Hom S X AQ) (r : R) →
+  section-eq : ∀ {X : QBS S} {β : R → Pre X} (w : Wit _≈ᵖ_ β) (f : Hom S X AQ) (r : R) →
     I (g w r) (λ s → proj₁ (map f ⟨$⟩ (map (a w) ⟨$⟩ (evensR (mergeR r s) , oddsR (mergeR r s)))))
       (Fun-pre {f = mergeR r} (Probes.unprobe S (_∘H_ S f (_∘H_ S (a w) fromH))) (measurable-merge₁ (lower r)))
       ≈ ∫ (β r) f
@@ -297,9 +316,9 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     where w = α-random p
 
   -- the witness for a random family of joins
-  module JoinWit {X : QBS S} {β : R → Pre (TQ X)} (w : Wit β) where
+  module JoinWit {X : QBS S} {β : R → Pre (TQ X)} (w : Wit _≈ᵖ_ β) where
     -- a witness for the two-parameter family (r , s) ↦ a (r , s), via the splitting
-    w₂ : Wit (map (_∘H_ S (a w) fromH) ⟨$⟩_)
+    w₂ : Wit _≈ᵖ_ (map (_∘H_ S (a w) fromH) ⟨$⟩_)
     w₂ = Probes.unprobe S (_∘H_ S (a w) fromH)
 
     a₂ : Joint X
