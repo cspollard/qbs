@@ -101,6 +101,7 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `Continuous` (`Monad`) — `module Continuous A lem K` (value semiring, `lem`, measure class such as `Integration.probClass`): the probability monad: `Pre`, `mk`, `∫`, `joinPre`, `∫-join`.
 - `ContinuousProb` (`ProbInstance`) — it is a `ProbabilityInterface`; `continuousQBSLike`; `RealModel`: `realQBSLike`.
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
+- `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
