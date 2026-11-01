@@ -147,7 +147,7 @@ Where things stand on `main`:
   out (e.g. `x12 (Var u) ≃ 1S`).
 
 Steps, in order of effort:
-1. **The calculus of `E-at`** (done except independence, `Inference/Expectation`; independence in progress): `E-at (η x) g ≃ g x`,
+1. **The calculus of `E-at`** (done: `Inference/Expectation`, `Inference/ExpectationProduct`): `E-at (η x) g ≃ g x`,
    `E-at (map f p) g ≃ E-at p (g ∘ f)`, linearity in `g`, constants; stretch: the tower law
    `E-at (join P) g ≃ E-at P (λ q → E-at q g)` (needs `q ↦ E-at q g` as an `STest (TQ X)`, as `∫ᶠ` is for `∫`) and
    independence under the strength (`E[f(x) g(y)] = E f · E g`, via the Fubini already proved for `∫`).  Expected to
@@ -167,3 +167,8 @@ Steps, in order of effort:
 `E-at-η`, `E-at-map`, `E-at-+`, `E-at-neg`, `E-at-scale`, `E-at-const`, `E-at-expT` and the tower law `E-at-join`
 (`E-at (joinPre P) g ≃ E-at P (expT g)`).  The algebraic laws hold because the pulled-back signed functions agree
 definitionally with the `SignedIntegral` operations; the tower law uses `∫-join` and the rescaling of `E-resp`.
+
+Independence (`Inference/ExpectationProduct`, about 9 s to check): the product test `f ⊗T g` (parts `f⁺g⁺ + f⁻g⁻` and
+`f⁺g⁻ + f⁻g⁺`, bound `2NM`, `valT-⊗T` by `≃-refl`); `E-at-cong` (pointwise `≃` tests have `≃` expectations, via
+`cancel-bnd`); `E-at-σ` (`E-at (σPre (x , q)) (f ⊗T g) ≃ valT f x *S E-at q g`); and `E-at-⊗`
+(`E-at (p ⊗ᵖ q) (f ⊗T g) ≃ E-at p f *S E-at q g`) for `p ⊗ᵖ q = joinPre (mapPre (σq q) p)`, the left-strength product.
