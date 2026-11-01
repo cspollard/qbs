@@ -27,6 +27,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Exponential` | 134 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 134 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.CoinBias` | 79 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
+| `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |

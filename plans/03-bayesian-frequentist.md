@@ -63,9 +63,9 @@ Findings from reading the code, which simplify the plan above:
 - **Hence the bridge is a corollary.** `Frequentist.Moments` of the iid experiment follow from the *single-draw* moments
   `E g = μ`, `E g² = σ² + μ²` alone (`second` by `E-coord`, `uncorr` by `E-indep`).  That is what `UniformSample.moments`
   does for `u`; the new lemma `iid-moments` is its generic form.
-- **Not on the critical path:** well-definedness of `E` on the quotient `TQ X` (`p ≈ᵖ q → E-at p g ≃ E-at q g`) needs that
-  integrals of `[0,1]`-tests determine integrals of unbounded measurable functions (truncation `min(g, n)` plus monotone
-  convergence).  Real work, declared as `E-resp` with a hole; models given as samplers do not need it.
+- **Not on the critical path (done, see "3c status"):** well-definedness of `E` on the quotient `TQ X`
+  (`p ≈ᵖ q → E-at p g ≃ E-at q g`), `E-resp`.  Statistics are bounded, so rescaling replaces truncation and monotone
+  convergence.
 Modules: `Continuous/SignedTests` (`CutQ`, `STest`, `J-bounded`, `pullback` to `BSF`), `Inference/Sampler` (`Sampler`, `draw`,
 `single`, `iidExperiment`, `SingleMoments`, `iid-moments`, unbiasedness corollaries, `kernelOf`, `E-at`, `E-resp`),
 `Inference/UniformSampler` (validation: the uniform-interval model as a sampler reproduces `UniformExperiment`'s theorems).
@@ -130,4 +130,4 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 
 ### 3c status
 
-Status: `Inference/Sampler` and `Inference/UniformSampler` live on branch `plan3c-sampler` only (removed from `main`: `Sampler` is far too expensive to check, >12 CPU-minutes and several GB, until it is fixed).  Done there: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`.  Not done: `E-resp` (well-definedness of `E-at` on `TQ X`; dropped from the code, needs truncation and monotone convergence).
+Status: `Inference/Sampler` and `Inference/UniformSampler` live on branch `plan3c-sampler` only (removed from `main`: `Sampler` is far too expensive to check, >12 CPU-minutes and several GB, until it is fixed).  Done there: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`. `E-resp` (well-definedness of `E-at` on `TQ X`) is done on `main` in `Inference/ExpectationResp`, without truncation or monotone convergence: a statistic bounded by `N` is rescaled by `2⁻ᴺ` to a [0,1]-valued test, so `p ≈ᵖ q` applies directly, and `J-scale` plus cancelling `2⁻ᴺ` recovers its integrals.  That module defines `E-at` itself (the same formula as `Sampler.E-at`), so it does not depend on `Sampler`.  `Inference/BernoulliCompare` (Bayesian vs frequentist on the fair or two-headed coin) needs `Sampler` and stays parked on branch `orphaned-wip`.
