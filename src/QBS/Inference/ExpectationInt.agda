@@ -10,6 +10,7 @@
 --     infinite.  `J` is the supremum over `k` of `2ᵏ ∫ tr k ∘ h` (`Iinf`, `Analysis/Unbounded`; `J-def` in `Analysis/Lebesgue`),
 --     and each truncation `tr k ∘ h` is a [0,1]-valued test (`truncHom`), to which `p ≈ᵖ q` applies.
 --   * hence integrability transfers along `≈ᵖ` (`transportI`), and `E-respᴵ : p ≈ᵖ q → E-atᴵ p g ≃ E-atᴵ q (transportI {p = p} {q = q} e g)`.
+--   * `E-atᴵ-η` (against `ηPre x` the value `valI x g`) and `E-atᴵ-map` (`E-atᴵ (mapPre f p) g ≃ E-atᴵ p (precompI f p g)`).
 --   * linearity: `E-atᴵ p (g +I h) ≃ E-atᴵ p g +S E-atᴵ p h`, `-I`, and `scaleI c`, from `E-+`, `E-neg`, `E-scale`.
 module QBS.Inference.ExpectationInt where
 
@@ -33,16 +34,17 @@ import QBS.Inference.ExpectationResp as ER
 import QBS.Inference.Expectation as EX
 
 module ExpectationInt (lem₁ : LEM₁) where
-  open Lebesgue (lemOf lem₁) using (A; J; J-def; tr; tr-≤1; tr-cong; FunInf-Meas; Iinf; Iseq; Iseq-inc)
+  open Lebesgue (lemOf lem₁) using (A; J; J-irrel; J-def; tr; tr-≤1; tr-cong; FunInf-Meas; Iinf; Iseq; Iseq-inc)
   open Integration A using (probClass)
   open OmegaSemiring A using (_≈_; ⨆-cong; *-cong; +-cong; 0#; refl; sym; trans)
-  open Bounded A using (Sg; Bnd; _≃_; mk≃; ≃-refl; ≃-trans; _+S_; _*S_; -S_; finite)
-  open SignedIntegral (lemOf lem₁) using (SF; E; E-cong; E-+; E-neg; E-scale; _+SF_; -SF_; scaleSF)
+  open Bounded A using (Sg; Bnd; _≃_; mk≃; ≃-refl; ≃-trans; _+S_; _*S_; -S_; finite; _−_[_,_])
+  open SignedIntegral (lemOf lem₁) using (SF; E; E-cong; E-+; E-neg; E-scale; _+SF_; -SF_; scaleSF; J-const)
   open SignedTests (lemOf lem₁) using (CutQ; STest; pullback; J-bounded)
   open UnitInterval A using (AQ)
-  open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫)
+  open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫; mapPre; ηPre)
   open Pre
   open ER.ExpectationResp lem₁ using (E-at)
+  open QBS using (∣_∣)
   open EX.Expectation lem₁ using (addH; mulH)
   open SF
 
@@ -134,3 +136,34 @@ module ExpectationInt (lem₁ : LEM₁) where
 
   E-atᴵ-scale : ∀ {X : QBS S} (p : Pre X) (c : Sg) (g : ITest p) → E-atᴵ p (scaleI c g) ≃ c *S E-atᴵ p g
   E-atᴵ-scale p c g = ≃-trans (E-cong {f = toSF (scaleI c g)} {g = scaleSF c (toSF g)} (λ x → refl)) (E-scale c (toSF g))
+
+  ----------------------------------------------------------------------------
+  -- the unit and the functoriality
+
+  -- the integral of a part against `ηPre x` is its value at `x`
+  J-η : ∀ {X : QBS S} (x : ∣ X ∣) (h : Hom S X CutQ) →
+    J (m (ηPre {X} x)) (λ r → Hom.map h ⟨$⟩ (α (ηPre {X} x) ⟨$⟩ r)) (Hom.map-random h (α-random (ηPre {X} x))) ≈ Hom.map h ⟨$⟩ x
+  J-η {X} x h = trans (J-irrel _ _ _) (J-const (ok (ηPre {X} x)) (Hom.map h ⟨$⟩ x))
+
+  -- against `ηPre x`, an integrable test has the value at `x` (finite, as the integral of a constant)
+  valI : ∀ {X : QBS S} (x : ∣ X ∣) → ITest (ηPre {X} x) → Sg
+  valI {X} x g = (Hom.map (pos g) ⟨$⟩ x) − (Hom.map (neg g) ⟨$⟩ x) [ b⁺ , b⁻ ]
+    where
+    b⁺ = SubSemiring.Is-resp finite (J-η {X} x (pos g)) (pos-int g)
+    b⁻ = SubSemiring.Is-resp finite (J-η {X} x (neg g)) (neg-int g)
+
+  E-atᴵ-η : ∀ {X : QBS S} (x : ∣ X ∣) (g : ITest (ηPre {X} x)) → E-atᴵ (ηPre {X} x) g ≃ valI x g
+  E-atᴵ-η {X} x g = mk≃ 0# (SubSemiring.Is-0 finite)
+    (+-cong (+-cong (J-η {X} x (pos g)) (sym (J-η {X} x (neg g)))) refl)
+
+  -- precomposition with a morphism
+  precompI : ∀ {X Y : QBS S} (f : Hom S Y X) (p : Pre Y) → ITest (mapPre f p) → ITest p
+  precompI f p g = record
+    { pos = _∘H_ S (pos g) f ; neg = _∘H_ S (neg g) f
+    ; pos-int = SubSemiring.Is-resp finite (J-irrel _ _ _) (pos-int g)
+    ; neg-int = SubSemiring.Is-resp finite (J-irrel _ _ _) (neg-int g) }
+
+  E-atᴵ-map : ∀ {X Y : QBS S} (f : Hom S Y X) (p : Pre Y) (g : ITest (mapPre f p)) →
+    E-atᴵ (mapPre f p) g ≃ E-atᴵ p (precompI f p g)
+  E-atᴵ-map f p g = mk≃ 0# (SubSemiring.Is-0 finite)
+    (+-cong (+-cong (J-irrel _ _ _) (sym (J-irrel _ _ _))) refl)

@@ -103,7 +103,7 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`
+### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationExamples`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
@@ -112,7 +112,8 @@ Expectations of bounded signed statistics under the monad's measures (module par
 - `expT g`, `E-at-expT`, `E-at-join` — `q ↦ E-at q g` as a signed test on `TQ X`, and the tower law `E-at (joinPre P) g ≃ E-at P (expT g)`.
 - `f ⊗T g`, `valT-⊗T` (`ExpectationProduct`) — the product of signed tests on `X ×Q Y`, with `valT (f ⊗T g) (x , y) ≃ valT f x *S valT g y`; `E-at-cong` — pointwise `≃` tests have `≃` expectations.
 - `E-at-σ` — `E-at (σPre (x , q)) (f ⊗T g) ≃ valT f x *S E-at q g`; `p ⊗ᵖ q` — the product measure `joinPre (mapPre (σq q) p)`; `E-at-⊗` — independence, `E-at (p ⊗ᵖ q) (f ⊗T g) ≃ E-at p f *S E-at q g`.
-- `ITest p`, `E-atᴵ p g`, `fromSTest`, `E-atᴵ-fromSTest`, `truncHom`, `J-resp∞`, `transportI`, `E-respᴵ`, `_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`, `E-atᴵ-scale` (`QBS.Inference.ExpectationInt`) — expectations of integrable (possibly unbounded) signed statistics: `J-resp∞ : p ≈ᵖ q → J (m p) (h ∘ α p) ≈ J (m q) (h ∘ α q)` (via the truncations `truncHom h k`), `E-respᴵ : p ≈ᵖ q → E-atᴵ p g ≃ E-atᴵ q (transportI e g)`.
+- `ITest p`, `E-atᴵ p g`, `fromSTest`, `E-atᴵ-fromSTest`, `truncHom`, `J-resp∞`, `transportI`, `E-respᴵ`, `_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`, `E-atᴵ-scale`, `valI`, `E-atᴵ-η`, `precompI`, `E-atᴵ-map` (`QBS.Inference.ExpectationInt`) — expectations of integrable (possibly unbounded) signed statistics: `J-resp∞ : p ≈ᵖ q → J (m p) (h ∘ α p) ≈ J (m q) (h ∘ α q)` (via the truncations `truncHom h k`), `E-respᴵ : p ≈ᵖ q → E-atᴵ p g ≃ E-atᴵ q (transportI e g)`.
+- `idT`, `sqT : STest AQ`, `E-at-uniform-id`, `E-at-uniform-sq`, `bern : Pre AQ`, `E-at-bern`, `E-at-bern²`, `E-at-bern²-quarter` (`QBS.Inference.ExpectationExamples`) — worked examples: `E-at uniform idT ≃ ι ½`, `E-at uniform sqT ≃ ι m` (`3m = 1`), Bernoulli(½) as the first bit of the fair coin with `E-at bern idT ≃ ι ½`, and independence `E-at (bern ⊗ᵖ bern) (idT ⊗T idT) ≃ ι ½ *S ι ½` (four copies add up to 1).
 
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
