@@ -90,6 +90,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinIntegral` | 446 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
 | `QBS.Analysis.CoinSets` | 16 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
 | `QBS.Analysis.CoinSimple` | 141 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
+| `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
 | `QBS.Analysis.CutSum` | 450 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
@@ -114,7 +115,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.MeasFun` | 223 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
 | `QBS.Analysis.Measure` | 132 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
 | `QBS.Analysis.Min` | 36 |  | A binary minimum on the values of an `OmegaSemiring`, with exactly the properties that the dyadic truncations `min (a, 2ᵏ) / 2ᵏ` of `Analysis/Unbounded` need: greatest lower bound, continuity along increasing suprema,... |
-| `QBS.Analysis.Mixture` | 92 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, as a functional: it is again a measure (with total mass at most 1). |
+| `QBS.Analysis.Mixture` | 55 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, `addM` of two `scaleM`s from `Analysis/Cone`: it is again a measure (with total mass at most 1). |
 | `QBS.Analysis.MixtureN` | 83 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |
 | `QBS.Analysis.Omega` | 114 |  | Values for measures: a commutative semiring with a compatible partial order (for the extended non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences preserved by + and ×, and ca... |
 | `QBS.Analysis.OpenMeasure` | 273 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
@@ -164,7 +165,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.Strong` | 163 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
-| `QBS.Continuous.SubProb` | 96 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
+| `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
