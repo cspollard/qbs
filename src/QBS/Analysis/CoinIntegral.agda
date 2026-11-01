@@ -6,6 +6,7 @@
 module QBS.Analysis.CoinIntegral where
 
 import Level as L
+import Data.Nat.Properties as ℕₚ
 open import Level using (Lift; lift; lower)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Nat.Base using (ℕ; zero; suc)
@@ -20,7 +21,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Data.Rational.Unnormalised.Base using (_<_)
 open import Data.Rational.Unnormalised.Base using () renaming (_*_ to _*ᵘ_; _+_ to _+ᵘ_; _≤_ to _≤ᵘ_; _≃_ to _≃ᵘ_)
 import QBS.Analysis.RationalLemmas as RL
-open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans)
+open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans; nat-nonneg)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Measure using (Disjoint)
@@ -31,7 +32,7 @@ import QBS.Analysis.SeriesSup as SeriesSup
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.LowerReals using (Cut; _⊑_; mk⊑; _≋_; zeroC; oneC; LowerRealsOmega; ⊗-mono)
-open import QBS.Analysis.LowerRealsArch using (arch-⊑; hpC; hpC-double; tp; tp-pos; tp-small; nat-nonneg; lowerRealsArch)
+open import QBS.Analysis.LowerRealsArch using (arch-⊑; hpC; hpC-double; tp; tp-pos; tp-small; lowerRealsArch)
 open import QBS.Analysis.Archimedean
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinSimple
@@ -283,7 +284,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
         where
           le1 : 1ℚᵘ ≤ᵘ RL.nat (suc k) *ᵘ q′
           le1 = RL.≤-trans 1≤
-              (RL.*-mono-≤-nnʳ (RL.<-≤ 0<q′) (nat-mono′ {k} {suc k} (Data.Nat.Base.≤′-step Data.Nat.Base.≤′-refl)))
+              (RL.*-mono-≤-nnʳ (RL.<-≤ 0<q′) (RL.nat-mono (ℕₚ.n≤1+n k)))
           w : Σ ℚᵘ (λ r → Σ ℚᵘ (λ t → 0ℚᵘ < r × 0ℚᵘ < t × mem c r × mem (h x) t × 1ℚᵘ ≤ᵘ r *ᵘ t))
           w = RL.nat (suc k) , q′ , nat-pos k , 0<q′ , allc (RL.nat (suc k)) , m′ , le1
 

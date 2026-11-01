@@ -16,7 +16,7 @@ open import QBS.Analysis.LowerReals
 open Cut
 open _⊑_
 open import QBS.Analysis.Omega using (OmegaSemiring)
-open import QBS.Analysis.LowerRealsArch using (qC; qC-add; pos+; ≤-+ʳ′)
+open import QBS.Analysis.LowerRealsArch using (qC; qC-add)
 open import QBS.Analysis.Min
 open import QBS.Classical using (LEM₀)
 
@@ -65,11 +65,11 @@ ntwo (suc k) = ntwo k + ntwo k
 
 ntwo-pos : ∀ k → 0ℚᵘ < ntwo k
 ntwo-pos zero = 0<1
-ntwo-pos (suc k) = pos+ (ntwo-pos k) (ntwo-pos k)
+ntwo-pos (suc k) = +-pos (ntwo-pos k) (ntwo-pos k)
 
 ntwo-≥1 : ∀ k → 1ℚᵘ ≤ ntwo k
 ntwo-≥1 zero = ≤-refl
-ntwo-≥1 (suc k) = ≤-trans (ntwo-≥1 k) (≤-+ʳ′ (ntwo k) (ntwo k) (<-≤ (ntwo-pos k)))
+ntwo-≥1 (suc k) = ≤-trans (ntwo-≥1 k) (≤-+ʳ (ntwo k) (ntwo k) (<-≤ (ntwo-pos k)))
 
 nat-lt : ∀ k → nat k < ntwo k
 nat-lt zero = 0<1

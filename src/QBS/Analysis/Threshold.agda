@@ -19,7 +19,7 @@ open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.LowerReals
-open import QBS.Analysis.LowerRealsArch using (halfC; hf; 0<hf)
+open import QBS.Analysis.LowerRealsArch using (halfC)
 open import QBS.Analysis.LevelSets
 open import QBS.Classical using (LEM₀)
 open Cut
@@ -59,15 +59,15 @@ module Threshold (lem : LEM₀) where
 
   -- comparison with ½ is total
   tot-half : ∀ t → t ⊑ halfC ⊎ halfC ⊑ t
-  tot-half t with lem (Σ ℚᵘ (λ q → mem t q × ((q < hf) → ⊥)))
-  ... | inj₂ none = inj₁ (mk⊑ λ q m → dec q m (lem (q < hf)))
-    where dec : ∀ q → mem t q → (q < hf) ⊎ ((q < hf) → ⊥) → q < hf
+  tot-half t with lem (Σ ℚᵘ (λ q → mem t q × ((q < ½) → ⊥)))
+  ... | inj₂ none = inj₁ (mk⊑ λ q m → dec q m (lem (q < ½)))
+    where dec : ∀ q → mem t q → (q < ½) ⊎ ((q < ½) → ⊥) → q < ½
           dec q m (inj₁ lt) = lt
           dec q m (inj₂ nlt) = ⊥-elim (none (q , m , nlt))
-  ... | inj₁ (q , m , nlt) = inj₂ (mk⊑ λ p lt → down t (<-≤ (<-≤-trans lt (hf≤q (≤-or-> hf q)))) m)
-    where hf≤q : (Data.Rational.Unnormalised.Base._≤_ hf q) ⊎ (q < hf) → Data.Rational.Unnormalised.Base._≤_ hf q
-          hf≤q (inj₁ le) = le
-          hf≤q (inj₂ lt) = ⊥-elim (nlt lt)
+  ... | inj₁ (q , m , nlt) = inj₂ (mk⊑ λ p lt → down t (<-≤ (<-≤-trans lt (½≤q (≤-or-> ½ q)))) m)
+    where ½≤q : (Data.Rational.Unnormalised.Base._≤_ ½ q) ⊎ (q < ½) → Data.Rational.Unnormalised.Base._≤_ ½ q
+          ½≤q (inj₁ le) = le
+          ½≤q (inj₂ lt) = ⊥-elim (nlt lt)
 
   half≰0 : halfC ⊑ zeroC → ⊥
-  half≰0 h = <-irrefl ≃-refl (ap h 0ℚᵘ 0<hf)
+  half≰0 h = <-irrefl ≃-refl (ap h 0ℚᵘ 0<½)
