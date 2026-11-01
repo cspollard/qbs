@@ -30,6 +30,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open ≡ using (_≡_)
 
 open import QBS.Core
+open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Model.DiscreteSource
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
@@ -250,46 +251,32 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   ----------------------------------------------------------------------------
   -- the monad
 
-  TF : Endofunctor (QBSCat S)
-  TF = record
-    { F₀ = TQ
-    ; F₁ = TH
-    ; identity = λ _ → Setoid.refl Aˢ
-    ; homomorphism = λ _ → Setoid.refl Aˢ
-    ; F-resp-≈ = λ {_} {Y} {f} {g} e {p} h →
-        ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (Func.cong h (e {α p r})))
+  -- the monad laws follow from the integral equations (`QBS.IntegralMonad`)
+  integral : Integral S Aˢ ℓ
+  integral = record
+    { tests = record
+        { Test = λ X → Func (Carrier X) Aˢ
+        ; eval = λ f x → f ⟨$⟩ x
+        ; eval-cong = λ f e → Func.cong f e
+        ; _∘ᵗ_ = λ g f → Comp.function (map f) g
+        ; eval-∘ = λ _ _ _ → Setoid.refl Aˢ
+        }
+    ; TQ = TQ
+    ; ∫ = λ X p f → ∫ {X} p f
+    ; ∫-ext = λ _ e → e
+    ; ∫-cong = λ X p e → ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (e _))
+    ; ∫ᶠ = λ X f → ∫ᶠ {X} f
+    ; eval-∫ᶠ = λ _ _ _ → Setoid.refl Aˢ
     }
 
-  ηN : NaturalTransformation idF TF
-  ηN = ntHelper record
-    { η = ηH
-    ; commute = λ {X} {Y} f {x} g →
-        Setoid.trans Aˢ (∫-η {Y} (map f ⟨$⟩ x) g) (Setoid.sym Aˢ (∫-η {X} x (Comp.function (map f) g)))
+  monadData : MonadData integral
+  monadData = record
+    { TH = TH
+    ; ηH = ηH
+    ; joinH = joinH
+    ; ∫-map = λ _ _ _ → Setoid.refl Aˢ
+    ; ∫-η = λ X → ∫-η {X}
+    ; ∫-join = λ X → ∫-join {X}
     }
 
-  μN : NaturalTransformation (TF ∘F TF) TF
-  μN = ntHelper record
-    { η = joinH
-    ; commute = λ {X} {Y} f {p} g →
-        Setoid.trans Aˢ (∫-join (mapPre (TH f) p) g) (Setoid.sym Aˢ (∫-join p (Comp.function (map f) g)))
-    }
-
-  TM : Monad (QBSCat S)
-  TM = record
-    { F = TF
-    ; η = ηN
-    ; μ = μN
-    ; assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-          (Setoid.trans Aˢ (∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-join (α p r) f)))
-            (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))))
-    ; sym-assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))
-          (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-            (∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-join (α p r) f)))))
-    ; identityˡ = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (mapPre (ηH X) p) f)
-          (∑-cong (λ r → *-cong (Setoid.refl Aˢ) (∫-η {X} (α p r) f)))
-    ; identityʳ = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (ηPre p) f) (∫-η {TQ X} p (∫ᶠ f))
-    }
+  open Laws integral monadData public using (TF; ηN; μN; TM)

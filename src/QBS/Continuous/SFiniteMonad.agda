@@ -17,6 +17,7 @@ open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
+open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
 import QBS.Probes as Probes
@@ -59,22 +60,6 @@ module SFiniteMonad (lem : LEM₀) where
   open C.Pre
   open QBS
   open Hom
-
-  TF : Endofunctor (QBSCat S)
-  TF = record
-    { F₀ = TQ
-    ; F₁ = TH
-    ; identity = λ {X} {p} f → trans (∫ᴹ-map {X} {X} (idH S) p f) (∫ᴹ-cong {X} p (λ x → refl))
-    ; homomorphism = λ {X} {Y} {Z} {f} {h} {p} k →
-        trans (∫ᴹ-map {X} {Z} (_∘H_ S h f) p k)
-          (trans (∫ᴹ-cong {X} p (λ x → refl))
-            (sym (trans (∫ᴹ-map {Y} {Z} h (mapM {X} {Y} f p) k) (∫ᴹ-map {X} {Y} f p (_∘H_ S k h)))))
-    ; F-resp-≈ = λ {X} {Y} {f} {h} e {p} k →
-        trans (∫ᴹ-map {X} {Y} f p k)
-          (trans (∫ᴹ-cong {X} p (λ x → Func.cong (map k) (e {x}))) (sym (∫ᴹ-map {X} {Y} h p k)))
-    }
-
-  {-# INLINE TF #-}
 
   ----------------------------------------------------------------------------
   -- a witness for a random family of joins
@@ -222,9 +207,6 @@ module SFiniteMonad (lem : LEM₀) where
     eq′ : ∀ r → _≈ᴹ_ {X} (joinPre {X} (β r)) (kerP {X} a′ g′ gpr′ r)
     eq′ r f = trans (Sec.stepA f r) (sym (Sec.stepC f r))
 
-  TT : Endofunctor (QBSCat S)
-  TT = TF ∘F TF
-
   joinT : ∀ X → Hom S (TQ (TQ X)) (TQ X)
   joinT X = record
     { map = record
@@ -235,58 +217,35 @@ module SFiniteMonad (lem : LEM₀) where
         ; g-pr = JoinWit.gpr′ {X} {β ⟨$⟩_} w ; w-eq = JoinWit.eq′ {X} {β ⟨$⟩_} w }
     }
 
-  -- the monad laws, stated so that the nested implicit arguments are inferred
-  join-nat : ∀ {X Y : QBS S} (f : Hom S X Y) (p : Pre (XW (TQ X))) (h : Hom S Y WQ) →
-    ∫ᴹ (joinPre (mapM (TH f) p)) h ≈ ∫ᴹ (mapM f (joinPre p)) h
-  join-nat {X} {Y} f p h =
-    trans (∫ᴹ-join (mapM (TH f) p) h)
-      (trans (∫ᴹ-map (TH f) p (∫ᶠ h))
-        (trans (∫ᴹ-cong p {_∘H_ S (∫ᶠ h) (TH f)} {∫ᶠ (_∘H_ S h f)} (λ ν → ∫ᴹ-map f ν h))
-          (sym (trans (∫ᴹ-map f (joinPre p) h) (∫ᴹ-join p (_∘H_ S h f))))))
-
-  join-assoc : ∀ {X : QBS S} (p : Pre (XW (TQ (TQ X)))) (f : Hom S X WQ) →
-    ∫ᴹ {X} (joinPre (mapM (joinT X) p)) f ≈ ∫ᴹ {X} (joinPre (joinPre p)) f
-  join-assoc {X} p f =
-    trans (∫ᴹ-join (mapM (joinT X) p) f)
-          (trans (∫ᴹ-map (joinT X) p (∫ᶠ f))
-            (trans (∫ᴹ-cong p {_∘H_ S (∫ᶠ f) (joinT X)} {∫ᶠ (∫ᶠ f)} (λ ν → ∫ᴹ-join ν f))
-              (sym (trans (∫ᴹ-join (joinPre p) f) (∫ᴹ-join p (∫ᶠ f))))))
-
-  join-unitˡ : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) →
-    ∫ᴹ {X} (joinPre (mapM (ηM X) p)) f ≈ ∫ᴹ p f
-  join-unitˡ {X} p f =
-    trans (∫ᴹ-join (mapM (ηM X) p) f)
-      (trans (∫ᴹ-map (ηM X) p (∫ᶠ f)) (∫ᴹ-cong p {_∘H_ S (∫ᶠ f) (ηM X)} {f} (λ x → ∫ᴹ-η x f)))
-
-  join-unitʳ : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) →
-    ∫ᴹ {X} (joinPre (C.ηPre {XW (TQ X)} (1# , p))) f ≈ ∫ᴹ p f
-  join-unitʳ {X} p f = trans (∫ᴹ-join (C.ηPre {XW (TQ X)} (1# , p)) f) (∫ᴹ-η p (∫ᶠ f))
-
-  ηN : NaturalTransformation idF TF
-  ηN = record
-    { η = ηM
-    ; commute = λ {X} {Y} f {x} h →
-        trans (∫ᴹ-η (map f ⟨$⟩ x) h) (sym (trans (∫ᴹ-map f (C.ηPre {XW X} (1# , x)) h) (∫ᴹ-η x (_∘H_ S h f))))
-    ; sym-commute = λ {X} {Y} f {x} h →
-        trans (∫ᴹ-map f (C.ηPre {XW X} (1# , x)) h) (trans (∫ᴹ-η x (_∘H_ S h f)) (sym (∫ᴹ-η (map f ⟨$⟩ x) h)))
+  -- the monad laws follow from the integral equations (`QBS.IntegralMonad`)
+  integral : Integral S (QBS.Carrier WQ) (L.suc L.zero)
+  integral = record
+    { tests = record
+        { Test = λ X → Hom S X WQ
+        ; eval = λ f x → map f ⟨$⟩ x
+        ; eval-cong = λ f e → Func.cong (map f) e
+        ; _∘ᵗ_ = _∘H_ S
+        ; eval-∘ = λ _ _ _ → refl
+        }
+    ; TQ = TQ
+    ; ∫ = λ X p f → ∫ᴹ {X} p f
+    ; ∫-ext = λ _ e → e
+    ; ∫-cong = λ X p e → ∫ᴹ-cong {X} p e
+    ; ∫ᶠ = λ X f → ∫ᶠ {X} f
+    ; eval-∫ᶠ = λ _ _ _ → refl
     }
 
-  μN : NaturalTransformation TT TF
-  μN = record
-    { η = joinT
-    ; commute = λ {X} {Y} f {p} h → join-nat f p h
-    ; sym-commute = λ {X} {Y} f {p} h → sym (join-nat f p h)
+  monadData : MonadData integral
+  monadData = record
+    { TH = TH
+    ; ηH = ηM
+    ; joinH = joinT
+    ; ∫-map = λ {X} {Y} f p g → ∫ᴹ-map {X} {Y} f p g
+    ; ∫-η = λ X x f → ∫ᴹ-η {X} x f
+    ; ∫-join = λ X p f → ∫ᴹ-join {X} p f
     }
 
-  TM : Monad (QBSCat S)
-  TM = record
-    { F = TF
-    ; η = ηN
-    ; μ = μN
-    ; assoc = λ {X} {p} f → join-assoc {X} p f
-    ; sym-assoc = λ {X} {p} f → sym (join-assoc {X} p f)
-    ; identityˡ = λ {X} {p} f → join-unitˡ p f
-    ; identityʳ = λ {X} {p} f → join-unitʳ p f
-    }
+  open Laws integral monadData public using (TF; ηN; μN; TM)
 
-  {-# INLINE TM #-}
+  TT : Endofunctor (QBSCat S)
+  TT = TF ∘F TF

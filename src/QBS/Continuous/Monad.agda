@@ -32,6 +32,7 @@ open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
 open import QBS.Core
+open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q)
 import QBS.Probes as Probes
@@ -381,49 +382,32 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   ----------------------------------------------------------------------------
   -- the monad
 
-  TF : Endofunctor (QBSCat S)
-  TF = record
-    { F₀ = TQ
-    ; F₁ = TH
-    ; identity = λ {X} {p} g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
-    ; homomorphism = λ {X} {Y} {Z} {f} {h} {p} g → I-cong (m p) (λ r → Setoid.refl Aˢ) _ _
-    ; F-resp-≈ = λ {X} {Y} {f} {h} e {p} g → I-cong (m p) (λ r → Func.cong (map g) (e {α p ⟨$⟩ r})) _ _
+  -- the monad laws follow from the integral equations (`QBS.IntegralMonad`)
+  integral : Integral S Aˢ (L.suc L.zero)
+  integral = record
+    { tests = record
+        { Test = λ X → Hom S X AQ
+        ; eval = λ f x → proj₁ (map f ⟨$⟩ x)
+        ; eval-cong = λ f e → Func.cong (map f) e
+        ; _∘ᵗ_ = _∘H_ S
+        ; eval-∘ = λ _ _ _ → Setoid.refl Aˢ
+        }
+    ; TQ = TQ
+    ; ∫ = λ X p f → ∫ {X} p f
+    ; ∫-ext = λ _ e → e
+    ; ∫-cong = λ X p e → I-cong (m p) (λ r → e (α p ⟨$⟩ r)) _ _
+    ; ∫ᶠ = λ X f → ∫ᶠ {X} f
+    ; eval-∫ᶠ = λ _ _ _ → Setoid.refl Aˢ
     }
 
-  ηN : NaturalTransformation idF TF
-  ηN = record
-    { η = ηH
-    ; commute = λ {X} {Y} f {x} h → Setoid.refl Aˢ
-    ; sym-commute = λ {X} {Y} f {x} h → Setoid.refl Aˢ
+  monadData : MonadData integral
+  monadData = record
+    { TH = TH
+    ; ηH = ηH
+    ; joinH = joinH
+    ; ∫-map = λ f p g → ∫-map f p g
+    ; ∫-η = λ _ _ _ → Setoid.refl Aˢ
+    ; ∫-join = λ X → ∫-join {X}
     }
 
-  μN : NaturalTransformation (TF ∘F TF) TF
-  μN = record
-    { η = joinH
-    ; commute = λ {X} {Y} f {p} h →
-        Setoid.trans Aˢ (∫-join (mapPre (TH f) p) h)
-          (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-map f (α p ⟨$⟩ r) h) _ _)
-            (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-map f (joinPre p) h) (∫-join p (_∘H_ S h f)))))
-    ; sym-commute = λ {X} {Y} f {p} h →
-        Setoid.trans Aˢ (Setoid.trans Aˢ (∫-map f (joinPre p) h) (∫-join p (_∘H_ S h f)))
-          (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (TH f) p) h)
-            (I-cong (m p) (λ r → ∫-map f (α p ⟨$⟩ r) h) _ _)))
-    }
-
-  TM : Monad (QBSCat S)
-  TM = record
-    { F = TF
-    ; η = ηN
-    ; μ = μN
-    ; assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-          (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)
-            (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))))
-    ; sym-assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))
-          (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-            (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)))
-    ; identityˡ = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (mapPre (ηH X) p) f) (I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
-    ; identityʳ = λ {X} {p} f → ∫-join (ηPre p) f
-    }
+  open Laws integral monadData public using (TF; ηN; μN; TM)

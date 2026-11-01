@@ -29,6 +29,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
+| `QBS.IntegralMonad` | 230 |  | A monad on quasi-Borel spaces presented by its integral. |
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 135 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
@@ -48,7 +49,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Cantor` | 53 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 25 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
 | `QBS.Model.DiscreteSource` | 51 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
-| `QBS.Model.Monad` | 296 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
+| `QBS.Model.Monad` | 283 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 126 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 49 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
@@ -147,22 +148,22 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
-| `QBS.Continuous.Monad` | 430 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
+| `QBS.Continuous.Monad` | 414 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
 | `QBS.Continuous.SFinite` | 336 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 252 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 453 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
 | `QBS.Continuous.SFiniteIncl` | 229 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
-| `QBS.Continuous.SFiniteMonad` | 293 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
+| `QBS.Continuous.SFiniteMonad` | 252 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 510 | lem | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
 | `QBS.Continuous.SFiniteStat` | 184 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
 | `QBS.Continuous.SFiniteStatBridge` | 291 | lem | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
-| `QBS.Continuous.SFiniteStrong` | 180 | lem | Strength and commutativity of the s-finite measure monad. |
+| `QBS.Continuous.SFiniteStrong` | 132 | lem | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 263 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 188 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
-| `QBS.Continuous.Strong` | 163 | lem | Strength and commutativity of the continuous probability monad. |
+| `QBS.Continuous.Strong` | 152 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 96 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |

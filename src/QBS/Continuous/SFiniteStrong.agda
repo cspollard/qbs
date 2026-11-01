@@ -18,6 +18,7 @@ open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
+open import QBS.IntegralMonad using (IntegralStrength; module StrongLaws)
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
 import QBS.Probes as Probes
@@ -118,62 +119,13 @@ module SFiniteStrong (lem : LEM₀) where
         }
     }
 
-  -- naturality of σ
-  σ-nat : ∀ {X Y X′ Y′ : QBS S} (F : Hom S (_×Q_ S X Y) (_×Q_ S X′ Y′)) (f₁ : Hom S X X′) (f₂ : Hom S Y Y′) →
-    (∀ x y → Setoid._≈_ (Carrier (_×Q_ S X′ Y′)) (map F ⟨$⟩ (x , y)) (map f₁ ⟨$⟩ x , map f₂ ⟨$⟩ y)) →
-    ∀ (x : ∣ X ∣) (q : Pre (XW Y)) (h : Hom S (_×Q_ S X′ Y′) WQ) →
-    ∫ᴹ {_×Q_ S X′ Y′} (σPre {X′} {Y′} (map f₁ ⟨$⟩ x , mapM {Y} {Y′} f₂ q)) h
-      ≈ ∫ᴹ {_×Q_ S X′ Y′} (mapM {_×Q_ S X Y} {_×Q_ S X′ Y′} F (σPre {X} {Y} (x , q))) h
-  σ-nat {X} {Y} {X′} {Y′} F f₁ f₂ e x q h =
-    trans (∫ᴹ-σ {X′} {Y′} (map f₁ ⟨$⟩ x) (mapM {Y} {Y′} f₂ q) h)
-      (trans (∫ᴹ-map {Y} {Y′} f₂ q (fixH {X′} {Y′} (map f₁ ⟨$⟩ x) h))
-        (trans (∫ᴹ-cong {Y} q {_∘H_ S (fixH {X′} {Y′} (map f₁ ⟨$⟩ x) h) f₂} {fixH {X} {Y} x (_∘H_ S h F)}
-                  (λ y → Func.cong (map h) (Setoid.sym (Carrier (_×Q_ S X′ Y′)) (e x y))))
-          (sym (trans (∫ᴹ-map {_×Q_ S X Y} {_×Q_ S X′ Y′} F (σPre {X} {Y} (x , q)) h)
-                      (∫ᴹ-σ {X} {Y} x q (_∘H_ S h F))))))
-
-  open import Categories.Category.Product using (Product; _⁂_)
-  open import Categories.Monad.Strong using (Strength; StrongMonad)
-  import Categories.Monad.Strong.Properties
-  import Categories.Category.Cartesian.Monoidal as CM
-  import Categories.Category.CartesianClosed.Canonical as Canonical
-  open import QBS.Exponential using (cartesianClosed)
-
-  private
-    cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
-    V = CM.CartesianMonoidal.monoidal cartesian
-    {-# INLINE cartesian #-}
-    {-# INLINE V #-}
-
-  strength : Strength V TM
-  strength = record
-    { strengthen = record
-        { η = λ { (X , Y) → σH X Y }
-        ; commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) {(x , q)} h →
-            σ-nat _ f₁ f₂ (λ x y → Setoid.refl (Carrier (_×Q_ S Y₁ Y₂))) x q h }
-        ; sym-commute = λ { {X₁ , X₂} {Y₁ , Y₂} (f₁ , f₂) {(x , q)} h →
-            sym (σ-nat _ f₁ f₂ (λ x y → Setoid.refl (Carrier (_×Q_ S Y₁ Y₂))) x q h) }
-        }
-    ; identityˡ = λ {A} {(t , q)} h →
-        trans (∫ᴹ-map _ (σPre {_} {A} (t , q)) h)
-          (trans (∫ᴹ-σ {_} {A} t q _) (∫ᴹ-cong q (λ y → refl)))
-    ; η-comm = λ {A} {B} {(a , b)} h →
-        trans (∫ᴹ-σ {A} {B} a (C.ηPre {XW B} (1# , b)) h)
-          (trans (∫ᴹ-η {B} b (fixH {A} {B} a h)) (sym (∫ᴹ-η {_×Q_ S A B} (a , b) h)))
-    ; μ-η-comm = λ {A} {B} {(a , P)} g →
-        trans (∫ᴹ-join (mapM (σH A B) (σPre {A} {TQ B} (a , P))) g)
-          (trans (∫ᴹ-map (σH A B) (σPre {A} {TQ B} (a , P)) (∫ᶠ g))
-            (trans (∫ᴹ-σ {A} {TQ B} a P (_∘H_ S (∫ᶠ g) (σH A B)))
-              (trans (∫ᴹ-cong {TQ B} P {fixH {A} {TQ B} a (_∘H_ S (∫ᶠ g) (σH A B))} {∫ᶠ (fixH {A} {B} a g)}
-                        (λ ν → ∫ᴹ-σ {A} {B} a ν g))
-                (sym (trans (∫ᴹ-σ {A} {B} a (joinPre P) g) (∫ᴹ-join P (fixH {A} {B} a g)))))))
-    ; strength-assoc = λ {A} {B} {C} {((x , y) , q)} h →
-        trans (∫ᴹ-map _ (σPre {_} {C} ((x , y) , q)) h)
-          (trans (∫ᴹ-σ {_×Q_ S A B} {C} (x , y) q _)
-            (trans (∫ᴹ-cong q (λ z → refl))
-              (sym (trans (∫ᴹ-σ {A} {_} x (σPre {B} {C} (y , q)) h) (∫ᴹ-σ {B} {C} y q (fixH {A} {_} x h))))))
+  -- the strength laws follow from the integral equations (`QBS.IntegralMonad`)
+  integralσ : IntegralStrength integral
+  integralσ = record
+    { σH = σH
+    ; fixᵗ = λ {X} {Y} → fixH {X} {Y}
+    ; eval-fix = λ _ _ _ → refl
+    ; ∫-σ = λ X Y x q f → ∫ᴹ-σ {X} {Y} x q f
     }
 
-  strongMonad : StrongMonad V
-  strongMonad = record { M = TM ; strength = strength }
-  {-# INLINE strongMonad #-}
+  open StrongLaws integral monadData integralσ public using (strength; strongMonad)

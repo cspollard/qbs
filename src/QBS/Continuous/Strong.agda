@@ -21,6 +21,7 @@ open ≡ using (_≡_)
 open import Categories.Category.Core using (Category)
 
 open import QBS.Core
+open import QBS.IntegralMonad using (IntegralStrength; module StrongLaws)
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; pairQ; fstQ; sndQ)
 import QBS.Probes as Probes
@@ -94,8 +95,17 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
       (∀ r → h r ≈ h′ r) → I μ h fh ≈ I μ h′ fh′
     Ir μ e = I-cong μ e _ _
 
-  open import Categories.Category.Product using (Product; _⁂_)
-  open import Categories.Monad.Strong using (Strength; StrongMonad)
+  -- the strength laws follow from the integral equations (`QBS.IntegralMonad`)
+  integralσ : IntegralStrength integral
+  integralσ = record
+    { σH = σH
+    ; fixᵗ = λ {X} {Y} → fixH {X} {Y}
+    ; eval-fix = λ _ _ _ → Setoid.refl Aˢ
+    ; ∫-σ = λ X Y x q f → ∫-σ {X} {Y} x q f
+    }
+
+  open StrongLaws integral monadData integralσ public using (strength; strongMonad)
+
   import Categories.Monad.Strong.Properties
   import Categories.Category.Cartesian.Monoidal as CM
   import Categories.Category.CartesianClosed.Canonical as Canonical
@@ -103,27 +113,6 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
 
   private
     cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
-    V = CM.CartesianMonoidal.monoidal cartesian
-
-  strength : Strength V TM
-  strength = record
-    { strengthen = record
-        { η = λ { (X , Y) → σH X Y }
-        ; commute = λ f {(x , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
-        ; sym-commute = λ f {(x , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
-        }
-    ; identityˡ = λ {_} {(_ , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
-    ; η-comm = λ {A} {B} {x} h → Func.cong (map h) (Setoid.refl (Carrier (_×Q_ S A B)))
-    ; μ-η-comm = λ {A} {B} {(a , P)} g →
-        Setoid.trans Aˢ (∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g)
-          (Setoid.trans Aˢ (Ir (m P) (λ r → ∫-σ {A} {B} a (α P ⟨$⟩ r) g))
-            (Setoid.trans Aˢ (Setoid.sym Aˢ (∫-join {B} P (fixH {A} {B} a g)))
-              (Setoid.sym Aˢ (∫-σ {A} {B} a (joinPre P) g))))
-    ; strength-assoc = λ {_} {_} {_} {((x , y) , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
-    }
-
-  strongMonad : StrongMonad V
-  strongMonad = record { M = TM ; strength = strength }
 
   open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
   import Categories.Category.Cartesian.SymmetricMonoidal as CSM
