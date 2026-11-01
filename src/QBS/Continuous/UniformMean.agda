@@ -33,20 +33,27 @@ module Alg {c ℓ} (S : CommutativeSemiring c ℓ) (half : CommutativeSemiring.C
   open import Algebra.Solver.Ring.NaturalCoefficients.Default S
   open SetoidReasoning setoid
 
+  -- (½ + ½) ½ = ½ and ½m + ½m = m
+  k : (half + half) * half ≈ half
+  k = trans (*-cong hh refl) (*-identityˡ half)
+
+  hm : ∀ m → half * m + half * m ≈ m
+  hm m = trans (sym (distribʳ m half half)) (trans (*-cong hh refl) (*-identityˡ m))
+
   -- m = ½(½ + ½m) + ½(½m) gives m + m = ½ + m
   double : ∀ m → m ≈ half * (half + half * m) + half * (half * m) → m + m ≈ half + m
   double m E = begin
-    m + m ≈⟨ +-cong E E ⟩
-    X + X ≈⟨ polyEq ⟩
-    (half + half) * half + ((half + half) * half * m + (half + half) * half * m) ≈⟨ +-cong (*-cong hh refl) (+-cong (*-cong (*-cong hh refl) refl) (*-cong (*-cong hh refl) refl)) ⟩
-    1# * half + ((1# * half) * m + (1# * half) * m) ≈⟨ +-cong (*-identityˡ half) (+-cong (*-cong (*-identityˡ half) refl) (*-cong (*-identityˡ half) refl)) ⟩
-    half + (half * m + half * m) ≈⟨ +-cong refl (trans (sym (distribʳ m half half)) (trans (*-cong hh refl) (*-identityˡ m))) ⟩
+    m + m                                                                       ≈⟨ +-cong E E ⟩
+    X + X                                                                       ≈⟨ polyEq ⟩
+    (half + half) * half + ((half + half) * half * m + (half + half) * half * m)
+      ≈⟨ +-cong k (+-cong (*-cong k refl) (*-cong k refl)) ⟩
+    half + (half * m + half * m)                                                ≈⟨ +-cong refl (hm m) ⟩
     half + m ∎
     where
       X = half * (half + half * m) + half * (half * m)
       polyEq : X + X ≈ (half + half) * half + ((half + half) * half * m + (half + half) * half * m)
       polyEq = solve 2 (λ h x → let X′ = h :* (h :+ h :* x) :+ h :* (h :* x)
-                              in X′ :+ X′ := (h :+ h) :* h :+ ((h :+ h) :* h :* x :+ (h :+ h) :* h :* x)) refl half m
+                                in X′ :+ X′ := (h :+ h) :* h :+ ((h :+ h) :* h :* x :+ (h :+ h) :* h :* x)) refl half m
 
 module UniformMean (lem₁ : LEM₁) where
   open Daniell lem₁ using (L-one)
