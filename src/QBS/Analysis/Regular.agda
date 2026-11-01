@@ -2,7 +2,7 @@
 
 -- Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets.
 --
--- `Meas U m` says that `m` is the measure of `U`: for every n there are opens O ⊇ U and
+-- `IsRegular U m` says that `m` is the measure of `U`: for every n there are opens O ⊇ U and
 -- P ⊇ Uᶜ with ν O ≤ m + 2⁻ⁿ and ν P + m ≤ 1 + 2⁻ⁿ (inner and outer regularity at once).  The
 -- values m are unique, the clopen sets have their dyadic measure, regular sets are closed under
 -- complements and countable disjoint unions (with additive measures), hence by Dynkin's π–λ
@@ -58,19 +58,19 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
       abP : ν aP + m ≤ 1# + hp n
   open Appr
 
-  Meas : Pred → ∣A∣ → Set₁
-  Meas U m = ∀ n → Appr U m n
+  IsRegular : Pred → ∣A∣ → Set₁
+  IsRegular U m = ∀ n → Appr U m n
 
-  meas-resp : ∀ {U V m} → U ≐ V → Meas U m → Meas V m
+  meas-resp : ∀ {U V m} → U ≐ V → IsRegular U m → IsRegular V m
   meas-resp e M n with M n
   ... | appr O P sO sP bO bP =
     appr O P (λ x v → sO x (proj₂ (e x) v)) (λ x nv → sP x (λ u → nv (proj₁ (e x) u))) bO bP
 
-  meas-≤1 : ∀ {U m} → Meas U m → m ≤ 1#
+  meas-≤1 : ∀ {U m} → IsRegular U m → m ≤ 1#
   meas-≤1 M = arch (λ n → ≤-trans (≤-trans ≤-+ʳ (≤-reflexive (+-comm _ _))) (abP (M n)))
 
   -- uniqueness of the measure
-  meas-≤ : ∀ {U m m′} → Meas U m → Meas U m′ → m′ ≤ m
+  meas-≤ : ∀ {U m m′} → IsRegular U m → IsRegular U m′ → m′ ≤ m
   meas-≤ {U} {m} {m′} M M′ = arch go
     where
       go : ∀ k → m′ ≤ m + hp k
@@ -91,17 +91,17 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
             1# + (m + (hp (suc k) + hp (suc k)))  ≈⟨ +-cong refl (+-cong refl (hp-double k)) ⟩
             1# + (m + hp k) ∎
 
-  meas-unique : ∀ {U m m′} → Meas U m → Meas U m′ → m ≈ m′
+  meas-unique : ∀ {U m m′} → IsRegular U m → IsRegular U m′ → m ≈ m′
   meas-unique M M′ = ≤-antisym (meas-≤ M′ M) (meas-≤ M M′)
 
   -- complements
-  cmp : ∀ {U m} → Meas U m → ∣A∣
+  cmp : ∀ {U m} → IsRegular U m → ∣A∣
   cmp M = proj₁ (complement (meas-≤1 M))
 
-  cmp-eq : ∀ {U m} (M : Meas U m) → m + cmp M ≈ 1#
+  cmp-eq : ∀ {U m} (M : IsRegular U m) → m + cmp M ≈ 1#
   cmp-eq M = proj₂ (complement (meas-≤1 M))
 
-  meas-compl : ∀ {U m} (M : Meas U m) → Meas (∁ U) (cmp M)
+  meas-compl : ∀ {U m} (M : IsRegular U m) → IsRegular (∁ U) (cmp M)
   meas-compl {U} {m} M n with M n
   ... | appr O P sO sP bO bP = appr P O sP sO′ bP′ bO′
     where
@@ -122,7 +122,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
         1# + hp n                 ∎))
 
   -- clopen sets have their dyadic measure
-  meas-clopen : ∀ C → Meas (Pt C) (μ0 C)
+  meas-clopen : ∀ C → IsRegular (Pt C) (μ0 C)
   meas-clopen C n = appr (clopen C) (clopen (∁ᶜ C)) (λ x e → 0 , e) sP
     (≤-trans (≤-reflexive (ν-clopen C)) ≤-+ʳ)
     (≤-trans (≤-reflexive (trans (+-cong (ν-clopen (∁ᶜ C)) refl) (μ0-∁ C))) ≤-+ʳ)
@@ -161,14 +161,14 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
   cyl→tree (cylResp {U} {V} e c) with cyl→tree c
   ... | C , e′ = C , ≐-trans (≐-sym e) e′
 
-  meas-cyl : ∀ {U} → Cyl U → Σ ∣A∣ (Meas U)
+  meas-cyl : ∀ {U} → Cyl U → Σ ∣A∣ (IsRegular U)
   meas-cyl c with cyl→tree c
   ... | C , e = μ0 C , meas-resp (≐-sym e) (meas-clopen C)
 
   ----------------------------------------------------------------------------
   -- countable disjoint unions
 
-  module Union (U : ℕ → Pred) (dj : Disjoint U) (m : ℕ → ∣A∣) (ms : ∀ i → Meas (U i) (m i)) where
+  module Union (U : ℕ → Pred) (dj : Disjoint U) (m : ℕ → ∣A∣) (ms : ∀ i → IsRegular (U i) (m i)) where
 
     UU : Pred
     UU x = Σ ℕ (λ i → U i x)
@@ -228,7 +228,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
     M≤1 : M ≤ 1#
     M≤1 = ∑ᶠ-lub psum-m≤1
 
-    meas-union : Meas UU M
+    meas-union : IsRegular UU M
     meas-union n with way-below (psum m) (psum-inc m) M≤1 (suc n)
     ... | N , wb = appr O P sO sP bO bP
       where
@@ -261,7 +261,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
   open Dynkin lem using (dynkin)
 
   Good : Pred → Set₁
-  Good U = Σ ∣A∣ (Meas U)
+  Good U = Σ ∣A∣ (IsRegular U)
 
   good-resp : ∀ {U V} → U ≐ V → Good U → Good V
   good-resp e (m , M) = m , meas-resp e M
@@ -277,7 +277,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
     where
       m : ℕ → ∣A∣
       m i = proj₁ (ds i)
-      ms : ∀ i → Meas (U i) (m i)
+      ms : ∀ i → IsRegular (U i) (m i)
       ms i = proj₂ (ds i)
 
   borel-meas : ∀ {U} → Borel U → Good U
@@ -289,10 +289,10 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
     μ : ∀ {U} → Borel U → ∣A∣
     μ {U} b = proj₁ (borel-meas {U} b)
 
-    μ-meas : ∀ {U} (b : Borel U) → Meas U (μ b)
+    μ-meas : ∀ {U} (b : Borel U) → IsRegular U (μ b)
     μ-meas {U} b = proj₂ (borel-meas {U} b)
 
-  μ-unique : ∀ {U m} (b : Borel U) → Meas U m → μ b ≈ m
+  μ-unique : ∀ {U m} (b : Borel U) → IsRegular U m → μ b ≈ m
   μ-unique {U} {m} b M = meas-unique {U} (μ-meas b) M
 
   μ-resp : ∀ {U V} (bU : Borel U) (bV : Borel V) → U ≐ V → μ bU ≈ μ bV
