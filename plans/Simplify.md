@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Status (2026-10-31): Stage 1, Stage 1a and Stage 2 so far (A.1, A.2, B.3, B.5, E.1) are complete and merged; everything else is open.  See
+definitions.  Status (2026-11-01): Stages 1, 1a, 2 (A.1, A.2, B.3, B.5, E.1) and 3 (A.5, A.7, B.2, C.3, D.2, E.2 cheap, F.1, F.2) are complete and merged; everything else is open.  See
 "Status at a glance" below, and the outcome sections at the end for details.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
@@ -22,15 +22,15 @@ sections are in suggested order of work.
     proves `QBSCat ≃ SubCategory Setoids …`, `Disc ⊣ Forget ⊣ Codisc`, and that `Forget` is continuous and cocontinuous.
     The direct `SubCategory` definition makes `SFiniteStat` run for over 19 minutes (tag `sigma-wip`).
   - Item 2 is a direct one-object `SubCategory` (`QBS.Category.Measurable`) with a full and faithful `yoneda` embedding.
-
 - Stage 2: A.1, A.2, B.3, B.5, E.1 (see the "Stage 2 outcome" sections).
+- Stage 3: A.5, A.7, B.2, C.3, D.2, E.2 (cheap option), F.1, F.2 (see the "Stage 3 outcome" sections).
 
 **Open:**
-- A.5; A.7, A.8 (uncertain).
-- B.1 (largest), B.2, B.4.
-- C.2, C.3, C.5; D.2; E.2; F.1, F.2; G.
+- A.8 (uncertain).
+- B.1 (largest), B.4.
+- C.2, C.5; E.2 (full option only); G.
 - Stage 1a item 5, second half: `measₛ`/`idxₛ` (`Borel/Source`) and `witₛ` are still separate constructors.
-- Stage 1a item 4: 4 `random-cast` sites remain (`Exponential`, `Continuous/Monad`, `SFinite*`); the `SFinite*` ones belong with B.2.
+- Stage 1a item 4: 2 `random-cast` sites remain (`Exponential`, `Continuous/Monad`); B.2 removed the `SFinite*` ones.
 
 ## A. Algebra and order (Analysis)
 
@@ -83,7 +83,7 @@ sections are in suggested order of work.
    - Do: make it a lemma with the same name.
    - Payoff: removes an obligation from 10 instances: `Measure.agda:58/72/91`, `Functional:48`, `Restrict:88`,
      `Mixture:67`, `MixtureN:74`, `Density:62`, `Continuous/SubProb:48/60`.
-5. **`RationalLemmas` re-proves stdlib.**
+5. **[done]** **`RationalLemmas` re-proves stdlib.**
    - About 40 lines (:28-100) are one-line aliases of `Data.Rational.Unnormalised.Properties`.  Use
      `open … public using/renaming` instead.
    - Some "new" lemmas already exist:
@@ -112,7 +112,7 @@ sections are in suggested order of work.
    - `Series.+-interchange` (:39) and `ClopenMeasure.swap4` (:34) are `CommutativeSemigroup.interchange` (:28).
    - `Variance.agda:47-48,232` proves `(-x)·x = -(x·x)` by hand; that is
      `Algebra.Properties.RingWithoutOne.-‿distribˡ-*` (:39).
-7. **`Bayesian.pow` (`Inference/Bayesian.agda:39`) is `_^_`**, with `x ^ suc n = x * x ^ n`.
+7. **[done]** **`Bayesian.pow` (`Inference/Bayesian.agda:39`) is `_^_`**, with `x ^ suc n = x * x ^ n`.
    `likSeq-counts` can then use `Algebra.Properties.Semiring.Exp`.
 8. **Finite sums against `Algebra.Properties.CommutativeMonoid.Sum`** (uncertain).
    - `psum-+`, `psum-scale` and `psum2-flip` are `∑-distrib-+`, `*-distribˡ-sum` and `∑-comm`.  But stdlib sums
@@ -143,7 +143,7 @@ sections are in suggested order of work.
    - Risk: implicit inference through a generic module.  Take `X`/`Y` explicitly, keep `mapM`/`joinPre`
      `abstract` model-side, and re-time `SFiniteStat` and `ProbInstance`.  `Model/Strong` gains little, since its
      strength laws are `refl`.
-2. **`WitM` duplicates `Continuous.Wit`.**
+2. **[done]** **`WitM` duplicates `Continuous.Wit`.**
    - Sites: `SFinite.agda:126-182` (`WitM`, `TQ-resp/const/pre/glue`) against `Continuous/Monad.agda:116-123,
      150-169, 193-226`.  The only difference is `≈ᴹ` instead of `≈ᵖ`.
    - Do: parameterise `Wit` and the probes of `TQ` by an equivalence `_≋_` on `Pre X` with `≈ᵖ ⊆ ≋`.  Do this
@@ -188,7 +188,7 @@ sections are in suggested order of work.
 
    `Model/DiscreteSource.agda:43-46` records that separate aliases cost about 30 s per conversion, so exporting
    them once (e.g. from `QBS.Exponential`) may also help compile time.  This is unmeasured.
-3. **Small agda-categories reuses.**
+3. **[done]** **Small agda-categories reuses.**
    - `Model/Monad.agda:277-288`: the `sym-commute`/`sym-assoc` fields come for free with `ntHelper`
      (`Categories/NaturalTransformation/Core.agda:57`).
    - `Statistical.agda:99-101` `rw` is `MR.extendʳ` (`Categories/Morphism/Reasoning/Core.agda:172`).
@@ -211,7 +211,7 @@ sections are in suggested order of work.
    - Do: first, a local `LEM ℓ` alias for the current form, used everywhere.  Then decide whether to move to
      `Dec`.
    - Risk: stdlib's `¬` uses level-0 `⊥`, while the semirings use `⊥ {ℓ}`.
-2. **Invertibility is `Algebra.Definitions.RightInvertible 1# _*_ m`.**  Sites: `Model/Semiring.agda:42`
+2. **[done]** **Invertibility is `Algebra.Definitions.RightInvertible 1# _*_ m`.**  Sites: `Model/Semiring.agda:42`
    `invertible?`, and `Model/StatInstance.agda:266, 289-290` (`InvDec`, inline in `normC′`).  Define `InvDec`
    once in `Semiring`.
 
@@ -226,7 +226,7 @@ sections are in suggested order of work.
    - Payoff: about 40 lines.
    - Risk: `RandomSource.pair` and `Model.Pairing.pair` are equal only through `DS`'s INLINE alias; watch the
      conversion cost.
-2. **Interleaving.**
+2. **[cheap option done]** **Interleaving.**
    - Now: `Borel/Merge.mergeC` (:24-39) indexes by parity (`ev`, `hf`).  That needs `Analysis/Interleave.agda:37-67`
      and `Continuous/Sample.agda:40-90` (`dbl`, `ev-dbl`, `hf-dbl`, `even-split`, `odd-split`).
    - Cheap option: `hf` is `⌊_/2⌋` (`Data/Nat/Base.agda:280`), `hf-dbl` is `sym (n≡⌊n+n/2⌋ n)`
@@ -246,14 +246,14 @@ sections are in suggested order of work.
 
 ## F. Examples and inference
 
-1. **`UniformMean` by self-similarity.**
+1. **[done]** **`UniformMean` by self-similarity.**
    - Now: `Continuous/UniformMean` (133 lines) sums the bits with monotone convergence.
    - Do: reuse `UniformMoment`'s argument (:157-179): `expansion-cons` plus `FirstBit.firstBit-fun` give
      M = ½(½ + ½M) + ½(½M), so M ≈ ½ by `cancel`.  This is the self-similar characterisation of Lebesgue measure,
      as `Analysis/SelfSimilar` already uses for the CDF.
    - Payoff: about 90 lines, and one proof pattern for all moments.
    - Uncertain: check `cancel`'s hypotheses at this step.
-2. **`Frequentist` copies `Estimator`.**
+2. **[done]** **`Frequentist` copies `Estimator`.**
    - `Eval.natR` (:44-46) and `natS` (:132-134) copy `Analysis/Estimator.agda:40-46`.
    - `natS-eq`, `natR-eq`, `sum-eq`, `sq-eq` and `ss-eq` (:145-166) exist only to bridge the copies, and
      `Moments` (:117) restates `Estimator.Moments`.
@@ -335,7 +335,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1, 2, 3 and 5 are done; step 4 and steps 6 onward are open.
+Status: steps 1–5 are done; in step 6, B.2 is done and B.1 is open; in step 7, F.1, F.2 and E.2 (cheap) are done, and B.4 and the full E.2 are open.
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -487,3 +487,80 @@ Canaries (forced recheck, concurrent builds, so noisy; "before" taken right afte
   `ProbInstance.split` is built from `Cantor.cantorIso` (`Inverse.from`/`to`/`inverse`).  `Monad.ι : R → ℕ` stays, as `lower (ιR r)`,
   since `glueₛ` needs a ℕ index.  The `DS` alias concern did not materialise.  Saving is ~30 lines rather than ~40: the lemma takes an
   explicit `H` and the call sites keep their lambdas.  Skipped: moving `φ`/`ιR`/`ρR` out of `module Cantor A` (they do not use `A`).
+
+## Stage 3 canaries (A.5, A.7, B.2, C.3, D.2, E.2, F.1, F.2)
+
+Timed by the orchestrator after all merges, with no other builds running (macOS indexing still active): forced recheck (delete the
+module's `.agdai`, rerun `agda`, warm dependencies), `1ddb9d4` (main before Stage 3) vs `7fc2fe5`+B.2 (after), interleaved, two runs each, in seconds.
+Everything is within 3 %, slightly faster if anything; no regression from B.2's generic `WitProbes`.
+
+| Module | before | after |
+|---|---|---|
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+| `%s` | %s / %s | %s / %s |
+
+Note: three of the four Stage 3 worktrees were first cut from a stale `main` (`7064e52`, before Stage 2); all were rebased or merged onto current
+`main`, and the merged tree passes `make check` (145 files), `make longcheck` (36 flagged) and `make doccheck`.
+
+## Stage 3 outcome (A.5, A.7)
+
+`make check` (145 files after merge, 0 holes, 0 failures), `make longcheck` (36 flagged, unchanged) and `make doccheck` pass; one commit per item.
+13 files, +99 −195.
+
+* **A.5 done.**  The ~40 one-line aliases in `RationalLemmas` are two `open P public using/renaming (…)` blocks (renames `≤-≃`, `<-≤`,
+  `≃-<ʳ`, `≃-<ˡ`, `dense`, `total`, `not-≤⇒<`; `≤-resp` stays local).  `*-mono-<-posʳ`, `*-mono-≤-nnʳ`, `*-pos`, `+-pos`, `≤-+ʳ` are thin
+  wrappers over `*-monoˡ-<-pos`, `*-monoˡ-≤-nonNeg`, `pos*pos⇒pos`, `pos+pos⇒pos`, `p≤p+q` via the kept `pos`/`nonneg` adapters.
+  `+-pos`/`+-neg` wrap the `≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< …)` idiom (11 sites in `LowerInverse`, `LowerReals`, `CutSum`, `LowerRealsArch`;
+  `CutSum.pos-add`/`neg-add` and `LowerRealsArch.pos+` gone; `CoinIntegral:279` is a different shape and stays).  `nat-nonneg`/`nat-mono`
+  live once in `RationalLemmas` (removed from `LowerRealsArch`, `Pieces`, `CoinGrid`, `SFiniteDecomp`).  `LowerRealsArch.hf` is stdlib `½`;
+  `½+½ : ½ + ½ ≃ 1ℚᵘ` is `*≡* refl`, and `hf*2`, `0<hf` (by contradiction) and `0<2` are gone.  Not done: `≤-Reasoning` (no long chains
+  at the edited sites).
+* **A.7 done.**  `Bayesian.pow` is `_^_` from `Algebra.Properties.Semiring.Exp`; the false case of `likSeq-counts` is exactly
+  `y*x^m*y^n≈x^m*y^[n+1]`, replacing the manual `*-assoc`/`*-comm` shuffle.
+* The merge into `main` conflicted only in the
+  generated `docs/Modules.md`.
+
+## Stage 3 outcome (B.2)
+
+`make check` (145 files, 0 holes, 0 failures), `make longcheck` (36 flagged, baseline) and `make doccheck` pass.  6 files, +99 −105.
+
+* **B.2 done.**  `Continuous/Monad.Wit` takes an equivalence on `Pre X` (`Wit _≋_ β`), parameterised on the raw family, not re-indexed by
+  `Func`.  The `TQ` probes (`TQ-resp/const/pre/glue`, with `pre-eq`/`glue-eq` folded in) are one generic module
+  `WitProbes _≋_ ≋-sym ≋-trans (incl : ≈ᵖ ⊆ ≋)`; `C.TQ` uses it at `≈ᵖ`, `SFinite` at `≈ᴹ` (`WitM β = C.Wit _≈ᴹ_ β`, `module WitM = C.Wit`, so
+  the `open WitM` in other `SFinite*` modules is unchanged).  `fromWit` became `Wit-mono` (a witness for a finer equivalence is one for a coarser).
+  Both `SFinite*` `random-cast`s are gone (`SFinite.joinPre`, `SFiniteMonad`).
+* **Smaller saving than planned** (net −6, not ~60): `WitProbes` is new, `Wit` gained an argument (`C.Wit.a {U} {_} {β}` at 12 sites in
+  `SFiniteIncl`, `C.Wit {X} C._≈ᵖ_` at 2 in `SFiniteNorm`), and the `abstract` wrappers stay in `SFinite`.  `abstract` inside the generic module
+  failed (it made `C.TQ`'s witnesses opaque; `ProbInstance.measure-tensor` then had unsolved metas at `joinPre`); the wrappers need eta-expanded
+  implicits (`TQ-pre {X} {β} {f} = WP.TQ-pre {X} {β} {f}`).  `Wit-cong`/`witₛ` stay `≈ᵖ`-specific (they need `Fun-resp` on `≈ᵖ` integrals).
+
+## Stage 3 outcome (C.3, D.2, E.2)
+
+`make check` (145 files, 0 holes, 0 failures), `make longcheck` (36 flagged, baseline) and `make doccheck` pass.  10 files, +66 −86.
+
+* **C.3 done.**  `Model/Monad.ηN`/`μN` use `ntHelper` (no `sym-commute` fields); `Statistical.rw` is gone (its two uses are
+  `MR.extendʳ`); `Probability`'s `⟨id,!⟩∘π₁`/`⟨!,id⟩∘π₂` are the `isoˡ` of `CartesianMonoidal`'s `A×⊤≅A`/`⊤×A≅A` (first use of the `CM` import).
+* **D.2 done.**  `InvDec m = RightInvertible _≈_ 1# _*_ m ⊎ (∀ n → m * n ≈ 1# → ⊥)` is defined once in `CompleteSemiring`; `invertible?`
+  and `StatInstance` (local `InvDec`, inline type in `normC′`) use it.  `Continuous/SFiniteNorm` has its own `InvDec` over `Cut` (left alone).
+* **E.2 (cheap) done.**  `Merge.hf` is `⌊_/2⌋` and `mergeBit` is `if_then_else_` (same clauses, so the rest stays `refl`);
+  `Sample.hf-dbl` is `sym (n≡⌊n+n/2⌋ n)`; `hf-suc`/`hf-sdbl` renamed `half-suc`/`half-sdbl`; `Sample.dbl` stays.  Full stream-interleave option not attempted.
+
+## Stage 3 outcome (F.1, F.2)
+
+`make check` (145 files, 0 holes, 0 failures), `make longcheck` and `make doccheck` pass.  5 files, +109 −132.
+
+* **F.1 done.**  `Continuous/UniformMean.mean` (statement unchanged) is now by self-similarity: `firstBit-fun` + `expansion-cons` give
+  M = ½(½ + ½M) + ½(½M); a small `Alg.double` over an abstract `CommutativeSemiring` (the ring solver is slow on the concrete cut
+  semiring) turns that into M + M ≈ ½ + M, and `cancel` (needing only M ≤ 1, via `I-mono` against 1) gives M ≈ ½.  The partial-sum
+  machinery (`bitU`/`bitCyl`, `bit-scale`, `I-bit`, `I-part`, `I-sup`, bit probabilities, geometric sum) is gone; 133 → ~99 lines.
+* **F.2 done.**  `Analysis/Estimator` has a top-level `NatIn R` with `nat`; `Estimator.natS`/`natR` and `Frequentist`'s copies are instances,
+  so `natS-eq`/`natR-eq` and their `subst` chains are gone.  `Frequentist.Moments` is `∀ θ → Est.Moments …` (now in `Set₁`); `F.natS` no longer
+  takes `moments`.  Kept: `sum-eq`/`sq-eq`/`ss-eq`, which relate `Term` evaluation to `Estimator.sumR`/`sq`/`SS` rather than bridging copies.
