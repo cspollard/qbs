@@ -18,13 +18,6 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Function.Construct.Composition as Comp
-open import QBS.Category using (QBSCat)
-open import Categories.Category.Core using (Category)
-open import Categories.Functor using (Functor; Endofunctor)
-open import Categories.Functor using () renaming (id to idF)
-open import Categories.Functor using (_∘F_)
-open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
-open import Categories.Monad using (Monad)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open ≡ using (_≡_)
