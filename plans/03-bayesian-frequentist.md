@@ -131,3 +131,33 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 ### 3c status
 
 Status: `Inference/Sampler` and `Inference/UniformSampler` live on branch `plan3c-sampler` only (removed from `main`: `Sampler` is far too expensive to check, >12 CPU-minutes and several GB, until it is fixed).  Done there: `Continuous/SignedTests` (`CutQ`, `J-bounded`, `pullback`) and `Inference/Sampler` (`draw-random`, `iid-moments`, `samplerModel`, `E-at-sampler`).  `Inference/UniformSampler` validates the bridge: the uniform distribution as a sampler (one-point parameter space, identity test) has the single-draw moments of `UniformVariance`, and the unbiasedness theorems follow from `iid-moments`. `E-resp` (well-definedness of `E-at` on `TQ X`) is done on `main` in `Inference/ExpectationResp`, without truncation or monotone convergence: a statistic bounded by `N` is rescaled by `2⁻ᴺ` to a [0,1]-valued test, so `p ≈ᵖ q` applies directly, and `J-scale` plus cancelling `2⁻ᴺ` recovers its integrals.  That module defines `E-at` itself (the same formula as `Sampler.E-at`), so it does not depend on `Sampler`.  `Inference/BernoulliCompare` (Bayesian vs frequentist on the fair or two-headed coin) needs `Sampler` and stays parked on branch `orphaned-wip`.
+
+### 3d: expectations over continuous measures (roadmap, 2026-11-01)
+
+Where things stand on `main`:
+- `Continuous.∫` integrates [0,1]-valued tests, with `∫-map`, `∫-η`, `∫-join`; `Lebesgue.J` integrates unbounded
+  [0,∞]-valued functions, with monotone convergence (`Analysis/Unbounded`) and Tonelli for kernels (`Analysis/Tonelli`).
+- `SignedIntegral.E` integrates signed functions with integrable parts (`E-+`, `E-neg`, `E-scale`, `E-const`);
+  `Variance` has `Var f ≃ E[f²] − (E f)²`.
+- `E-at p g` (bounded signed test `g : STest X` under `p : Pre X`) and `E-resp` (it respects `≈ᵖ`), in
+  `Inference/ExpectationResp`.
+- Worked distributions: only the uniform (mean, CDF, second moment, variance); `Analysis/Density` builds measures
+  from densities.  `Inference/UniformExperiment` proves unbiasedness for i.i.d. uniform draws on an interval.
+- Values are lower reals and signed values are formal differences without division, so results are stated multiplied
+  out (e.g. `x12 (Var u) ≃ 1S`).
+
+Steps, in order of effort:
+1. **The calculus of `E-at`** (in progress, `Inference/Expectation`): `E-at (η x) g ≃ g x`,
+   `E-at (map f p) g ≃ E-at p (g ∘ f)`, linearity in `g`, constants; stretch: the tower law
+   `E-at (join P) g ≃ E-at P (λ q → E-at q g)` (needs `q ↦ E-at q g` as an `STest (TQ X)`, as `∫ᶠ` is for `∫`) and
+   independence under the strength (`E[f(x) g(y)] = E f · E g`, via the Fubini already proved for `∫`).  Expected to
+   reuse the rescaling trick of `E-resp`: prove for [0,1] tests through the `∫` laws, rescale by `2⁻ᴺ`, cancel.
+2. **Unbounded statistics.**  `STest` requires one natural-number bound, so `E-at` cannot express, e.g., `E[x²]` for a
+   distribution with unbounded support.  Extend `E-at` and `E-resp` to integrable tests; `SignedIntegral` already
+   allows integrable parts, and monotone convergence exists.  Real work.
+3. **More distributions.**  Bernoulli is nearly free.  Density-defined ones (exponential, Gaussian) need the density
+   (`e^{−x}`, …) as a measurable `[0,∞]`-valued function, which the library does not have yet; `Density.densM` then
+   gives the measure.
+4. **The sampler–monad bridge.**  `Inference/Sampler` is off `main` (over 12 CPU-minutes to check, see "3c status");
+   making it cheap would bring back `BernoulliCompare` (branch `orphaned-wip`) and the frequentist results stated over
+   samplers.
