@@ -709,3 +709,30 @@ after the `glueₛ` rewrite; the rest are within 3%.
   `dbl-suc`, `ev-dbl`, `ev-sdbl`, `half-sdbl`, `even-split`, `odd-split` (`Continuous/Sample`).  `evens`/`odds` are written
   directly (`k (n + n)`, `k (suc (n + n))`).  `Continuous/Monad` and `SFiniteMonad` only changed an import list.
 - 6 files, +68 / −133.
+
+Canaries for Stage 6 together with the new `Inference/Expectation*` modules (before = `912eca1`, after = `5b84682`),
+interleaved, two runs each, seconds.  **Provisional:** the machine was not quiet (unrelated Python jobs on about 8
+cores, load average 12), so absolute times are about 55% above the Stage 5 table; only the before/after ratios mean
+anything.  Re-time on an idle machine.
+
+| Module | Before | After |
+|---|---|---|
+| `Probability` | 7.83 / 8.25 | 7.72 / 8.16 |
+| `Exponential` | 4.58 / 4.42 | 4.59 / 4.66 |
+| `Model/Monad` | 5.27 / 5.09 | 5.05 / 5.07 |
+| `Model/ProbInstance` | 8.48 / 8.23 | 8.46 / 8.28 |
+| `Model/StatInstance` | 11.84 / 11.76 | 11.26 / 11.32 |
+| `Model/Strong` | 23.61 / 23.97 | 23.86 / 23.62 |
+| `IntegralMonad` | 5.79 / 5.63 | 5.88 / 5.53 |
+| `Borel/Merge` | 3.42 / 3.35 | 3.26 / 3.29 |
+| `Analysis/Interleave` | 4.64 / 4.47 | 4.35 / 4.34 |
+| `Continuous/Sample` | 4.65 / 4.56 | 4.30 / 4.08 |
+| `Continuous/Monad` | 6.00 / 5.73 | 5.92 / 5.55 |
+| `Continuous/SFiniteMonad` | 7.42 / 7.40 | 7.23 / 7.24 |
+| `Continuous/SFiniteNorm` | 10.44 / 10.97 | 10.23 / 10.64 |
+| `Continuous/SFiniteStrong` | 7.49 / 7.49 | 7.08 / 7.18 |
+| `Continuous/SFiniteStat` | 10.24 / 10.18 | 9.96 / 9.96 |
+| `Continuous/SFiniteCommute` | 13.35 / 13.26 | 13.03 / 12.65 |
+| `Continuous/Strong` | 64.00 / 64.34 | 63.03 / 64.58 |
+
+Nothing is slower beyond noise; `Continuous/Sample` is about 8% faster and `Analysis/Interleave` about 4% faster.
