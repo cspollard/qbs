@@ -103,13 +103,15 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`
+### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
 - `E-at-η` — `E-at (ηPre x) g ≃ valT g x`; `E-at-map` — `E-at (mapPre f p) g ≃ E-at p (precompT f g)`.
 - `E-at-+`, `E-at-neg`, `E-at-scale`, `E-at-const` — linearity in the test and constants.
 - `expT g`, `E-at-expT`, `E-at-join` — `q ↦ E-at q g` as a signed test on `TQ X`, and the tower law `E-at (joinPre P) g ≃ E-at P (expT g)`.
+- `f ⊗T g`, `valT-⊗T` (`ExpectationProduct`) — the product of signed tests on `X ×Q Y`, with `valT (f ⊗T g) (x , y) ≃ valT f x *S valT g y`; `E-at-cong` — pointwise `≃` tests have `≃` expectations.
+- `E-at-σ` — `E-at (σPre (x , q)) (f ⊗T g) ≃ valT f x *S E-at q g`; `p ⊗ᵖ q` — the product measure `joinPre (mapPre (σq q) p)`; `E-at-⊗` — independence, `E-at (p ⊗ᵖ q) (f ⊗T g) ≃ E-at p f *S E-at q g`.
 
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
