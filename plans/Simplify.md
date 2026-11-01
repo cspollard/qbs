@@ -2,7 +2,7 @@
 
 A library-wide audit, done 2026-10-31 on the `probes-site` branch (after `d8e9b5f`).  It looks for places where the
 library reinvents a structure from the stdlib, agda-categories, or the literature, or duplicates its own
-definitions.  Status (2026-11-01): Stages 1, 1a, 2 (A.1, A.2, B.3, B.5, E.1) 3 (A.5, A.7, B.2, C.3, D.2, E.2 cheap, F.1, F.2) and 4 (B.1 partly, B.4, G partly) are complete and merged; everything else is open.  See
+definitions.  Status (2026-11-01): Stages 1, 1a, 2 (A.1, A.2, B.3, B.5, E.1) 3 (A.5, A.7, B.2, C.3, D.2, E.2 cheap, F.1, F.2) 4 (B.1 partly, B.4, G partly) and 5 (C.2 partly, C.5, Stage 1a item 4 remainder) are complete and merged; everything else is open.  See
 "Status at a glance" below, and the outcome sections at the end for details.
 
 Guiding rule: when a structure is standard, name it as the literature does and use the library's bundle if one
@@ -17,7 +17,8 @@ sections are in suggested order of work.
 
 **Done (merged):**
 - Stage 1: A.3, A.4, A.6, C.1, C.4, D.1 (alias only), E.3.
-- Stage 1a: items 1, 2 (as theorems, see below), 3, 4, 5 (first half), 6.  Items 7 and 8 were tried or examined and closed.
+- Stage 1a: items 1, 2 (as theorems, see below), 3, 4, 5 (first half), 6.  Items 7 and 8 were tried or examined and closed;
+  the second half of item 5 was examined and left (see the Stage 5 outcome).
   - Item 1 is *not* a redefinition: `QBSCat` stays a hand-built category over a record `Hom`.  `QBS.Category.Concrete`
     proves `QBSCat ≃ SubCategory Setoids …`, `Disc ⊣ Forget ⊣ Codisc`, and that `Forget` is continuous and cocontinuous.
     The direct `SubCategory` definition makes `SFiniteStat` run for over 19 minutes (tag `sigma-wip`).
@@ -25,13 +26,14 @@ sections are in suggested order of work.
 - Stage 2: A.1, A.2, B.3, B.5, E.1 (see the "Stage 2 outcome" sections).
 - Stage 3: A.5, A.7, B.2, C.3, D.2, E.2 (cheap option), F.1, F.2 (see the "Stage 3 outcome" sections).
 - Stage 4: B.1 (monad and strength laws; commutativity and `Model/Strong` left), B.4, G (rename and doc remarks; `Borel/Core` left).  See the "Stage 4 outcome" sections.
+- Stage 5: C.2 (`Continuous/Strong` keeps its aliases), C.5 (comments), Stage 1a item 4 remainder (no `random-cast` left).
+  See the "Stage 5 outcome" section.
 
 **Open:**
 - A.8 (uncertain).
 - B.1 remainder: commutativity is not generic, and the Continuous model keeps its own `TM` and strength (see the Stage 4 follow-up).
-- C.2, C.5; E.2 (full option only); G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
-- Stage 1a item 5, second half: `measₛ`/`idxₛ` (`Borel/Source`) and `witₛ` are still separate constructors.
-- Stage 1a item 4: 2 `random-cast` sites remain (`Exponential`, `Continuous/Monad`); B.2 removed the `SFinite*` ones.
+- C.2 at `Continuous/Strong`: the shared export made it about 7% slower, so it keeps local aliases.
+- E.2 (full option only); G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
 
 ## A. Algebra and order (Analysis)
 
@@ -181,7 +183,7 @@ sections are in suggested order of work.
      opposite (`Monad/Strong/Properties.agda:76-79` `σ` left, `:227-230` `τ` right), and so does
      `Model/Strong.agda:160-167` (`RS.τ`).
    - Do: swap the names, and say that `ψ` (:106-107) is Kock's double strength.
-2. **Export the cartesian aliases once.**  `cartesian`/`V`/`braided` are rebuilt privately in:
+2. **[done except `Continuous/Strong`]** **Export the cartesian aliases once.**  `cartesian`/`V`/`braided` are rebuilt privately in:
    - `Model/Strong:105`
    - `Continuous/Strong:101-147`
    - `SFiniteStrong:141`
@@ -196,7 +198,7 @@ sections are in suggested order of work.
    - `Probability.agda:118-123` `⟨id,!⟩∘π₁`/`⟨!,id⟩∘π₂` are the `isoˡ` of `A×⊤≅A`/`⊤×A≅A` in
      `Categories.Category.Cartesian.Monoidal` (already imported as `CM`).
 4. **`Limits.EqS` (:75-86) is `Relation.Binary.Construct.On.setoid (Carrier X) proj₁`.**
-5. **Keep local, but cite.**
+5. **[done]** **Keep local, but cite.**
    - `Statistical.CommutativeMonoidWithZero`: agda-categories' `Object.Monoid` is not commutative.
    - `Model/Monad.PreS`: the pullback of the pointwise setoid along `∫` (`On.setoid`).  Naming it so makes B.1
      self-explanatory.
@@ -294,7 +296,7 @@ Ordered by payoff.  Each one swaps a local definition for a standard structure, 
 3. **[done]** **Name the composite cover.**  `glueₛ j (λ n → pairₛ n ∘ₛ i n)` is written out four times (`Core.idx-glue`,
    `Colimits` ×2, `Complete`).  A `refineₛ j i` in `Core` (the composite cover of `j` by the `i n`) would make
    `idx-glue : Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)` read as the coverage axiom it is.
-4. **[done; 4 sites left]** **Remove the `random-cast X (λ _ → refl)` casts (22 sites, 11 files).**  Every one has a `refl` proof: the two
+4. **[done]** **Remove the `random-cast X (λ _ → refl)` casts (22 sites, 11 files).**  Every one has a `refl` proof: the two
    `Func`s share `to` and differ only in `cong`.  There are two root causes:
    * Gluing under a projection.  `glue-random` returns `glueₛ i (λ n → g ∘ₛ α n)` where `g ∘ₛ glueₛ i α` is
      wanted (`×Q`, `EqQ`, `ΠQ`, `glueRX`).  One naturality lemma, `random-glue-∘ : Random (glueₛ i (g ∘ₛ α n)) →
@@ -305,7 +307,7 @@ Ordered by payoff.  Each one swaps a local definition for a standard structure, 
    The alternative is to index `Random` by `to` alone and keep `Func` only at the interface.  That would kill both
    the casts and the "implicit `Func` is not inferable" pitfall, but it reintroduces a `cong` field.  It is worth
    trying only if the two fixes above do not clear most sites.
-5. **[first half done]** **One raw-function-to-`Func` constructor.**  `⇑` (`Model/Monad`, for `≡`-discrete `R`), `measₛ`/`idxₛ`
+5. **[first half done; second half examined and left]** **One raw-function-to-`Func` constructor.**  `⇑` (`Model/Monad`, for `≡`-discrete `R`), `measₛ`/`idxₛ`
    (`Borel/Source`) and `witₛ` (`Continuous/Monad`) all have the shape "`to` plus a proof that it respects `≈`".
    `⇑` is the stdlib's `→-to-⟶`, which is deprecated with no `Func` successor.  So keep `⇑`, but move it to `Core`
    next to `constₛ`.
@@ -338,7 +340,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1–6 are done (B.1 without generic commutativity); in step 7, B.4, F.1, F.2 and E.2 (cheap) are done, and the full E.2 is open.
+Status: steps 1–6 are done (B.1 without generic commutativity); in step 7, B.4, F.1, F.2 and E.2 (cheap) are done, and the full E.2 is open.  C.2 and C.5 are done (Stage 5).
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -641,7 +643,6 @@ from B.1.  `SFiniteStrong` is 14% faster.  The others are within 3%.
 
 | Module | Before | After |
 |---|---|---|
-| `Deleted` | branch / (was | worktree-agent-adc866cd98e1b5a66 / ce63aed). |
 | `Probability` | 5.56 / 5.54 | 5.45 / 5.45 |
 | `Exponential` | 3.03 / 3.03 | 2.94 / 2.93 |
 | `Model/Monad` | 2.87 / 2.87 | 3.29 / 3.28 |
@@ -657,3 +658,41 @@ from B.1.  `SFiniteStrong` is 14% faster.  The others are within 3%.
 `Continuous/Strong` is back to baseline.  `Model/Monad` (+14%, 0.4 s) and `Continuous/Monad` (+7%, 0.25 s) are
 slower by small absolute amounts, the price of instantiating `Laws`; `SFiniteStrong` is 13% faster.  The rest are
 within 3% or faster.
+
+## Stage 5 outcome (C.2, C.5, Stage 1a items 4 and 5)
+
+- **C.2.**  `QBS.Category.Cartesian` (module parameter `S`) exports `cartesian`, `V` and `braided` once, with `INLINE`
+  pragmas (which made no measurable difference).  `Model/Strong`, `Continuous/SFiniteCommute` and `IntegralMonad` use
+  it; their local `CM`/`CSM`/`Canonical`/`Symmetric`/`cartesianClosed` imports are gone.  `Continuous/Strong` keeps its
+  local aliases, with a comment: the export made it about 7% slower (42 s to 45 s, agent-timed under load).
+  `Probability` and `Statistical` work over an abstract category and are unchanged.
+- **C.5.**  Comments only.  `Statistical.CommutativeMonoidWithZero` notes that agda-categories' `Object.Monoid` has
+  no commutativity field.  `Model/Monad.PreS` is described as the pullback of the pointwise setoid along `∫`, linked
+  to `Integral.∫-ext`; it is not literally `On.setoid`, because `≈ᵖ` quantifies over every test function.
+- **Stage 1a item 4.**  The last two `random-cast` sites are gone.  `Core.random-glue-pre` replaces `random-cast`
+  (deleted), `Exponential.glueRX` is `glueₛ (j ∘ₛ proj₁ₛ) (λ n → map (u n))`, and `Continuous/Monad.glueJ` uses the
+  same lemma.
+- **Stage 1a item 5, second half: examined and left.**  `measₛ`, `idxₛ` and `witₛ` each have a different `cong`
+  proof, so a shared constructor would just be the `Func` record itself.
+
+Canaries, timed by the orchestrator as for Stage 4 (before = `d51fdba`, after = main with Stage 5 merged), seconds:
+
+| Module | Before | After |
+|---|---|---|
+| `Probability` | 5.02 / 5.00 | 4.93 / 4.91 |
+| `Exponential` | 2.82 / 2.77 | 2.62 / 2.64 |
+| `Model/Monad` | 3.02 / 3.02 | 2.96 / 2.96 |
+| `Model/ProbInstance` | 5.01 / 5.01 | 4.96 / 4.96 |
+| `Model/StatInstance` | 6.99 / 7.06 | 6.92 / 6.91 |
+| `Model/Strong` | 15.90 / 15.85 | 14.43 / 14.43 |
+| `IntegralMonad` | 3.35 / 3.32 | 3.33 / 3.27 |
+| `Continuous/Monad` | 3.82 / 3.86 | 3.77 / 3.78 |
+| `Continuous/SFiniteMonad` | 4.86 / 4.86 | 4.75 / 4.74 |
+| `Continuous/SFiniteNorm` | 6.67 / 6.55 | 6.42 / 6.40 |
+| `Continuous/SFiniteStrong` | 4.51 / 4.53 | 4.44 / 4.45 |
+| `Continuous/SFiniteStat` | 6.49 / 6.50 | 6.34 / 6.32 |
+| `Continuous/SFiniteCommute` | 8.34 / 8.33 | 8.24 / 8.22 |
+| `Continuous/Strong` | 41.58 / 41.57 | 41.26 / 41.44 |
+
+Nothing is slower.  `Model/Strong` is 9% faster (15.9 s to 14.4 s) with the shared export, and `Exponential` 6% faster
+after the `glueₛ` rewrite; the rest are within 3%.
