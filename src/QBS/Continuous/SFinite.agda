@@ -240,7 +240,8 @@ module SFinite (lem : LEM₀) where
         { to = λ x → C.ηPre {XW X} (1# , x)
         ; cong = λ {x} {y} e → ≈ᵖ⇒≈ᴹ {X} (C.ηPre {XW X} (1# , x)) (C.ηPre {XW X} (1# , y))
             (Func.cong (map (C.ηH (XW X))) {1# , x} {1# , y} (refl , e)) }
-    ; map-random = λ {γ} rγ → C.Wit-mono (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q) (map-random (C.ηH (XW X)) {< constₛ 1# , γ >ₛ} (Meas-const 1# , rγ))
+    ; map-random = λ {γ} rγ → C.Wit-mono (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q)
+        (map-random (C.ηH (XW X)) {< constₛ 1# , γ >ₛ} (Meas-const 1# , rγ))
     }
 
   ∫ᴹ-η : ∀ {X : QBS S} (x : ∣ X ∣) (f : Hom S X WQ) → ∫ᴹ {X} (C.ηPre {XW X} (1# , x)) f ≈ map f ⟨$⟩ x

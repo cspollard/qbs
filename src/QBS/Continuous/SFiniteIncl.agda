@@ -103,7 +103,8 @@ module SFiniteIncl (lem : LEM₀) where
 
   -- the r-th section of the merged kernel in `ι-mult`, as an element of `Pre U`
   ι-kp : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) → R₁ → C.Pre U
-  ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r) (sec-random {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r)
+  ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r)
+    (sec-random {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r)
     (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q) r) (C.Wit.g-pr {U} {_} {α q ⟨$⟩_} (α-random q) r)
 
   -- the data of `ι-mult-pw`: the outer kernel `gq`, the joint probe `a₀`, the integrand `Ψ` and the r-th section `kq r`
@@ -136,7 +137,8 @@ module SFiniteIncl (lem : LEM₀) where
     step-kernel : ∀ r → J (gq r) (ψ {U} (kq r) h) (mψ {U} (kq r) h)
       ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
     step-kernel r = trans
-      (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q ⟨$⟩ r)) (kq r) (ι-cong {U} {α q ⟨$⟩ r} {ι-kp q r} (C.Wit.w-eq {U} {_} {α q ⟨$⟩_} (α-random q) r)) h))
+      (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q ⟨$⟩ r)) (kq r)
+        (ι-cong {U} {α q ⟨$⟩ r} {ι-kp q r} (C.Wit.w-eq {U} {_} {α q ⟨$⟩_} (α-random q) r)) h))
       (sym (*-identityˡ _))
 
   -- pointwise in the outer parameter r: the merged kernel integrates ψ of the join to ψ of the pushed-forward ι q
