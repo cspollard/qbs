@@ -165,47 +165,45 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     _≈ᵖ_ {X} p (mk {X} (sec {X} (sndJ {X} (α p) (α-random p)) r) (sec-random {X} (sndJ {X} (α p) (α-random p)) r) (m p) (ok p))
   const-eq {X} p r h = rand-irrel {X} {α p} (α-random p) (sec-random {X} (sndJ {X} (α p) (α-random p)) r) (m p) (ok p) h
 
-  -- the probes of `TQ`, for any equivalence ≋ on pre-measures of Y that contains `≈ᵖ`.  The proofs
-  -- are `abstract`: conversions at nested measure spaces must never unfold these witnesses
-  -- (compile time).
+  -- the probes of `TQ`, for any equivalence ≋ on pre-measures of Y that contains `≈ᵖ`
+  -- (`Continuous/SFinite` re-exports them behind `abstract`, for compile time)
   module WitProbes {Y : QBS S} (_≋_ : Pre Y → Pre Y → Set₁)
     (≋-sym : ∀ {p q} → p ≋ q → q ≋ p) (≋-trans : ∀ {p q r} → p ≋ q → q ≋ r → p ≋ r)
     (incl : ∀ {p q} → _≈ᵖ_ {Y} p q → p ≋ q) where
 
-    abstract
-      TQ-resp : ∀ {α β : R → Pre Y} → (∀ r → α r ≋ β r) → Wit _≋_ α → Wit _≋_ β
-      TQ-resp e w = record
-        { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
-        ; w-eq = λ r → ≋-trans (≋-sym (e r)) (w-eq w r) }
+    TQ-resp : ∀ {α β : R → Pre Y} → (∀ r → α r ≋ β r) → Wit _≋_ α → Wit _≋_ β
+    TQ-resp e w = record
+      { a = a w ; g = g w ; g-ok = g-ok w ; g-pr = g-pr w
+      ; w-eq = λ r → ≋-trans (≋-sym (e r)) (w-eq w r) }
 
-      TQ-const : (p : Pre Y) → Wit _≋_ (const p)
-      TQ-const p = record
-        { a = sndJ (α p) (α-random p)
-        ; g = λ _ → m p
-        ; g-ok = constK (m p)
-        ; g-pr = λ _ → ok p
-        ; w-eq = λ r → incl (const-eq p r) }
+    TQ-const : (p : Pre Y) → Wit _≋_ (const p)
+    TQ-const p = record
+      { a = sndJ (α p) (α-random p)
+      ; g = λ _ → m p
+      ; g-ok = constK (m p)
+      ; g-pr = λ _ → ok p
+      ; w-eq = λ r → incl (const-eq p r) }
 
-      TQ-pre : ∀ {β : R → Pre Y} {f : Func Rˢ Rˢ} → Wit _≋_ β → Meas f → Wit _≋_ (λ r → β (f ⟨$⟩ r))
-      TQ-pre {β} {f} w mf = record
-        { a = preJ mf (a w)
-        ; g = λ r → g w (f ⟨$⟩ r)
-        ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
-        ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
-        ; w-eq = λ r → ≋-trans (w-eq w (f ⟨$⟩ r))
-            (incl (mk-cong {Y} (sec-random (a w) (f ⟨$⟩ r)) (sec-random (preJ {f = f} mf (a w)) r)
-              (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier Y)))) }
+    TQ-pre : ∀ {β : R → Pre Y} {f : Func Rˢ Rˢ} → Wit _≋_ β → Meas f → Wit _≋_ (λ r → β (f ⟨$⟩ r))
+    TQ-pre {β} {f} w mf = record
+      { a = preJ mf (a w)
+      ; g = λ r → g w (f ⟨$⟩ r)
+      ; g-ok = λ fh → Fun-pre (g-ok w fh) mf
+      ; g-pr = λ r → g-pr w (f ⟨$⟩ r)
+      ; w-eq = λ r → ≋-trans (w-eq w (f ⟨$⟩ r))
+          (incl (mk-cong {Y} (sec-random (a w) (f ⟨$⟩ r)) (sec-random (preJ {f = f} mf (a w)) r)
+            (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier Y)))) }
 
-      TQ-glue : ∀ {i : Func Rˢ ℕˢ} → Idx i → (β : ℕ → R → Pre Y) →
-        (∀ n → Wit _≋_ (β n)) → Wit _≋_ (λ r → β (i ⟨$⟩ r) r)
-      TQ-glue {i} pi β ws = record
-        { a = glueJ {i = i} pi (λ n → a (ws n))
-        ; g = λ r → g (ws (i ⟨$⟩ r)) r
-        ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-        ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
-        ; w-eq = λ r → ≋-trans (w-eq (ws (i ⟨$⟩ r)) r)
-            (incl (mk-cong {Y} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
-              (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier Y)))) }
+    TQ-glue : ∀ {i : Func Rˢ ℕˢ} → Idx i → (β : ℕ → R → Pre Y) →
+      (∀ n → Wit _≋_ (β n)) → Wit _≋_ (λ r → β (i ⟨$⟩ r) r)
+    TQ-glue {i} pi β ws = record
+      { a = glueJ {i = i} pi (λ n → a (ws n))
+      ; g = λ r → g (ws (i ⟨$⟩ r)) r
+      ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
+      ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
+      ; w-eq = λ r → ≋-trans (w-eq (ws (i ⟨$⟩ r)) r)
+          (incl (mk-cong {Y} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
+            (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier Y)))) }
 
   module WitP (X : QBS S) = WitProbes {X} _≈ᵖ_ (λ {p q} e → Setoid.sym (PreS X) {p} {q} e)
     (λ {p q r} e e′ → Setoid.trans (PreS X) {p} {q} {r} e e′) (λ {p q} e → e)

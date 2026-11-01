@@ -134,7 +134,23 @@ module SFinite (lem : LEM₀) where
 
   module WP {X : QBS S} =
     C.WitProbes {XW X} (_≈ᴹ_ {X}) (λ {p q} e f → sym (e f)) (λ {p q r} e e′ f → trans (e f) (e′ f)) (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q)
-  open WP
+
+  -- The proofs of randomness are `abstract`: conversions at nested measure spaces
+  -- (`TQ (X ×Q TQ Y)`, ...) must never unfold these witnesses (see TODO, compile time).
+  abstract
+    TQ-resp : ∀ {X : QBS S} {α β : R₁ → Pre (XW X)} → (∀ r → _≈ᴹ_ {X} (α r) (β r)) → WitM {X} α → WitM {X} β
+    TQ-resp {X} = WP.TQ-resp {X}
+
+    TQ-const : ∀ {X : QBS S} (p : Pre (XW X)) → WitM {X} (const p)
+    TQ-const {X} = WP.TQ-const {X}
+
+    TQ-pre : ∀ {X : QBS S} {β : R₁ → Pre (XW X)} {f : Func Rˢ Rˢ} → WitM {X} β → RandomSource.Meas S f →
+      WitM {X} (λ r → β (f ⟨$⟩ r))
+    TQ-pre {X} {β} {f} = WP.TQ-pre {X} {β} {f}
+
+    TQ-glue : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
+      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i ⟨$⟩ r) r)
+    TQ-glue {X} {i} = WP.TQ-glue {X} {i}
 
   -- the weighted test function of a joint probe at the merged parameter
   φJ : ∀ {X : QBS S} → Joint (XW X) → Hom S X WQ → R₁ → Cut
