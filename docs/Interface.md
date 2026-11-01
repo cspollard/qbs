@@ -122,6 +122,12 @@ Statistical models as samplers (module parameter `lem₁ : LEM₁`; the `Sampler
 - `Model Θ X`, `lawAt`, `samplerModel`, `E-at-sampler` — the kernel `Θ ⇒ TQ X` of a sampler; its `E-at` is the expectation of the single draw.
 - `uniformSampler`, `idTest`, `singleMoments`, `moments`, `sample-mean-unbiased`, `sample-variance-unbiased` (`QBS.Inference.UniformSampler`) — validation: the uniform distribution as a sampler has the single-draw moments `E u`, `Var u`.
 
+### `QBS.Inference.BernoulliCompare`
+Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `lem₁ : LEM₁`; `CoinBias` is used directly).
+- `headSampler t : Sampler (1Q S) AQ` — the draw `[expansion r ≤ t]`; `twoHeadedS`, `fairS` (t = 1, ½), `sampler h`, `thr h`.
+- `single-draw h`, `likelihood-is-expectation h` — `E-B fairCoin _ (single (sampler h) idTest _) ≃ ι (heads h)`: `E[head | two-headed] ≃ 1`, `E[head | fair] ≃ ½` (from `UniformCDF.cdf`).
+- `evidence-is-prior-expectation` — `ι ½ *S E[head | two-headed] +S ι ½ *S E[head | fair] ≃ ι (½·1 + ½·½)`, the evidence of `CoinBias.evidence-heads` as the prior-weighted frequentist expectation.
+
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
