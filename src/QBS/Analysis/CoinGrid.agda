@@ -29,7 +29,7 @@ open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda using (∁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.LowerReals
-open import QBS.Analysis.LowerRealsArch using (tp; tp-pos; nat-nonneg; ≤-+ʳ′)
+open import QBS.Analysis.LowerRealsArch using (tp; tp-pos)
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinSimple
 open import QBS.Analysis.LevelSets
@@ -78,13 +78,8 @@ th k a = nat a * tp k
 th-suc : ∀ k a → th k (suc a) ≃ th k a + tp k
 th-suc k a = ≃-trans (nat-suc* a (tp k)) ≃-refl
 
-nat-mono′ : ∀ {a b} → a ℕ.≤′ b → nat a ≤ nat b
-nat-mono′ ℕ.≤′-refl = ≤-refl
-nat-mono′ {a} (ℕ.≤′-step {b} le) = ≤-trans (nat-mono′ le)
-  (≤-trans (≤-+ʳ′ (nat b) 1ℚᵘ (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc b))))
-
 th-mono : ∀ k {a b} → a ℕ.≤′ b → th k a ≤ th k b
-th-mono k le = *-mono-≤-nnʳ (<-≤ (tp-pos k)) (nat-mono′ le)
+th-mono k le = *-mono-≤-nnʳ (<-≤ (tp-pos k)) (nat-mono (ℕₚ.≤′⇒≤ le))
 
 th-zero : ∀ k → th k 0 ≃ 0ℚᵘ
 th-zero k = *-zeroˡ (tp k)

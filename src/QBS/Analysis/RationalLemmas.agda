@@ -9,7 +9,7 @@ open import Data.Nat.Base as ℕ using (ℕ; zero; suc)
 import Data.Nat.Properties as ℕ
 open import Data.Integer.Base as ℤ using (ℤ; +_; +0; +[1+_]; -[1+_])
 import Data.Integer.Properties as ℤ
-open import Data.Rational.Unnormalised.Base public using (ℚᵘ; 0ℚᵘ; 1ℚᵘ)
+open import Data.Rational.Unnormalised.Base public using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; ½)
 open import Data.Rational.Unnormalised.Base using
   (mkℚᵘ; _+_; _*_; -_; 1/_; _<_; _≤_; _≃_; *≡*; *≤*; *<*; ↥_; ↧_; ↧ₙ_; Positive; NonNegative; positive; nonNegative)
 import Data.Rational.Unnormalised.Properties as P
@@ -26,80 +26,18 @@ _≤ᵘ_ = _≤_
 _<ᵘ_ = _<_
 _≃ᵘ_ = _≃_
 
-≃-refl : ∀ {p} → p ≃ p
-≃-refl = P.≃-refl
-≃-sym : ∀ {p q} → p ≃ q → q ≃ p
-≃-sym = P.≃-sym
-≃-trans : ∀ {p q r} → p ≃ q → q ≃ r → p ≃ r
-≃-trans = P.≃-trans
-
-≤-refl : ∀ {p} → p ≤ p
-≤-refl = P.≤-refl
-≤-trans : ∀ {p q r} → p ≤ q → q ≤ r → p ≤ r
-≤-trans = P.≤-trans
-≤-≃ : ∀ {p q} → p ≃ q → p ≤ q
-≤-≃ = P.≤-reflexive
-≤-antisym : ∀ {p q} → p ≤ q → q ≤ p → p ≃ q
-≤-antisym = P.≤-antisym
-<-≤ : ∀ {p q} → p < q → p ≤ q
-<-≤ = P.<⇒≤
-<-trans : ∀ {p q r} → p < q → q < r → p < r
-<-trans = P.<-trans
-≤-<-trans : ∀ {p q r} → p ≤ q → q < r → p < r
-≤-<-trans = P.≤-<-trans
-<-≤-trans : ∀ {p q r} → p < q → q ≤ r → p < r
-<-≤-trans = P.<-≤-trans
-<-irrefl : ∀ {p q} → p ≃ q → ¬ (p < q)
-<-irrefl = P.<-irrefl
-≃-<ʳ : ∀ {p q r} → q ≃ r → p < q → p < r
-≃-<ʳ = P.<-respʳ-≃
-≃-<ˡ : ∀ {p q r} → q ≃ r → q < p → r < p
-≃-<ˡ = P.<-respˡ-≃
-dense : ∀ {p q} → p < q → Σ ℚᵘ (λ r → p < r × r < q)
-dense = P.<-dense
-total : ∀ p q → p ≤ q ⊎ q ≤ p
-total = P.≤-total
-not-≤⇒< : ∀ {p q} → ¬ (p ≤ q) → q < p
-not-≤⇒< = P.≰⇒>
+-- stdlib's lemmas, under this module's names
+open P public using
+  ( ≃-refl; ≃-sym; ≃-trans; ≤-refl; ≤-trans; ≤-antisym; <-trans; ≤-<-trans; <-≤-trans; <-irrefl )
+  renaming ( ≤-reflexive to ≤-≃; <-dense to dense; <⇒≤ to <-≤; <-respʳ-≃ to ≃-<ʳ; <-respˡ-≃ to ≃-<ˡ
+           ; ≤-total to total; ≰⇒> to not-≤⇒< )
 
 ≤-resp : ∀ {p p′ q q′} → p ≃ p′ → q ≃ q′ → p ≤ q → p′ ≤ q′
 ≤-resp e e′ le = ≤-trans (≤-≃ (≃-sym e)) (≤-trans le (≤-≃ e′))
 
-+-cong : ∀ {p p′ q q′} → p ≃ p′ → q ≃ q′ → p + q ≃ p′ + q′
-+-cong = P.+-cong
-*-cong : ∀ {p p′ q q′} → p ≃ p′ → q ≃ q′ → p * q ≃ p′ * q′
-*-cong = P.*-cong
-+-comm : ∀ p q → p + q ≃ q + p
-+-comm = P.+-comm
-+-assoc : ∀ p q r → (p + q) + r ≃ p + (q + r)
-+-assoc = P.+-assoc
-+-identityˡ : ∀ p → 0ℚᵘ + p ≃ p
-+-identityˡ = P.+-identityˡ
-+-identityʳ : ∀ p → p + 0ℚᵘ ≃ p
-+-identityʳ = P.+-identityʳ
-+-inverseʳ : ∀ p → p + (- p) ≃ 0ℚᵘ
-+-inverseʳ = P.+-inverseʳ
-*-comm : ∀ p q → p * q ≃ q * p
-*-comm = P.*-comm
-*-assoc : ∀ p q r → (p * q) * r ≃ p * (q * r)
-*-assoc = P.*-assoc
-*-identityˡ : ∀ p → 1ℚᵘ * p ≃ p
-*-identityˡ = P.*-identityˡ
-*-zeroˡ : ∀ p → 0ℚᵘ * p ≃ 0ℚᵘ
-*-zeroˡ = P.*-zeroˡ
-*-distribˡ-+ : ∀ p q r → p * (q + r) ≃ p * q + p * r
-*-distribˡ-+ = P.*-distribˡ-+
-*-distribʳ-+ : ∀ p q r → (q + r) * p ≃ q * p + r * p
-*-distribʳ-+ = P.*-distribʳ-+
-
-+-mono-≤ : ∀ {a b c d} → a ≤ b → c ≤ d → a + c ≤ b + d
-+-mono-≤ = P.+-mono-≤
-+-mono-<-≤ : ∀ {a b c d} → a < b → c ≤ d → a + c < b + d
-+-mono-<-≤ = P.+-mono-<-≤
-+-mono-≤-< : ∀ {a b c d} → a ≤ b → c < d → a + c < b + d
-+-mono-≤-< = P.+-mono-≤-<
-+-mono-< : ∀ {a b c d} → a < b → c < d → a + c < b + d
-+-mono-< = P.+-mono-<
+open P public using
+  ( +-cong; *-cong; +-comm; +-assoc; +-identityˡ; +-identityʳ; +-inverseʳ; *-comm; *-assoc; *-identityˡ; *-zeroˡ
+  ; *-distribˡ-+; *-distribʳ-+; +-mono-≤; +-mono-<-≤; +-mono-≤-<; +-mono-< )
 
 -- positivity
 pos : ∀ {p} → 0ℚᵘ < p → Positive p
@@ -112,7 +50,7 @@ nonneg = nonNegative
 *-mono-≤-nn : ∀ {r p q} → 0ℚᵘ ≤ r → p ≤ q → r * p ≤ r * q
 *-mono-≤-nn {r} 0≤r p≤q = P.*-monoʳ-≤-nonNeg r {{nonneg 0≤r}} p≤q
 *-pos : ∀ {p q} → 0ℚᵘ < p → 0ℚᵘ < q → 0ℚᵘ < p * q
-*-pos {p} {q} 0<p 0<q = ≃-<ˡ (P.*-zeroʳ p) (*-mono-<-pos {p} {0ℚᵘ} {q} 0<p 0<q)
+*-pos {p} {q} 0<p 0<q = P.positive⁻¹ (p * q) {{P.pos*pos⇒pos p {{pos 0<p}} q {{pos 0<q}}}}
 
 -- division by a positive number
 inv : ∀ {s} → 0ℚᵘ < s → Σ ℚᵘ (λ t → t * s ≃ 1ℚᵘ)
@@ -190,11 +128,36 @@ neg-diff {q} {q′} q<q′ = ≃-<ʳ (+-inverseʳ q′) (+-mono-<-≤ q<q′ (�
 0<1 : 0ℚᵘ < 1ℚᵘ
 0<1 = P.positive⁻¹ 1ℚᵘ
 
+-- sums of positives and of negatives (the stdlib's `pos+pos⇒pos`, with the adapter)
++-pos : ∀ {a b} → 0ℚᵘ < a → 0ℚᵘ < b → 0ℚᵘ < a + b
++-pos {a} {b} 0<a 0<b = P.positive⁻¹ (a + b) {{P.pos+pos⇒pos a {{pos 0<a}} b {{pos 0<b}}}}
+
++-neg : ∀ {a b} → a < 0ℚᵘ → b < 0ℚᵘ → a + b < 0ℚᵘ
++-neg a<0 b<0 = ≃-<ʳ (+-identityˡ 0ℚᵘ) (+-mono-< a<0 b<0)
+
+≤-+ʳ : ∀ a b → 0ℚᵘ ≤ b → a ≤ a + b
+≤-+ʳ a b 0≤b = P.p≤p+q a b {{nonneg 0≤b}}
+
+½+½ : ½ + ½ ≃ 1ℚᵘ
+½+½ = *≡* refl
+
+0<½ : 0ℚᵘ < ½
+0<½ = P.positive⁻¹ ½
+
+-- `nat` is non-negative and monotone
+nat-nonneg : ∀ k → 0ℚᵘ ≤ nat k
+nat-nonneg zero = ≤-refl
+nat-nonneg (suc k) = ≤-trans (nat-nonneg k) (≤-trans (≤-+ʳ (nat k) 1ℚᵘ (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc k))))
+
+nat-mono : ∀ {j k} → j ℕ.≤ k → nat j ≤ nat k
+nat-mono {k = k} ℕ.z≤n = nat-nonneg k
+nat-mono (ℕ.s≤s le) = ≤-resp (≃-sym (nat-suc _)) (≃-sym (nat-suc _)) (+-mono-≤ (nat-mono le) (≤-refl {1ℚᵘ}))
+
 *-mono-<-posʳ : ∀ {s p q} → 0ℚᵘ < s → p < q → p * s < q * s
-*-mono-<-posʳ {s} {p} {q} 0<s p<q = ≃-<ˡ (*-comm s p) (≃-<ʳ (*-comm s q) (*-mono-<-pos 0<s p<q))
+*-mono-<-posʳ {s} 0<s p<q = P.*-monoˡ-<-pos s {{pos 0<s}} p<q
 
 *-mono-≤-nnʳ : ∀ {s p q} → 0ℚᵘ ≤ s → p ≤ q → p * s ≤ q * s
-*-mono-≤-nnʳ {s} {p} {q} 0≤s p≤q = ≤-resp (*-comm s p) (*-comm s q) (*-mono-≤-nn 0≤s p≤q)
+*-mono-≤-nnʳ {s} 0≤s p≤q = P.*-monoˡ-≤-nonNeg s {{nonneg 0≤s}} p≤q
 
 *-cancel-<ʳ : ∀ {s p q} → 0ℚᵘ < s → p * s < q * s → p < q
 *-cancel-<ʳ {s} 0<s lt = P.*-cancelʳ-<-nonNeg s {{nonneg (<-≤ 0<s)}} lt

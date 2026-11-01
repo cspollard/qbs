@@ -270,12 +270,6 @@ module CSum (lem₁ : LEM₁) where
     neg-mul : ∀ {r s} → 0ℚᵘ < r → s < 0ℚᵘ → r * s < 0ℚᵘ
     neg-mul {r} 0<r s<0 = ≃-<ʳ (P.*-zeroʳ r) (*-mono-<-pos 0<r s<0)
 
-    pos-add : ∀ {a b} → 0ℚᵘ < a → 0ℚᵘ < b → 0ℚᵘ < a + b
-    pos-add 0<a 0<b = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<a 0<b)
-
-    neg-add : ∀ {a b} → a < 0ℚᵘ → b < 0ℚᵘ → a + b < 0ℚᵘ
-    neg-add a<0 b<0 = ≃-<ʳ (+-identityˡ 0ℚᵘ) (+-mono-< a<0 b<0)
-
     ⊗-zeroʳ : ∀ x → x ⊗ zeroC ⊑ zeroC
     ⊗-zeroʳ x = ⊑-trans (proj₁ (⊗-comm x zeroC)) (proj₁ (⊗-zeroˡ x))
 
@@ -301,20 +295,20 @@ module CSum (lem₁ : LEM₁) where
     -- one step of `dist2`: combine the witness for the rest (coordinate `i` killed) with the one for `x ⊗ f i`
     dist2-go : ∀ {I : Set₁} (f : I → Cut) (i : I) {q q′ ρ : ℚᵘ} → q ≤ ρ + q′ →
       DW (killP (λ j → i ≡ j) f) q′ → mem (x ⊗ f i) ρ → DW f q
-    dist2-go f i le (inj₁ q′<0) (inj₁ ρ<0) = inj₁ (≤-<-trans le (neg-add ρ<0 q′<0))
+    dist2-go f i le (inj₁ q′<0) (inj₁ ρ<0) = inj₁ (≤-<-trans le (+-neg ρ<0 q′<0))
     dist2-go f i le (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₁ ρ<0) =
       inj₂ (R , σ , 0<R , mR , 0<σ , Mem-mono (killP-⊑ (λ j → i ≡ j) f) mσ , ≤-trans le (≤-trans (add-neg-le′ ρ<0) le′))
     dist2-go f i le (inj₁ q′<0) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) =
       inj₂ (r₁ , s₁ , 0<r₁ , mr₁ , 0<s₁ , Mem-single ms₁ , ≤-trans le (≤-trans (add-neg-le q′<0) le₁))
     dist2-go f i le (inj₂ (R , σ , 0<R , mR , 0<σ , mσ , le′)) (inj₂ (r₁ , s₁ , 0<r₁ , 0<s₁ , mr₁ , ms₁ , le₁)) with total r₁ R
     ... | inj₁ r₁≤R =
-      inj₂ (R , s₁ + σ , 0<R , mR , pos-add 0<s₁ 0<σ
+      inj₂ (R , s₁ + σ , 0<R , mR , +-pos 0<s₁ 0<σ
            , m-step i s₁ (killP (λ j → i ≡ j) f) ms₁ (λ j _ → killP-⊑ (λ j → i ≡ j) f j) (killP-on (λ j → i ≡ j) f refl) mσ ≤-refl
            , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
                (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) r₁≤R) (≤-refl {R * σ}))
                         (≤-≃ (≃-sym (*-distribˡ-+ R s₁ σ))))))
     ... | inj₂ R≤r₁ =
-      inj₂ (r₁ , s₁ + σ , 0<r₁ , mr₁ , pos-add 0<s₁ 0<σ
+      inj₂ (r₁ , s₁ + σ , 0<r₁ , mr₁ , +-pos 0<s₁ 0<σ
            , m-step i s₁ (killP (λ j → i ≡ j) f) ms₁ (λ j _ → killP-⊑ (λ j → i ≡ j) f j) (killP-on (λ j → i ≡ j) f refl) mσ ≤-refl
            , ≤-trans le (≤-trans (+-mono-≤ le₁ le′)
                (≤-trans (+-mono-≤ (≤-refl {r₁ * s₁}) (*-mono-≤-nnʳ (<-≤ 0<σ) R≤r₁))

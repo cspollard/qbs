@@ -29,44 +29,20 @@ private
   2Q : ℚᵘ
   2Q = 1ℚᵘ + 1ℚᵘ
 
-  0<2 : 0ℚᵘ < 2Q
-  0<2 = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-<-≤ 0<1 (<-≤ 0<1))
-
-hf : ℚᵘ
-hf = proj₁ (inv 0<2)
-
-hf*2 : hf * 2Q ≃ 1ℚᵘ
-hf*2 = proj₂ (inv 0<2)
-
-hf+hf : hf + hf ≃ 1ℚᵘ
-hf+hf = ≃-trans (≃-sym (solve 1 (λ h → h :* (con 1ℚᵘ :+ con 1ℚᵘ) := h :+ h) ≃-refl hf)) hf*2
-
-0<hf : 0ℚᵘ < hf
-0<hf with pos-or-nonpos hf
-... | inj₁ p = p
-... | inj₂ np = ⊥-elim (<-irrefl ≃-refl (<-≤-trans 0<1 (≤-resp hf*2 (*-zeroˡ 2Q)
-    (≤-trans (*-mono-≤-nnʳ (<-≤ 0<2) np) (≤-≃ (*-zeroˡ 2Q))))))
-
 tp : ℕ → ℚᵘ
 tp zero = 1ℚᵘ
-tp (suc n) = hf * tp n
+tp (suc n) = ½ * tp n
 
 tp-pos : ∀ n → 0ℚᵘ < tp n
 tp-pos zero = 0<1
-tp-pos (suc n) = *-pos 0<hf (tp-pos n)
+tp-pos (suc n) = *-pos 0<½ (tp-pos n)
 
 tp-double : ∀ n → tp (suc n) + tp (suc n) ≃ tp n
-tp-double n = ≃-trans (≃-sym (*-distribʳ-+ (tp n) hf hf))
-  (≃-trans (*-cong hf+hf (≃-refl {tp n})) (*-identityˡ (tp n)))
+tp-double n = ≃-trans (≃-sym (*-distribʳ-+ (tp n) ½ ½))
+  (≃-trans (*-cong ½+½ (≃-refl {tp n})) (*-identityˡ (tp n)))
 
 tp-lt : ∀ n → tp (suc n) < tp n
 tp-lt n = ≃-<ˡ (≃-refl) (≃-<ʳ (tp-double n) (lt-add {tp (suc n)} {tp (suc n)} (tp-pos (suc n))))
-
-nat-nonneg : ∀ k → 0ℚᵘ ≤ nat k
-nat-nonneg zero = ≤-refl
-nat-nonneg (suc k) = ≤-resp (≃-refl) (≃-sym (nat-suc k))
-  (≤-trans (nat-nonneg k) (≤-≃ (≃-sym (+-identityʳ (nat k)))) |> λ h → ≤-trans h (+-mono-≤ (≤-refl {nat k}) (<-≤ 0<1)))
-  where _|>_ = λ {A B : Set} (v : A) (f : A → B) → f v
 
 nat-1≤1 : nat 1 ≤ 1ℚᵘ
 nat-1≤1 = ≤-≃
@@ -83,18 +59,15 @@ tp-nat zero = ≤-trans (≤-≃ (*-identityʳ′ (nat 1))) nat-1≤1
   where *-identityʳ′ : ∀ p → p * 1ℚᵘ ≃ p
         *-identityʳ′ p = ≃-trans (*-comm p 1ℚᵘ) (*-identityˡ p)
 tp-nat (suc n) = ≤-trans (≤-≃ eq)
-  (≤-trans (+-mono-≤ (*-mono-≤-nn (<-≤ 0<hf) (tp-nat n)) (*-mono-≤-nn (<-≤ 0<hf) (tp-≤1 n))) (≤-≃ two))
+  (≤-trans (+-mono-≤ (*-mono-≤-nn (<-≤ 0<½) (tp-nat n)) (*-mono-≤-nn (<-≤ 0<½) (tp-≤1 n))) (≤-≃ two))
   where
-    eq : nat (suc (suc n)) * tp (suc n) ≃ hf * (nat (suc n) * tp n) + hf * tp n
+    eq : nat (suc (suc n)) * tp (suc n) ≃ ½ * (nat (suc n) * tp n) + ½ * tp n
     eq = ≃-trans (*-cong (nat-suc (suc n)) (≃-refl {tp (suc n)}))
-      (solve 3 (λ N h t → (N :+ con 1ℚᵘ) :* (h :* t) := h :* (N :* t) :+ h :* t) ≃-refl (nat (suc n)) hf (tp n))
-    two : hf * 1ℚᵘ + hf * 1ℚᵘ ≃ 1ℚᵘ
-    two = ≃-trans (+-cong (≃-trans (*-comm hf 1ℚᵘ) (*-identityˡ hf)) (≃-trans (*-comm hf 1ℚᵘ) (*-identityˡ hf))) hf+hf
+      (solve 3 (λ N h t → (N :+ con 1ℚᵘ) :* (h :* t) := h :* (N :* t) :+ h :* t) ≃-refl (nat (suc n)) ½ (tp n))
+    two : ½ * 1ℚᵘ + ½ * 1ℚᵘ ≃ 1ℚᵘ
+    two = ≃-trans (+-cong (≃-trans (*-comm ½ 1ℚᵘ) (*-identityˡ ½)) (≃-trans (*-comm ½ 1ℚᵘ) (*-identityˡ ½))) ½+½
 
 -- the tolerances tend to zero
-≤-+ʳ′ : ∀ a b → 0ℚᵘ ≤ b → a ≤ a + b
-≤-+ʳ′ a b 0≤b = ≤-trans (≤-≃ (≃-sym (+-identityʳ a))) (+-mono-≤ (≤-refl {a}) 0≤b)
-
 tp-small : ∀ δ → 0ℚᵘ < δ → Σ ℕ (λ n → tp n < δ)
 tp-small δ 0<δ with arch 2Q {δ} 0<δ
 ... | k , 2≤kδ with ≤-or-> δ (tp k)
@@ -103,7 +76,7 @@ tp-small δ 0<δ with arch 2Q {δ} 0<δ
   where
     two≤one : 2Q ≤ 1ℚᵘ
     two≤one = ≤-trans 2≤kδ
-      (≤-trans (≤-+ʳ′ (nat k * δ) δ (<-≤ 0<δ))
+      (≤-trans (≤-+ʳ (nat k * δ) δ (<-≤ 0<δ))
         (≤-trans (≤-≃ (≃-sym (nat-suc* k δ)))
           (≤-trans (*-mono-≤-nn (nat-nonneg (suc k)) δ≤t) (tp-nat k))))
 
@@ -120,10 +93,7 @@ qC q 0<q = record
 qC-cong : ∀ {q q′} (0<q : 0ℚᵘ < q) (0<q′ : 0ℚᵘ < q′) → q ≃ q′ → qC q 0<q ≋ qC q′ 0<q′
 qC-cong 0<q 0<q′ e = mk⊑ (λ s lt → ≃-<ʳ e lt) , mk⊑ (λ s lt → ≃-<ʳ (≃-sym e) lt)
 
-pos+ : ∀ {a b} → 0ℚᵘ < a → 0ℚᵘ < b → 0ℚᵘ < a + b
-pos+ 0<a 0<b = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<a 0<b)
-
-qC-add : ∀ {a b} (0<a : 0ℚᵘ < a) (0<b : 0ℚᵘ < b) → qC a 0<a ⊕ qC b 0<b ≋ qC (a + b) (pos+ 0<a 0<b)
+qC-add : ∀ {a b} (0<a : 0ℚᵘ < a) (0<b : 0ℚᵘ < b) → qC a 0<a ⊕ qC b 0<b ≋ qC (a + b) (+-pos 0<a 0<b)
 qC-add {a} {b} 0<a 0<b = mk⊑ fwd , mk⊑ bwd
   where
     fwd : ∀ s → mem (qC a 0<a ⊕ qC b 0<b) s → s < a + b
@@ -141,14 +111,14 @@ hpC : ℕ → Cut
 hpC n = qC (tp n) (tp-pos n)
 
 halfC : Cut
-halfC = qC hf 0<hf
+halfC = qC ½ 0<½
 
 hpC-double : ∀ n → hpC (suc n) ⊕ hpC (suc n) ≋ hpC n
 hpC-double n = ≋-trans (qC-add (tp-pos (suc n)) (tp-pos (suc n)))
-  (qC-cong (pos+ (tp-pos (suc n)) (tp-pos (suc n))) (tp-pos n) (tp-double n))
+  (qC-cong (+-pos (tp-pos (suc n)) (tp-pos (suc n))) (tp-pos n) (tp-double n))
 
 halfC-double : halfC ⊕ halfC ≋ oneC
-halfC-double = ≋-trans (qC-add 0<hf 0<hf) (qC-cong (pos+ 0<hf 0<hf) 0<1 hf+hf)
+halfC-double = ≋-trans (qC-add 0<½ 0<½) (qC-cong (+-pos 0<½ 0<½) 0<1 ½+½)
 
 ----------------------------------------------------------------------------
 -- the instance

@@ -221,13 +221,13 @@ slack x y {q} {r} {w} mr 0<r mw 0<w h =
 both-r : ∀ x y z {q a b r r₁ r₂ s₁ s₂} → mem x r → 0ℚᵘ < r → r₁ ≤ r → r₂ ≤ r → 0ℚᵘ < s₁ → 0ℚᵘ < s₂ →
   mem y s₁ → mem z s₂ → a ≤ r₁ * s₁ → b ≤ r₂ * s₂ → q ≤ a + b → mem (x ⊗ (y ⊕ z)) q
 both-r x y z {q} {a} {b} {r} {r₁} {r₂} {s₁} {s₂} mr 0<r le₁ le₂ 0<s₁ 0<s₂ m₁ m₂ ha hb h =
-  inj₂ (r , s₁ + s₂ , 0<r , ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<s₁ 0<s₂) , mr , (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
+  inj₂ (r , s₁ + s₂ , 0<r , +-pos 0<s₁ 0<s₂ , mr , (s₁ , s₂ , m₁ , m₂ , ≤-refl) ,
     ≤-trans h (≤-trans (+-mono-≤ ha hb) (≤-trans (+-mono-≤ (*-mono-≤-nnʳ (<-≤ 0<s₁) le₁) (*-mono-≤-nnʳ (<-≤ 0<s₂) le₂))
       (≤-≃ (≃-sym (*-distribˡ-+ r s₁ s₂))))))
 
 ⊗-distrib-bwd : ∀ x y z q → mem ((x ⊗ y) ⊕ (x ⊗ z)) q → mem (x ⊗ (y ⊕ z)) q
 ⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₁ b<0 , h) =
-  inj₁ (≤-<-trans h (≃-<ʳ (+-identityˡ 0ℚᵘ) (+-mono-< a<0 b<0)))
+  inj₁ (≤-<-trans h (+-neg a<0 b<0))
 ⊗-distrib-bwd x y z q (a , b , inj₁ a<0 , inj₂ (r , s , 0<r , 0<s , mr , ms , hb) , h) =
   inj₂ (r , s , 0<r , 0<s , mr , ap (⊕-inr y z) s ms ,
     <-≤ (<-≤-trans (≤-<-trans h (≃-<ʳ (+-identityˡ b) (+-mono-<-≤ a<0 (≤-refl {b})))) hb))

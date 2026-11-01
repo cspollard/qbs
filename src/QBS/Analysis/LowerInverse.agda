@@ -73,7 +73,7 @@ eps-le {ε} {s} 0<ε h4′ with ≤-or-> ε s
 ... | inj₂ s<ε = ⊥-elim (<-irrefl ≃-refl (<-≤-trans (<-≤-trans (+-mono-<-≤ s<ε (≤-refl {ε})) εε≤4ε) h4′))
   where
     0<εε : 0ℚᵘ < ε + ε
-    0<εε = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<ε 0<ε)
+    0<εε = +-pos 0<ε 0<ε
     εε≤4ε : ε + ε ≤ (ε + ε) + (ε + ε)
     εε≤4ε = ≤-trans (≤-≃ (≃-sym (+-identityʳ (ε + ε)))) (+-mono-≤ (≤-refl {ε + ε}) (<-≤ 0<εε))
 
@@ -111,7 +111,7 @@ gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , com
     0<δ : 0ℚᵘ < δ
     0<δ = pos-diff q<q′
     0<εε : 0ℚᵘ < ε + ε
-    0<εε = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<ε 0<ε)
+    0<εε = +-pos 0<ε 0<ε
     ε≤s : ε ≤ s
     ε≤s = gap-pos 0<s₀ 0<ε (gap-δ≤1 0≤q q′<1) (<-≤ 0<δ) h4 hs
     0<s : 0ℚᵘ < s
@@ -189,8 +189,7 @@ module InvClassical (lem : LEM₀) where
   four = (1ℚᵘ + 1ℚᵘ) + (1ℚᵘ + 1ℚᵘ)
 
   0<four : 0ℚᵘ < four
-  0<four = ≃-<ˡ (+-identityˡ 0ℚᵘ)
-      (+-mono-< (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)) (≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<1 0<1)))
+  0<four = +-pos (+-pos 0<1 0<1) (+-pos 0<1 0<1)
 
   -- a rational scale `s` in `c`, nearly maximal, with `ρ = s + 2ε` outside `c` and `q ρ ≤ q′ s`
   pick : ∀ c {s₀ ρ₀ q q′} → 0ℚᵘ < s₀ → mem c s₀ → (∀ r → mem c r → r < ρ₀) → 0ℚᵘ ≤ q → q < q′ → q′ < 1ℚᵘ →
@@ -217,7 +216,7 @@ module InvClassical (lem : LEM₀) where
       qρ≤q′s = proj₂ gp
       ρ = s + (ε + ε)
       0<εε : 0ℚᵘ < ε + ε
-      0<εε = ≃-<ˡ (+-identityˡ 0ℚᵘ) (+-mono-< 0<ε 0<ε)
+      0<εε = +-pos 0<ε 0<ε
       0<ρ : 0ℚᵘ < ρ
       0<ρ = <-≤-trans 0<s (≤-trans (≤-≃ (≃-sym (+-identityʳ s))) (+-mono-≤ (≤-refl {s}) (<-≤ 0<εε)))
       nmρ : mem c ρ → ⊥

@@ -68,7 +68,8 @@ open import QBS.Analysis.LevelSets using (module LevelSets)
 import QBS.Analysis.RationalLemmas as RL
 import Data.Rational.Unnormalised.Base as ℚ
 open import QBS.Analysis.LowerReals using (oneC; zeroC; infC; _⊑_; mk⊑; ⊗-mono; ⊑-refl; ⊑-trans)
-open import QBS.Analysis.LowerRealsArch using (qC; nat-nonneg)
+open import QBS.Analysis.LowerRealsArch using (qC)
+open RL using (nat-nonneg; nat-mono)
 open import QBS.Analysis.LowerInverse using (invC; inv-mul-⊑; module InvClassical)
 open import QBS.Borel.Core using (Borel; inter₂; union₂; compl)
 open import Data.Sum.Base using (inj₁; inj₂)
@@ -234,12 +235,7 @@ module SFiniteDecomp (lem : LEM₀) where
   pieceDensity≤1 : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) r → pieceDensity p n r ≤ 1#
   pieceDensity≤1 p n r = densW≤1 (wt p r) n
 
-  -- the bands are monotone in the index and disjoint
-  nat-mono : ∀ {j k} → j ℕ.≤ k → RL.nat j ℚ.≤ RL.nat k
-  nat-mono {k = k} ℕ.z≤n = nat-nonneg k
-  nat-mono (ℕ.s≤s le) = RL.≤-resp (RL.≃-sym (RL.nat-suc _)) (RL.≃-sym (RL.nat-suc _))
-    (RL.+-mono-≤ (nat-mono le) (RL.≤-refl {RL.1ℚᵘ}))
-
+  -- the bands are disjoint
   band-unique : ∀ w {j k} → bandS w j → bandS w k → j ≡.≡ k
   band-unique w {j} {k} (mj , nj) (mk′ , nk) with ℕP.<-cmp j k
   ... | tri< lt _ _ = ⊥-elim (nj (downC w (nat-mono lt) mk′))

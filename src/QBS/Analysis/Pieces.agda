@@ -50,19 +50,6 @@ module Pieces (lem : LEM₀) where
   ----------------------------------------------------------------------------
   -- facts about the naturals as rationals and cuts
 
-  nat-mono-suc : ∀ k → nat k ≤ nat (ℕ.suc k)
-  nat-mono-suc k = ≤-trans (≤-≃ (≃-sym (+-identityʳ (nat k))))
-    (≤-trans (+-mono-≤ (≤-refl {nat k}) (<-≤ 0<1)) (≤-≃ (≃-sym (nat-suc k))))
-
-  nat-0≤ : ∀ j → 0ℚᵘ ≤ nat j
-  nat-0≤ ℕ.zero = ≤-refl
-  nat-0≤ (ℕ.suc j) = ≤-trans (nat-0≤ j) (nat-mono-suc j)
-
-  nat-mono : ∀ {k j} → k ℕ.≤ j → nat k ≤ nat j
-  nat-mono {ℕ.zero} {j} ℕ.z≤n = nat-0≤ j
-  nat-mono {ℕ.suc k} {ℕ.suc j} (ℕ.s≤s h) =
-    ≤-trans (≤-≃ (nat-suc k)) (≤-trans (+-mono-≤ (nat-mono h) (≤-refl {1ℚᵘ})) (≤-≃ (≃-sym (nat-suc j))))
-
   -- every weight with all `nat k` below it is ∞
   all⇒inf : ∀ w → (∀ k → mem w (nat k)) → w ≋ infC
   all⇒inf w h = mk⊑ (λ _ _ → tt) , mk⊑ (λ q _ →
@@ -148,7 +135,7 @@ module Pieces (lem : LEM₀) where
     where
       noPiece : ∀ n → InPiece n w → ⊥
       noPiece ℕ.zero all = <-irrefl ≃-refl (ap (proj₁ w0) 0ℚᵘ (all ℕ.zero))
-      noPiece (ℕ.suc k) (mk , _) = <-irrefl ≃-refl (ap (proj₁ w0) 0ℚᵘ (down w (nat-0≤ k) mk))
+      noPiece (ℕ.suc k) (mk , _) = <-irrefl ≃-refl (ap (proj₁ w0) 0ℚᵘ (down w (nat-nonneg k) mk))
       zeros : ∀ n → κ n * ((χs n * fac n w) * g) ≈ 0#
       zeros n with hχ n
       ... | inj₁ (inn , _) = ⊥-elim (noPiece n inn)
