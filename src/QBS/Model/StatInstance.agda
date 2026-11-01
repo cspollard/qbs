@@ -254,8 +254,7 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
     MP.∫ (normP n p h) f ≈ n * ∫ p f
   ∫-normP n p h f = ∫-scale n p f
 
-  normC′ : ∀ {X : QBS S} (p : Pre X) → Σ ∣A∣ (λ n → mass p * n ≈ 1#) ⊎ (∀ n → mass p * n ≈ 1# → ⊥ {ℓ}) →
-    ∣ MP.TQ X ∣ ⊎ ⊤ {ℓ}
+  normC′ : ∀ {X : QBS S} (p : Pre X) → InvDec (mass p) → ∣ MP.TQ X ∣ ⊎ ⊤ {ℓ}
   normC′ p (inj₁ (n , h)) = inj₁ (normP n p h)
   normC′ p (inj₂ _) = inj₂ tt
 
@@ -275,10 +274,6 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
   ... | inj₁ (n , hn) | inj₂ r = absurd (r n (trans (*-cong (sym (mass-cong {X} {p} {q} e)) refl) hn))
   ... | inj₂ r | inj₁ (n′ , hn′) = absurd (r n′ (trans (*-cong (mass-cong {X} {p} {q} e) refl) hn′))
   ... | inj₂ _ | inj₂ _ = ⊎ʳ.inj₂ ≡.refl
-
-  -- the decision on invertibility of a mass, as a value to case on
-  InvDec : ∣A∣ → Set ℓ
-  InvDec m = Σ ∣A∣ (λ n → m * n ≈ 1#) ⊎ (∀ n → m * n ≈ 1# → ⊥ {ℓ})
 
   idx′ : ∀ {m} → InvDec m → ℕ
   idx′ (inj₁ _) = 0

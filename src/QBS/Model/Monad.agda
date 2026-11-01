@@ -23,7 +23,7 @@ open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Functor; Endofunctor)
 open import Categories.Functor using () renaming (id to idF)
 open import Categories.Functor using (_∘F_)
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.Monad using (Monad)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
@@ -261,21 +261,17 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     }
 
   ηN : NaturalTransformation idF TF
-  ηN = record
+  ηN = ntHelper record
     { η = ηH
     ; commute = λ {X} {Y} f {x} g →
         Setoid.trans Aˢ (∫-η {Y} (map f ⟨$⟩ x) g) (Setoid.sym Aˢ (∫-η {X} x (Comp.function (map f) g)))
-    ; sym-commute = λ {X} {Y} f {x} g →
-        Setoid.trans Aˢ (∫-η {X} x (Comp.function (map f) g)) (Setoid.sym Aˢ (∫-η {Y} (map f ⟨$⟩ x) g))
     }
 
   μN : NaturalTransformation (TF ∘F TF) TF
-  μN = record
+  μN = ntHelper record
     { η = joinH
     ; commute = λ {X} {Y} f {p} g →
         Setoid.trans Aˢ (∫-join (mapPre (TH f) p) g) (Setoid.sym Aˢ (∫-join p (Comp.function (map f) g)))
-    ; sym-commute = λ {X} {Y} f {p} g →
-        Setoid.trans Aˢ (∫-join p (Comp.function (map f) g)) (Setoid.sym Aˢ (∫-join (mapPre (TH f) p) g))
     }
 
   TM : Monad (QBSCat S)

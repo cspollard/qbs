@@ -8,14 +8,14 @@ module QBS.Analysis.Interleave where
 import Level as L
 open import Data.Bool.Base using (Bool; true; false; not; _∧_; if_then_else_)
 import Data.Bool.Properties as B
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; zero; suc; ⌊_/2⌋)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Data.Product.Base using (_×_; _,_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core using (Cantor)
-open import QBS.Borel.Merge using (mergeC; mergeBit; ev; hf)
+open import QBS.Borel.Merge using (mergeC; ev)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Clopen
 open import QBS.Analysis.Archimedean
@@ -35,33 +35,33 @@ interleave (leaf true) t = stutter t
 -- semantics
 
 private
-  -- ev (suc n) and hf (suc n) in terms of ev n and hf n
+  -- ev (suc n) and ⌊ suc n /2⌋ in terms of ev n and ⌊ n /2⌋
   ev-suc : ∀ n → ev (suc n) ≡ not (ev n)
   ev-suc zero = refl
   ev-suc (suc zero) = refl
   ev-suc (suc (suc n)) = ev-suc n
 
-  hf-suc : ∀ n → hf (suc n) ≡ (if ev n then hf n else suc (hf n))
-  hf-suc zero = refl
-  hf-suc (suc zero) = refl
-  hf-suc (suc (suc n)) = trans (cong suc (hf-suc n)) (lem (ev n) (hf n))
+  half-suc : ∀ n → ⌊ suc n /2⌋ ≡ (if ev n then ⌊ n /2⌋ else suc ⌊ n /2⌋)
+  half-suc zero = refl
+  half-suc (suc zero) = refl
+  half-suc (suc (suc n)) = trans (cong suc (half-suc n)) (lem (ev n) ⌊ n /2⌋)
     where lem : ∀ (b : Bool) k → suc (if b then k else suc k) ≡ (if b then suc k else suc (suc k))
           lem true k = refl
           lem false k = refl
 
-  suc-bits : ∀ n b → ev n ≡ b → (ev (suc n) , hf (suc n)) ≡ (not b , (if b then hf n else suc (hf n)))
+  suc-bits : ∀ n b → ev n ≡ b → (ev (suc n) , ⌊ suc n /2⌋) ≡ (not b , (if b then ⌊ n /2⌋ else suc ⌊ n /2⌋))
   suc-bits n b e = ≡.cong₂ _,_ (trans (ev-suc n) (cong not e))
-                              (trans (hf-suc n) (cong (λ c → if c then hf n else suc (hf n)) e))
+                              (trans (half-suc n) (cong (λ c → if c then ⌊ n /2⌋ else suc ⌊ n /2⌋) e))
 
   tl-merge : ∀ a s n → tl (mergeC a s) n ≡ mergeC s (tl a) n
   tl-merge a s n = go n (ev n) refl
     where
       bit : Bool × ℕ → Bool
-      bit (c , k) = mergeBit c (a k) (s k)
+      bit (c , k) = if c then a k else s k
 
       go : ∀ n b → ev n ≡ b → tl (mergeC a s) n ≡ mergeC s (tl a) n
-      go n true e = trans (cong bit (suc-bits n true e)) (sym (cong (λ c → mergeBit c (s (hf n)) (a (suc (hf n)))) e))
-      go n false e = trans (cong bit (suc-bits n false e)) (sym (cong (λ c → mergeBit c (s (hf n)) (a (suc (hf n)))) e))
+      go n true e = trans (cong bit (suc-bits n true e)) (sym (cong (λ c → if c then s ⌊ n /2⌋ else a (suc ⌊ n /2⌋)) e))
+      go n false e = trans (cong bit (suc-bits n false e)) (sym (cong (λ c → if c then s ⌊ n /2⌋ else a (suc ⌊ n /2⌋)) e))
 
   tl2-merge : ∀ a s n → tl (tl (mergeC a s)) n ≡ mergeC (tl a) (tl s) n
   tl2-merge a s n = trans (tl-merge a s (suc n)) (tl-merge s (tl a) n)

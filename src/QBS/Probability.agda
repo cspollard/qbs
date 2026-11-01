@@ -96,6 +96,7 @@ module _ {o h e} ℓ {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical
     open ProbLaws L
     private
       module Mor = Morph C
+      module CMon = CM.CartesianMonoidal {𝒞 = C} cartesian
       module T = Monad (CommutativeMonad.M cm)
       module σ = NT.NaturalTransformation (Strength.strengthen (StrongMonad.strength (CommutativeMonad.strongMonad cm)))
       module τ = NT.NaturalTransformation (RightStrength.strengthen (CommutativeMonad.rightStrength cm))
@@ -118,10 +119,10 @@ module _ {o h e} ℓ {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical
 
     -- ⟨ id , ! ⟩ and ⟨ ! , id ⟩ invert the unit projections
     ⟨id,!⟩∘π₁ : ∀ {A} → ⟨ id , ! ⟩ ∘ π₁ ≈ id {A × ⊤}
-    ⟨id,!⟩∘π₁ = ⟨⟩∘ ○ ⟨⟩-cong₂ identityˡ !-unique₂ ○ η
+    ⟨id,!⟩∘π₁ {A} = Mor.Iso.isoˡ (Mor._≅_.iso (CMon.A×⊤≅A {A}))
 
     ⟨!,id⟩∘π₂ : ∀ {A} → ⟨ ! , id ⟩ ∘ π₂ ≈ id {⊤ × A}
-    ⟨!,id⟩∘π₂ = ⟨⟩∘ ○ ⟨⟩-cong₂ !-unique₂ identityˡ ○ η
+    ⟨!,id⟩∘π₂ {A} = Mor.Iso.isoˡ (Mor._≅_.iso (CMon.⊤×A≅A {A}))
 
     -- strengthening with the unit object, at global elements
     τ-unit : ∀ {A} (t : ⊤ ⇒ T.F.F₀ A) → τ.η (A , ⊤) ∘ ⟨ t , id ⟩ ≈ T.F.F₁ ⟨ id , ! ⟩ ∘ t

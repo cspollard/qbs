@@ -95,10 +95,6 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
   private
     open HomReasoning
     open MR C
-    -- rewrite the front of a composite
-    rw : ∀ {A B D E} {f : B ⇒ D} {g : A ⇒ B} {f′ : E ⇒ D} {g′ : A ⇒ E} {A′} {r : A′ ⇒ A} →
-      f ∘ g ≈ f′ ∘ g′ → f ∘ g ∘ r ≈ f′ ∘ g′ ∘ r
-    rw eq = sym-assoc ○ (eq ⟩∘⟨refl) ○ assoc
     ∘!≈ : ∀ {A} (b : ⊤ ⇒ A) → b ∘ ! ≈ b
     ∘!≈ b = (refl⟩∘⟨ !-unique id) ○ identityʳ
 
@@ -115,7 +111,7 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
     M.μ.η X ∘ M.F.F₁ t ∘ score ∘ mulW ∘ ⟨ a , b ⟩
       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ score-mul a b ⟩
     M.μ.η X ∘ M.F.F₁ t ∘ M.μ.η ⊤ ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ rw (M.μ.sym-commute t) ⟩
+      ≈⟨ refl⟩∘⟨ extendʳ (M.μ.sym-commute t) ⟩
     M.μ.η X ∘ M.μ.η (M.F.F₀ X) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
       ≈⟨ sym-assoc ⟩
     (M.μ.η X ∘ M.μ.η (M.F.F₀ X)) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
@@ -144,7 +140,7 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
   scale-nat : ∀ {X Y} (f : X ⇒ Y) (a : ⊤ ⇒ W) (t : ⊤ ⇒ M.F.F₀ X) →
     M.F.F₁ f ∘ scaleM a t ≈ scaleM a (M.F.F₁ f ∘ t)
   scale-nat {X} {Y} f a t = begin
-    M.F.F₁ f ∘ M.μ.η X ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ rw (M.μ.sym-commute f) ⟩
+    M.F.F₁ f ∘ M.μ.η X ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ extendʳ (M.μ.sym-commute f) ⟩
     M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
     M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f ∘ t) ∘ score ∘ a  ∎
 

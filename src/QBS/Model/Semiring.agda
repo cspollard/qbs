@@ -11,6 +11,7 @@ open import Level using (Level; suc; _⊔_)
 open import Function.Base using (_∘_)
 open import Function.Bundles using (Inverse; _↔_)
 open import Algebra.Bundles using (CommutativeSemiring)
+import Algebra.Definitions as Defs
 open import Data.Empty.Polymorphic using (⊥)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_)
@@ -32,6 +33,10 @@ record CompleteSemiring (ℓ : Level) : Set (suc ℓ) where
     ∑-reindex : ∀ {I J : Set ℓ} (e : I ↔ J) (f : J → Carrier) → ∑ (λ i → f (Inverse.to e i)) ≈ ∑ f
     ∑-distribˡ : ∀ {I : Set ℓ} x (f : I → Carrier) → x * ∑ f ≈ ∑ (λ i → x * f i)
 
+  -- the decision "is m invertible?" (classical, so a hypothesis in `NormalizableSemiring`)
+  InvDec : Carrier → Set ℓ
+  InvDec m = Defs.RightInvertible _≈_ 1# _*_ m ⊎ (∀ n → m * n ≈ 1# → ⊥ {ℓ})
+
 -- Normalisation needs to decide whether a total mass is invertible (i.e. neither 0
 -- nor ∞, in [0, ∞]).  That is a classical decision, so it is a hypothesis.
 record NormalizableSemiring (ℓ : Level) : Set (suc ℓ) where
@@ -39,5 +44,5 @@ record NormalizableSemiring (ℓ : Level) : Set (suc ℓ) where
     complete : CompleteSemiring ℓ
   open CompleteSemiring complete public
   field
-    invertible? : ∀ m → Σ Carrier (λ n → m * n ≈ 1#) ⊎ (∀ n → m * n ≈ 1# → ⊥ {ℓ})
+    invertible? : ∀ m → InvDec m
     nontrivial : 0# ≈ 1# → ⊥ {ℓ}
