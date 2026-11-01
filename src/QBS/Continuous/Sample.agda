@@ -9,10 +9,10 @@ import Level as L
 open import Level using (Lift; lift; lower)
 open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Bool.Base using (Bool; true; false)
-open import Data.Nat.Base using (ℕ; _+_)
+open import Data.Bool.Base using (Bool; true; false; if_then_else_)
+open import Data.Nat.Base using (ℕ; _+_; ⌊_/2⌋)
 import Data.Nat.Base as ℕ
-open import Data.Nat.Properties using (+-suc)
+open import Data.Nat.Properties using (+-suc; n≡⌊n+n/2⌋)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 open import Data.Sum.Base using (_⊎_)
@@ -48,29 +48,25 @@ ev-dbl : ∀ n → ev (dbl n) ≡ true
 ev-dbl ℕ.zero = ≡.refl
 ev-dbl (ℕ.suc n) = ≡.trans (≡.cong ev (dbl-suc n)) (ev-dbl n)
 
-hf-dbl : ∀ n → hf (dbl n) ≡ n
-hf-dbl ℕ.zero = ≡.refl
-hf-dbl (ℕ.suc n) = ≡.trans (≡.cong hf (dbl-suc n)) (≡.cong ℕ.suc (hf-dbl n))
-
 ev-sdbl : ∀ n → ev (ℕ.suc (dbl n)) ≡ false
 ev-sdbl ℕ.zero = ≡.refl
 ev-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → ev (ℕ.suc m)) (dbl-suc n)) (ev-sdbl n)
 
-hf-sdbl : ∀ n → hf (ℕ.suc (dbl n)) ≡ n
-hf-sdbl ℕ.zero = ≡.refl
-hf-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → hf (ℕ.suc m)) (dbl-suc n)) (≡.cong ℕ.suc (hf-sdbl n))
+half-sdbl : ∀ n → ⌊ ℕ.suc (dbl n) /2⌋ ≡ n
+half-sdbl ℕ.zero = ≡.refl
+half-sdbl (ℕ.suc n) = ≡.trans (≡.cong (λ m → ⌊ ℕ.suc m /2⌋) (dbl-suc n)) (≡.cong ℕ.suc (half-sdbl n))
 
 -- every index is double its half, or one more
-even-split : ∀ n → ev n ≡ true → n ≡ dbl (hf n)
+even-split : ∀ n → ev n ≡ true → n ≡ dbl ⌊ n /2⌋
 even-split ℕ.zero _ = ≡.refl
 even-split (ℕ.suc ℕ.zero) ()
-even-split (ℕ.suc (ℕ.suc n)) e = ≡.trans (≡.cong (λ x → ℕ.suc (ℕ.suc x)) (even-split n e)) (≡.sym (dbl-suc (hf n)))
+even-split (ℕ.suc (ℕ.suc n)) e = ≡.trans (≡.cong (λ x → ℕ.suc (ℕ.suc x)) (even-split n e)) (≡.sym (dbl-suc ⌊ n /2⌋))
 
-odd-split : ∀ n → ev n ≡ false → n ≡ ℕ.suc (dbl (hf n))
+odd-split : ∀ n → ev n ≡ false → n ≡ ℕ.suc (dbl ⌊ n /2⌋)
 odd-split ℕ.zero ()
 odd-split (ℕ.suc ℕ.zero) _ = ≡.refl
 odd-split (ℕ.suc (ℕ.suc n)) e = ≡.trans (≡.cong (λ x → ℕ.suc (ℕ.suc x)) (odd-split n e))
-                                   (≡.cong ℕ.suc (≡.sym (dbl-suc (hf n))))
+                                   (≡.cong ℕ.suc (≡.sym (dbl-suc ⌊ n /2⌋)))
 
 evens odds : Cantor → Cantor
 evens k n = k (dbl n)
@@ -83,15 +79,15 @@ merge-split k n with ev n in en
 ... | false = ≡.cong k (≡.sym (odd-split n en))
 
 evens-merge : ∀ a b n → evens (mergeC a b) n ≡ a n
-evens-merge a b n = ≡.trans (≡.cong (λ e → mergeBit e (a h) (b h)) (ev-dbl n)) (≡.cong a (hf-dbl n))
-  where h = hf (dbl n)
+evens-merge a b n = ≡.trans (≡.cong (λ e → if e then a h else b h) (ev-dbl n)) (≡.cong a (≡.sym (n≡⌊n+n/2⌋ n)))
+  where h = ⌊ dbl n /2⌋
 
 odds-merge : ∀ a b n → odds (mergeC a b) n ≡ b n
-odds-merge a b n = ≡.trans (≡.cong (λ e → mergeBit e (a h) (b h)) (ev-sdbl n)) (≡.cong b (hf-sdbl n))
-  where h = hf (ℕ.suc (dbl n))
+odds-merge a b n = ≡.trans (≡.cong (λ e → if e then a h else b h) (ev-sdbl n)) (≡.cong b (half-sdbl n))
+  where h = ⌊ ℕ.suc (dbl n) /2⌋
 
 merge-cong : ∀ {a a′ b b′} → ≡._≗_ a a′ → ≡._≗_ b b′ → ≡._≗_ (mergeC a b) (mergeC a′ b′)
-merge-cong ea eb n = ≡.cong₂ (mergeBit (ev n)) (ea (hf n)) (eb (hf n))
+merge-cong ea eb n = ≡.cong₂ (λ x y → if ev n then x else y) (ea ⌊ n /2⌋) (eb ⌊ n /2⌋)
 
 ----------------------------------------------------------------------------
 -- at the level of the sample space R
@@ -112,8 +108,8 @@ measurable-odds n b = gen (ℕ.suc (dbl n)) b
 measurable-merge : ∀ {a b : Cantor → Cantor} → Measurable a → Measurable b →
   Measurable (λ k → mergeC (a k) (b k))
 measurable-merge {a} {b} ma mb n β with ev n
-... | true = ma (hf n) β
-... | false = mb (hf n) β
+... | true = ma ⌊ n /2⌋ β
+... | false = mb ⌊ n /2⌋ β
 
 module R≈ = Setoid (RandomSource.Rˢ S)
 
