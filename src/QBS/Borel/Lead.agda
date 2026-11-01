@@ -3,6 +3,10 @@
 -- A countable Borel partition of Cantor space with infinitely many pieces: `lead k` is the number
 -- of leading `true`s (0 for the constant `true` sequence, where it is a classical default).  The
 -- fibre `{lead = n}` is the cylinder `trueⁿ false …`, together with the all-true sequence for n = 0.
+--
+-- Remark: `lem` is needed only for the all-true sequence, where `lead` has no finite value.  Valued
+-- in Escardó's ℕ∞ (decreasing binary sequences; see `Analysis.ExtNat` for why that is not our
+-- `ExtNat`), the count would be total and constructive, up to the conversion ℕ∞ → ℕ.  Doc remark only.
 module QBS.Borel.Lead where
 
 open import Data.Bool.Base using (Bool; true; false)

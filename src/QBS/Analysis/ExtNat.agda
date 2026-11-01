@@ -1,6 +1,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0).
+--
+-- This is the classical `fin n | ∞` encoding (a coproduct ℕ + 1), not Escardó's ℕ∞ of decreasing
+-- binary sequences; the two are equivalent only classically.  `Borel.Lead` needs `lem` only for the
+-- all-true sequence (see its header); with Escardó's ℕ∞ the leading-true count would be total and
+-- constructive, up to the conversion ℕ∞ → ℕ.  A doc remark only: the library does not use that encoding.
 module QBS.Analysis.ExtNat where
 
 import Data.Nat.Base as ℕ
