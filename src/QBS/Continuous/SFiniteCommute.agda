@@ -68,18 +68,10 @@ module SFiniteCommute (lem : LEM₀) where
 
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
-  import Categories.Category.Cartesian.Monoidal as CM
-  import Categories.Category.CartesianClosed.Canonical as Canonical
-  open import QBS.Exponential using (cartesianClosed)
+  open import QBS.Category.Cartesian S using (cartesian; braided)
   open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
-  import Categories.Category.Cartesian.SymmetricMonoidal as CSM
-  open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
   private
-    cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
-    braided = Symmetric.braided (CSM.symmetric (QBSCat S) cartesian)
-    {-# INLINE cartesian #-}
-    {-# INLINE braided #-}
     module SP = Categories.Monad.Strong.Properties
     module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided strength)
 

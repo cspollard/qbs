@@ -82,16 +82,8 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   open import Categories.Category.Product using (Product; _⁂_)
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
-  import Categories.Category.Cartesian.Monoidal as CM
-  import Categories.Category.CartesianClosed.Canonical as Canonical
   open import Categories.NaturalTransformation using (NaturalTransformation)
-  open import QBS.Exponential using (cartesianClosed)
-
-  private
-    cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
-    V = CM.CartesianMonoidal.monoidal cartesian
-    {-# INLINE cartesian #-}
-    {-# INLINE V #-}
+  open import QBS.Category.Cartesian S using (cartesian; V; braided)
 
   strength : Strength V TM
   strength = record
@@ -109,15 +101,9 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     }
 
   open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
-  import Categories.Category.Cartesian.SymmetricMonoidal as CSM
-  open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
   strongMonad : StrongMonad V
   strongMonad = record { M = TM ; strength = strength }
-
-  private
-    braided = Symmetric.braided (CSM.symmetric (QBSCat S) cartesian)
-    {-# INLINE braided #-}
 
   -- Fubini: the two orders of integrating a pair of independent measures agree.
   fubini : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Func (×-setoid (Carrier X) (Carrier Y)) Aˢ) →

@@ -101,6 +101,8 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
   import Categories.Category.CartesianClosed.Canonical as Canonical
   open import QBS.Exponential using (cartesianClosed)
 
+  -- Not `QBS.Category.Cartesian`: using the exported aliases here made `commutative` about 7% slower (45 s
+  -- against 42 s) for no reason found, so this module keeps its own (see plans/Simplify.md, Stage 4 follow-up).
   private
     cartesian = Canonical.CartesianClosed.isCartesian (cartesianClosed S)
     V = CM.CartesianMonoidal.monoidal cartesian
