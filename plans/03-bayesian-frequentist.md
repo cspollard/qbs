@@ -147,7 +147,7 @@ Where things stand on `main`:
   out (e.g. `x12 (Var u) ≃ 1S`).
 
 Steps, in order of effort:
-1. **The calculus of `E-at`** (in progress, `Inference/Expectation`): `E-at (η x) g ≃ g x`,
+1. **The calculus of `E-at`** (done except independence, `Inference/Expectation`; independence in progress): `E-at (η x) g ≃ g x`,
    `E-at (map f p) g ≃ E-at p (g ∘ f)`, linearity in `g`, constants; stretch: the tower law
    `E-at (join P) g ≃ E-at P (λ q → E-at q g)` (needs `q ↦ E-at q g` as an `STest (TQ X)`, as `∫ᶠ` is for `∫`) and
    independence under the strength (`E[f(x) g(y)] = E f · E g`, via the Fubini already proved for `∫`).  Expected to
@@ -161,3 +161,9 @@ Steps, in order of effort:
 4. **The sampler–monad bridge.**  `Inference/Sampler` is off `main` (over 12 CPU-minutes to check, see "3c status");
    making it cheap would bring back `BernoulliCompare` (branch `orphaned-wip`) and the frequentist results stated over
    samplers.
+
+3d step 1 outcome (2026-11-01): `Inference/Expectation` (about 7 s to check) defines the test algebra on `STest`
+(`valT`, `_+T_`, `-T_`, `scaleT`, `constT`, `precompT`, and `expT g`, the test `q ↦ E-at q g` on `TQ X`) and proves
+`E-at-η`, `E-at-map`, `E-at-+`, `E-at-neg`, `E-at-scale`, `E-at-const`, `E-at-expT` and the tower law `E-at-join`
+(`E-at (joinPre P) g ≃ E-at P (expT g)`).  The algebraic laws hold because the pulled-back signed functions agree
+definitionally with the `SignedIntegral` operations; the tower law uses `∫-join` and the rescaling of `E-resp`.

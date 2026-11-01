@@ -28,12 +28,13 @@ sections are in suggested order of work.
 - Stage 4: B.1 (monad and strength laws; commutativity and `Model/Strong` left), B.4, G (rename and doc remarks; `Borel/Core` left).  See the "Stage 4 outcome" sections.
 - Stage 5: C.2 (`Continuous/Strong` keeps its aliases), C.5 (comments), Stage 1a item 4 remainder (no `random-cast` left).
   See the "Stage 5 outcome" section.
+- Stage 6: E.2 (full option).  See the "Stage 6 outcome" section.
 
 **Open:**
 - A.8 (uncertain).
 - B.1 remainder: commutativity is not generic, and the Continuous model keeps its own `TM` and strength (see the Stage 4 follow-up).
 - C.2 at `Continuous/Strong`: the shared export made it about 7% slower, so it keeps local aliases.
-- E.2 (full option only); G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
+- G: `Borel/Core` onto `Relation.Unary` (judged not worth it).
 
 ## A. Algebra and order (Analysis)
 
@@ -229,7 +230,7 @@ sections are in suggested order of work.
    - Payoff: about 40 lines.
    - Risk: `RandomSource.pair` and `Model.Pairing.pair` are equal only through `DS`'s INLINE alias; watch the
      conversion cost.
-2. **[cheap option done]** **Interleaving.**
+2. **[done, both options]** **Interleaving.**
    - Now: `Borel/Merge.mergeC` (:24-39) indexes by parity (`ev`, `hf`).  That needs `Analysis/Interleave.agda:37-67`
      and `Continuous/Sample.agda:40-90` (`dbl`, `ev-dbl`, `hf-dbl`, `even-split`, `odd-split`).
    - Cheap option: `hf` is `⌊_/2⌋` (`Data/Nat/Base.agda:280`), `hf-dbl` is `sym (n≡⌊n+n/2⌋ n)`
@@ -340,7 +341,7 @@ stdlib's (`Data.Product.Function.NonDependent.Setoid`: `<_,_>ₛ`, `proj₁ₛ`,
 
 ## Suggested order
 
-Status: steps 1–6 are done (B.1 without generic commutativity); in step 7, B.4, F.1, F.2 and E.2 (cheap) are done, and the full E.2 is open.  C.2 and C.5 are done (Stage 5).
+Status: steps 1–6 are done (B.1 without generic commutativity); in step 7, B.4, F.1, F.2 and E.2 (both options) are done.  C.2 and C.5 are done (Stage 5).
 
 1. Do A.3, A.4, A.6, C.1, C.4, D.1 (alias only) and E.3 first.  They are mechanical, local and low-risk.
 2. Stage 1a (the `Core`/probes items above; partly done, see "Stage 1a outcome"): B.3 then builds on `refineₛ` and the
@@ -696,3 +697,15 @@ Canaries, timed by the orchestrator as for Stage 4 (before = `d51fdba`, after = 
 
 Nothing is slower.  `Model/Strong` is 9% faster (15.9 s to 14.4 s) with the shared export, and `Exponential` 6% faster
 after the `glueₛ` rewrite; the rest are within 3%.
+
+## Stage 6 outcome (E.2, full option)
+
+- `Borel/Merge.mergeC` is defined by recursion, as `Codata.Guarded.Stream.interleave`:
+  `mergeC a b zero = a zero`, `mergeC a b (suc n) = mergeC b (λ k → a (suc k)) n`, so the tail of a merge is the swapped
+  merge by `refl`.  New: `mergeC-even` (`mergeC a s (n + n) ≡ a n`), `mergeC-odd`, `even-or-odd`, and the joint
+  `measurable-merge` (moved from `Continuous/Sample`); `measurable-merge₁/₂` are one-liners from it; `rect-step` splits
+  on `even-or-odd`.
+- Deleted parity helpers: `ev`, `ev-suc`, `half-suc`, `suc-bits`, `tl-merge`, `tl2-merge` (`Analysis/Interleave`), `dbl`,
+  `dbl-suc`, `ev-dbl`, `ev-sdbl`, `half-sdbl`, `even-split`, `odd-split` (`Continuous/Sample`).  `evens`/`odds` are written
+  directly (`k (n + n)`, `k (suc (n + n))`).  `Continuous/Monad` and `SFiniteMonad` only changed an import list.
+- 6 files, +68 / −133.
