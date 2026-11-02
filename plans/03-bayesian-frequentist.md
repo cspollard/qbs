@@ -900,3 +900,20 @@ Revised item B, families as pushforwards (2026-11-02, done except the change of 
   - Until then, densities and pushforwards agree only where checked directly (`ExpRateOne` at rate 1).
 - **Left:** the change-of-variables theorem (above); a `Pre` for N(μ, σ²) on a signed codomain; from item A,
   measurability rules and `DFaff` for l > 1.
+
+Change of variables, dyadic scaling (2026-11-02, done).
+- **Lemma 1 already existed** for bounded tests (`Continuous/FirstBit.firstBit-fun`); `Continuous/FirstBitInf`
+  (4.3 s) extends it to unbounded `Meas` tests via truncations and `⨆-mix`: `firstBit-J`.
+- **`Analysis/DyadicAlg` (2.9 s, generic):** `∑ᶠ-dbl : ∑ᶠ a ≈ ∑ᶠ n. (a (2n) + a (2n+1))`, `⨆-mix`, `cons-alg`,
+  `tw k = 2ᵏ` with `tw-hp`.
+- **`Continuous/HalfLineScale` (6.9 s, 1.05 GB):** for every test `h`, `∫-dbl : ∫ h(2x) ≈ ½·∫ h`,
+  `∫-half : ∫ h(x/2) ≈ 2·∫ h`, `∫-tw′ k : 2ᵏ·∫ h(2ᵏx) ≈ ∫ h`.
+- **`Inference/ExpPushforwardAgree` (7.8 s, 1.08 GB):** `agree f`: the pushforward `expPush` at c = ½ and
+  `densDist (2e^{−2x})` have equal integrals for every test; the first density/pushforward agreement beyond rate 1,
+  for all tests, with no certificate calculus.
+- **Merge:** `make check` (246 files), `longcheck` (35) and `doccheck` pass.  Timings mine, at load ≈ 5.5.
+- **Left for the general theorem:**
+  - general c: a uniqueness principle on `WQ` (agreement on intervals ⇒ equal integrals), e.g. `Analysis/Uniqueness`
+    transported along `expansion`; dyadic c avoided it because coin cylinders are dyadic intervals;
+  - translation `x ↦ x + t` (integer t is `shiftPre`; general t needs additive structure or uniqueness);
+  - the N(μ, σ²) `Pre` on a signed codomain; measurability rules; `DFaff` for l > 1.
