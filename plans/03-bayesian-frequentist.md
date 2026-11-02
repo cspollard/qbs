@@ -609,3 +609,19 @@ Density item 2, derivative-free FTC in tail form (2026-11-02, done: milestones A
 - **Next:** item 3 is now unblocked: `∫ xⁿ e^{−x} = n!` with `G(x) = e^{−x} ∑_{k≤n} n!/k! xᵏ`.  It needs `h` bounded
   by more than 1, or `h` split into pieces bounded by 1, and `xⁿe^{−x}` is not monotone on [0, n].  So it first needs
   the `h ≤ 2ᴷ` generalisation and piecewise monotonicity (split at an integer).
+
+Decision-theoretic bridge, coin Bayes risk (2026-11-02, done):
+- **`Inference/CoinBayesRisk` (10.2 s, 1.1 GB):** one flip with a uniform prior.  The joint is
+  `joinPre (mapPre (θ ↦ σ(θ, coinKernel θ)) uniform)`.  The risk is `E-at joint` of the expanded signed test
+  θ̂² − 2θθ̂ + θ², built from `+T`, `scaleT` and `⊗T`.  `E-joint` reduces g(θ)·h(X) to a uniform expectation.
+  - `risk-X : six riskX ≃ 1S`: θ̂ = X has r = 1/6.
+  - `risk-P : eighteen riskP ≃ 1S`: the posterior mean θ̂ = (X+1)/3 has r = 1/18.  This goes through `risk-P9`,
+    the risk of 3θ̂ − 3θ.
+  - `risk-X18 : eighteen riskX ≃ three`, for comparing the two side by side.
+- **Cost trap:** the ring lemmas on the concrete `signedRing` never finished in 5 min.  The fix is an `abstract` copy
+  of the signed operations (`_⊞_`, `_⊠_`, `⊟_`) packaged as `ring′ : CommutativeRing`.  The generic `Alg` runs over
+  it, using `u = −1` as a solver variable, and the bridges `⊞-≃`/`⊠-≃` lead back.
+- **Not done:**
+  - an `≤` statement r(posterior mean) ≤ r(X);
+  - a pointwise proof that the tests are (θ̂ − θ)²;
+  - a general Bayes-optimality theorem.
