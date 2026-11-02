@@ -53,8 +53,17 @@ module GeometricMoment2 (A : OmegaSemiring (suc lzero)) (R : Arch A) where
   -- the recursion for `x j = a h² L + (h + a h) q`, `h = a + a`
 
   -- the first-bit split of `L`
-  Lsplit : ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣
-  Lsplit q F K L = half * ((q * (half * half)) * F + ((q * half) * K + (q * (half * half)) * L)) + half * ((half * half) * L)
+  Lsplit′ : ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣
+  Lsplit′ q F K L = half * ((q * (half * half)) * F + ((q * half) * K + (q * (half * half)) * L)) + half * ((half * half) * L)
+
+  -- `abstract`: at a concrete semiring, conversion would otherwise unfold `Lsplit` through the cut arithmetic
+  -- (it cost 30 s in `HalfLineMoment2`); `Lsplit-def` is the unfolding
+  abstract
+    Lsplit : ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣
+    Lsplit = Lsplit′
+
+    Lsplit-def : ∀ q F K L → Lsplit′ q F K L ≈ Lsplit q F K L
+    Lsplit-def q F K L = refl
 
   -- the `q²` part of `(h + a h) q²`, with `h = a + a` and (in `a h`) `h = a + ½a + ½a`
   S2 : ∣A∣ → ∣A∣ → ∣A∣
@@ -63,16 +72,17 @@ module GeometricMoment2 (A : OmegaSemiring (suc lzero)) (R : Arch A) where
   h-alt : ∀ a h → a + a ≈ h → h ≈ a + (half + half) * a
   h-alt a h ah = trans (sym ah) (+-cong refl (sym (trans (*-cong half+half refl) (*-identityˡ a))))
 
-  -- the `L`-part: `a (2a)² Lsplit = a³ (½ (q F + q L + L) + q K)`
-  Lfirst : ∀ a q F K L → (a * ((a + a) * (a + a))) * Lsplit q F K L
-    ≈ (a * (a * a)) * (half * (q * F + (q * L + L)) + q * K)
-  Lfirst a q F K L = trans (solve 6 (λ a z q F K L → (a :* ((a :+ a) :* (a :+ a)))
-      :* (z :* ((q :* (z :* z)) :* F :+ ((q :* z) :* K :+ (q :* (z :* z)) :* L)) :+ z :* ((z :* z) :* L))
-      := (a :* (a :* a)) :* (((z :+ z) :* (z :+ z)) :* (z :* (q :* F :+ (q :* L :+ L)))
-                            :+ ((z :+ z) :* (z :+ z)) :* (q :* K))) refl a half q F K L)
-    (trans (*-cong refl (+-cong (*-cong (*-cong half+half half+half) refl) (*-cong (*-cong half+half half+half) refl)))
-      (*-cong refl (solve 5 (λ z q F K L → (con 1 :* con 1) :* (z :* (q :* F :+ (q :* L :+ L))) :+ (con 1 :* con 1) :* (q :* K)
-        := z :* (q :* F :+ (q :* L :+ L)) :+ q :* K) refl half q F K L)))
+  abstract
+    -- the `L`-part: `a (2a)² Lsplit = a³ (½ (q F + q L + L) + q K)`
+    Lfirst : ∀ a q F K L → (a * ((a + a) * (a + a))) * Lsplit q F K L
+      ≈ (a * (a * a)) * (half * (q * F + (q * L + L)) + q * K)
+    Lfirst a q F K L = trans (solve 6 (λ a z q F K L → (a :* ((a :+ a) :* (a :+ a)))
+        :* (z :* ((q :* (z :* z)) :* F :+ ((q :* z) :* K :+ (q :* (z :* z)) :* L)) :+ z :* ((z :* z) :* L))
+        := (a :* (a :* a)) :* (((z :+ z) :* (z :+ z)) :* (z :* (q :* F :+ (q :* L :+ L)))
+                              :+ ((z :+ z) :* (z :+ z)) :* (q :* K))) refl a half q F K L)
+      (trans (*-cong refl (+-cong (*-cong (*-cong half+half half+half) refl) (*-cong (*-cong half+half half+half) refl)))
+        (*-cong refl (solve 5 (λ z q F K L → (con 1 :* con 1) :* (z :* (q :* F :+ (q :* L :+ L))) :+ (con 1 :* con 1) :* (q :* K)
+          := z :* (q :* F :+ (q :* L :+ L)) :+ q :* K) refl half q F K L)))
 
   -- the `F`, `K` part, with the remainder `S2`
   REM : ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣ → ∣A∣
