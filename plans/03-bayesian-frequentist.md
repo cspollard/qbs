@@ -961,7 +961,7 @@ the top-level statements are the contract.
 4. `Continuous/UniquenessR` [7]: `χR` (indicator test of a Borel set of `ℛ = Probes.ℛQ S`), `χR-pt`, `onTop`,
    `onBlk`, `∫ᴹ-split`; under `agreeCell`, `finBlk`, `agreeTop`: `agree-blkCyl`, `agree-blk`, `agree-top`,
    `uniqR : μ ≈ᴹ ν`.
-5. `Continuous/DigitCode` [9, the hard module]: `val`, `digits`, `digits-cong`, `meas-digits`, `code : Hom S WQ ℛ`,
+5. `Continuous/DigitCode` [done]: `val`, `digits`, `digits-cong`, `meas-digits`, `code : Hom S WQ ℛ`,
    `code-pt`, `decode : Hom S ℛ WQ`, `decode-code`, `code-cell`, `code-top`.
 6. `Continuous/UniquenessWQ` [6, headline]: `test-factor`, `pushCell`, `pushBlk`, `pushTop`; under `agreeI`, `finI`,
    `agreeInf`: `uniqPush`, `uniqWQ : μ ≈ᴹ ν`.
@@ -974,6 +974,17 @@ the top-level statements are the contract.
     `∫-shift : ∫ h(x+t) + ∫_{[0,t)} h ≈ ∫ h`.
 - Not yet stated: monotone change of variables with a derivative certificate (interval masses from `glue-D0`) and
   re-deriving `ExpPushforwardAgree` for every rate; state them once 8 is filled.
+
+**Outcome: `Continuous/DigitCode` (2026-11-02, merged into `uniq`).**
+- All 9 holes filled; contract unchanged (`val` is now an alias of `DigitStream.val`).  No new statements were needed
+  in `Intervals` or `Cells`.
+- Route: a digit machine with states `un j` (unary part) and `fr d m` (x ∈ [m/2ᵈ, (m+1)/2ᵈ)) decides one threshold
+  `Ge thr x` per bit by excluded middle.  So `meas-digits` is induction on the position, each step a Boolean
+  combination of `ge-borel` sets.  `decode` is the run length plus the expansion of the rest, via `lead`.
+  `decode-code` needed no "sup of dyadic truncations" lemma, only `below-dec`, `arch` and `nat-big`.
+- New helpers: `Analysis/DigitAlg` (4.1 s, 0.45 GB), `Continuous/DigitCut` (5.8 s, 0.64 GB),
+  `Continuous/DigitStream` (7.3 s, 0.68 GB), `Continuous/DigitDecode` (6.4 s, 0.70 GB).  `DigitCode` itself:
+  6.2 s, 0.69 GB.  Timings mine, through the progress overlay.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
@@ -990,6 +1001,5 @@ the top-level statements are the contract.
 - Settled: cylinders constrain arbitrary bits.  `UniquenessR` assumes agreement on cells only and derives it for
   cylinders inside a block (`Cells.cyl-refine`).
 - Settled: mass at ∞ is handled by `agreeInf`/`agreeTop`.
-- Open: `digits` must respect `≈` of cuts (`digits-cong`) and be measurable (`meas-digits`).  This is where
-  `DigitCode` may need more lemmas.
+- Settled (DigitCode outcome): `digits` respects `≈` of cuts (`digits-cong`) and is measurable (`meas-digits`).
 - Performance: concrete cut arithmetic only in leaf modules, solvers in generic `Alg` modules, as before.
