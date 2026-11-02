@@ -141,7 +141,9 @@ module DigitStream (lem : LEM₀) where
 
   borel-out : ∀ {h : R₁ → ∣A∣} → Meas h → ∀ i s b → Borel (λ c → out (h (lift c)) s i ≡ b)
   borel-out mh zero s b = borel-bit mh s b
-  borel-out {h} mh (suc i) s b = resp e (union₂ (inter₂ G (borel-out mh i (sB s true) b)) (inter₂ (compl G) (borel-out mh i (sB s false) b)))
+  borel-out {h} mh (suc i) s b =
+    resp e (union₂ (inter₂ G (borel-out mh i (sB s true) b))
+                   (inter₂ (compl G) (borel-out mh i (sB s false) b)))
     where
       G = ge-borel (thr s) mh
       e : ∀ c → _
@@ -153,7 +155,8 @@ module DigitStream (lem : LEM₀) where
           fwd (inj₂ (ng , o)) = subst (λ t → out x (sB s t) i ≡ b) (sym (dB-no ng)) o
           bwd : out x s (suc i) ≡ b → _
           bwd o = Sum.[ (λ g → inj₁ (g , subst (λ t → out x (sB s t) i ≡ b) (dB-yes g) o))
-                      , (λ ng → inj₂ (ng , subst (λ t → out x (sB s t) i ≡ b) (dB-no ng) o)) ]′ (lem (Ge (thr s) x))
+                      , (λ ng → inj₂ (ng , subst (λ t → out x (sB s t) i ≡ b) (dB-no ng) o))
+                      ]′ (lem (Ge (thr s) x))
 
   meas-digits : ∀ {h : R₁ → ∣A∣} → Meas h → ∀ i b → Borel (λ c → digits (h (lift c)) i ≡ b)
   meas-digits mh i b = borel-out mh i (un zero) b
@@ -200,7 +203,9 @@ module DigitStream (lem : LEM₀) where
   val-ix false m l v = cong (_+ v) (sym (dbl-mul m (2 ^ l)))
 
   suc-le : ∀ k p v → suc v ≤ p → suc (k * p + v) ≤ suc k * p
-  suc-le k p v lt = ℕ.≤-trans (ℕ.≤-reflexive (sym (ℕ.+-suc _ v))) (ℕ.≤-trans (ℕ.+-monoʳ-≤ (k * p) lt) (ℕ.≤-reflexive (ℕ.+-comm _ _)))
+  suc-le k p v lt =
+    ℕ.≤-trans (ℕ.≤-reflexive (sym (ℕ.+-suc _ v)))
+      (ℕ.≤-trans (ℕ.+-monoʳ-≤ (k * p) lt) (ℕ.≤-reflexive (ℕ.+-comm _ _)))
 
   -- the bit of the stream is read off from the final interval
   bit-of : ∀ x b d m l v → suc v ≤ 2 ^ l → Tgt (l + suc d) (ix b m * 2 ^ l + v) x → bit x (fr d m) ≡ b
@@ -209,25 +214,33 @@ module DigitStream (lem : LEM₀) where
     where le : suc (dbl m * 2 ^ l + v) ≤ suc (dbl m) * 2 ^ l
           le = suc-le (dbl m) (2 ^ l) v lt
 
-  fr-match : ∀ x w d m → Tgt d m x →
+  FrMatch : ∀ x w d m → Set
+  FrMatch x w d m =
     (Match w (out x (fr d m)) → Tgt (length w + d) (m * 2 ^ length w + val w) x)
     × (Tgt (length w + d) (m * 2 ^ length w + val w) x → Match w (out x (fr d m)))
-  fr-match x [] d m T = (λ _ → Tgt-≡ refl (sym e) T) , (λ _ → tt)
-    where e : m * 1 + 0 ≡ m
-          e = trans (ℕ.+-identityʳ _) (ℕ.*-identityʳ m)
-  fr-match x (b ∷ w) d m T = fwd , bwd
+
+  -- one step of `fr-match`, given the result for the tail
+  fr-cons : ∀ x b w d m → (bit x (fr d m) ≡ b → FrMatch x w (suc d) (ix b m)) → FrMatch x (b ∷ w) d m
+  fr-cons x b w d m rec = fwd , bwd
     where
       l = length w
       fwd : Match (b ∷ w) (out x (fr d m)) → _
       fwd (eb , mt) = Tgt-≡ (ℕ.+-suc l d) (sym (val-ix b m l (val w)))
-        (proj₁ (fr-match x w (suc d) (ix b m) (fr-down x d m b T eb)) (subst (λ t → Match w (out x (fr (suc d) (ix t m)))) eb mt))
+        (proj₁ (rec eb) (subst (λ t → Match w (out x (fr (suc d) (ix t m)))) eb mt))
       bwd : Tgt (suc l + d) _ x → Match (b ∷ w) (out x (fr d m))
-      bwd t = eb , subst (λ t → Match w (out x (fr (suc d) (ix t m)))) (sym eb) (proj₂ (fr-match x w (suc d) (ix b m) (fr-down x d m b T eb)) t′)
+      bwd t = eb , subst (λ t → Match w (out x (fr (suc d) (ix t m)))) (sym eb) (proj₂ (rec eb) t′)
         where
           t′ : Tgt (l + suc d) (ix b m * 2 ^ l + val w) x
           t′ = Tgt-≡ (sym (ℕ.+-suc l d)) (val-ix b m l (val w)) t
           eb : bit x (fr d m) ≡ b
           eb = bit-of x b d m l (val w) (val-lt w) t′
+
+  fr-match : ∀ x w d m → Tgt d m x → FrMatch x w d m
+  fr-match x [] d m T = (λ _ → Tgt-≡ refl (sym e) T) , (λ _ → tt)
+    where e : m * 1 + 0 ≡ m
+          e = trans (ℕ.+-identityʳ _) (ℕ.*-identityʳ m)
+  fr-match x (b ∷ w) d m T =
+    fr-cons x b w d m (λ eb → fr-match x w (suc d) (ix b m) (fr-down x d m b T eb))
 
   ----------------------------------------------------------------------------
   -- the unary part: the block of `digits x` is the integer part of x
@@ -264,10 +277,14 @@ module DigitStream (lem : LEM₀) where
   ge0 x = ap (OmegaSemiring.0-least A {x})
 
   -- a point that is not infinite has an integer part
-  floor-ex : ∀ x → ((∀ k → Ge (natE k) x) → ⊥) → Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥))
-  floor-ex x ntop = Sum.[ (λ s → s) , (λ none → ⊥-elim (ntop (all none))) ]′ (lem (Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥))))
+  floor-ex : ∀ x → ((∀ k → Ge (natE k) x) → ⊥)
+           → Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥))
+  floor-ex x ntop =
+    Sum.[ (λ s → s) , (λ none → ⊥-elim (ntop (all none))) ]′
+      (lem (Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥))))
     where
-      all : (Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥)) → ⊥) → ∀ k → Ge (natE k) x
+      all : (Σ ℕ (λ k → Ge (natE k) x × (Ge (natE (suc k)) x → ⊥)) → ⊥)
+          → ∀ k → Ge (natE k) x
       all none zero = ge0 x
       all none (suc k) = Sum.[ (λ g → g) , (λ ng → ⊥-elim (none (k , all none k , ng))) ]′ (lem (Ge (natE (suc k)) x))
 
@@ -291,7 +308,9 @@ module DigitStream (lem : LEM₀) where
 
   fr-inv : ∀ x N d m n → n ≡ N + d → Tgt d m x → Tgt n (mN (out x (fr d m)) m N) x
   fr-inv x zero d m n refl T = T
-  fr-inv x (suc N) d m n refl T = Tgt-≡ (ℕ.+-suc N d) refl (fr-inv x N (suc d) (ix (bit x (fr d m)) m) (N + suc d) refl (fr-down x d m _ T refl))
+  fr-inv x (suc N) d m n refl T =
+    Tgt-≡ (ℕ.+-suc N d) refl
+      (fr-inv x N (suc d) (ix (bit x (fr d m)) m) (N + suc d) refl (fr-down x d m _ T refl))
 
   ----------------------------------------------------------------------------
   -- cells are dyadic intervals, the all-true point is ∞
@@ -312,24 +331,31 @@ module DigitStream (lem : LEM₀) where
   match-≗ [] e _ = tt
   match-≗ (b ∷ w) e (p , q) = trans (sym (e zero)) p , match-≗ w (λ i → e (suc i)) q
 
+  -- the unary part of the machine, run on the integer part k
+  ur : ∀ x {k} → Ge (natE k) x → (Ge (natE (suc k)) x → ⊥) →
+    Blk k (out x (un zero)) × (∀ i → out x (un zero) (suc k + i) ≡ out x (fr zero k) i)
+  ur x {k} gk ng = un-run x k zero k refl (ge0 x) gk ng
+
+  cell-fwd : ∀ x k w → Cell k w (digits x) → Tgt (length w) (k * 2 ^ length w + val w) x
+  cell-fwd x k w (blk , mt) =
+    Tgt-≡ (ℕ.+-identityʳ _) refl
+      (proj₁ (fr-match x w zero k T0) (match-≗ w (proj₂ (ur x gk ng)) mt))
+    where gk = proj₁ (blk-ge x k zero k refl (ge0 x) blk)
+          ng = proj₂ (blk-ge x k zero k refl (ge0 x) blk)
+          T0 = fl-tgt x k gk ng
+
+  cell-bwd : ∀ x k w → Tgt (length w) (k * 2 ^ length w + val w) x → Cell k w (digits x)
+  cell-bwd x k w t = proj₁ (ur x gk ng) , match-≗ w (λ i → sym (proj₂ (ur x gk ng) i))
+    (proj₂ (fr-match x w zero k (fl-tgt x k gk ng)) (Tgt-≡ (sym (ℕ.+-identityʳ _)) refl t))
+    where fl = tgt-floor x (length w) k _ (ℕ.m≤m+n _ _)
+                         (suc-le k (2 ^ length w) (val w) (val-lt w)) t
+          gk = proj₁ fl
+          ng = proj₂ fl
+
   cell-iff : ∀ x k w →
-    (Cell k w (digits x) → Tgt (length w) (k * 2 ^ length w + val w) x) × (Tgt (length w) (k * 2 ^ length w + val w) x → Cell k w (digits x))
-  cell-iff x k w = fwd , bwd
-    where
-      ur : ∀ {k} → Ge (natE k) x → (Ge (natE (suc k)) x → ⊥) →
-        Blk k (out x (un zero)) × (∀ i → out x (un zero) (suc k + i) ≡ out x (fr zero k) i)
-      ur {k} gk ng = un-run x k zero k refl (ge0 x) gk ng
-      fwd : Cell k w (digits x) → _
-      fwd (blk , mt) = Tgt-≡ (ℕ.+-identityʳ _) refl (proj₁ (fr-match x w zero k T0) (match-≗ w (proj₂ (ur gk ng)) mt))
-        where gk = proj₁ (blk-ge x k zero k refl (ge0 x) blk)
-              ng = proj₂ (blk-ge x k zero k refl (ge0 x) blk)
-              T0 = fl-tgt x k gk ng
-      bwd : Tgt (length w) (k * 2 ^ length w + val w) x → Cell k w (digits x)
-      bwd t = proj₁ (ur gk ng) , match-≗ w (λ i → sym (proj₂ (ur gk ng) i))
-        (proj₂ (fr-match x w zero k (fl-tgt x k gk ng)) (Tgt-≡ (sym (ℕ.+-identityʳ _)) refl t))
-        where fl = tgt-floor x (length w) k _ (ℕ.m≤m+n _ _) (suc-le k (2 ^ length w) (val w) (val-lt w)) t
-              gk = proj₁ fl
-              ng = proj₂ fl
+    (Cell k w (digits x) → Tgt (length w) (k * 2 ^ length w + val w) x)
+    × (Tgt (length w) (k * 2 ^ length w + val w) x → Cell k w (digits x))
+  cell-iff x k w = cell-fwd x k w , cell-bwd x k w
 
   top-iff : ∀ x → (Top (digits x) → ∀ k → Ge (natE k) x) × ((∀ k → Ge (natE k) x) → Top (digits x))
   top-iff x = top-inf x , (λ top i → top-un x top zero i)

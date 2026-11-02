@@ -54,6 +54,34 @@ module AlgDigit (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrier
   half-two : ∀ L → half * (two * L) ≈ L
   half-two L = trans (sym (*-assoc half two L)) (trans (*-cong (trans (*-comm half two) two-half) refl) (*-identityˡ L))
 
+  -- the last three steps of `part-mN`: halving moves into the next dyadic scale
+  half-nat : ∀ k N → half * (natE k * hp N) ≈ natE k * hp (ℕ.suc N)
+  half-nat k N = begin
+    half * (natE k * hp N)  ≈⟨ sym (*-assoc half _ _) ⟩
+    (half * natE k) * hp N  ≈⟨ *-cong (*-comm _ _) refl ⟩
+    (natE k * half) * hp N  ≈⟨ *-assoc _ _ _ ⟩
+    natE k * hp (ℕ.suc N) ∎
+
+  -- peeling the first digit: `m + part (N+1) c = (2m + c₀ + part N (tl c)) / 2`
+  part-half : ∀ N m (c : Cantor) →
+    natE m + part (ℕ.suc N) (lift c) ≈ half * (natE (ix (c ℕ.zero) m) + part N (lift (tl c)))
+  part-half N m c = begin
+    natE m + part (ℕ.suc N) (lift c)
+      ≈⟨ +-cong refl (part-resp {c} {cons b (tl c)} e (ℕ.suc N)) ⟩
+    natE m + part (ℕ.suc N) (lift (cons b (tl c)))
+      ≈⟨ +-cong refl (part-cons b N (lift (tl c))) ⟩
+    natE m + (sel b half + half * w)
+      ≈⟨ sym (half-two _) ⟩
+    half * (two * (natE m + (sel b half + half * w)))
+      ≈⟨ *-cong refl (cons-alg b m {sel b half + half * w} {w} refl) ⟩
+    half * (natE (ix b m) + w) ∎
+    where
+      b = c ℕ.zero
+      w = part N (lift (tl c))
+      e : ∀ n → c n ≡ cons b (tl c) n
+      e ℕ.zero = _≡_.refl
+      e (ℕ.suc n) = _≡_.refl
+
   -- `m + part N c` is the dyadic point `(mN c m N) / 2ᴺ`
   part-mN : ∀ N m (c : Cantor) → natE m + part N (lift c) ≈ natE (mN c m N) * hp N
   part-mN ℕ.zero m c = trans (+-identityʳ _) (sym (trans (*-cong refl (hp0)) (*-identityʳ _)))
@@ -61,28 +89,12 @@ module AlgDigit (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrier
           hp0 = refl
   part-mN (ℕ.suc N) m c = begin
     natE m + part (ℕ.suc N) (lift c)
-      ≈⟨ +-cong refl (part-resp {c} {cons (c ℕ.zero) (tl c)} e (ℕ.suc N)) ⟩
-    natE m + part (ℕ.suc N) (lift (cons b (tl c)))
-      ≈⟨ +-cong refl (part-cons b N (lift (tl c))) ⟩
-    natE m + (sel b half + half * w)
-      ≈⟨ sym (half-two _) ⟩
-    half * (two * (natE m + (sel b half + half * w)))
-      ≈⟨ *-cong refl (cons-alg b m {sel b half + half * w} {w} refl) ⟩
-    half * (natE (ix b m) + w)
-      ≈⟨ *-cong refl (part-mN N (ix b m) (tl c)) ⟩
-    half * (natE (mN (tl c) (ix b m) N) * hp N)
-      ≈⟨ sym (*-assoc half _ _) ⟩
-    (half * natE (mN (tl c) (ix b m) N)) * hp N
-      ≈⟨ *-cong (*-comm _ _) refl ⟩
-    (natE (mN (tl c) (ix b m) N) * half) * hp N
-      ≈⟨ *-assoc _ _ _ ⟩
+      ≈⟨ part-half N m c ⟩
+    half * (natE (ix (c ℕ.zero) m) + part N (lift (tl c)))
+      ≈⟨ *-cong refl (part-mN N (ix (c ℕ.zero) m) (tl c)) ⟩
+    half * (natE (mN (tl c) (ix (c ℕ.zero) m) N) * hp N)
+      ≈⟨ half-nat _ N ⟩
     natE (mN c m (ℕ.suc N)) * hp (ℕ.suc N) ∎
-    where
-      b = c ℕ.zero
-      w = part N (lift (tl c))
-      e : ∀ n → c n ≡ cons (c ℕ.zero) (tl c) n
-      e ℕ.zero = _≡_.refl
-      e (ℕ.suc n) = _≡_.refl
 
   ----------------------------------------------------------------------------
   -- dyadic points

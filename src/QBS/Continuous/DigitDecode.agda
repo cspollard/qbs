@@ -76,7 +76,9 @@ module DigitDecode (lem : LEM₀) where
 
   Meas-psum : ∀ N → Meas (λ r → psum (λ i → χ (Pre (suc i)) r) N)
   Meas-psum zero = Meas-const 0#
-  Meas-psum (suc N) = Meas-⊕ {λ r → psum (λ i → χ (Pre (suc i)) r) N} {λ r → χ (Pre (suc N)) r} (Meas-psum N) (LS (Fun-χ (borelPre (suc N))))
+  Meas-psum (suc N) =
+    Meas-⊕ {λ r → psum (λ i → χ (Pre (suc i)) r) N} {λ r → χ (Pre (suc N)) r}
+           (Meas-psum N) (LS (Fun-χ (borelPre (suc N))))
 
   Meas-aPt : Meas aPt
   Meas-aPt = Meas-⨆ {aPt} (λ N r → psum (λ i → χ (Pre (suc i)) r) N) Meas-psum (λ r → ⊑-refl , ⊑-refl)
@@ -147,8 +149,11 @@ module DigitDecode (lem : LEM₀) where
   ----------------------------------------------------------------------------
   -- decoding the code
 
-  decode-top : ∀ x → (∀ k → Ge (natE k) x) → decPt (lift (digits x)) ≈ x
-  decode-top x top = ≤-antisym le ge
+  dec-le : ∀ x → (∀ k → Ge (natE k) x) → decPt (lift (digits x)) ≤ x
+  dec-le x top =
+    ≤-trans (+-mono ≤-refl (expansion≤1 _)) (≤-trans (≤-reflexive (+-comm (aPt (lift y)) 1#))
+      (≤-trans (≤-reflexive (+-⨆ 1# (psum t) (psum-inc t) inc′))
+        (⨆-lub _ inc′ (λ N → ≤-trans (≤-reflexive (step N)) (mk⊑ (top (suc N)))))))
     where
       y = digits x
       t : ℕ → ∣A∣
@@ -156,17 +161,23 @@ module DigitDecode (lem : LEM₀) where
       ps = A-top y (top-un x top zero)
       inc′ : Increasing (λ N → 1# + psum t N)
       inc′ N = +-mono ≤-refl (psum-inc t N)
-      le : decPt (lift y) ≤ x
-      le = ≤-trans (+-mono ≤-refl (expansion≤1 _)) (≤-trans (≤-reflexive (+-comm (aPt (lift y)) 1#))
-        (≤-trans (≤-reflexive (+-⨆ 1# (psum t) (psum-inc t) inc′))
-          (⨆-lub _ inc′ (λ N → ≤-trans (≤-reflexive (OmegaSemiring.trans A (+-cong (OmegaSemiring.refl A) (ps N)) (+-comm 1# (natE N))))
-                                       (mk⊑ (top (suc N)))))))
+      step : ∀ N → 1# + psum t N ≈ natE (suc N)
+      step N = OmegaSemiring.trans A (+-cong (OmegaSemiring.refl A) (ps N)) (+-comm 1# (natE N))
+
+  dec-ge : ∀ x → (∀ k → Ge (natE k) x) → x ≤ decPt (lift (digits x))
+  dec-ge x top = ≤-trans xA ≤-+ʳ
+    where
+      y = digits x
+      t : ℕ → ∣A∣
+      t i = χ (Pre (suc i)) (lift y)
+      ps = A-top y (top-un x top zero)
       xA : x ≤ aPt (lift y)
       xA = mk⊑ (λ q _ → fin q (nat-big q))
         where fin : ∀ q → Σ ℕ (λ k → _) → _
               fin q (k , qk) = ap (psum≤∑ᶠ t k) q (ap (≤-reflexive (OmegaSemiring.sym A (ps k))) q qk)
-      ge : x ≤ decPt (lift y)
-      ge = ≤-trans xA ≤-+ʳ
+
+  decode-top : ∀ x → (∀ k → Ge (natE k) x) → decPt (lift (digits x)) ≈ x
+  decode-top x top = ≤-antisym (dec-le x top) (dec-ge x top)
 
   decode-fin : ∀ x k → Ge (natE k) x → (Ge (natE (suc k)) x → ⊥) → decPt (lift (digits x)) ≈ x
   decode-fin x k gk ng = OmegaSemiring.trans A (+-cong A≈ E≈) (expansion-claim x k T0)
