@@ -23,6 +23,7 @@ open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.TailFTC using (module AlgT)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
+open import QBS.Analysis.ExpRateExt using (module AlgExt)
 
 module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
@@ -30,6 +31,7 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   open AlgT A R using (P; exp-cert)
   open AlgP A R using (P-mono; P-+; P-*; P-mul; Phz; *-mono₂; *-monoʳ; pw; pw-mono; pw-mul; pw-one; pwB; natE≤P; natE-*; module Ex)
   open Exp A using (natE)
+  open AlgExt A R using (module Lip; module Cert2)
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
 
   pw-cong : ∀ i {x y} → x ≈ y → pw i x ≈ pw i y
@@ -174,8 +176,16 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     (E-add : ∀ {a t} → a + t ≤ M → t ≤ 1# → E (a + t) ≈ E a * E t)
     (E-b : ∀ {t} → t ≤ 1# → E t + t * E t ≤ 1#) (E-c : ∀ {t} → t ≤ 1# → 1# ≤ E t + t)
     (E-cong : ∀ {x y} → x ≈ y → E x ≈ E y)
-    (l c s : ∣A∣) (lc : l * c ≈ 1#) (l1 : l ≤ 1#) (σ γ : ℕ) (sσ : s ≤ P σ) (cγ : c ≤ P γ) (j : ℕ) where
+    (l c s : ∣A∣) (lc : l * c ≈ 1#) (Mo : ∣A∣) (lM : ∀ {x} → x ≤ Mo → l * x ≤ M) (μ : ℕ) (lμ : l ≤ P μ)
+    (σ₀ γ : ℕ) (sσ₀ : s ≤ P σ₀) (cγ : c ≤ P γ) (j : ℕ) where
     open Ex E M m Mm E≤1 E-anti E-add E-b E-c
+
+    -- the rate enlarges the bound of `s`
+    σ : ℕ
+    σ = σ₀ ℕ.+ μ
+
+    sσ : s ≤ P σ
+    sσ = ≤-trans sσ₀ (P-mono (ℕ.m≤m+n σ₀ μ))
 
     S sI W Z : ℕ
     S = proj₁ (pack j)
@@ -223,9 +233,6 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     GR-cong : ∀ {x y} → x ≈ y → GR x ≈ GR y
     GR-cong e = *-cong refl (hh-cong (suc j) (*-cong refl e))
 
-    lx≤ : ∀ {x y} → x ≤ y → l * x ≤ y
-    lx≤ {x} xy = ≤-trans (≤-trans (*-monoʳ x l1) (≤-reflexive (*-identityˡ x))) xy
-
     ----------------------------------------------------------------------------
     -- indices
 
@@ -239,19 +246,19 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     σsI≤W = ℕ.+-monoˡ-≤ sI (ℕ.m≤m+n σ γ)
 
     -- the bounds
-    hRb : ∀ {x} → x ≤ M → hR x ≤ P W
-    hRb xM = ≤-trans (P-* sσ (gb₀ (lx≤ xM))) (P-mono σsI≤W)
+    hRb : ∀ {x} → x ≤ Mo → hR x ≤ P W
+    hRb xM = ≤-trans (P-* sσ (gb₀ (lM xM))) (P-mono σsI≤W)
 
-    kRb : ∀ {x} → x ≤ M → kR x ≤ P W
-    kRb xM = ≤-trans (P-* sσ (≤-trans ≤-+ʳ (kb₀ (lx≤ xM)))) (P-mono σsI≤W)
+    kRb : ∀ {x} → x ≤ Mo → kR x ≤ P W
+    kRb xM = ≤-trans (P-* sσ (≤-trans ≤-+ʳ (kb₀ (lM xM)))) (P-mono σsI≤W)
 
-    GRb : ∀ {x} → x ≤ M → GR x ≤ P W
-    GRb xM = P-* (P-* sσ cγ) (gb₀ (lx≤ xM))
+    GRb : ∀ {x} → x ≤ Mo → GR x ≤ P W
+    GRb xM = P-* (P-* sσ cγ) (gb₀ (lM xM))
 
-    hbR : ∀ {x} → x ≤ M → hR x + P W ≤ P Z
+    hbR : ∀ {x} → x ≤ Mo → hR x + P W ≤ P Z
     hbR xM = ≤-trans (P-+ {i = W} {j = W} (hRb xM) ≤-refl) (P-mono (pSl W))
 
-    kbR : ∀ {x} → x ≤ M → kR x + P W ≤ P Z
+    kbR : ∀ {x} → x ≤ Mo → kR x + P W ≤ P Z
     kbR xM = ≤-trans (P-+ {i = W} {j = W} (kRb xM) ≤-refl) (P-mono (pSl W))
 
     c3R : P W + (P W + P W) ≤ P Z
@@ -261,7 +268,7 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     -- the Lipschitz bounds
 
     slσ : s * l ≤ P σ
-    slσ = ≤-trans (*-mono s l1) (≤-trans (≤-reflexive (*-identityʳ s)) sσ)
+    slσ = P-* sσ₀ lμ
 
     sl : ∀ {X Y t K} → X ≤ Y + (l * t) * P K → s * X ≤ s * Y + t * P (σ ℕ.+ K)
     sl {X} {Y} {t} {K} h = ≤-trans (*-mono s h)
@@ -272,27 +279,34 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     dist : ∀ {a t} → l * (a + t) ≈ l * a + l * t
     dist {a} {t} = distribˡ l a t
 
-    at′ : ∀ {a t} → a + t ≤ M → l * a + l * t ≤ M
-    at′ at = ≤-trans (≤-reflexive (sym dist)) (lx≤ at)
+    at′ : ∀ {a t} → a + t ≤ Mo → l * a + l * t ≤ M
+    at′ at = ≤-trans (≤-reflexive (sym dist)) (lM at)
 
-    hR-up : ∀ {a t} → a + t ≤ M → t ≤ 1# → hR (a + t) ≤ hR a + t * P W
-    hR-up {a} {t} at t1 = ≤-trans (≤-resp (sym (*-cong refl (hh-cong (suc j) dist))) refl
-        (sl {hh (suc j) (l * a + l * t)} {hh (suc j) (l * a)} {t} {S} (proj₁ hl₀ (at′ at) (lx≤ t1))))
+    -- the rate-1 data is used at the width `λ t ≤ 1`, which holds for `t ≤ ½ᴷ` with `K = μ + 0`
+    Kr : ℕ
+    Kr = μ ℕ.+ 0
+
+    Kr-ok : ∀ {t} → t ≤ hp Kr → l * t ≤ 1#
+    Kr-ok {t} tK = ≤-trans (*-mono₂ lμ tK) (≤-reflexive (Phz μ 0))
+
+    hR-up0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# → hR (a + t) ≤ hR a + t * P W
+    hR-up0 {a} {t} at lt1 = ≤-trans (≤-resp (sym (*-cong refl (hh-cong (suc j) dist))) refl
+        (sl {hh (suc j) (l * a + l * t)} {hh (suc j) (l * a)} {t} {S} (proj₁ hl₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono t (P-mono σS≤W)))
 
-    hR-dn : ∀ {a t} → a + t ≤ M → t ≤ 1# → hR a ≤ hR (a + t) + t * P W
-    hR-dn {a} {t} at t1 = ≤-trans (≤-resp refl (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl)
-        (sl {hh (suc j) (l * a)} {hh (suc j) (l * a + l * t)} {t} {S} (proj₂ hl₀ (at′ at) (lx≤ t1))))
+    hR-dn0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# → hR a ≤ hR (a + t) + t * P W
+    hR-dn0 {a} {t} at lt1 = ≤-trans (≤-resp refl (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl)
+        (sl {hh (suc j) (l * a)} {hh (suc j) (l * a + l * t)} {t} {S} (proj₂ hl₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono t (P-mono σS≤W)))
 
-    kR-up : ∀ {a t} → a + t ≤ M → t ≤ 1# → kR (a + t) ≤ kR a + t * P W
-    kR-up {a} {t} at t1 = ≤-trans (≤-resp (sym (*-cong refl (*-cong refl (hh-cong j dist)))) refl
-        (sl {kh j (l * a + l * t)} {kh j (l * a)} {t} {S} (proj₁ kl₀ (at′ at) (lx≤ t1))))
+    kR-up0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# → kR (a + t) ≤ kR a + t * P W
+    kR-up0 {a} {t} at lt1 = ≤-trans (≤-resp (sym (*-cong refl (*-cong refl (hh-cong j dist)))) refl
+        (sl {kh j (l * a + l * t)} {kh j (l * a)} {t} {S} (proj₁ kl₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono t (P-mono σS≤W)))
 
-    kR-dn : ∀ {a t} → a + t ≤ M → t ≤ 1# → kR a ≤ kR (a + t) + t * P W
-    kR-dn {a} {t} at t1 = ≤-trans (≤-resp refl (+-cong (*-cong refl (*-cong refl (hh-cong j (sym dist)))) refl)
-        (sl {kh j (l * a)} {kh j (l * a + l * t)} {t} {S} (proj₂ kl₀ (at′ at) (lx≤ t1))))
+    kR-dn0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# → kR a ≤ kR (a + t) + t * P W
+    kR-dn0 {a} {t} at lt1 = ≤-trans (≤-resp refl (+-cong (*-cong refl (*-cong refl (hh-cong j (sym dist)))) refl)
+        (sl {kh j (l * a)} {kh j (l * a + l * t)} {t} {S} (proj₂ kl₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono t (P-mono σS≤W)))
 
     ----------------------------------------------------------------------------
@@ -301,36 +315,68 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     err : (s * l) * P S ≤ P W
     err = ≤-trans (P-* slσ (≤-refl {P S})) (P-mono σS≤W)
 
-    cert1R : ∀ {a t} → a + t ≤ M → t ≤ 1# →
+    cert1R0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# →
       GR (a + t) + t * hR a ≤ (GR a + t * kR a) + (t * t) * P W
-    cert1R {a} {t} at t1 = ≤-trans
-      (≤-resp (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl) refl (rs {t = t} lc (cr1₀ (at′ at) (lx≤ t1))))
+    cert1R0 {a} {t} at lt1 = ≤-trans
+      (≤-resp (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl) refl (rs {t = t} lc (cr1₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono (t * t) err))
 
-    cert2R : ∀ {a t} → a + t ≤ M → t ≤ 1# →
+    cert2R0 : ∀ {a t} → a + t ≤ Mo → l * t ≤ 1# →
       GR a + t * kR a ≤ (GR (a + t) + t * hR a) + (t * t) * P W
-    cert2R {a} {t} at t1 = ≤-trans
-      (≤-resp refl (+-cong (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl) refl) (rs {t = t} lc (cr2₀ (at′ at) (lx≤ t1))))
+    cert2R0 {a} {t} at lt1 = ≤-trans
+      (≤-resp refl (+-cong (+-cong (*-cong refl (hh-cong (suc j) (sym dist))) refl) refl) (rs {t = t} lc (cr2₀ (at′ at) lt1)))
       (+-mono ≤-refl (*-mono (t * t) err))
 
     -- G vanishes at 0
     GR0 : GR 0# ≈ 0#
     GR0 = trans (*-cong refl (trans (*-cong (trans (*-cong (zeroʳ l) refl) (zeroˡ _)) refl) (zeroˡ _))) (zeroʳ _)
 
+    ----------------------------------------------------------------------------
+    -- all widths `t ≤ 1` from the widths `t ≤ ½ᴷ` with `λ t ≤ 1` (`Analysis/ExpRateExt`)
+
+    module Lh = Lip Mo hR (P W) hR-cong
+    module LkU = Lip Mo kR (P W) kR-cong
+
+    hR-up : ∀ {a t} → a + t ≤ Mo → t ≤ 1# → hR (a + t) ≤ hR a + t * P W
+    hR-up = Lh.up-ext Kr (λ at tK → hR-up0 at (Kr-ok tK))
+
+    hR-dn : ∀ {a t} → a + t ≤ Mo → t ≤ 1# → hR a ≤ hR (a + t) + t * P W
+    hR-dn = Lh.dn-ext Kr (λ at tK → hR-dn0 at (Kr-ok tK))
+
+    kR-up : ∀ {a t} → a + t ≤ Mo → t ≤ 1# → kR (a + t) ≤ kR a + t * P W
+    kR-up = LkU.up-ext Kr (λ at tK → kR-up0 at (Kr-ok tK))
+
+    kR-dn : ∀ {a t} → a + t ≤ Mo → t ≤ 1# → kR a ≤ kR (a + t) + t * P W
+    kR-dn = LkU.dn-ext Kr (λ at tK → kR-dn0 at (Kr-ok tK))
+
+    module Cx = Cert2 Mo hR kR GR (P W) GR-cong hR-up hR-dn kR-up kR-dn
+
+    cert1R : ∀ {a t} → a + t ≤ Mo → t ≤ 1# →
+      GR (a + t) + t * hR a ≤ (GR a + t * kR a) + (t * t) * P W
+    cert1R = Cx.ext1 Kr (λ at tK → cert1R0 at (Kr-ok tK))
+
+    cert2R : ∀ {a t} → a + t ≤ Mo → t ≤ 1# →
+      GR a + t * kR a ≤ (GR (a + t) + t * hR a) + (t * t) * P W
+    cert2R = Cx.ext2 Kr (λ at tK → cert2R0 at (Kr-ok tK))
+
   ----------------------------------------------------------------------------
   -- the tail `κ xⁱ e^{−λN}` along a subsequence, from the rate-1 tail `xⁱ e^{−N} ≤ ½ᵐ`
 
   module Tl (E : ∣A∣ → ∣A∣) (E-anti : ∀ {x y} → x ≤ y → E y ≤ E x)
     (tl : ∀ e m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × pw e (natE N) * E (natE N) ≤ hp m))
-    (l c κ : ∣A∣) (lc : l * c ≈ 1#) (l1 : l ≤ 1#) (ν k : ℕ) (cν : c ≤ natE (suc ν)) (κk : κ ≤ P k) (i : ℕ) where
+    (l c κ : ∣A∣) (lc : l * c ≈ 1#) (μ : ℕ) (lμ : l ≤ P μ) (ν k : ℕ) (cν : c ≤ natE (suc ν)) (κk : κ ≤ P k) (i : ℕ) where
     n1 : ℕ
     n1 = suc ν
 
-    B : ℕ
-    B = proj₁ (pwB {natE n1} n1 (natE≤P n1) i)
+    -- the rate is at most 2ᵘ, so `λ n1 ≤ 2^(μ+n1)`
+    lB : l * natE n1 ≤ P (μ ℕ.+ n1)
+    lB = ≤-trans (*-mono₂ lμ (natE≤P n1)) (≤-reflexive (P-mul μ n1))
 
-    pB : pw i (natE n1) ≤ P B
-    pB = proj₂ (pwB {natE n1} n1 (natE≤P n1) i) ≤-refl
+    B : ℕ
+    B = proj₁ (pwB {l * natE n1} (μ ℕ.+ n1) lB i)
+
+    pB : pw i (l * natE n1) ≤ P B
+    pB = proj₂ (pwB {l * natE n1} (μ ℕ.+ n1) lB i) ≤-refl
 
     one≤ : 1# ≤ l * natE n1
     one≤ = ≤-trans (≤-reflexive (sym lc)) (*-mono l cν)
@@ -340,13 +386,12 @@ module AlgRate (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     lN≥ N′ = ≤-trans (≤-reflexive (sym (*-identityˡ (natE N′)))) (≤-trans (*-monoʳ (natE N′) one≤)
       (≤-reflexive (trans (*-assoc l (natE n1) (natE N′)) (*-cong refl (sym (natE-* n1 N′))))))
 
-    lx≤N : ∀ N → l * natE N ≤ natE N
-    lx≤N N = ≤-trans (*-monoʳ (natE N) l1) (≤-reflexive (*-identityˡ (natE N)))
+    lN-eq : ∀ N′ → l * natE (n1 ℕ.* N′) ≈ (l * natE n1) * natE N′
+    lN-eq N′ = trans (*-cong refl (natE-* n1 N′)) (sym (*-assoc l (natE n1) (natE N′)))
 
     pw-le : ∀ N′ → pw i (l * natE (n1 ℕ.* N′)) ≤ P B * pw i (natE N′)
-    pw-le N′ = ≤-trans (pw-mono i (lx≤N (n1 ℕ.* N′)))
-      (≤-trans (≤-reflexive (trans (pw-cong i (natE-* n1 N′)) (pw-mul i (natE n1) (natE N′))))
-        (*-monoʳ (pw i (natE N′)) pB))
+    pw-le N′ = ≤-trans (≤-reflexive (trans (pw-cong i (lN-eq N′)) (pw-mul i (l * natE n1) (natE N′))))
+      (*-monoʳ (pw i (natE N′)) pB)
 
     -- the bound at N = n1 N′ from the rate-1 bound at N′
     tail-bound : ∀ m N′ → pw i (natE N′) * E (natE N′) ≤ hp ((k ℕ.+ B) ℕ.+ m) →
