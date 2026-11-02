@@ -729,3 +729,29 @@ Density item 6, the whole real line (2026-11-02, done for symmetric densities).
 - **Merge:** `make check` (216 files), `longcheck` (35) and `doccheck` pass.
 - **Remaining density items:** 5 (function library), 7 (affine change of variables; needs scaling on `WQ` and, for
   N(μ, σ²), a translation on ℝ that this representation does not have), and `Z = √(2π)`.
+
+Density item 7, scaling part: the exponential with a rate (2026-11-02, done for rational 0 < λ ≤ 1).
+- **Rate representation:** a cut `l` with a hypothesised reciprocal `c` (`l * c ≈ 1#`, `l ≤ 1#`,
+  `c ≤ natE (suc ν)`).  `Rat a b ab` is the instance (a+1)/(b+1), a ≤ b, from `ExpLower.qinvC`.  `e^{−λx}` is
+  `negExp (l * x)`; no new analysis was needed.
+- **Method:** the rate-1 certificates of `PolyExpCert.Ex.pack` are evaluated at λx with width λw and multiplied by
+  `s·c`.  `cλ = 1` makes the main terms exact, and the error term `(s·λ)·2^S ≤ 2^W` needs λ ≤ 1.  Tails come from the
+  rate-1 `Tail.tail` at `N = ν·N′`.  The algebra is abstract in `Analysis/ExpRate` (`AlgRate`) and
+  `Analysis/ExpRateSigned`.
+- **Results:**
+  - `Continuous/ExpRateInt`: `∫-negExpR : ∫ e^{−λx} ≈ c`, so `λ·∫ e^{−λx} ≈ 1`.
+  - `Continuous/ExpRateMoment`: `moment n : ∫ xⁿ e^{−λx} ≈ cⁿ⁺¹·n!` (integration by parts via
+    `TailFTCLipHalf.Glue`).
+  - `Inference/ExpRateDist`: `expDistλ`, `rate-moment n : E[Xⁿ]·λⁿ ≃ n!`, `mean-rate`, `second-rate`, and
+    `var-rate : Var·λ² ≃ 1`.
+- **Timings** (mine, at load ≈ 6): ExpRate 4.9 s, ExpRateSigned 3.0 s, HalfLineRate 6.4 s, ExpRateInt 8.6 s,
+  ExpRateMoment 11.0 s (1.3 GB), ExpRateDist 13.9 s (2.1 GB, the largest memory of any recent module).
+- **Performance lessons:** a single `refl` first took 33 s.  It was fixed by making the scaled functions plain
+  definitions (`AlgRate.Fn`) that the tests use syntactically, and by passing the implicit arguments of `P-*`
+  explicitly.  Proving the variance algebra on concrete cuts exhausted a 3 GB heap, so it moved to an abstract module.
+- **Merge:** `make check` (222 files), `longcheck` (35) and `doccheck` pass.
+- **Not done:**
+  - λ > 1.  It needs a case split on `λ·w ≤ 1` (for example with `CutSplit`), or certificates re-derived with λ in
+    them.
+  - `densDist` at rate 1 compared with `expDist` (`≈ᵖ`).
+  - Translation, which N(μ, σ²) needs.  `RQ` has no addition.
