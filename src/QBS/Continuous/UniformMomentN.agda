@@ -373,3 +373,14 @@ module UniformMomentN (lem₁ : LEM₁) where
   -- (n+1) ∫ eⁿ = 1, where `# (suc n)` is the natural number n+1 in the semiring
   moment-N : ∀ n → # (suc n) * M n ≈ 1#
   moment-N = moment
+
+  M≤1 : ∀ n → M n ≤ 1#
+  M≤1 n = ≤-trans (I-mono fairCoin (Fgf n 0) (Fun-const 1# ≤-refl) (gf≤1 n 0))
+    (≤-reflexive (I-const fairCoin L-one 1# ≤-refl))
+
+  -- the function eⁿ itself, with `∫ eⁿ = M n`
+  Fpow : ∀ n → Fun (λ r → pw (expansion r) n)
+  Fpow n = Meas→Fun (λ r → pw≤1 (expansion≤1 r) n) (Meas-pw (LS Fun-expansion) n)
+
+  I-pow : ∀ n → I fairCoin (λ r → pw (expansion r) n) (Fpow n) ≈ M n
+  I-pow n = I-cong fairCoin (λ r → sym (*-identityʳ _)) (Fpow n) (Fgf n 0)
