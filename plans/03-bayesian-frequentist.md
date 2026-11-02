@@ -453,3 +453,107 @@ Beta integral for integer parameters (2026-11-02, done):
     `ix`.
   - The branch was cut from `597bc3a`, before the cleanup.  That is why the agent saw 37 flagged; main stays at 35.
 - **Not done:** the symmetry B(k,m) = B(m,k); a coin model with k heads among k+m flips.
+
+`Continuous/Strong` check-cost pass (2026-11-02, done): 42.6 s → 21.0 s (1.29 GB → 1.33 GB, my run).
+- **Cause:** not arithmetic.  `Strength.commutative` took 37 s of 40 s, unifying the `∫-join`/`Setoid.trans` chain
+  (metavariable endpoints) against the goal's categorical composites.  `RS` was also built from `strength` while
+  the goal used `StrongMonad.strength strongMonad`, which cost about 27 s in a `refl` check.
+- **Fix:**
+  - Build `RS` from `strongMonad`.
+  - Add typed `refl` lemmas `lhsEq`/`rhsEq` for each side at the goal's form, and type the Fubini chain `mid`.
+  - `commutative = trans lhsEq (trans mid (sym rhsEq))`.  Exported statements are unchanged.
+- **Importers:** unchanged (`ProbInstance` 5.1 s, `CoinUniformPrior` 12.5 s).  A first `CoinUniformPrior` run gave
+  19.8 s; two reruns gave 12.5 s.
+- **What remains:** about 13 s in `commutative`, almost all in checking `sym rhsEq` (`F₁ σ ∘ τ` against `σH`).  Next:
+  an abstract wrapper, or a definitional lemma `σ ≡ σH`, so the comparison does not unfold `strength`.
+
+### Expectations of functions under continuous densities: what is missing (assessment, 2026-11-02)
+
+**Goal.** For a density `d` and a function `g`, make `E[g(X)] = ∫ g(x) d(x) dx` routine to prove for each new
+`(d, g)`.  Today every such expectation is a bespoke proof:
+- the identity and the square under the exponential;
+- `e^{−x}`, `x e^{−x}` and `x² e^{−x}`, each with its own self-similarity recursion (`HalfLineUnit`, `HalfLineMean`,
+  `HalfLineMoment2`, `GeometricNorm`, `GeometricMoment2`), about 300–600 lines each.
+
+Three things are missing:
+- a generic way to package a density as a distribution;
+- a general method for computing `∫ h dλ` for concrete `h`;
+- integrability side conditions for signed `g`.
+
+What exists already:
+- `lebPre = sumPre shiftPre`, Lebesgue measure on [0,∞) as an s-finite `Pre`.
+- `reweightPre`/`∫ᴹ-reweight` for densities, and `normPre`.
+- `ExpDist` as the one worked instance.
+- `E-atᴵ` with `ITest`, `E-atᴵ-map`, `E-respᴵ` and linearity.
+- `J` monotone convergence and Tonelli.
+- `Analysis/Density.densM` on the `Measure` side.
+
+Items, in dependency order:
+
+1. **Generic density distributions (cheap; generalises `ExpDist` and `ExpDistMean`).**
+   - Given `d : WQ ⇒ WQ` with `∫ᴹ lebPre d ≈ 1#`, define `densDist d nrm : Pre WQ` with
+     `∫-dens : ∫ᴹ (ιPre (densDist d nrm)) f ≈ ∫ᴹ lebPre (d · f)`.
+   - `densI g`: an `ITest` built from the bounds `Bnd (∫ᴹ lebPre (d · g⁺))` and the same for `g⁻`.
+   - `E-atᴵ-dens : E-atᴵ (densDist d nrm) (densI g) ≃` the signed Lebesgue integral of `d · g`.
+   - Then `ExpDist` becomes an instance, and every later distribution costs one normalisation proof.
+
+2. **A derivative-free fundamental theorem of calculus, in tail form (the key item).**
+   - Lower reals hold no negative values, so use a non-negative *tail antiderivative* `G` (`G(x) = ∫ₓ^∞ h`).
+   - Criterion on dyadic intervals, for `h` monotone on `[a, b]`:
+     `(b−a)·h(b) ≤ G(a) − G(b) ≤ (b−a)·h(a)` (decreasing case), stated additively without subtraction.
+   - Conclusion: `∫ₐᵇ h + G(b) ≈ G(a)`.
+   - Proof:
+     - Integrals of dyadic step functions are their sums, from the first-n-bits structure of the fair coin.
+     - The criterion sums and telescopes over the 2ⁿ pieces.
+     - Lower and upper sums differ by `2⁻ⁿ (h(a) − h(b))`.
+     - Close with the archimedean cancellation of `UniformMomentN` (`cancel≤`, `arch`, `complement`/`cancel-bnd`).
+   - Half-line: `lebPre = sumPre shiftPre` gives `∫₀^∞ h + ⨅ₙ G(n) ≈ G(0)`.  With `G(n) → 0` this is `∫₀^∞ h ≈ G(0)`,
+     via the telescoping series and monotone convergence.
+   - Piecewise monotone `h`: split at finitely many dyadic points.
+   - After this, each new integral reduces to *pointwise algebra* about `G` and `h`, using `1+t ≤ eᵗ`, `exp-add` and
+     polynomial bounds, with no new measure theory.  Example: `G(x) = e^{−x} ∑_{k≤n} n!/k! xᵏ` for `h = xⁿ e^{−x}`.
+   - **Integration-by-parts variant** (needed for the Gaussian, item 6): `∫ₐᵇ h + G(b) ≈ G(a) + ∫ₐᵇ k`, for a
+     criterion whose increments are bounded by `h − k` on each piece.
+
+3. **All polynomial moments of the exponential:** `∫ xⁿ e^{−x} dλ = n!`, as a first use of item 2.
+   - It replaces `HalfLineMean` and `HalfLineMoment2` by instances.
+   - It gives finiteness of every polynomial moment, which item 4 needs.
+   - Alternative if item 2 stalls: an n-indexed recursion like `UniformMomentN`.
+
+4. **Integrability by domination.**
+   - `Bnd`-monotonicity of `J`: if `g⁺, g⁻ ≤ c·(1 + xᵏ)` and `d` has a finite k-th moment, then `densI g` exists.
+   - Without this, every `ITest` needs a bespoke finiteness proof.
+
+5. **A function library with measurability and monotonicity, closed under the operations used:**
+   - polynomials (`mulH`, sums, constants);
+   - `negExp ∘ p` for polynomial `p ≥ 0`;
+   - dyadic rescaling `x ↦ 2ᵏ x`.
+   - Each comes with `Meas`, monotonicity on intervals (for item 2), and a growth bound (for item 4).
+   - Pieces exist (`Meas-⊗`, `Meas-negExp`, `xNegExpH`, `sqW`) but are scattered across modules.
+
+6. **The whole real line, for symmetric densities and the Gaussian.**
+   - A QBS of signed reals.  `Continuous/RealModel` is [0,∞] only; the signed layer has `Sg`, but there is no
+     `ℝ`-valued QBS with Lebesgue measure.
+   - Lebesgue measure on ℝ as `leb⁺ + reflect leb⁻`.
+   - A symmetry lemma: `E[g] = 0` for odd `g` under an even density, via the `pos`/`neg` parts on each half.
+   - **Gaussian without π:**
+     - Leave the normaliser `Z = ∫ e^{−x²/2}` abstract, and prove it finite and positive by a bound such as `e^{−x}`
+       domination.
+     - Item 2's integration-by-parts form, with `G(x) = x e^{−x²/2}` and `k = e^{−x²/2}`, gives
+       `∫ x² e^{−x²/2} = Z`.  So `Var = 1` and `E[X] = 0` hold with no value for `Z`.
+     - `Z = √(2π)` (π as a cut, polar coordinates or Wallis) is a separate, much larger item, and none of the moment
+       results need it.
+
+7. **Affine change of variables (needed for parameterised families).**
+   - Covers Exp(λ), N(μ, σ²), and posteriors over a rate.
+   - Scaling: `∫ h(λx) dλ(x) · λ ≈ ∫ h`.  Translation by a real `c`: only integer shifts exist, as `shiftPre`.
+   - Route: prove both for the functions of item 5 through item 2 (both sides have the same tail antiderivative up to
+     rescaling).  This avoids a general uniqueness-of-measures theorem.
+
+Suggested order: 1 and 2 in parallel (they are independent), then 3 (validates 2), 4 and 5 together, then 6 and 7.
+
+Performance notes:
+- Do item 2's algebra (telescoping, squeeze, cancellation) in modules generic over an abstract Archimedean
+  ω-semiring, like `AlgB` in `BetaIntegral`.
+- Keep concrete instances to small equations, as `VarGen`/`SixGen` do.  Expect item 2 itself to be one or two modules
+  of about 300 lines; each later integral should then be well under 100.
