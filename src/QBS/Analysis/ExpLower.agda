@@ -3,7 +3,8 @@
 -- The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the
 -- reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two
 -- rational cuts (`qC-mul`) and `natE (n+1) ≋ qC (n+1)`, which give `1/(n+1) · (n+1) = 1`.
--- Export: `expC lem : Cut → Cut` with `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `expC-add`.
+-- Export: `expC lem : Cut → Cut` with `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `expC-add`, and
+-- the bound `expC-bound : x ⊑ natE N → ∀ s ∈ expC x, s < 3ᴺ` (`pow3 N`), from `exp x ≤ 3ᴺ` for `x ≤ N`.
 module QBS.Analysis.ExpLower where
 
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
@@ -87,7 +88,7 @@ qinv-ok n = proj₂ (inv (0<nat n))
 module _ (lem : LEM₀) where
   private
     A = LowerRealsOmega lem
-  open Exp A using (natE; module WithInv)
+  open Exp A using (natE; pw; module WithInv)
 
   -- the cut `natE (n+1)` (the n+1-fold sum of one) is the rational cut `n+1`
   natE≋ : ∀ n → natE (suc n) ≋ qC (nat (suc n)) (0<nat n)
@@ -105,4 +106,32 @@ module _ (lem : LEM₀) where
       (≋-trans (qC-cong (*-pos (pos-inv (0<nat n) (qinv-ok n)) (0<nat n)) 0<1 (qinv-ok n)) (⊑-refl , ⊑-refl)))
 
   open WithInv qinvC inv-ok public
-    renaming (exp to expC; exp-zero to expC-zero; exp-mono to expC-mono; exp-cong to expC-cong; 1+≤exp to 1+≤expC)
+    renaming (exp to expC; exp-zero to expC-zero; exp-mono to expC-mono; exp-cong to expC-cong;
+              1+≤exp to 1+≤expC; exp≤three^ to expC≤three^)
+
+  -- `3ᴺ`
+  pow3 : ℕ → ℚᵘ
+  pow3 zero = 1ℚᵘ
+  pow3 (suc n) = (1ℚᵘ + (1ℚᵘ + 1ℚᵘ)) * pow3 n
+
+  0<pow3 : ∀ n → 0ℚᵘ < pow3 n
+  0<pow3 zero = 0<1
+  0<pow3 (suc n) = *-pos (+-pos 0<1 (+-pos 0<1 0<1)) (0<pow3 n)
+
+  -- the elements of `1 + (1 + 1)` are below `3`
+  three-bd : ∀ s → mem (oneC ⊕ (oneC ⊕ oneC)) s → s < 1ℚᵘ + (1ℚᵘ + 1ℚᵘ)
+  three-bd s (r , t , r<1 , (a , b , a<1 , b<1 , h) , le) =
+    ≤-<-trans le (≤-<-trans (+-mono-≤ (≤-refl {r}) h)
+      (+-mono-<-≤ r<1 (<-≤ (≤-<-trans (+-mono-≤ (≤-refl {a}) (≤-refl {b}))
+        (<-trans (+-mono-<-≤ a<1 (≤-refl {b})) (+-mono-≤-< (≤-refl {1ℚᵘ}) b<1))))))
+
+  -- the elements of `3ᴺ` are below `pow3 N`
+  pw3-bd : ∀ N s → mem (pw (oneC ⊕ (oneC ⊕ oneC)) N) s → s < pow3 N
+  pw3-bd zero s m = m
+  pw3-bd (suc N) s (inj₁ s<0) = <-trans s<0 (0<pow3 (suc N))
+  pw3-bd (suc N) s (inj₂ (r , t , 0<r , 0<t , mr , mt , h)) =
+    ≤-<-trans h (<-trans (*-mono-<-posʳ 0<t (three-bd r mr)) (*-mono-<-pos (+-pos 0<1 (+-pos 0<1 0<1)) (pw3-bd N t mt)))
+
+  -- `x ≤ N` bounds `exp x` by `3ᴺ`
+  expC-bound : ∀ x N → x ⊑ natE N → ∀ s → mem (expC x) s → s < pow3 N
+  expC-bound x N h s m = pw3-bd N s (ap (expC≤three^ N h) s m)
