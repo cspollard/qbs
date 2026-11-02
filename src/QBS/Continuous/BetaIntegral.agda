@@ -102,25 +102,30 @@ module AlgB (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   module Closed (B : ℕ → ℕ → ∣A∣) (B≤1 : ∀ k m → B k m ≤ 1#)
     (add : ∀ k m → B k m ≈ B (suc k) m + B k (suc m)) (base : ∀ k → # (suc k) * B k 0 ≈ 1#) where
 
+    -- index transport along a ℕ equation (no `rewrite`, see plans/04-equality.md)
+    ix : ∀ (f : ℕ → ∣A∣) {a b} → a ≡.≡ b → ∀ x → f a * x ≈ f b * x
+    ix f eq x = *-cong (reflexive (≡.cong f eq)) refl
+
     -- (k+m+1)! B(k,m) = k! m!
     closed : ∀ m k → fact (suc (k ℕ.+ m)) * B k m ≈ fact k * fact m
-    closed zero k rewrite ℕ.+-identityʳ k = trans
-      (solve 3 (λ p f b → (p :* f) :* b := f :* (p :* b)) refl (# (suc k)) (fact k) (B k 0)) (*-cong refl (base k))
-    closed (suc m) k rewrite ℕ.+-suc k m = trans (step-eq (nn k m) (add k m) (closed m k) (closed m (suc k)) bp)
-      (solve 3 (λ μ f g → μ :* (f :* g) := f :* (μ :* g)) refl _ _ _)
+    closed zero k = trans (ix (λ n → fact (suc n)) (ℕ.+-identityʳ k) _) (trans
+      (solve 3 (λ p f b → (p :* f) :* b := f :* (p :* b)) refl (# (suc k)) (fact k) (B k 0)) (*-cong refl (base k)))
+    closed (suc m) k = trans (ix (λ n → fact (suc n)) (ℕ.+-suc k m) _)
+      (trans (step-eq (nn k m) (add k m) (closed m k) (closed m (suc k)) bp)
+      (solve 3 (λ μ f g → μ :* (f :* g) := f :* (μ :* g)) refl _ _ _))
       where bp = SubSemiring.Is-* finite (bnd# (suc k)) (SubSemiring.Is-* finite (bnd-fact k) (bnd-fact m))
 
     -- (k+m+2) B(k+1,m) = (k+1) B(k,m)
     conj : ∀ m k → # (suc (suc (k ℕ.+ m))) * B (suc k) m ≈ # (suc k) * B k m
-    conj zero k rewrite ℕ.+-identityʳ k = trans (base (suc k)) (sym (base k))
-    conj (suc m) k rewrite ℕ.+-suc k m = begin
+    conj zero k = trans (ix (λ n → # (suc (suc n))) (ℕ.+-identityʳ k) _) (trans (base (suc k)) (sym (base k)))
+    conj (suc m) k = trans (ix (λ n → # (suc (suc n))) (ℕ.+-suc k m) _) (begin
       # (suc (suc (suc (k ℕ.+ m)))) * B (suc k) (suc m)  ≈⟨ *-cong (nn (suc k) m) refl ⟩
       (# (suc (suc k)) + # (suc m)) * B (suc k) (suc m)  ≈⟨ distribʳ _ _ _ ⟩
       # (suc (suc k)) * B (suc k) (suc m) + # (suc m) * B (suc k) (suc m)  ≈⟨ +-cong (sym s2) refl ⟩
       # (suc m) * B (suc (suc k)) m + # (suc m) * B (suc k) (suc m)  ≈⟨ sym (distribˡ _ _ _) ⟩
       # (suc m) * (B (suc (suc k)) m + B (suc k) (suc m))  ≈⟨ *-cong refl (sym (add (suc k) m)) ⟩
       # (suc m) * B (suc k) m  ≈⟨ s1 ⟩
-      # (suc k) * B k (suc m)  ∎
+      # (suc k) * B k (suc m)  ∎)
       where
       s1 = cancel-step (nn k m) (add k m) (conj m k) (SubSemiring.Is-* finite (bnd# (suc k)) (bnd≤1 (B≤1 (suc k) m)))
       s2 = cancel-step (nn (suc k) m) (add (suc k) m) (conj m (suc k))
