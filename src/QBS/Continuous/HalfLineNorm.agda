@@ -4,7 +4,8 @@
 -- subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`,
 --   * `negExp-pw : e^{−n} = gⁿ`;
 --   * `norm-from : I + g ≈ 1 → ∫ e^{−x} dλ ≈ 1`, the geometric sum `(∑ gⁿ) I = 1` of `Analysis/GeometricNorm`
---     (its hypothesis `gᴺ (N+1) ≤ 1` is `e^{−N} e^{N} = 1` with `1 + N ≤ e^N`).
+--     (its hypothesis `gᴺ (N+1) ≤ 1` is `e^{−N} e^{N} = 1` with `1 + N ≤ e^N`);
+--   * `∫ᴹ-leb-negExp-norm : ∫ e^{−x} dλ ≈ 1`, with `I + g ≈ 1` from `Continuous/HalfLineUnit`.
 module QBS.Continuous.HalfLineNorm where
 
 open import Data.Nat.Base using (ℕ)
@@ -22,6 +23,7 @@ open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.GeometricNorm using (module GeometricNorm)
 open import QBS.Continuous.HalfLineNegExp using (module HalfLineNegExp)
 open import QBS.Continuous.HalfLine using (module HalfLine)
+open import QBS.Continuous.HalfLineUnit using (module HalfLineUnit)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 
@@ -39,12 +41,10 @@ module HalfLineNorm (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ)
   R = lowerRealsArch (lemOf lem₁)
   open GeometricNorm A R
+  open HalfLineUnit lem₁ using (I-negExp-unit)
 
   g : _
   g = negExp 1#
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
 
   -- `e^{−n} = gⁿ`
   negExp-pw : ∀ n → negExp (natE n) ≈ pw g n
@@ -63,3 +63,7 @@ module HalfLineNorm (lem₁ : LEM₁) where
     (trans (∑ᶠ-cong (λ n → trans (*-cong (negExp-pw n) refl) (*-comm _ _)))
       (trans (sym (∑ᶠ-scale I-negExp (pw g)))
         (trans (*-comm _ _) (Geo.total g I-negExp h gb))))
+
+  -- `∫₀^∞ e^{−x} dx = 1`
+  ∫ᴹ-leb-negExp-norm : ∫ᴹ {WQ} lebPre negExpH ≈ 1#
+  ∫ᴹ-leb-negExp-norm = norm-from I-negExp-unit

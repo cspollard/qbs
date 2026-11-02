@@ -91,8 +91,8 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Analysis.Cauchy`, `QBS.Analysis.Exp`, `QBS.Analysis.ExpLower`, `QBS.Analysis.NegExp`
 The exponential on `[0,∞]` (groundwork for `e^{−x}` and exponential distributions).
 - `⨆-*-lub`, `diag`, `tri`, `rect`, `cauchy` (`Cauchy`) — `module Cauchy A`: `(∑ᶠ a) * (∑ᶠ b) ≈ ∑ᶠ (n ↦ diag g n 0)`, the Cauchy product of two series, with `g i j = a i * b j`.
-- `exp`, `ι`, `term`, `exp-mono`, `exp-cong`, `exp-zero`, `1+≤exp`, `exp-add` (`Exp`) — `module Exp A`, `module WithInv inv inv-ok`: `exp x = ∑ᶠ (xⁿ/n!)` given reciprocals `inv n * natE (n+1) ≈ 1`; `exp (x + y) ≈ exp x * exp y`; also `exp≤3 : x ≤ 1 → exp x ≤ 3` and `exp≤three^ : x ≤ natE N → exp x ≤ 3ᴺ`.
-- `expC`, `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `qC-mul`, `pow3`, `expC-bound` (`ExpLower`) — the instance at lower cuts, with `inv n = qC (1/(n+1))`; `expC-bound : x ⊑ natE N → ∀ s ∈ expC x, s < pow3 N` (`3ᴺ`).
+- `exp`, `ι`, `term`, `exp-mono`, `exp-cong`, `exp-zero`, `1+≤exp`, `exp-add` (`Exp`) — `module Exp A`, `module WithInv inv inv-ok`: `exp x = ∑ᶠ (xⁿ/n!)` given reciprocals `inv n * natE (n+1) ≈ 1`; `exp (x + y) ≈ exp x * exp y`; also `exp≤3 : x ≤ 1 → exp x ≤ 3`, `exp≤three^ : x ≤ natE N → exp x ≤ 3ᴺ` and `exp≤quad : x ≤ 1 → exp x ≤ 1 + (x + x·x)`.
+- `expC`, `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `expC≤quad`, `qC-mul`, `pow3`, `expC-bound` (`ExpLower`) — the instance at lower cuts, with `inv n = qC (1/(n+1))`; `expC-bound : x ⊑ natE N → ∀ s ∈ expC x, s < pow3 N` (`3ᴺ`).
 - `negExp`, `negExp-anti`, `negExp-zero`, `negExp≤1`, `negExp-expC≤1`, `near-max`, `oneC≤negExp-expC`, `negExp-expC`, `negExp-expC-nat`, `Meas-expC`, `Meas-negExp` (`NegExp`, `module NegExp lem`) — `e^{−x}` as a cut: `q ∈ negExp x` iff `∃ p > q, ∀ s ∈ expC x, p·s < 1`; antitone, `negExp 0 ≋ 1`, `negExp x ⊗ expC x ⊑ 1`, and (`oneC≤negExp-expC`, `negExp-expC`) `negExp x ⊗ expC x ≋ 1` whenever `expC x` is bounded by a rational `B` (`∀ s ∈ expC x, s < B`), and unconditionally for `x ⊑ natE N` (`negExp-expC-nat`); measurable in `x`.
 
 ### `QBS.Analysis.Signed`, `QBS.Analysis.SignedOmega`, `QBS.Analysis.SignedIntegral`, `QBS.Analysis.Variance`
@@ -139,11 +139,14 @@ Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
 
-### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`
+### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`, `QBS.Continuous.HalfLineUnit`, `QBS.Continuous.HalfLineNorm`, `QBS.Analysis.GeometricNorm`
 Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,∞]` (module parameter `lem₁ : LEM₁`).
 - `shiftPt`, `shiftPre n`, `lebPre`, `Meas-shift` (`HalfLine`) — `shiftPre n` is the uniform on [0,1] shifted to `n` (probe `r ↦ (1, n + expansion r)` over the fair coin); `lebPre = sumPre shiftPre` is Lebesgue measure on [0,∞), `λ = ∑ₙ (n + U)`.
 - `Meas-hshift`, `∫ᴹ-shift`, `∫ᴹ-leb` (`HalfLine`) — `∫ᴹ lebPre h ≈ ∑ᶠ n. J fairCoin (r ↦ h (n + expansion r))` for every morphism `h : WQ ⇒ WQ` (unbounded tests included).
-- `negExpH`, `negExp-add`, `∫ᴹ-leb-negExp`, `∫ᴹ-leb-negExp-split`, `I-negExp` (`HalfLineNegExp`) — the test `x ↦ e^{−x}` as a morphism `WQ ⇒ WQ`; `e^{−(x+y)} ≈ e^{−x} e^{−y}` when `x`, `y`, `x+y` are bounded by naturals; `∫ e^{−x} dλ ≈ ∑ᶠ n. e^{−n} · I-negExp` with `I-negExp = ∫₀¹ e^{−u} du` left uncomputed.
+- `negExpH`, `negExp-add`, `∫ᴹ-leb-negExp`, `∫ᴹ-leb-negExp-split`, `I-negExp` (`HalfLineNegExp`) — the test `x ↦ e^{−x}` as a morphism `WQ ⇒ WQ`; `e^{−(x+y)} ≈ e^{−x} e^{−y}` when `x`, `y`, `x+y` are bounded by naturals; `∫ e^{−x} dλ ≈ ∑ᶠ n. e^{−n} · I-negExp` with `I-negExp = ∫₀¹ e^{−u} du`.
+- `G`, `F`, `q`, `F-split`, `xs-rec`, `I-negExp-unit` (`HalfLineUnit`) — `∫₀¹ e^{−u} du + e^{−1} ≈ 1` (no subtraction), by self-similarity: `F j = ∫₀¹ e^{−2⁻ʲ u} du` satisfies `F j ≈ ½ (e^{−2⁻⁽ʲ⁺¹⁾} F (j+1)) + ½ F (j+1)` (first-bit split and `negExp-add`).
+- `negExp-pw`, `gb`, `norm-from`, `∫ᴹ-leb-negExp-norm` (`HalfLineNorm`) — `e^{−n} ≈ gⁿ`, and `∫ᴹ lebPre negExpH ≈ 1#`, i.e. `∫₀^∞ e^{−x} dx = 1`.
+- `ss`, `two`, `U-inv`, `L-inv`, `base`, `norm`, `Geo.total` (`GeometricNorm`, `module GeometricNorm A R`, abstract in any `OmegaSemiring` with `Arch`) — `norm`: the recursion `x m ≈ (1 + q (m+1)) x (m+1)`, `q m ≈ q (m+1)²`, `q m ≤ 1`, the one-step facts (`base`) and `hp m q m ≤ x m ≤ hp m` give `x 0 + q 0 ≈ 1`, by error-doubling invariants and `arch`; `Geo.total`: `I + g ≈ 1` and `gᴺ (N+1) ≤ 1` give `(∑ᶠ gⁿ) I ≈ 1`.
 
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.

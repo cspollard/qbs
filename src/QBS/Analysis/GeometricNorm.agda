@@ -147,48 +147,90 @@ module GeometricNorm (A : OmegaSemiring (suc lzero)) (R : Arch A) where
         := ((h :* y) :* ((con 1 :+ q1) :* s)) :+ (q0 :+ ((t :+ t) :* (h :* h)))) refl
         (hh (ℕ.suc i)) (q (ℕ.suc i)) (ss (λ m → q (ℕ.suc m)) i) (q 0) (q 1) (two i)))
 
+  eqU : ∀ y h → y + h * (y + (h * y + h * h)) ≈ (y + h * y) + (h * (h * y) + h * (h * h))
+  eqU y h = solve 3 (λ y h hh → y :+ h :* (y :+ (h :* y :+ hh)) := (y :+ h :* y) :+ (h :* (h :* y) :+ h :* hh))
+              refl y h (h * h)
+
+  small-sq : ∀ {y h} → y ≤ 1# → h ≤ 1# → h * (h * y) + h * (h * h) ≤ h * h + h * h
+  small-sq {y} {h} y≤1 h≤1 = +-mono (*-mono h (≤-trans (≤-reflexive (*-comm h y)) (≤1-mul h y≤1))) (≤1-mul (h * h) h≤1)
+
   -- the one-step facts `y + h y ≤ 1 ≤ y + h y + h²` give the base cases
   baseU : ∀ {y h} → y ≤ 1# → h ≤ 1# → y + h * y ≤ 1# → 1# ≤ y + (h * y + h * h) →
     h * 1# + y ≤ 1# + ((1# * (h * h)) + (1# * (h * h)))
   baseU {y} {h} y≤1 h≤1 b c = begin
-    h * 1# + y                                   ≈⟨ +-comm _ _ ⟩
-    y + h * 1#                                   ≈⟨ +-cong refl (*-identityʳ h) ⟩
-    y + h                                        ≈⟨ +-cong refl (sym (*-identityʳ h)) ⟩
-    y + h * 1#                                   ≤⟨ +-mono ≤-refl (*-mono h c) ⟩
-    y + h * (y + (h * y + h * h))                ≈⟨ solve 3 (λ y h hh → y :+ h :* (y :+ (h :* y :+ hh)) := (y :+ h :* y) :+ (h :* (h :* y) :+ h :* hh)) refl y h (h * h) ⟩
-    (y + h * y) + (h * (h * y) + h * (h * h))    ≤⟨ +-mono b (+-mono (*-mono h (≤-trans (≤-reflexive (*-comm h y)) (≤1-mul h y≤1)))
-                                                                  (≤1-mul (h * h) h≤1)) ⟩
-    1# + (h * h + h * h)                         ≈⟨ +-cong refl (+-cong (sym (*-identityˡ _)) (sym (*-identityˡ _))) ⟩
+    h * 1# + y                                 ≈⟨ +-comm _ _ ⟩
+    y + h * 1#                                 ≈⟨ +-cong refl (*-identityʳ h) ⟩
+    y + h                                      ≈⟨ +-cong refl (sym (*-identityʳ h)) ⟩
+    y + h * 1#                                 ≤⟨ +-mono ≤-refl (*-mono h c) ⟩
+    y + h * (y + (h * y + h * h))              ≈⟨ eqU y h ⟩
+    (y + h * y) + (h * (h * y) + h * (h * h))  ≤⟨ +-mono b (small-sq y≤1 h≤1) ⟩
+    1# + (h * h + h * h)                       ≈⟨ +-cong refl (+-cong (sym (*-identityˡ _)) (sym (*-identityˡ _))) ⟩
     1# + ((1# * (h * h)) + (1# * (h * h))) ∎
 
+  eqL : ∀ y h → y + (h * y + h * h) ≈ (h * y) * 1# + (y + 1# * (h * h))
+  eqL y h = solve 3 (λ y h hh → y :+ (h :* y :+ hh) := (h :* y) :* con 1 :+ (y :+ con 1 :* hh)) refl y h (h * h)
+
   baseL : ∀ {y h} → 1# ≤ y + (h * y + h * h) → 1# ≤ (h * y) * 1# + (y + 1# * (h * h))
-  baseL {y} {h} c = ≤-trans c (≤-reflexive (solve 3 (λ y h hh → y :+ (h :* y :+ hh) := (h :* y) :* con 1 :+ (y :+ con 1 :* hh)) refl y h (h * h)))
+  baseL {y} {h} c = ≤-trans c (≤-reflexive (eqL y h))
+
+  -- the base facts, from `y e = 1`, `1 + h ≤ e ≤ 1 + h + h²` (`e = eʰ`, `y = e^{−h}`)
+  base : ∀ {y h e} → y * e ≈ 1# → 1# + h ≤ e → e ≤ 1# + (h + h * h) → y ≤ 1# → h ≤ 1# →
+    (h * 1# + y ≤ 1# + ((1# * (h * h)) + (1# * (h * h)))) × (1# ≤ (h * y) * 1# + (y + 1# * (h * h)))
+  base {y} {h} {e} ye lo hi y≤1 h≤1 = baseU y≤1 h≤1 b c , baseL c
+    where
+      b : y + h * y ≤ 1#
+      b = begin
+        y + h * y        ≈⟨ solve 2 (λ y h → y :+ h :* y := y :* (con 1 :+ h)) refl y h ⟩
+        y * (1# + h)     ≤⟨ *-mono y lo ⟩
+        y * e            ≈⟨ ye ⟩
+        1# ∎
+      c : 1# ≤ y + (h * y + h * h)
+      c = begin
+        1#                           ≈⟨ sym ye ⟩
+        y * e                        ≤⟨ *-mono y hi ⟩
+        y * (1# + (h + h * h))       ≈⟨ solve 3 (λ y h hh → y :* (con 1 :+ (h :+ hh)) := y :+ (h :* y :+ y :* hh)) refl y h (h * h) ⟩
+        y + (h * y + y * (h * h))    ≤⟨ +-mono ≤-refl (+-mono ≤-refl (≤1-mul (h * h) y≤1)) ⟩
+        y + (h * y + h * h) ∎
+
+  -- one step of the self-similar recursion: `hⱼ (½ (q F) + ½ F) = (1 + q) (½ hⱼ F)`
+  rec-alg : ∀ hj q F → hj * (half * (q * F) + half * F) ≈ (1# + q) * ((half * hj) * F)
+  rec-alg hj q F = solve 4 (λ h q F hf → h :* (hf :* (q :* F) :+ hf :* F) := (con 1 :+ q) :* ((hf :* h) :* F)) refl hj q F half
+
+  -- shifting the argument by the first bit: `hⱼ (½ + ½ e) = ½ hⱼ + (½ hⱼ) e` and `hⱼ (½ e) = (½ hⱼ) e`
+  true-alg : ∀ hj e → hj * (half + half * e) ≈ half * hj + (half * hj) * e
+  true-alg hj e = solve 3 (λ h e hf → h :* (hf :+ hf :* e) := hf :* h :+ (hf :* h) :* e) refl hj e half
+
+  false-alg : ∀ hj e → hj * (half * e) ≈ (half * hj) * e
+  false-alg hj e = solve 3 (λ h e hf → h :* (hf :* e) := (hf :* h) :* e) refl hj e half
 
   ----------------------------------------------------------------------------
   -- the pinned value: `x 0 + q 0 ≈ 1`
 
-  norm : ∀ (q x : ℕ → ∣A∣) → Hq q → H1 q → HU q hp → HL q hp →
-    (∀ m → x m ≈ (1# + q (ℕ.suc m)) * x (ℕ.suc m)) → (∀ m → hp m * q m ≤ x m) → (∀ m → x m ≤ hp m) →
-    x 0 + q 0 ≈ 1#
-  norm q x hq q1 hu hl hx lo hi = ≤-antisym (arch up) (arch low)
-    where
-      up : ∀ n → x 0 + q 0 ≤ 1# + hp n
-      up n = begin
-        x 0 + q 0                            ≈⟨ +-cong (ss-prod q x hx k) refl ⟩
-        ss q k * x k + q 0                   ≤⟨ +-mono (≤-trans (*-mono (ss q k) (hi k)) (≤-reflexive (*-comm _ _))) ≤-refl ⟩
-        hp k * ss q k + q 0                  ≤⟨ U-inv q hp hq q1 hu k ⟩
-        1# + (E hp k + E hp k)               ≈⟨ +-cong refl (+-cong (E-hp k) (E-hp k)) ⟩
-        1# + (hp k + hp k)                   ≈⟨ +-cong refl (hp-double n) ⟩
-        1# + hp n ∎
-        where k = ℕ.suc n
+  Rec : (ℕ → ∣A∣) → (ℕ → ∣A∣) → Set (suc lzero)
+  Rec q x = ∀ m → x m ≈ (1# + q (ℕ.suc m)) * x (ℕ.suc m)
 
-      low : ∀ k → 1# ≤ (x 0 + q 0) + hp k
-      low k = begin
-        1#                                          ≤⟨ L-inv q hp hq q1 hl k ⟩
-        (hp k * q k) * ss q k + (q 0 + E hp k)      ≤⟨ +-mono (≤-trans (*-monoˡ (ss q k) (lo k)) (≤-reflexive (*-comm _ _))) (+-mono ≤-refl (≤-reflexive (E-hp k))) ⟩
-        ss q k * x k + (q 0 + hp k)                 ≈⟨ +-cong (sym (ss-prod q x hx k)) refl ⟩
-        x 0 + (q 0 + hp k)                          ≈⟨ sym (+-assoc _ _ _) ⟩
-        (x 0 + q 0) + hp k ∎
+  norm-up : ∀ q x → Hq q → H1 q → HU q hp → Rec q x → (∀ m → x m ≤ hp m) → ∀ n → x 0 + q 0 ≤ 1# + hp n
+  norm-up q x hq q1 hu hx hi n = begin
+    x 0 + q 0                  ≈⟨ +-cong (ss-prod q x hx k) refl ⟩
+    ss q k * x k + q 0         ≤⟨ +-mono (≤-trans (*-mono (ss q k) (hi k)) (≤-reflexive (*-comm _ _))) ≤-refl ⟩
+    hp k * ss q k + q 0        ≤⟨ U-inv q hp hq q1 hu k ⟩
+    1# + (E hp k + E hp k)     ≈⟨ +-cong refl (+-cong (E-hp k) (E-hp k)) ⟩
+    1# + (hp k + hp k)         ≈⟨ +-cong refl (hp-double n) ⟩
+    1# + hp n ∎
+    where k = ℕ.suc n
+
+  norm-low : ∀ q x → Hq q → H1 q → HL q hp → Rec q x → (∀ m → hp m * q m ≤ x m) → ∀ k → 1# ≤ (x 0 + q 0) + hp k
+  norm-low q x hq q1 hl hx lo k = begin
+    1#                                      ≤⟨ L-inv q hp hq q1 hl k ⟩
+    (hp k * q k) * ss q k + (q 0 + E hp k)  ≤⟨ +-mono (≤-trans (*-monoˡ (ss q k) (lo k)) (≤-reflexive (*-comm _ _)))
+                                                 (+-mono ≤-refl (≤-reflexive (E-hp k))) ⟩
+    ss q k * x k + (q 0 + hp k)             ≈⟨ +-cong (sym (ss-prod q x hx k)) refl ⟩
+    x 0 + (q 0 + hp k)                      ≈⟨ sym (+-assoc _ _ _) ⟩
+    (x 0 + q 0) + hp k ∎
+
+  norm : ∀ (q x : ℕ → ∣A∣) → Hq q → H1 q → HU q hp → HL q hp → Rec q x →
+    (∀ m → hp m * q m ≤ x m) → (∀ m → x m ≤ hp m) → x 0 + q 0 ≈ 1#
+  norm q x hq q1 hu hl hx lo hi = ≤-antisym (arch (norm-up q x hq q1 hu hx hi)) (arch (norm-low q x hq q1 hl hx lo))
 
   ----------------------------------------------------------------------------
   -- the geometric sum: `I + g = 1` gives `(∑ gⁿ) I = 1`
@@ -208,15 +250,17 @@ module GeometricNorm (A : OmegaSemiring (suc lzero)) (R : Arch A) where
   two≈ ℕ.zero = sym (+-identityˡ 1#)
   two≈ (ℕ.suc n) = trans (+-cong (two≈ n) (two≈ n)) (sym (natE-+ (twoN n) (twoN n)))
 
+  tele-alg : ∀ P G I g → (P + G) * I + g * G ≈ P * I + G * (I + g)
+  tele-alg P G I g = solve 4 (λ P G I g → (P :+ G) :* I :+ g :* G := P :* I :+ G :* (I :+ g)) refl P G I g
+
   module Geo (g I : ∣A∣) (h : I + g ≈ 1#) (gb : ∀ N → pw g N * natE (ℕ.suc N) ≤ 1#) where
 
     tele : ∀ N → psum (pw g) N * I + pw g N ≈ 1#
     tele ℕ.zero = trans (+-cong (zeroˡ I) refl) (+-identityˡ 1#)
     tele (ℕ.suc N) = begin-equality
-      (psum (pw g) N + pw g N) * I + g * pw g N          ≈⟨ solve 4 (λ P G I g → (P :+ G) :* I :+ g :* G := P :* I :+ G :* (I :+ g)) refl
-                                                              (psum (pw g) N) (pw g N) I g ⟩
-      psum (pw g) N * I + pw g N * (I + g)               ≈⟨ +-cong refl (trans (*-cong refl h) (*-identityʳ _)) ⟩
-      psum (pw g) N * I + pw g N                         ≈⟨ tele N ⟩
+      (psum (pw g) N + pw g N) * I + g * pw g N  ≈⟨ tele-alg (psum (pw g) N) (pw g N) I g ⟩
+      psum (pw g) N * I + pw g N * (I + g)       ≈⟨ +-cong refl (trans (*-cong refl h) (*-identityʳ _)) ⟩
+      psum (pw g) N * I + pw g N                 ≈⟨ tele N ⟩
       1# ∎
 
     upper : ∑ᶠ (pw g) * I ≤ 1#
