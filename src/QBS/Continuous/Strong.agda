@@ -136,7 +136,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
 
   private
     module SP = Categories.Monad.Strong.Properties
-    module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided strength)
+    module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided (StrongMonad.strength strongMonad))
 
   -- the joint test function u ↦ g (s (evens u), t (odds u))
   hF : ∀ {X Y : QBS S} → Pre X → Pre Y → Hom S (_×Q_ S X Y) AQ → R → ∣A∣
@@ -153,12 +153,35 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
   hmerge {X} {Y} s t g k r = Func.cong (map g)
     (Func.cong (α s) (merge-evens k r) , Func.cong (α t) (merge-odds k r))
 
-  commutative : Commutative braided strongMonad
-  commutative = record { commutes = λ {X} {Y} {(s , t)} g →
+  private
+    module C = Category (QBSCat S)
+    module SM = StrongMonad strongMonad
+
+  -- The two sides of `commutes`, restated at the types the goal has (stating them separately keeps
+  -- the unifier from comparing the large categorical composites with the `∫-join` instances).
+  lhsEq : ∀ {X Y : QBS S} (p : ∣ _×Q_ S (TQ X) (TQ Y) ∣) (g : Hom S (_×Q_ S X Y) AQ) →
+    ∫ {_×Q_ S X Y} (map (SM.M.μ.η (_×Q_ S X Y) C.∘ (SM.M.F.₁ (RS.τ {X} {Y}) C.∘ SP.Left.Shorthands.σ SM.strength)) ⟨$⟩ p) g
+    ≈ ∫ {_×Q_ S X Y} (joinPre (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} p))) g
+  lhsEq p g = Setoid.refl Aˢ
+
+  rhsEq : ∀ {X Y : QBS S} (p : ∣ _×Q_ S (TQ X) (TQ Y) ∣) (g : Hom S (_×Q_ S X Y) AQ) →
+    ∫ {_×Q_ S X Y} (map (SM.M.μ.η (_×Q_ S X Y) C.∘ (SM.M.F.₁ (σH X Y) C.∘ RS.τ {X} {TQ Y})) ⟨$⟩ p) g
+    ≈ ∫ {_×Q_ S X Y} (joinPre (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ p))) g
+  rhsEq p g = Setoid.refl Aˢ
+
+  mid : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Hom S (_×Q_ S X Y) AQ) →
+    ∫ {_×Q_ S X Y} (joinPre (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)))) g
+    ≈ ∫ {_×Q_ S X Y} (joinPre (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)))) g
+  mid {X} {Y} s t g =
     Setoid.trans Aˢ
       (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
       (Setoid.trans Aˢ
         (Setoid.trans Aˢ (Ir (m t) (λ r → Ir (m s) (λ k → Setoid.sym Aˢ (hmerge s t g k r))))
           (Setoid.trans Aˢ (Setoid.sym Aˢ (fubini (m s) (m t) {hF s t g} (fhF s t g)))
             (Ir (m s) (λ k → Ir (m t) (λ r → hmerge s t g k r)))))
-        (Setoid.sym Aˢ (∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g))) }
+        (Setoid.sym Aˢ (∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g)))
+
+  commutative : Commutative braided strongMonad
+  commutative = record { commutes = λ {X} {Y} {p} g →
+    Setoid.trans Aˢ (lhsEq {X} {Y} p g)
+      (Setoid.trans Aˢ (mid {X} {Y} (proj₁ p) (proj₂ p) g) (Setoid.sym Aˢ (rhsEq {X} {Y} p g))) }
