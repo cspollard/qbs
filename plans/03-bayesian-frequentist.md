@@ -573,3 +573,39 @@ Density item 1, generic density distributions (2026-11-02, done):
   - Parts are `WQ`-valued (`toC` converts them).
 - **Merge fix (mine):** removed backticked module paths from the `Interface.md` bullets, because `doccheck` reads
   them as identifiers.
+
+Density item 2, derivative-free FTC in tail form (2026-11-02, done: milestones A and B, plus validation):
+- **`Analysis/TailFTC` (3.1 s), `module AlgT A R`, over an abstract Archimedean ω-semiring:**
+  - the dyadic pieces `Dy n a` (an inductive family: `dy0`, `dyL`, `dyR`);
+  - the invariants `Up`/`Lo`, with `up-step`/`lo-step`;
+  - `cancel≤P`, which cancels a term bounded by 2ᴷ by halving K times;
+  - `squeeze`, `tele`, `tail-le`, `tail-eq`;
+  - `exp-facts`/`exp-cert`, the pointwise exp algebra for certificates.
+- **`Continuous/TailFTC` (4.7 s), `module Unit`:** `ftc-unit : ∫₀¹ h + G 1 ≈ G 0`.  Hypotheses:
+  - `h` decreasing and bounded by 1, with one `Fun` for measurability;
+  - `G` bounded by 2ᴷ on dyadic points;
+  - the certificate on every dyadic piece `[a, a+½ⁿ]`:
+    `G(a+½ⁿ) + ½ⁿ·h(a+½ⁿ) ≤ G a ≤ G(a+½ⁿ) + ½ⁿ·h a`.
+  - Proof: induction on depth over all pieces at once, splitting off the first bit, then `squeeze` with `arch`.  It
+    needs no explicit 2ⁿ sums and no measurability of rescaled functions.
+- **`Continuous/TailFTCHalfLine` (5.2 s), `module Leb`:** the same certificate at every integer shift.
+  - `leb-≤ : ∫ᴹ lebPre h ≤ G 0`, always.
+  - `leb-≈`: equality, given the archimedean tail `∀ m → Σ N, G(N) ≤ ½ᵐ`.  Telescopes `ftc-unit` over `[n, n+1]`.
+- **Validation:**
+  - `Continuous/TailFTCExp` (5.3 s) re-derives `HalfLineUnit.I-negExp-unit`.
+  - `Continuous/TailFTCExpHalf` (5.5 s) gives `∫-negExp : ∫₀^∞ e^{−x} ≈ 1`.
+  - About 90 lines each, against `HalfLineUnit`, `HalfLineNorm` and `GeometricNorm` at roughly 700 lines together.
+    The certificate is pure exp algebra (`1+w ≤ eʷ ≤ 1+w+w²`, `negExp-add`).
+- **Agent's obstacles:**
+  - An unresolved implicit `k` in `up-step` made Agda unify `P _k` on concrete cuts.  Fixed by passing `{k = suc K}`.
+  - A `with` in a certificate lemma exhausted 3 GB.  Fixed by splitting it into two typed lemmas.
+- **Not done:**
+  - The increasing-`h` variant.
+  - `h` bounded only by 1.  Larger integrands need scaling, or a version with `h ≤ 2ᴷ`.
+  - The integration-by-parts variant.
+- **Merge:** the branch was cut from `597bc3a`, so it lacked this plan section and `BetaIntegral` (it built its own
+  `cancel≤P`).  I resolved the `Interface.md` and `Modules.md` conflicts myself.  `make check` (191 files),
+  `longcheck` (35) and `doccheck` pass.
+- **Next:** item 3 is now unblocked: `∫ xⁿ e^{−x} = n!` with `G(x) = e^{−x} ∑_{k≤n} n!/k! xᵏ`.  It needs `h` bounded
+  by more than 1, or `h` split into pieces bounded by 1, and `xⁿe^{−x}` is not monotone on [0, n].  So it first needs
+  the `h ≤ 2ᴷ` generalisation and piecewise monotonicity (split at an integer).
