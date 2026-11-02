@@ -30,6 +30,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.BernoulliCompare` | 141 | lem | The two views of inference on one model: is the coin fair or two-headed?  (`plans/03-bayesian-frequentist.md`, 3c.) Bayesian (`Inference/CoinBias`): the likelihood `heads` of a head is 1 under "two-headed" and ½ under... |
 | `QBS.Inference.BoolDist` | 349 | lem | Bernoulli(½) on a genuine Boolean QBS (`QBS.BoolQ`, `BoolQ = 1Q +Q 1Q`), in which indicators are measurable. |
 | `QBS.Inference.CoinBias` | 79 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
+| `QBS.Inference.CoinPosterior` | 224 | lem | The posterior as an actual distribution: Bayes' rule by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
