@@ -299,3 +299,18 @@ Mean, item 4 (2026-11-02, done): `HalfLineMean.∫ᴹ-leb-xNegExp : ∫ᴹ lebPr
 - **Correction:** the agent caught a wrong form in my brief (`K + 2g ≈ I`).  The correct forms are `K + 2g = 1` and
   `K + g = I`.
 - **Next:** item 5, the exponential as a normalised `Pre` on [0,∞), so that `E-atᴵ` gives E[X] = 1.
+
+Exponential distribution, item 5 (2026-11-02, done).  Items 1–5 of "What an exponential distribution would need" are
+now all done.
+- **`Continuous/SFiniteReweight` (4.2 s):** a generic density reweighting `reweightPre d p` of an s-finite measure,
+  with `∫ᴹ-reweight : ∫ᴹ (reweightPre d p) f ≈ ∫ᴹ p (d·f)`.  `scalePre` is the constant case.
+- **`Continuous/ExpDist` (6.0 s):**
+  - `expW = reweightPre negExpH lebPre` and `massP-expW ≈ 1`.
+  - `expDist = normPre expW 1 … : Pre WQ`, a probability `Pre`.
+  - `∫-expDist`, `∫-expDist-one` (mass 1) and `∫-expDist-id` (mean 1).
+  - Some definitions are `abstract`.  Without that, unsolved `α.cong` metas appear downstream through the unfolded
+    `sumPre`.
+- **`Inference/ExpDistMean` (6.3 s):** `idI : ITest expDist` and `E-atᴵ-idI : E-atᴵ expDist idI ≃ 1`.  So
+  `E-atᴵ-map`, `E-respᴵ` and linearity now apply to the exponential, with no bridging lemma.
+- **Possible follow-ups:** E[X²] = 2 (variance 1), memorylessness, the exponential as a prior or likelihood in a
+  `Sampler` model.
