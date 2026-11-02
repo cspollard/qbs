@@ -917,3 +917,17 @@ Change of variables, dyadic scaling (2026-11-02, done).
     transported along `expansion`; dyadic c avoided it because coin cylinders are dyadic intervals;
   - translation `x ↦ x + t` (integer t is `shiftPre`; general t needs additive structure or uniqueness);
   - the N(μ, σ²) `Pre` on a signed codomain; measurability rules; `DFaff` for l > 1.
+
+Change of variables, general c (2026-11-02, investigated; not attempted).
+- **Route via step functions fails:** sups of dyadic step functions reach only lower-semicontinuous tests, and `J` is
+  `Iinf` over truncations, not a sup over step functions; even a step test needs `∫ 1[0,t] ≈ t` for non-dyadic t.
+- **Uniqueness on `WQ` is unavailable:** there is no Borel structure on `WQ` (only on Cantor space); tests are
+  measurable only through probes, so every comparison is of `J fairCoin (h ∘ φ)` for two probes, and needs a
+  measurable `T : Cantor → Cantor` realising the scaling plus its law under the fair coin (`Analysis/Uniqueness`).
+- **Rational c = p/q would need:** a digit transducer for u ↦ u/q (no inverse of `expansion` or digit extraction
+  exists), its cylinder laws by counting, `Uniqueness` on Cantor space, and gluing the p/q pieces with `shiftPre`;
+  estimated ≥ 1500 lines.  Irrational c needs a further idea (h(cx) is not monotone in c, so `J-⨆` along rationals
+  does not apply).
+- **Reachable smaller piece:** the law of `expansion` under the fair coin, `fair{expansion r ≤ t} = t` for every cut t.
+- **Decision:** general c is deferred.  Dyadic rates use `HalfLineScale`; for other rates, compare moments through
+  `ExpPushforward.E-atᴵ-powPush`, which needs no change of variables.
