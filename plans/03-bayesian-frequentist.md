@@ -767,3 +767,16 @@ Density item 7, rates above 1 (2026-11-02, done).
   ExpRateDist 14.7 s (2.0 GB).
 - **Merge:** `make check` (223 files), `longcheck` (35) and `doccheck` pass.
 - **Still open for item 7:** `expDistλ` at rate 1 against `expDist` (`≈ᵖ`), and translation (N(μ, σ²)).
+
+Density follow-ups: odd-degree half-normal domination and rate-1 consistency (2026-11-02, done).
+- **`Inference/PolyDominationOdd` (8.6 s, 1.16 GB):** `pw≤1+ev : xᵏ ≤ 1 + x^{2k}` on `WQ` via `CutSplit.split1`;
+  `hnIk`, an `ITest halfNormal` for any `g± ≤ c·(1 + xᵏ)` with `k` arbitrary (reduces to `HNZ.hnI` at degree 2k);
+  `xI`, the first moment.  The ring algebra is generic (`AlgO`).
+- **`Inference/ExpRateOne` (12.2 s, 1.96 GB):** `expRate-one f : ∫ᴹ (ιPre expDistλ) f ≈ ∫ᴹ (ιPre expDist) f` for
+  every `f`, with `expDistλ` at `l = c = 1#`.  Both sides reduce through `∫-dens`/`∫-expDist` to pointwise-equal
+  densities; no uniqueness of measures was needed.  No `≈ᵖ` relation exists, so it is stated as equal integrals.
+- **Merge:** `make check` (225 files), `longcheck` (35) and `doccheck` pass.  Timings mine, at load ≈ 5.7.
+- **Not done:** the value of E[X] under the half-normal (`∫ x φ = 1`).  The Gauss packs only cover
+  `G = x^{j+1}φ` with j ≥ 0; `G = φ` needs a new pack (Lipschitz bounds, certificates, tail).
+- **Remaining density items:** 5 (a consolidated function library), translation on ℝ (for N(μ, σ²); `RQ` has no
+  addition), the half-normal mean, and `Z = √(2π)`.
