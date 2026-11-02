@@ -709,3 +709,23 @@ Density item 4, integrability by domination (2026-11-02, done).
   they are approximate.
 - **Remaining density items:** 5 (function library: much of it now exists, scattered over `PolyExpCert`,
   `GaussCert`, `Domination`, `ExpMomentN`), 6 (the whole real line) and 7 (affine change of variables).
+
+Density item 6, the whole real line (2026-11-02, done for symmetric densities).
+- **Representation:** `RQ = WQ +Q WQ` (the QBS coproduct), with `inl x` read as `+x` and `inr x` as `−x`.  0 occurs
+  twice, which is harmless because only integrals against `lebR` are used.  This is not a signed-reals QBS with
+  arithmetic: there is no addition on `RQ`, so item 7's translation is still unavailable.
+- **`Continuous/RealLine`:** `lebR = sumPre tsR` (`lebPre` pushed along `inl` and `inr`, padded with zero
+  measures), and `∫ᴹ-lebR`: an integral over ℝ splits into the two half-line integrals.
+- **`Continuous/RealDensity`:** `copairH d e` densities, `lebR-sym` (total mass `c + c`), and `module Sym` with
+  `symDist` and `∫-sym`/`J-sym`.
+- **`Inference/SymExpectation`:** the symmetry lemma.  `E-atᴵ-sym` gives expectations under any symmetric density as
+  half-line integrals, and `E-atᴵ-odd` gives `E[g] ≃ 0` for odd `g`, with no value for the normaliser.  The generic
+  `E-atᴵ-≈` (expectation from `≈` of the parts) cut `E-atᴵ-sym` from 7.7 s to 0.5 s.
+- **`Inference/GaussReal`:** `gaussR` (normaliser `(Z + Z)⁻¹` via `GaussInverse.Z-inv`), `E-atᴵ-X : E[X] ≃ 0`,
+  `E-atᴵ-X² : E[X²] ≃ 1`, and `var-gaussR : Var X ≃ 1`.  Integrability of x uses `x ≤ 1 + x²` from
+  `CutSplit.split1` with `Domination.∫ᴹ-mono`/`∫ᴹ-add`.
+- **Timings** (mine, at load ≈ 6.5): RealLine 6.0 s, RealDensity 7.5 s, SymExpectation 8.0 s, GaussReal 12.5 s,
+  all ≤ 1.05 GB.
+- **Merge:** `make check` (216 files), `longcheck` (35) and `doccheck` pass.
+- **Remaining density items:** 5 (function library), 7 (affine change of variables; needs scaling on `WQ` and, for
+  N(μ, σ²), a translation on ℝ that this representation does not have), and `Z = √(2π)`.
