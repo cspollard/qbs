@@ -245,3 +245,9 @@ Exponential groundwork, step 1 of "What an exponential distribution would need" 
 `oneC ⊑ negExp x ⊗ expC x` for finite x.  Missing lemma: for 0 < ρ < 1 and `expC x` bounded there is s ∈ `expC x`, s > 0,
 with ρ·s′ < s for all s′ ∈ `expC x` (by LEM; otherwise a chain s₀/ρⁿ contradicts the bound, via Bernoulli's inequality
 and `arch`); estimated about 80 lines.
+
+Reverse inequality (2026-11-02, done, about 120 lines, NegExp still about 3 s): `oneC≤negExp-expC` and
+`negExp-expC : negExp x ⊗ expC x ≋ oneC`, both for `expC x` bounded by a rational B (`∀ s ∈ expC x → s < B`).  Route:
+the near-maximal element by LEM, but with a linear chain (`s₀ + n·(1−ρ)·s₀ ≤ s`, by induction) in place of `ρⁿ` and
+Bernoulli, then `arch B`.  Still missing: "x ⊑ nat N ⇒ expC x bounded", which needs a bound on the partial sums of
+the series (≤ 3 for x ≤ 1, then `expC-add` up to N) in the abstract `Exp` module.
