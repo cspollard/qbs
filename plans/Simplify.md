@@ -710,29 +710,30 @@ after the `glueₛ` rewrite; the rest are within 3%.
   directly (`k (n + n)`, `k (suc (n + n))`).  `Continuous/Monad` and `SFiniteMonad` only changed an import list.
 - 6 files, +68 / −133.
 
-Canaries for Stage 6 together with the new `Inference/Expectation*` modules (before = `912eca1`, after = `5b84682`),
-interleaved, two runs each, seconds.  **Provisional:** the machine was not quiet (unrelated Python jobs on about 8
-cores, load average 12), so absolute times are about 55% above the Stage 5 table; only the before/after ratios mean
-anything.  Re-time on an idle machine.
+Canaries for Stage 6 (before = `912eca1`, after = `3f77203`, i.e. Stage 6 plus the new `Inference/Expectation*`,
+`Sampler`, `BernoulliCompare`, `Analysis/{Cauchy,Exp,ExpLower,NegExp}` modules, none of which the canaries import
+except through `Borel/Merge`), timed by the orchestrator on an idle machine (load average about 2–4) after a reboot,
+interleaved, two runs each, seconds.  This replaces a provisional table taken under unrelated load.
 
 | Module | Before | After |
 |---|---|---|
-| `Probability` | 7.83 / 8.25 | 7.72 / 8.16 |
-| `Exponential` | 4.58 / 4.42 | 4.59 / 4.66 |
-| `Model/Monad` | 5.27 / 5.09 | 5.05 / 5.07 |
-| `Model/ProbInstance` | 8.48 / 8.23 | 8.46 / 8.28 |
-| `Model/StatInstance` | 11.84 / 11.76 | 11.26 / 11.32 |
-| `Model/Strong` | 23.61 / 23.97 | 23.86 / 23.62 |
-| `IntegralMonad` | 5.79 / 5.63 | 5.88 / 5.53 |
-| `Borel/Merge` | 3.42 / 3.35 | 3.26 / 3.29 |
-| `Analysis/Interleave` | 4.64 / 4.47 | 4.35 / 4.34 |
-| `Continuous/Sample` | 4.65 / 4.56 | 4.30 / 4.08 |
-| `Continuous/Monad` | 6.00 / 5.73 | 5.92 / 5.55 |
-| `Continuous/SFiniteMonad` | 7.42 / 7.40 | 7.23 / 7.24 |
-| `Continuous/SFiniteNorm` | 10.44 / 10.97 | 10.23 / 10.64 |
-| `Continuous/SFiniteStrong` | 7.49 / 7.49 | 7.08 / 7.18 |
-| `Continuous/SFiniteStat` | 10.24 / 10.18 | 9.96 / 9.96 |
-| `Continuous/SFiniteCommute` | 13.35 / 13.26 | 13.03 / 12.65 |
-| `Continuous/Strong` | 64.00 / 64.34 | 63.03 / 64.58 |
+| `Probability` | 5.22 / 5.22 | 5.12 / 5.13 |
+| `Exponential` | 2.80 / 2.82 | 2.76 / 2.76 |
+| `Model/Monad` | 3.19 / 3.19 | 3.09 / 3.11 |
+| `Model/ProbInstance` | 5.20 / 5.21 | 5.09 / 5.08 |
+| `Model/StatInstance` | 7.23 / 7.25 | 7.14 / 7.13 |
+| `Model/Strong` | 14.92 / 14.99 | 14.95 / 14.87 |
+| `IntegralMonad` | 3.48 / 3.49 | 3.36 / 3.32 |
+| `Borel/Merge` | 2.00 / 1.97 | 1.98 / 1.97 |
+| `Analysis/Interleave` | 2.79 / 2.78 | 2.66 / 2.69 |
+| `Continuous/Sample` | 2.72 / 2.72 | 2.58 / 2.58 |
+| `Continuous/Monad` | 4.01 / 4.01 | 3.88 / 3.90 |
+| `Continuous/SFiniteMonad` | 5.16 / 5.16 | 5.02 / 4.98 |
+| `Continuous/SFiniteNorm` | 6.90 / 6.87 | 6.71 / 6.73 |
+| `Continuous/SFiniteStrong` | 4.78 / 4.75 | 4.64 / 4.65 |
+| `Continuous/SFiniteStat` | 6.71 / 6.76 | 6.64 / 6.67 |
+| `Continuous/SFiniteCommute` | 8.64 / 8.48 | 8.39 / 8.38 |
+| `Continuous/Strong` | 41.67 / 40.25 | 41.19 / 40.38 |
 
-Nothing is slower beyond noise; `Continuous/Sample` is about 8% faster and `Analysis/Interleave` about 4% faster.
+Nothing is slower.  `Continuous/Sample` and `Analysis/Interleave` are about 5% faster, most others 1–3% faster;
+`Model/Strong` and `Continuous/Strong` are unchanged.
