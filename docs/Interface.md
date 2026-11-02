@@ -88,11 +88,12 @@ occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X 
 ### `QBS.Analysis.Meas`, `QBS.Analysis.Lebesgue`
 - `Meas` — threshold measurability of `[0,∞]`-valued functions; `Lebesgue`: `J m φ` — the integral of a `Meas` function (unbounded).
 
-### `QBS.Analysis.Cauchy`, `QBS.Analysis.Exp`, `QBS.Analysis.ExpLower`
+### `QBS.Analysis.Cauchy`, `QBS.Analysis.Exp`, `QBS.Analysis.ExpLower`, `QBS.Analysis.NegExp`
 The exponential on `[0,∞]` (groundwork for `e^{−x}` and exponential distributions).
 - `⨆-*-lub`, `diag`, `tri`, `rect`, `cauchy` (`Cauchy`) — `module Cauchy A`: `(∑ᶠ a) * (∑ᶠ b) ≈ ∑ᶠ (n ↦ diag g n 0)`, the Cauchy product of two series, with `g i j = a i * b j`.
 - `exp`, `ι`, `term`, `exp-mono`, `exp-cong`, `exp-zero`, `1+≤exp`, `exp-add` (`Exp`) — `module Exp A`, `module WithInv inv inv-ok`: `exp x = ∑ᶠ (xⁿ/n!)` given reciprocals `inv n * natE (n+1) ≈ 1`; `exp (x + y) ≈ exp x * exp y`.
 - `expC`, `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `qC-mul` (`ExpLower`) — the instance at lower cuts, with `inv n = qC (1/(n+1))`.
+- `negExp`, `negExp-anti`, `negExp-zero`, `negExp≤1`, `negExp-expC≤1`, `Meas-expC`, `Meas-negExp` (`NegExp`, `module NegExp lem`) — `e^{−x}` as a cut: `q ∈ negExp x` iff `∃ p > q, ∀ s ∈ expC x, p·s < 1`; antitone, `negExp 0 ≋ 1`, `negExp x ⊗ expC x ⊑ 1` (the other direction is not proved); measurable in `x`.
 
 ### `QBS.Analysis.Signed`, `QBS.Analysis.SignedOmega`, `QBS.Analysis.SignedIntegral`, `QBS.Analysis.Variance`
 Signed values and signed integrals (plan 2, step 1). No cancellation or classical principle in `Signed`.
