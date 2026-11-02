@@ -524,7 +524,8 @@ Items, in dependency order:
    - `Bnd`-monotonicity of `J`: if `g⁺, g⁻ ≤ c·(1 + xᵏ)` and `d` has a finite k-th moment, then `densI g` exists.
    - Without this, every `ITest` needs a bespoke finiteness proof.
 
-5. **A function library with measurability and monotonicity, closed under the operations used:**
+5. **A function library with measurability and monotonicity, closed under the operations used** (superseded by the
+   certificate calculus in "Revised direction" at the end of this plan):
    - polynomials (`mulH`, sums, constants);
    - `negExp ∘ p` for polynomial `p ≥ 0`;
    - dyadic rescaling `x ↦ 2ᵏ x`.
@@ -544,7 +545,8 @@ Items, in dependency order:
      - `Z = √(2π)` (π as a cut, polar coordinates or Wallis) is a separate, much larger item, and none of the moment
        results need it.
 
-7. **Affine change of variables (needed for parameterised families).**
+7. **Affine change of variables (needed for parameterised families).**  (Revised: families as pushforwards plus one
+   change-of-variables theorem; see "Revised direction" at the end of this plan.)
    - Covers Exp(λ), N(μ, σ²), and posteriors over a rate.
    - Scaling: `∫ h(λx) dλ(x) · λ ≈ ∫ h`.  Translation by a real `c`: only integer shifts exist, as `shiftPre`.
    - Route: prove both for the functions of item 5 through item 2 (both sides have the same tail antiderivative up to
@@ -798,3 +800,42 @@ The half-normal mean and the Gaussian E|X| (2026-11-02, done).
   `Z-inv`.  `PolyDominationOdd`'s header still calls the mean "not done".
 - **Remaining density items:** 5 (a consolidated function library), translation on ℝ (N(μ, σ²)), and
   `Z = √(2π)`.
+
+## Revised direction for continuous expectations (2026-11-02)
+
+The generic machinery is in place: expectations under a density (`densDist`, `∫-dens`), integrability by domination,
+the symmetry lemma, and the tail FTC (`TailFTCLip`/`LipJ`/`LipHalf`).  What has been repeated, at 300–1000 lines a
+time, is proving the tail FTC's hypotheses for each concrete integrand: Lipschitz bounds for `h`, `k` and the
+certificate `G b + w h(a) ≤ G a + w k(a) + w² c` (and its reverse), i.e. `G′ = k − h`, in packs such as `PolyExpCert`,
+`GaussCert`, `GaussCertM1` and the halving in `ExpRateExt`.  Lower reals have no derivative, so nothing composes.  Two
+changes replace items 5 and 7 and the translation item.
+
+A. **Certificate calculus** (replaces item 5).
+   - One notion, `Deriv G h k`: on every dyadic piece of [0,1] (or of [n, n+1]) the certificate holds with some
+     constant, h and k are Lipschitz, and all are bounded (the data `LipJ` needs).  The derivative is signed, as the
+     formal difference `k − h` of non-negative parts.
+   - Closure rules, each proved once over an abstract Archimedean ω-semiring:
+     sums (`(G₁ + G₂)′`), scalar multiples, products (product rule: `k = k₁G₂ + G₁k₂`, `h = h₁G₂ + G₁h₂`),
+     composition with an affine or monotone map (chain rule), and translation `x ↦ n + x` (to pass from [0,1] to
+     [n, n+1]).
+   - Base cases: constants, `x` (hence `xⁿ` by the product rule), `e^{−x}`; then `e^{−x²/2}` by the chain rule.
+   - A bridge from `Deriv` to `LipJ`/`Glue` hypotheses, so integration by parts on the half-line is "build `Deriv`
+     by the rules, apply the FTC".
+   - Validation: re-derive a few existing results (`∫ xⁿe^{−x} ≈ n!`, `∫ xφ ≈ 1`, `∫ x²φ ≈ Z`) from the calculus.
+     Keep the existing concrete modules as checks.
+   - Measurability (`Hom`/`Meas`) of products and compositions is separate and largely exists; collect it alongside.
+
+B. **Families as pushforwards** (replaces item 7 and translation on ℝ).
+   - In a QBS a random variable is a map, and `E_{f∗μ}[g] = E_μ[g ∘ f]` holds generically (`mapM`).  Define
+     Exp(λ) as the pushforward of Exp(1) under `x ↦ x/λ`, and N(μ, σ²) as the pushforward of N(0,1) under
+     `x ↦ μ + σx`; moments then follow from the standard ones by linearity, with no new integrals.
+   - N(μ, σ²) needs only the affine map into a signed codomain, not addition on `RQ`.
+   - Densities stay necessary for conditioning (`score`) and Bayes.  One change-of-variables theorem (scaling and
+     translation of Lebesgue measure, proved through A by matching antiderivatives) links the pushforward families to
+     their densities, once, generically.
+   - Validation: the pushforward Exp(λ) agrees with `ExpRateDist.expDistλ` (equal integrals for all tests).
+
+C. **Unchanged:** `Z = √(2π)` stays a separate, large item that no moment result needs.
+
+Order: A first (B's change-of-variables theorem uses it); B's moment part needs only `mapM` and could run in
+parallel, but run one agent at a time while the machine is loaded.
