@@ -36,6 +36,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 215 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
+| `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
@@ -48,6 +49,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
+| `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
