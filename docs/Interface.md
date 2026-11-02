@@ -110,7 +110,7 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`
+### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinUniformPriorN`, `QBS.Inference.BernHalf`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
@@ -124,6 +124,8 @@ Expectations of bounded signed statistics under the monad's measures (module par
 - `BoolQ`, `boolQ`, `trueQ`, `falseQ`, `constQ`, `ifQ a b` (`QBS.BoolQ`) — the Boolean QBS `1Q +Q 1Q` and case analysis `ifQ a b : Hom BoolQ Z` (the `Colimits.copair` of two constants); unlike `CodiscQ Bool` its indicators are measurable.
 - `bitB`, `bernB : Pre BoolQ`, `ifT a b`, `indT : STest BoolQ`, `E-at-bernB-if`, `E-at-bernB-ind`, `toAQ`, `bernB≈bern`, `E-at-bernB-id`, `indB`, `bernθ θ`, `E-at-bernθ` (`QBS.Inference.BoolDist`) — Bernoulli(½) on `BoolQ` with `E-at bernB (ifT a b) ≃ ½a + ½b`, `E-at bernB indT ≃ ι ½`, `mapPre toAQ bernB ≈ᵖ bern`; the biased coin `bernθ θ` (the indicator `[expansion r ≤ θ]`, `indB` for any decidable Borel set) has `E-at (bernθ θ) indT ≃ ι θ` for `θ ≤ 1`.
 - `Below2-borel`, `flipS`, `coinKernel : Model AQ BoolQ`, `marg`, `E-at-marg`, `coinKernel²`, `E-at-kernel²`, `marg²`, `E-at-marg²`, `HH-from-H` (`QBS.Inference.CoinUniformPrior`) — the coin with a uniform prior on its bias: `coinKernel θ = bernθ θ` is a morphism (measurability in θ from the variable-threshold Borel set `Below2-borel`), `E-at (joinPre (mapPre coinKernel uniform)) indT ≃ ι ½` (P(heads) = ∫ θ dθ), and for two conditionally independent flips `E-at marg² (indT ⊗T indT) ≃ ι m` with `3m = 1` (P(HH) = ∫ θ² dθ), multiplied out `3·P(HH) = 2·P(H)`.
+- `powT n`, `E-at-uniform-pow`, `nsum`, `moment-E`, `Fl`, `Kn`, `AH`, `E-at-Kn`, `margN`, `E-at-margN`, `heads-prob`, `HP`, `succession` (`QBS.Inference.CoinUniformPriorN`) — n flips of the coin with a uniform prior: `Kn n : AQ → T (Fl n)` is θ ↦ n+1 flips conditionally independent given θ (`nextK`, the recursion of `coinKernel²`), `E-at (lawAt (Kn n) θ) (AH n) ≃ θⁿ⁺¹`, `(n+1)·∫ uⁿ du ≃ 1` (`moment-E`, `nsum k x` the k-fold sum), `(n+2)·P(Hⁿ⁺¹) ≃ 1` (`heads-prob`) and Laplace's rule of succession multiplied out, `(n+2)·P(Hⁿ⁺¹) ≃ (n+1)·P(Hⁿ)` (`succession`, with `HP 0 = 1`).
+- `bernθ-half≈bernB : bernθ ½ ≈ᵖ bernB` (`QBS.Inference.BernHalf`) — the biased coin at ½ is the fair coin of `BoolDist`.
 
 ### `QBS.Inference.Sampler`, `QBS.Inference.UniformSampler`
 Statistical models as samplers (module parameter `lem₁ : LEM₁`; the `Sampler` module of `Inference/Sampler`).
@@ -162,11 +164,12 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `sqW`, `∫-expDist-sq` (`ExpDistSq`) — the second moment `∫ᴹ (ιPre expDist) sqW ≈ 1# + 1#` for the squaring statistic `sqW : x ↦ x·x`.
 - `sqC`, `sqI`, `E-atᴵ-sqI`, `var-expDist` (`ExpDistVar`) — `sqI : ITest expDist` (`pos = x²`, `neg = 0`), `E-atᴵ expDist sqI ≃ 2`, and the variance `E-atᴵ expDist sqI +S (-S (E-atᴵ expDist idI *S E-atᴵ expDist idI)) ≃ 1` (`E[X²] − (E X)² = 1`; `Analysis/Variance.Var` needs a bounded function, so the difference is stated directly as a signed value).
 
-### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformMomentN`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
 - `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
+- `moment-N` — `E[uⁿ] = 1/(n+1)` for every n, stated as `# (n+1) * M n ≈ 1#` (`module UniformMomentN lem₁`; the algebra `AlgN` is over an abstract Archimedean ω-semiring: Pascal triangle `Z`, no binomial coefficients).
 - `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).
 
 ## Examples and generic calculations

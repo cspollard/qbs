@@ -10,8 +10,10 @@
 --   * with y i = (i+1) M i and the Pascal triangle `Z ν j k` on a base sequence ν (`Z ν j 0 = ν j`,
 --     `Z ν j (k+1) = ½ (Z ν j k + Z ν (j+1) k)`), integration by parts reads, additively,
 --     (j+1) G j k + ½ k G (j+1) (k-1) = Z y j k   (`inv`);
---   * from it, (k+2) G 0 (k+1) = ½ (k+1) G 0 k + Z y 0 (k+1), and `Z y 0 k + ½ᵏ = 1 + ½ᵏ y k` when y i = 1 below k (`S`);
---   * together with the equation for M j this gives `w + s = 1 + s w` for w = y j, s = ½ʲ, whence w = 1 (`final`: w ≤ 2,
+--   * from it, (k+2) G 0 (k+1) = ½ (k+1) G 0 k + Z y 0 (k+1), and `Z y 0 k + ½ᵏ = 1 + ½ᵏ y k` when y i = 1 below k
+--     (`S`);
+--   * together with the equation for M j this gives `w + s = 1 + s w` for w = y j, s = ½ʲ, whence w = 1
+--     (`final`: w ≤ 2,
 --     iterate `cancel≤` to get w ≤ 1 + ½ᵐ, `arch`, then the complement d of w is ≤ ½ʲ d, hence 0).
 -- The module is over an abstract Archimedean ω-semiring (the solver is slow on the concrete cut semiring).
 module QBS.Continuous.UniformMomentN where
@@ -83,21 +85,28 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   S-step : ∀ {a b c p} → half * p ≤ 1# → a + p ≈ 1# + p → b + p ≈ 1# + p * c →
     half * (a + b) + half * p ≈ 1# + half * p * c
   S-step {a} {b} {c} {p} le ea eb = cancel le (begin
-    half * p + (half * (a + b) + half * p)   ≈⟨ solve 3 (λ q x r → q :+ (x :+ r) := x :+ (q :+ r)) refl (half * p) _ (half * p) ⟩
+    half * p + (half * (a + b) + half * p)
+      ≈⟨ solve 3 (λ q x r → q :+ (x :+ r) := x :+ (q :+ r)) refl (half * p) _ (half * p) ⟩
     half * (a + b) + (half * p + half * p)   ≈⟨ +-cong refl (hm p) ⟩
     half * (a + b) + p                       ≈⟨ +-cong refl (sym (half-twice p)) ⟩
-    half * (a + b) + half * (p + p)          ≈⟨ solve 4 (λ h x y q → h :* (x :+ y) :+ h :* (q :+ q) := h :* ((x :+ q) :+ (y :+ q))) refl half a b p ⟩
+    half * (a + b) + half * (p + p)
+      ≈⟨ solve 4 (λ h x y q → h :* (x :+ y) :+ h :* (q :+ q) := h :* ((x :+ q) :+ (y :+ q))) refl half a b p ⟩
     half * ((a + p) + (b + p))               ≈⟨ *-cong refl (+-cong ea eb) ⟩
-    half * ((1# + p) + (1# + p * c))         ≈⟨ solve 3 (λ h q c′ → h :* ((con 1 :+ q) :+ (con 1 :+ q :* c′)) := h :* (con 1 :+ con 1) :+ (h :* q :+ h :* q :* c′)) refl half p c ⟩
+    half * ((1# + p) + (1# + p * c))
+      ≈⟨ solve 3 (λ h q c′ → h :* ((con 1 :+ q) :+ (con 1 :+ q :* c′))
+                     := h :* (con 1 :+ con 1) :+ (h :* q :+ h :* q :* c′)) refl half p c ⟩
     half * (1# + 1#) + (half * p + half * p * c) ≈⟨ +-cong (half-twice 1#) refl ⟩
-    1# + (half * p + half * p * c)           ≈⟨ solve 3 (λ o q x → o :+ (q :+ x) := q :+ (o :+ x)) refl 1# (half * p) _ ⟩
+    1# + (half * p + half * p * c)
+      ≈⟨ solve 3 (λ o q x → o :+ (q :+ x) := q :+ (o :+ x)) refl 1# (half * p) _ ⟩
     half * p + (1# + half * p * c) ∎)
 
   S : ∀ k ν → (∀ i → i ℕ.< k → ν i ≈ 1#) → Z ν 0 k + hp k ≈ 1# + hp k * ν k
   S zero ν h = trans (+-comm _ _) (+-cong refl (sym (*-identityˡ _)))
-  S (suc k) ν h = S-step {c = ν (suc k)} (≤-trans (*-mono half (hp≤1 k)) (≤-trans (≤-reflexive (*-identityʳ half)) half≤1)) ea eb
+  S (suc k) ν h = S-step {c = ν (suc k)} hk ea eb
     where
-    ea = trans (S k ν (λ i lt → h i (ℕ.m<n⇒m<1+n lt))) (+-cong refl (trans (*-cong refl (h k (ℕ.n<1+n k))) (*-identityʳ _)))
+    hk = ≤-trans (*-mono half (hp≤1 k)) (≤-trans (≤-reflexive (*-identityʳ half)) half≤1)
+    ea = trans (S k ν (λ i lt → h i (ℕ.m<n⇒m<1+n lt)))
+      (+-cong refl (trans (*-cong refl (h k (ℕ.n<1+n k))) (*-identityʳ _)))
     eb = trans (+-cong (Z-shift ν k 0) refl) (S k (λ i → ν (suc i)) (λ i lt → h (suc i) (ℕ.s<s lt)))
 
   ----------------------------------------------------------------------------
@@ -109,7 +118,8 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
 
   -- s·½ᵐ ≤ ½·½ᵐ
   final-sm : ∀ {s} m → s ≤ half → s * hp m ≤ half * hp m
-  final-sm {s} m sh = ≤-trans (≤-reflexive (*-comm s (hp m))) (≤-trans (*-mono (hp m) sh) (≤-reflexive (*-comm (hp m) half)))
+  final-sm {s} m sh = ≤-trans (≤-reflexive (*-comm s (hp m)))
+    (≤-trans (*-mono (hp m) sh) (≤-reflexive (*-comm (hp m) half)))
 
   -- one iteration: w ≤ 1 + ½ᵐ gives w ≤ 1 + ½ᵐ⁺¹
   final-iter : ∀ {s w} → s ≤ half → w + s ≈ 1# + s * w → ∀ m → w ≤ 1# + hp m → w ≤ 1# + hp (suc m)
@@ -169,10 +179,13 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     inv-step : ∀ {h pj g₀ g₁ pk r₁ r₂ : ∣A∣} → pk * g₁ ≈ r₁ + r₂ →
       pj * (h * (g₀ + g₁)) + h * ((1# + pk) * g₁) ≈ h * ((pj * g₀ + r₁) + ((1# + pj) * g₁ + r₂))
     inv-step {h} {pj} {g₀} {g₁} {pk} {r₁} {r₂} e = begin
-      pj * (h * (g₀ + g₁)) + h * ((1# + pk) * g₁)   ≈⟨ solve 5 (λ h′ p a b k → p :* (h′ :* (a :+ b)) :+ h′ :* ((con 1 :+ k) :* b)
-                                                                   := h′ :* ((p :* a :+ (con 1 :+ p) :* b) :+ k :* b)) refl h pj g₀ g₁ pk ⟩
+      pj * (h * (g₀ + g₁)) + h * ((1# + pk) * g₁)
+        ≈⟨ solve 5 (λ h′ p a b k → p :* (h′ :* (a :+ b)) :+ h′ :* ((con 1 :+ k) :* b)
+                      := h′ :* ((p :* a :+ (con 1 :+ p) :* b) :+ k :* b)) refl h pj g₀ g₁ pk ⟩
       h * ((pj * g₀ + (1# + pj) * g₁) + pk * g₁)    ≈⟨ *-cong refl (+-cong refl e) ⟩
-      h * ((pj * g₀ + (1# + pj) * g₁) + (r₁ + r₂))  ≈⟨ *-cong refl (solve 6 (λ a b c d e′ f → (a :* b :+ c :* d) :+ (e′ :+ f) := (a :* b :+ e′) :+ (c :* d :+ f)) refl pj g₀ (1# + pj) g₁ r₁ r₂) ⟩
+      h * ((pj * g₀ + (1# + pj) * g₁) + (r₁ + r₂))
+        ≈⟨ *-cong refl (solve 6 (λ a b c d e′ f → (a :* b :+ c :* d) :+ (e′ :+ f) := (a :* b :+ e′) :+ (c :* d :+ f))
+                         refl pj g₀ (1# + pj) g₁ r₁ r₂) ⟩
       h * ((pj * g₀ + r₁) + ((1# + pj) * g₁ + r₂)) ∎
 
     inv : ∀ k j → # (suc j) * G j k + Rr j k ≈ Z y j k
@@ -200,13 +213,15 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     U : ∀ {n} → Ih n → ∀ k → k ℕ.≤ n → # (suc k) * G 0 k + hp k ≈ 1# + 1#
     U ih zero le = +-cong (trans (*-cong refl (Gb 0)) (ih 0 ℕ.z≤n)) refl
     U ih (suc k) le = trans (+-cong (trans (V k) (+-cong refl (Y1 ih (suc k) le))) refl)
-      (trans (solve 4 (λ h x z p → (h :* x :+ z) :+ h :* p := z :+ h :* (x :+ p)) refl half (# (suc k) * G 0 k) 1# (hp k))
+      (trans (solve 4 (λ h x z p → (h :* x :+ z) :+ h :* p := z :+ h :* (x :+ p))
+                refl half (# (suc k) * G 0 k) 1# (hp k))
       (+-cong refl (trans (*-cong refl (U ih k (ℕ.≤-trans (ℕ.n≤1+n k) le))) (half-twice 1#))))
 
     -- the equation for the unknown level N = n+1: Q = (N+2) G 0 N,  s = ½ᴺ,  w = y N
     r1 : ∀ {n} → Ih n → # (suc (suc n)) * G 0 (suc n) + hp (suc n) ≈ 1# + Z y 0 (suc n)
     r1 {n} ih = trans (+-cong (V n) refl) (trans
-      (solve 4 (λ h p y′ q → (h :* p :+ y′) :+ h :* q := (h :* (p :+ q)) :+ y′) refl half (# (suc n) * G 0 n) (Z y 0 (suc n)) (hp n))
+      (solve 4 (λ h p y′ q → (h :* p :+ y′) :+ h :* q := (h :* (p :+ q)) :+ y′)
+        refl half (# (suc n) * G 0 n) (Z y 0 (suc n)) (hp n))
       (trans (+-cong (*-cong refl (U ih n ℕ.≤-refl)) refl) (+-cong (half-twice 1#) refl)))
 
     r2 : ∀ {n} → Ih n → (# (suc (suc n)) * G 0 (suc n) + hp (suc n)) + hp (suc n)
@@ -218,7 +233,8 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
 
     r3 : ∀ {n} → Ih n → half * (# (suc (suc n)) * G 0 (suc n)) + hp (suc n) ≈ 1# + half * (hp (suc n) * y (suc n))
     r3 {n} ih = trans (+-cong refl (sym (half-twice (hp (suc n))))) (trans
-      (solve 3 (λ h q s′ → h :* q :+ h :* (s′ :+ s′) := h :* ((q :+ s′) :+ s′)) refl half (# (suc (suc n)) * G 0 (suc n)) (hp (suc n)))
+      (solve 3 (λ h q s′ → h :* q :+ h :* (s′ :+ s′) := h :* ((q :+ s′) :+ s′))
+        refl half (# (suc (suc n)) * G 0 (suc n)) (hp (suc n)))
       (trans (*-cong refl (r2 ih)) (trans (distribˡ half _ _) (+-cong (half-twice 1#) refl))))
 
     r4 : ∀ {n} → y (suc n) ≈ half * (# (suc (suc n)) * G 0 (suc n)) + half * (hp (suc n) * y (suc n))
@@ -228,16 +244,20 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
 
     r5 : ∀ {n} → Ih n → y (suc n) + hp (suc n) ≈ 1# + hp (suc n) * y (suc n)
     r5 {n} ih = trans (+-cong r4 refl) (trans
-      (solve 3 (λ q x s′ → (q :+ x) :+ s′ := (q :+ s′) :+ x) refl (half * (# (suc (suc n)) * G 0 (suc n))) _ (hp (suc n)))
+      (solve 3 (λ q x s′ → (q :+ x) :+ s′ := (q :+ s′) :+ x)
+        refl (half * (# (suc (suc n)) * G 0 (suc n))) _ (hp (suc n)))
       (trans (+-cong (r3 ih) refl) (trans (+-assoc _ _ _) (+-cong refl (hm _)))))
 
     -- w = y (n+1) ≤ 2, from M (n+1) ≤ M n and y n = 1
+    open-1 : ∀ p m → (1# + p) * m ≈ m + p * m
+    open-1 p m = solve 2 (λ p′ m′ → (con 1 :+ p′) :* m′ := m′ :+ p′ :* m′) refl p m
+
     w≤2 : ∀ {n} → Ih n → y (suc n) ≤ 1# + 1#
-    w≤2 {n} ih = ≤-trans (*-mono (# (suc (suc n))) (Mle n)) (≤-trans (≤-reflexive (solve 2 (λ p m → (con 1 :+ p) :* m := m :+ p :* m) refl (# (suc n)) (M n)))
+    w≤2 {n} ih = ≤-trans (*-mono (# (suc (suc n))) (Mle n)) (≤-trans (≤-reflexive (open-1 (# (suc n)) (M n)))
       (+-mono Mn≤1 (≤-reflexive (ih n ℕ.≤-refl))))
       where
       Mn≤1 : M n ≤ 1#
-      Mn≤1 = ≤-trans (≤-trans ≤-+ʳ (≤-reflexive (sym (solve 2 (λ p m → (con 1 :+ p) :* m := m :+ p :* m) refl (# n) (M n)))))
+      Mn≤1 = ≤-trans (≤-trans ≤-+ʳ (≤-reflexive (sym (open-1 (# n) (M n)))))
                (≤-reflexive (ih n ℕ.≤-refl))
 
     step : ∀ {n} → Ih n → y (suc n) ≈ 1#
@@ -309,7 +329,8 @@ module UniformMomentN (lem₁ : LEM₁) where
   gf j k r = pw (expansion r) j * pw (t r) k
 
   gf≤1 : ∀ j k r → gf j k r ≤ 1#
-  gf≤1 j k r = ≤-trans (*-mono _ (pw≤1 (Fun-≤1 ET r) k)) (≤-trans (≤-reflexive (*-identityʳ _)) (pw≤1 (expansion≤1 r) j))
+  gf≤1 j k r = ≤-trans (*-mono _ (pw≤1 (Fun-≤1 ET r) k))
+    (≤-trans (≤-reflexive (*-identityʳ _)) (pw≤1 (expansion≤1 r) j))
 
   Meas-gf : ∀ j k → Meas (gf j k)
   Meas-gf j k = Meas-⊗ {λ r → pw (expansion r) j} {λ r → pw (t r) k} (Meas-pw (LS Fun-expansion) j) (Meas-pw (LS ET) k)
@@ -335,7 +356,8 @@ module UniformMomentN (lem₁ : LEM₁) where
 
   Pas : ∀ j k → G j (suc k) ≈ half * (G j k + G (suc j) k)
   Pas j k = trans (I-add fairCoin (Fgf j (suc k)) F₁ F₂ (gf-pas j k))
-    (trans (+-cong (I-scale fairCoin half (Fgf j k) F₁ (λ _ → refl)) (I-scale fairCoin half (Fgf (suc j) k) F₂ (λ _ → refl)))
+    (trans (+-cong (I-scale fairCoin half (Fgf j k) F₁ (λ _ → refl))
+                   (I-scale fairCoin half (Fgf (suc j) k) F₂ (λ _ → refl)))
       (sym (distribˡ half _ _)))
     where
     F₁ = Fun-scale half half≤1 (Fgf j k)
@@ -352,7 +374,8 @@ module UniformMomentN (lem₁ : LEM₁) where
 
   gf-false : ∀ j r → gf j 0 (consR false r) ≈ hp j * gf j 0 r
   gf-false j r = trans (*-cong (pw-cong (trans (expansion-cons false r) (+-identityˡ _)) j) refl)
-    (trans (*-cong (pw-half (expansion r) j) refl) (solve 2 (λ p q → p :* q :* con 1 := p :* (q :* con 1)) refl (hp j) (pw (expansion r) j)))
+    (trans (*-cong (pw-half (expansion r) j) refl)
+      (solve 2 (λ p q → p :* q :* con 1 := p :* (q :* con 1)) refl (hp j) (pw (expansion r) j)))
 
   I-false : ∀ j → I fairCoin (λ x → gf j 0 (consR false x)) (FF j) ≈ hp j * M j
   I-false j = I-scale fairCoin (hp j) (Fgf j 0) (FF j) (gf-false j)

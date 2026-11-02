@@ -1,16 +1,17 @@
 {-# OPTIONS --safe --without-K #-}
 
--- n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`,
--- 3c/3d; the continuation of `Inference/CoinUniformPrior`).
+-- n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession
+-- (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`).
 --
---   * `powT n : STest AQ`, the statistic θⁿ on the unit interval; `E-at uniform (powT n) ≃ ι ∫ uⁿ` (`E-at-uniform-pow`) and,
---     from `Continuous/UniformMomentN`, `(n+1)·∫ uⁿ = 1` (`moment-E`, with `nsum k x`, the k-fold sum `x + (x + … + 0)`);
---   * `Fl n`, the outcomes of n+1 flips (`Fl 0 = BoolQ`, `Fl (suc n) = BoolQ × Fl n`), and `Kn n : AQ → T (Fl n)`, θ ↦ the
---     n+1 flips conditionally independent given θ, defined recursively exactly as `coinKernel²`: the first flip, then the
---     rest given it (`σ`, `T`, `join`).  The all-heads test `AH n = 1_{true} ⊗ … ⊗ 1_{true}` has
+--   * `powT n : STest AQ`, the statistic θⁿ on the unit interval; `E-at uniform (powT n) ≃ ι ∫ uⁿ`
+--     (`E-at-uniform-pow`) and, from `Continuous/UniformMomentN`, `(n+1)·∫ uⁿ = 1` (`moment-E`, with `nsum k x`, the
+--     k-fold sum `x + (x + … + 0)`);
+--   * `Fl n`, the outcomes of n+1 flips (`Fl 0 = BoolQ`, `Fl (suc n) = BoolQ × Fl n`), and `Kn n : AQ → T (Fl n)`,
+--     θ ↦ the n+1 flips conditionally independent given θ, defined recursively exactly as `coinKernel²`: the first
+--     flip, then the rest given it (`σ`, `T`, `join`).  The all-heads test `AH n = 1_{true} ⊗ … ⊗ 1_{true}` has
 --     `E-at (lawAt (Kn n) θ) (AH n) ≃ θⁿ⁺¹` (`E-at-Kn`);
---   * under the uniform prior `margN n = join (map (Kn n) uniform)`, `E-at (margN n) (AH n) ≃ ∫ uⁿ⁺¹` (`E-at-margN`), so
---     (n+2)·P(Hⁿ⁺¹) = 1 (`heads-prob`);
+--   * under the uniform prior `margN n = join (map (Kn n) uniform)`, `E-at (margN n) (AH n) ≃ ∫ uⁿ⁺¹`
+--     (`E-at-margN`), so (n+2)·P(Hⁿ⁺¹) = 1 (`heads-prob`);
 --   * Laplace's rule of succession, multiplied out (no division): with `HP 0 = 1` and `HP (n+1) = P(Hⁿ⁺¹)`,
 --     (n+2)·P(Hⁿ⁺¹) ≃ (n+1)·P(Hⁿ), i.e. P(next head | n heads) = (n+1)/(n+2) (`succession`).
 module QBS.Inference.CoinUniformPriorN where
@@ -50,9 +51,10 @@ open BQ.BoolOn S
 module CoinUniformPriorN (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J-irrel; J; J-fun)
   open Integration A using (probClass)
-  open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _≤_; _+_; _*_; 0#; 1#; refl; sym; trans; *-comm; *-identityʳ; +-cong; 0-least;
-    ≤-trans; ≤-reflexive; +-identityʳ)
-  open Bounded A using (Sg; Bnd; finite; _+S_; _*S_; ι-+; ι-*; _≃_; ≃-trans; ≃-sym; ≃-refl; ι; mk≃; +S-cong; *S-cong; *S-comm; 0S)
+  open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _≤_; _+_; _*_; 0#; 1#; refl; sym; trans; *-comm;
+    *-identityʳ; +-cong; 0-least; ≤-trans; ≤-reflexive; +-identityʳ)
+  open Bounded A using (Sg; Bnd; finite; _+S_; _*S_; ι-+; ι-*; _≃_; ≃-trans; ≃-sym; ≃-refl; ι; mk≃; +S-cong; *S-cong;
+    *S-comm; 0S)
   open SignedTests (lemOf lem₁) using (CutQ; STest)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre; joinPre; TQ; TH; joinH)
@@ -117,7 +119,8 @@ module CoinUniformPriorN (lem₁ : LEM₁) where
 
   rep-# : ∀ k x → rep k x ≈ # k * x
   rep-# zero x = sym (OmegaSemiring.zeroˡ A x)
-  rep-# (suc k) x = trans (+-cong refl (rep-# k x)) (solve 2 (λ p x′ → x′ :+ p :* x′ := (con 1 :+ p) :* x′) refl (# k) x)
+  rep-# (suc k) x = trans (+-cong refl (rep-# k x))
+    (solve 2 (λ p x′ → x′ :+ p :* x′ := (con 1 :+ p) :* x′) refl (# k) x)
 
   -- (n+1) ∫ uⁿ du = 1
   moment-E : ∀ n → nsum (suc n) (E-at uniform (powT n)) ≃ ι (SubSemiring.Is-1 finite)
