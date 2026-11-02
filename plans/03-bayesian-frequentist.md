@@ -356,3 +356,16 @@ Bernoulli on a Boolean QBS (2026-11-02, done; this closes the "Not done" item of
   - The first bit as a `Hom`: the library has no QBS for Cantor space itself.
 - Next: the prior as a kernel.  That means θ ↦ `bernθ θ` as a `Hom AQ (TQ BoolQ)`, with the uniform prior on θ.  It
   gives the evidence for heads as `∫ θ dθ = ½`, which is Beta–Bernoulli with a continuous prior.
+
+Coin with a uniform prior on θ (2026-11-02, done): `Inference/CoinUniformPrior` (11.8 s, 1.06 GB).
+- **Kernel:** `coinKernel = samplerModel flipS : Model AQ BoolQ`, a measurable kernel θ ↦ `bernθ θ`.  Measurability
+  in θ comes from `Below2-borel : Fun h → Fun t → Borel {x | h x ≤ t x}`, a variable-threshold version of
+  `Below-borel`.
+- **One flip:** `marg = joinPre (mapPre coinKernel uniform)`, and `E-at-marg : P(H) ≃ ½`.  The proof uses the tower
+  law and `E-at-uniform-id`.
+- **Two flips:** `coinKernel² : Hom AQ (TQ (BoolQ ×Q BoolQ))` gives two flips that are conditionally independent
+  given θ.
+  - `E-at-marg² : P(HH) ≃ ⅓`.
+  - `HH-from-H : 3·P(HH) ≃ 2·P(H)`, i.e. the posterior mean after one head is 2/3, multiplied out.
+- **Discrete versus continuous:** this is the continuous-prior counterpart of `CoinBias` and `BernoulliCompare`.
+  Those use an explicit two-point prior; here the prior is an expectation over a kernel on the hypothesis space.
