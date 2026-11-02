@@ -217,6 +217,12 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `powD-dom`, `E-atᴵ-powD-dom`, `sqI-dom` — validation: `powD`, `E[Xⁿ] ≃ n!`, and the half-normal second-moment test re-derived by domination.
 - `hn-alg` (`module AlgD`) — the algebra over an abstract ω-semiring.
 
+### `QBS.Inference.PolyDominationOdd`
+- `pw≤1+ev`, `hnIk`, `xI` (`module PolyDominationOdd lem₁`) — `pw≤1+ev k x : xᵏ ≤ 1 + x^{2k}` on `WQ` (split `x ≤ 1` or `1 ≤ x`), and `hnIk g⁺ g⁻ k c cB dom⁺ dom⁻ : ITest halfNormal` whenever `g± x ≤ c · (1 + xᵏ)` with `k` arbitrary (odd degrees included; the constant becomes `2c`).  `xI : ITest halfNormal` is the first moment.  The value `E[X] ≃ n` is not proved.
+
+### `QBS.Inference.ExpRateOne`
+- `expRate-one` (`module ExpRateOne lem₁`) — the rate-1 case of `expDistλ` (`Dist 1# 1# 0 0 …`) agrees with `expDist`: `∫ᴹ (ιPre expDistλ) f ≈ ∫ᴹ (ιPre expDist) f` for every test `f`.
+
 ### The real line and the Gaussian without π: `QBS.Continuous.RealLine`, `QBS.Continuous.RealDensity`, `QBS.Inference.SymExpectation`, `QBS.Inference.GaussReal`
 - `RQ`, `inlH`, `inrH`, `copairH`, `lebR`, `∫ᴹ-lebR` (`module RealLine lem₁`) — the real line as the QBS coproduct `RQ = WQ +Q WQ` (`inlH x` is `+x`, `inrH x` is `−x`; zero appears twice, with measure zero), the copairing `copairH d e : RQ ⇒ WQ`, and Lebesgue measure `lebR : Pre (XW RQ)` as a `sumPre` of `mapM inlH lebPre`, `mapM inrH lebPre` and zero measures: `∫ᴹ-lebR f : ∫ᴹ lebR f ≈ ∫ᴹ lebPre (f ∘ inlH) + ∫ᴹ lebPre (f ∘ inrH)`.
 - `∫ᴹ-lebR-dens`, `lebR-sym`, `toR` (`module RealDensity lem₁`) — `∫ᴹ lebR (mulH (copairH d e) f)` splits into the two half-line integrals; a symmetric density `copairH d d` with `∫ᴹ lebPre d ≈ c` has total mass `c + c`.
