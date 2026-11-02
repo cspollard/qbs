@@ -162,6 +162,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
+| `QBS.Continuous.HalfLine` | 92 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
+| `QBS.Continuous.HalfLineNegExp` | 119 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
