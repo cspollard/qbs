@@ -329,3 +329,13 @@ Second moment and variance (2026-11-02, done):
 - **Times:** GeometricMoment2 4.1 s, ExpDistSq 6.0 s, ExpDistVar 7.8 s, and HalfLineMoment2 **45.9 s, 1.0 GB**.  That
   makes HalfLineMoment2 the slowest module in the tree, ahead of `Continuous/Strong` at about 41 s.  It is a
   candidate for a check-cost pass.
+- **Check-cost pass (done):** HalfLineMoment2 went from 45.9 s to 14.9 s (1.03 GB to 0.86 GB).  Exported statements
+  are unchanged.
+  - The profile showed 28 s in `x2-rec`.  The cost was Agda comparing the type of the abstract identity
+    `x2-rec-alg` with the goal by reducing `Lsplit` through concrete cut arithmetic.
+  - Fix: make `Lsplit` `abstract` in `GeometricMoment2`, keep the body in a concrete `Lsplit′`, and add
+    `Lsplit-def` as the bridge.
+  - The split lemma now ends in `∑ᶠ GeoMom2.term`, which saves another 5.5 s of conversion.
+  - Lesson: polynomial expressions shared between an abstract algebra module and a concrete instance should be
+    `abstract` at the boundary.  Otherwise unification unfolds them through the concrete semiring.
+  - Next hot spot: `shift-split`, at 2.3 s.
