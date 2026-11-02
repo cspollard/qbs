@@ -129,6 +129,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |
 | `QBS.Analysis.CutSum` | 450 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
+| `QBS.Analysis.Deriv` | 384 |  | A certificate calculus for the tail FTC (part 1: the notion, and the linear closure rules). |
+| `QBS.Analysis.DerivExp` | 92 |  | A certificate calculus for the tail FTC (part 3: the base cases `xⁿ` and `e^{−x}`, and `xʲ⁺¹ e^{−x}`). |
+| `QBS.Analysis.DerivProd` | 219 |  | A certificate calculus for the tail FTC (part 2: the product rule), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
@@ -199,6 +202,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
+| `QBS.Continuous.DerivBridge` | 151 | lem | The certificate calculus (`Analysis/Deriv`) feeds the tail FTC: from `Deriv` data to integration by parts. |
+| `QBS.Continuous.DerivMoment` | 70 | lem | Validation of the certificate calculus: `∫₀^∞ xⁿ e^{−x} dλ(x) = n!` from `Deriv` data built by the rules. |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
