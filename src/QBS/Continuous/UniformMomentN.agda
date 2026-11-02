@@ -82,23 +82,31 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   ----------------------------------------------------------------------------
   -- Z ν 0 k when ν is 1 below k:  Z ν 0 k + ½ᵏ = 1 + ½ᵏ ν k
 
-  S-step : ∀ {a b c p} → half * p ≤ 1# → a + p ≈ 1# + p → b + p ≈ 1# + p * c →
-    half * (a + b) + half * p ≈ 1# + half * p * c
-  S-step {a} {b} {c} {p} le ea eb = cancel le (begin
+  -- S-step, in two halves: first reduce to half * ((a + p) + (b + p)), then use the hypotheses
+  S-step₁ : ∀ a b p → half * p + (half * (a + b) + half * p) ≈ half * ((a + p) + (b + p))
+  S-step₁ a b p = begin
     half * p + (half * (a + b) + half * p)
       ≈⟨ solve 3 (λ q x r → q :+ (x :+ r) := x :+ (q :+ r)) refl (half * p) _ (half * p) ⟩
     half * (a + b) + (half * p + half * p)   ≈⟨ +-cong refl (hm p) ⟩
     half * (a + b) + p                       ≈⟨ +-cong refl (sym (half-twice p)) ⟩
     half * (a + b) + half * (p + p)
       ≈⟨ solve 4 (λ h x y q → h :* (x :+ y) :+ h :* (q :+ q) := h :* ((x :+ q) :+ (y :+ q))) refl half a b p ⟩
-    half * ((a + p) + (b + p))               ≈⟨ *-cong refl (+-cong ea eb) ⟩
+    half * ((a + p) + (b + p)) ∎
+
+  S-step₂ : ∀ p c → half * ((1# + p) + (1# + p * c)) ≈ half * p + (1# + half * p * c)
+  S-step₂ p c = begin
     half * ((1# + p) + (1# + p * c))
       ≈⟨ solve 3 (λ h q c′ → h :* ((con 1 :+ q) :+ (con 1 :+ q :* c′))
                      := h :* (con 1 :+ con 1) :+ (h :* q :+ h :* q :* c′)) refl half p c ⟩
     half * (1# + 1#) + (half * p + half * p * c) ≈⟨ +-cong (half-twice 1#) refl ⟩
     1# + (half * p + half * p * c)
       ≈⟨ solve 3 (λ o q x → o :+ (q :+ x) := q :+ (o :+ x)) refl 1# (half * p) _ ⟩
-    half * p + (1# + half * p * c) ∎)
+    half * p + (1# + half * p * c) ∎
+
+  S-step : ∀ {a b c p} → half * p ≤ 1# → a + p ≈ 1# + p → b + p ≈ 1# + p * c →
+    half * (a + b) + half * p ≈ 1# + half * p * c
+  S-step {a} {b} {c} {p} le ea eb =
+    cancel le (trans (S-step₁ a b p) (trans (*-cong refl (+-cong ea eb)) (S-step₂ p c)))
 
   S : ∀ k ν → (∀ i → i ℕ.< k → ν i ≈ 1#) → Z ν 0 k + hp k ≈ 1# + hp k * ν k
   S zero ν h = trans (+-comm _ _) (+-cong refl (sym (*-identityˡ _)))

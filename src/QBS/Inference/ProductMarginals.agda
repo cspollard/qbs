@@ -42,6 +42,7 @@ import QBS.Inference.ExpectationIntProduct as EIP
 import QBS.Inference.Expectation as EX
 import QBS.Inference.ExpDistPair as EDP
 open import Algebra using (CommutativeSemiring)
+open import QBS.Analysis.Signed using (module Signed)
 
 -- the arithmetic, over an abstract commutative semiring
 module Alg {c ℓ} (R : CommutativeSemiring c ℓ) where
@@ -69,8 +70,23 @@ module Alg {c ℓ} (R : CommutativeSemiring c ℓ) where
         ((con 1 :+ con 1) :* con 0 :+ con 0 :* (con 1 :+ con 1))) :+ con 0 :+ con 0
     := ((con 1 :+ con 1) :+ (con 0 :+ ((con 1 :+ con 1) :* (con 1 :+ con 1) :+ con 0 :* con 0))) :+ con 0) refl
 
+-- `6 − 2·2 = 2` for signed values, whatever their representation: only the positive and negative parts of the
+-- two numerals enter, as plain equations (so no concrete cut arithmetic is compared at the use site)
+module VarGen {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) where
+  open CommutativeSemiring R
+  open Signed R F using (Sg; _≃_; mk≃; _+S_; _*S_; -S_)
+  open Signed.Sg
+  open SubSemiring F using (Is-0)
+  open Alg R using (var-eq)
+
+  var-gen : ∀ s t → pos s ≈ ((1# + 1#) + (1# + 1#)) + (1# + 1#) → neg s ≈ 0# →
+    pos t ≈ 1# + 1# → neg t ≈ 0# → (s +S (-S (t *S t))) ≃ t
+  var-gen s t ps ns pt nt = mk≃ 0# Is-0 (trans
+    (+-cong (+-cong (+-cong ps (+-cong (*-cong pt nt) (*-cong nt pt))) nt) refl)
+    (trans var-eq (sym (+-cong (+-cong pt (+-cong ns (+-cong (*-cong pt pt) (*-cong nt nt)))) refl))))
+
 module ProductMarginals (lem₁ : LEM₁) where
-  open Lebesgue (lemOf lem₁) using (A; J-cong)
+  open Lebesgue (lemOf lem₁) using (A; J; J-cong)
   open Integration A using (Measure; IsProb; I; I-cong; I-scale; probClass)
   open Measurable A using (Fun; Fun-const)
   open OmegaSemiring A using (_≈_; _+_; _*_; 0#; 1#; refl; sym; trans; *-cong; +-cong; *-identityʳ; ≤-refl;
@@ -78,7 +94,7 @@ module ProductMarginals (lem₁ : LEM₁) where
   open Alg commutativeSemiring
   open Meas (lemOf lem₁) using (Meas-⊗)
   open Bounded A using (_≃_; mk≃; ≃-trans; ≃-sym; _+S_; _*S_; -S_; 1S; +S-cong; -S-cong;
-    *S-cong; finite)
+    *S-cong; finite; Bnd)
   open SubSemiring using (Is-resp; Is-0)
   open SignedTests (lemOf lem₁) using (CutQ)
   open Weights (lemOf lem₁) using (WQ)
@@ -170,36 +186,54 @@ module ProductMarginals (lem₁ : LEM₁) where
         ; cong = λ e → *-cong (Func.cong (Hom.map sumC) e) (Func.cong (Hom.map sumC) e) }
     ; map-random = λ r → Meas-⊗ (Hom.map-random sumC r) (Hom.map-random sumC r) }
 
-  -- the parts of `XYsq` are pointwise those of `sumSqI`
-  pos-pw : ∀ r → Hom.map (pos XYsq) ⟨$⟩ (α expPair ⟨$⟩ r) ≈ Hom.map sumSqC ⟨$⟩ (α expPair ⟨$⟩ r)
-  pos-pw r = pos-eq (proj₁ (α expPair ⟨$⟩ r)) (proj₂ (α expPair ⟨$⟩ r))
-
-  neg-pw : ∀ r → Hom.map (neg XYsq) ⟨$⟩ (α expPair ⟨$⟩ r) ≈ 0#
-  neg-pw r = neg-eq (proj₁ (α expPair ⟨$⟩ r)) (proj₂ (α expPair ⟨$⟩ r))
+  -- the pointwise laws, for an arbitrary pair `z` (so that `α expPair ⟨$⟩ r` is never unfolded)
+  sumSq-pw : ∀ z → Hom.map sumSqC ⟨$⟩ z ≈ (proj₁ z + proj₂ z) * (proj₁ z + proj₂ z)
+  sumSq-pw z = refl
 
   zeroP : Hom S (_×Q_ S WQ WQ) CutQ
   zeroP = _∘H_ S zeroC (fstQ S {WQ} {WQ})
 
+  zeroP-pw : ∀ z → Hom.map zeroP ⟨$⟩ z ≈ 0#
+  zeroP-pw z = refl
+
+  -- the parts of `XYsq` are pointwise those of `sumSqI`
+  pos-z : ∀ z → Hom.map (pos XYsq) ⟨$⟩ z ≈ Hom.map sumSqC ⟨$⟩ z
+  pos-z z = trans (pos-eq (proj₁ z) (proj₂ z)) (sym (sumSq-pw z))
+
+  neg-z : ∀ z → Hom.map (neg XYsq) ⟨$⟩ z ≈ Hom.map zeroP ⟨$⟩ z
+  neg-z z = trans (neg-eq (proj₁ z) (proj₂ z)) (sym (zeroP-pw z))
+
+  -- a part whose values agree pointwise with those of an integrable part is integrable
+  retest : ∀ {X : QBS S} (p : Pre X) (g h : Hom S X CutQ) → (∀ x → Hom.map g ⟨$⟩ x ≈ Hom.map h ⟨$⟩ x) →
+    Bnd (J (m p) (λ r → Hom.map g ⟨$⟩ (α p ⟨$⟩ r)) (Hom.map-random g (α-random p))) →
+    Bnd (J (m p) (λ r → Hom.map h ⟨$⟩ (α p ⟨$⟩ r)) (Hom.map-random h (α-random p)))
+  retest p g h e = Is-resp finite
+    (J-cong (m p) (Hom.map-random g (α-random p)) (Hom.map-random h (α-random p)) (λ r → e (α p ⟨$⟩ r)))
+
   sumSqI : ITest expPair
   sumSqI = record
     { pos = sumSqC ; neg = zeroP
-    ; pos-int = Is-resp finite (J-cong (m expPair) (Hom.map-random (pos XYsq) (α-random expPair))
-        (Hom.map-random sumSqC (α-random expPair)) pos-pw) (pos-int XYsq)
-    ; neg-int = Is-resp finite (J-cong (m expPair) (Hom.map-random (neg XYsq) (α-random expPair))
-        (Hom.map-random zeroP (α-random expPair)) neg-pw) (neg-int XYsq) }
+    ; pos-int = retest expPair (pos XYsq) sumSqC pos-z (pos-int XYsq)
+    ; neg-int = retest expPair (neg XYsq) zeroP neg-z (neg-int XYsq) }
 
   -- the second moment of the sum: `E[(X + Y)²] ≃ 6`
   E-atᴵ-sumSqI : E-atᴵ expPair sumSqI ≃ sixS
-  E-atᴵ-sumSqI = ≃-trans (E-atᴵ-cong expPair sumSqI XYsq (λ z → sym (pos-eq (proj₁ z) (proj₂ z)))
-    (λ z → sym (neg-eq (proj₁ z) (proj₂ z)))) E-XYsq
+  E-atᴵ-sumSqI = ≃-trans (E-atᴵ-cong expPair sumSqI XYsq (λ z → sym (pos-z z)) (λ z → sym (neg-z z))) E-XYsq
 
   ----------------------------------------------------------------------------
   -- the variance of the sum
 
   -- `6 − 2·2 = 2`
   var-arith : (sixS +S (-S (twoS *S twoS))) ≃ twoS
-  var-arith = mk≃ 0# (Is-0 finite) var-eq
+  var-arith = VarGen.var-gen commutativeSemiring finite sixS twoS refl refl refl refl
+
+  mean-sq : (E-atᴵ expPair (X +I Y) *S E-atᴵ expPair (X +I Y)) ≃ (twoS *S twoS)
+  mean-sq = *S-cong E-X+Y E-X+Y
+
+  var-mid : (E-atᴵ expPair sumSqI +S (-S (E-atᴵ expPair (X +I Y) *S E-atᴵ expPair (X +I Y)))) ≃
+    (sixS +S (-S (twoS *S twoS)))
+  var-mid = +S-cong E-atᴵ-sumSqI (-S-cong mean-sq)
 
   -- the variance of `X + Y`: `E[(X + Y)²] − (E[X + Y])² ≃ 2`
   var-sum : (E-atᴵ expPair sumSqI +S (-S (E-atᴵ expPair (X +I Y) *S E-atᴵ expPair (X +I Y)))) ≃ twoS
-  var-sum = ≃-trans (+S-cong E-atᴵ-sumSqI (-S-cong (*S-cong E-X+Y E-X+Y))) var-arith
+  var-sum = ≃-trans var-mid var-arith

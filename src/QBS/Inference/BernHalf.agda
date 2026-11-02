@@ -70,9 +70,22 @@ module BernHalf (lem₁ : LEM₁) where
   I-nW = cancel half≤1 (trans (+-comm half _) (trans (+-cong refl (sym I-W))
     (trans (I-χ-compl fairCoin bW) (trans (I-const fairCoin L-one 1# ≤-refl) (sym hh)))))
 
+  -- the integrand is a·χ_W + b·χ_{Wᶜ} pointwise
+  θ-go : ∀ (f : Hom S BoolQ AQ) r (d : W (lower r) ⊎ (W (lower r) → ⊥)) →
+    proj₁ (Hom.map f ⟨$⟩ boolQ (BD.flag d))
+      ≈ proj₁ (Hom.map f ⟨$⟩ trueQ) * χ W r + proj₁ (Hom.map f ⟨$⟩ falseQ) * χ (λ y → W y → ⊥) r
+  θ-go f r (inj₁ p) = trans (sym (+-identityʳ _)) (+-cong (sym (trans (*-cong refl (χ-in W r p)) (*-identityʳ _)))
+    (sym (trans (*-cong refl (χ-out (λ y → W y → ⊥) r (λ n → n p))) (zeroʳ _))))
+  θ-go f r (inj₂ np) = trans (sym (+-identityˡ _)) (+-cong (sym (trans (*-cong refl (χ-out W r np)) (zeroʳ _)))
+    (sym (trans (*-cong refl (χ-in (λ y → W y → ⊥) r np)) (*-identityʳ _))))
+
+  θ-split : ∀ (f : Hom S BoolQ AQ) r → proj₁ (Hom.map f ⟨$⟩ (indθ half ⟨$⟩ r))
+    ≈ proj₁ (Hom.map f ⟨$⟩ trueQ) * χ W r + proj₁ (Hom.map f ⟨$⟩ falseQ) * χ (λ y → W y → ⊥) r
+  θ-split f r = θ-go f r (decθ half (lower r))
+
   -- the integral of a·χ_W + b·χ_{Wᶜ}, the integrand against `bernθ ½`
   I-θ : ∀ f → ∫ (bernθ half) f ≈ half * proj₁ (Hom.map f ⟨$⟩ trueQ) + half * proj₁ (Hom.map f ⟨$⟩ falseQ)
-  I-θ f = trans (I-add fairCoin LF F₁ F₂ split)
+  I-θ f = trans (I-add fairCoin LF F₁ F₂ (θ-split f))
     (trans (+-cong (I-scale fairCoin a (Fun-χ bW) F₁ (λ _ → refl))
                    (I-scale fairCoin b (Fun-χ (compl bW)) F₂ (λ _ → refl)))
     (trans (+-cong (*-cong refl I-W) (*-cong refl I-nW)) (+-cong (*-comm a half) (*-comm b half))))
@@ -82,14 +95,6 @@ module BernHalf (lem₁ : LEM₁) where
     LF = Hom.map-random f {α (bernθ half)} (α-random (bernθ half))
     F₁ = Fun-scale a (proj₂ (Hom.map f ⟨$⟩ trueQ)) (Fun-χ bW)
     F₂ = Fun-scale b (proj₂ (Hom.map f ⟨$⟩ falseQ)) (Fun-χ (compl bW))
-    go : ∀ r (d : W (lower r) ⊎ (W (lower r) → ⊥)) →
-      proj₁ (Hom.map f ⟨$⟩ boolQ (BD.flag d)) ≈ a * χ W r + b * χ (λ y → W y → ⊥) r
-    go r (inj₁ p) = trans (sym (+-identityʳ a)) (+-cong (sym (trans (*-cong refl (χ-in W r p)) (*-identityʳ a)))
-      (sym (trans (*-cong refl (χ-out (λ y → W y → ⊥) r (λ n → n p))) (zeroʳ b))))
-    go r (inj₂ np) = trans (sym (+-identityˡ b)) (+-cong (sym (trans (*-cong refl (χ-out W r np)) (zeroʳ a)))
-      (sym (trans (*-cong refl (χ-in (λ y → W y → ⊥) r np)) (*-identityʳ b))))
-    split : ∀ r → proj₁ (Hom.map f ⟨$⟩ (indθ half ⟨$⟩ r)) ≈ a * χ W r + b * χ (λ y → W y → ⊥) r
-    split r = go r (decθ half (lower r))
 
   -- the integral against `bernB` is ½a + ½b
   I-B : ∀ f → ∫ bernB f ≈ half * proj₁ (Hom.map f ⟨$⟩ trueQ) + half * proj₁ (Hom.map f ⟨$⟩ falseQ)
