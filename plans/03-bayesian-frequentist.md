@@ -878,3 +878,25 @@ Revised item A, the exponential chain rule (2026-11-02, done).  Item A is now co
 - **Merge:** `make check` (238 files), `longcheck` (35) and `doccheck` pass.  Timings mine, at load ≈ 6.
 - **Left from A:** `DFaff` for l > 1; measurability rules for products and compositions (still passed to the bridge).
 - **Next:** item B (families as pushforwards; one change-of-variables theorem through A).
+
+Revised item B, families as pushforwards (2026-11-02, done except the change of variables).
+- **Pushforward expectation:** the generic lemmas existed (`SFinite.∫ᴹ-map`, `Monad.∫-map`,
+  `ExpectationInt.E-atᴵ-map`).  New in `Inference/PushforwardExpectation` (5.3 s): `pushI`/`E-atᴵ-push` (an
+  `ITest` of the pushforward from one of the composites, same expectation) and `constI`/`E-atᴵ-const`.
+- **`Inference/ExpPushforward` (7.7 s, 1.05 GB):** `expPush = mapPre (scaleH c idW) expDist` for any finite `c`
+  (no positivity, rationality or reciprocal).  `E-atᴵ-powPush n : E[Xⁿ] ≃ cⁿ·n!` from the Exp(1) moments with no new
+  integral; `mean-push`, `second-push`, `var-push : Var ≃ c²`; with `l * c ≈ 1`, `mean-rate`/`var-rate` as in
+  `ExpRateDist`.  This supersedes the density route of `ExpRate*` for moments (≈ 1000 lines there).
+- **`Inference/GaussAffine` (8.3 s, 1.17 GB):** N(μ, σ²) as the statistic `μ + σX` of `gaussR` (`affI`; μ, σ signed),
+  not as a `Pre` on a new codomain: `E-atᴵ-affI : E[μ + σX] ≃ μ`, `var-affI : Var ≃ σ²`.  Algebra generic in
+  `Analysis/AffineAlg` (3.0 s).
+- **Merge:** `make check` (242 files), `longcheck` (35) and `doccheck` pass.  Timings mine, at load ≈ 5.
+- **Change of variables (not done; findings):**
+  - Dyadic scaling `∫ f(2x) dλ = ½ ∫ f dλ` looks structural.  It needs a first-bit split of the fair coin,
+    `J fairCoin h = ½ Σ_b J (h (b ∷ ·))`, and a reindexing of `∑ᶠ` over ℕ × Bool ≅ ℕ; neither exists yet.
+  - General c needs a uniqueness principle for measures on `WQ` (agreement on intervals ⇒ equal integrals; a π–λ or
+    monotone-class argument).  `Analysis/Uniqueness` covers only probability measures on the coin space agreeing on
+    cylinders; transporting it to `WQ` through the binary expansion may be the route.
+  - Until then, densities and pushforwards agree only where checked directly (`ExpRateOne` at rate 1).
+- **Left:** the change-of-variables theorem (above); a `Pre` for N(μ, σ²) on a signed codomain; from item A,
+  measurability rules and `DFaff` for l > 1.
