@@ -4,16 +4,18 @@
 --
 -- Take measurable tests h, k : [0,∞] ⇒ [0,∞] and G with the unit-interval identity on each [n, n+1]
 --     ∫₀¹ h(n + u) du + G (n+1) = G n + ∫₀¹ k(n + u) du,
--- `G 0 = 0` and `G(N) → 0` (for every m, eventually `G N ≤ ½ᵐ`).  `∫ᴹ-leb` writes the Lebesgue integrals as the sums of
+-- `G 0 = 0` and `G(N) → 0` along a subsequence (for every m and N₀ some N ≥ N₀ has `G N ≤ ½ᵐ`).  `∫ᴹ-leb` writes the Lebesgue integrals as the sums of
 -- the unit-interval integrals, and the partial sums telescope: `Σ_{n<N} ∫₀¹ h(n+u) du + G N = Σ_{n<N} ∫₀¹ k(n+u) du`.
--- Hence `∫ h dλ ≈ ∫ k dλ` (`glue`).  An eventual (not just frequent) tail is needed because `G` need not be monotone.
+-- Hence `∫ h dλ ≈ ∫ k dλ` (`glue`).  A frequent tail suffices: the partial sums of the k-integrals increase, so they are
+-- bounded by their value at a far-out N where G is small.
 module QBS.Continuous.TailFTCLipHalf where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
-open import Data.Product.Base using (Σ; _,_)
+open import Data.Product.Base using (Σ; _×_; _,_)
+import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -52,12 +54,12 @@ module TailFTCLipHalf (lem₁ : LEM₁) where
       (trans (sym (+-assoc (psum a N) (g N) (b N)))
         (trans (+-cong (tele-ibp a b g e N) refl) (+-assoc (g 0) (psum b N) (b N)))))
 
-  -- sums: `∑ a ≈ ∑ b` when `G 0 = 0` and G tends to 0 eventually
+  -- sums: `∑ a ≈ ∑ b` when `G 0 = 0` and G tends to 0 along a subsequence
   sum-ibp : ∀ (a b g : ℕ → ∣A∣) → (∀ n → a n + g (suc n) ≈ g n + b n) → g 0 ≈ 0# →
-    (∀ m → Σ ℕ (λ N → ∀ N′ → N ℕ.≤ N′ → g N′ ≤ hp m)) → ∑ᶠ a ≈ ∑ᶠ b
+    (∀ m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × g N ≤ hp m)) → ∑ᶠ a ≈ ∑ᶠ b
   sum-ibp a b g e g0 tl = ≤-antisym
     (∑ᶠ-lub (λ N → ≤-trans ≤-+ʳ (≤-trans (≤-reflexive (psum-eq N)) (psum≤∑ᶠ b N))))
-    (arch (λ m → ∑ᶠ-lub (λ N′ → go m (tl m) N′)))
+    (arch (λ m → ∑ᶠ-lub (λ N′ → go m N′ (tl m N′))))
     where
     psum-eq : ∀ N → psum a N + g N ≈ psum b N
     psum-eq N = trans (tele-ibp a b g e N) (trans (+-cong g0 refl) (+-identityˡ _))
@@ -66,14 +68,21 @@ module TailFTCLipHalf (lem₁ : LEM₁) where
     mono zero N′ = ≤-refl
     mono (suc N) N′ = ≤-trans (mono N N′) (psum-inc b (N ℕ.+ N′))
 
-    go : ∀ m → Σ ℕ (λ N → ∀ N′ → N ℕ.≤ N′ → g N′ ≤ hp m) → ∀ N′ → psum b N′ ≤ ∑ᶠ a + hp m
-    go m (N , gb) N′ = ≤-trans (mono N N′) (≤-trans (≤-reflexive (sym (psum-eq (N ℕ.+ N′))))
-      (+-mono (psum≤∑ᶠ a (N ℕ.+ N′)) (gb (N ℕ.+ N′) (ℕ.m≤m+n N N′))))
+    pe : ∀ {k l} → k ≡.≡ l → psum b k ≈ psum b l
+    pe ≡.refl = refl
+
+    mono≤ : ∀ {N′ N} → N′ ℕ.≤ N → psum b N′ ≤ psum b N
+    mono≤ {N′} le with ℕ.m≤n⇒∃[o]m+o≡n le
+    ... | o , ≡.refl = ≤-trans (mono o N′) (≤-reflexive (pe (ℕ.+-comm o N′)))
+
+    go : ∀ m N′ → Σ ℕ (λ N → N′ ℕ.≤ N × g N ≤ hp m) → psum b N′ ≤ ∑ᶠ a + hp m
+    go m N′ (N , le , gb) = ≤-trans (mono≤ le) (≤-trans (≤-reflexive (sym (psum-eq N)))
+      (+-mono (psum≤∑ᶠ a N) gb))
 
   module Glue (h k : Hom S WQ WQ) (G : ∣A∣ → ∣A∣)
     (unit : ∀ n → J fairCoin (λ r → map h ⟨$⟩ shiftPt n r) (Meas-hshift n h) + G (natE (suc n))
               ≈ G (natE n) + J fairCoin (λ r → map k ⟨$⟩ shiftPt n r) (Meas-hshift n k))
-    (G0 : G 0# ≈ 0#) (tl : ∀ m → Σ ℕ (λ N → ∀ N′ → N ℕ.≤ N′ → G (natE N′) ≤ hp m)) where
+    (G0 : G 0# ≈ 0#) (tl : ∀ m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × G (natE N) ≤ hp m)) where
 
     -- ∫ h dλ = ∫ k dλ
     glue : ∫ᴹ {WQ} lebPre h ≈ ∫ᴹ {WQ} lebPre k

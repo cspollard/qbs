@@ -27,7 +27,7 @@ open import QBS.Analysis.TailFTC using (module AlgT)
 
 module AlgP (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Arch R using (half; hp; cancel≤)
+  open Arch R using (half; hp; cancel≤; half+half)
   open AlgT A R using (P; P≥1; cancel≤P)
   open Exp A using (natE)
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
@@ -331,3 +331,38 @@ module AlgP (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
       cr2 : ∀ {a w} → a + w ≤ M → w ≤ 1# →
         hh (suc j) a + w * (natE (suc j) * hh j a) ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P S
       cr2 aw w1 = ≤-trans (proj₂ (proj₂ (cert j)) aw w1) (+-mono ≤-refl (*-mono (_ * _) (P-mono i3)))
+
+  ----------------------------------------------------------------------------
+  -- natural numbers and powers of ½ (used for the tail `xʲ e^{−x} → 0`)
+
+  natE-+ : ∀ a b → natE (a ℕ.+ b) ≈ natE a + natE b
+  natE-+ zero b = sym (+-identityˡ (natE b))
+  natE-+ (suc a) b = trans (+-cong (natE-+ a b) refl) (solve 3 (λ x y o → (x :+ y) :+ o := (x :+ o) :+ y) refl (natE a) (natE b) 1#)
+
+  natE-* : ∀ a b → natE (a ℕ.* b) ≈ natE a * natE b
+  natE-* zero b = solve 1 (λ x → con 0 := con 0 :* x) refl (natE b)
+  natE-* (suc a) b = trans (natE-+ b (a ℕ.* b)) (trans (+-cong refl (natE-* a b))
+    (solve 2 (λ x y → x :+ y :* x := (y :+ con 1) :* x) refl (natE b) (natE a)))
+
+  -- 2ᵏ as a natural number
+  pnat : ℕ → ℕ
+  pnat zero = 1
+  pnat (suc k) = pnat k ℕ.+ pnat k
+
+  natE-pnat : ∀ k → natE (pnat k) ≈ P k
+  natE-pnat zero = +-identityˡ 1#
+  natE-pnat (suc k) = trans (natE-+ (pnat k) (pnat k)) (+-cong (natE-pnat k) (natE-pnat k))
+
+  pw-mul : ∀ e x y → pw e (x * y) ≈ pw e x * pw e y
+  pw-mul zero x y = sym (*-identityˡ 1#)
+  pw-mul (suc e) x y = trans (*-cong refl (pw-mul e x y))
+    (solve 4 (λ x′ y′ p q → (x′ :* y′) :* (p :* q) := (x′ :* p) :* (y′ :* q)) refl x y (pw e x) (pw e y))
+
+  pw-one : ∀ e → pw e 1# ≈ 1#
+  pw-one zero = refl
+  pw-one (suc e) = trans (*-identityˡ _) (pw-one e)
+
+  Phz : ∀ z m → P z * hp (z ℕ.+ m) ≈ hp m
+  Phz zero m = *-identityˡ _
+  Phz (suc z) m = trans (solve 3 (λ p h q → (p :+ p) :* (h :* q) := p :* ((h :+ h) :* q)) refl (P z) half (hp (z ℕ.+ m)))
+    (trans (*-cong refl (trans (*-cong half+half refl) (*-identityˡ _))) (Phz z m))
