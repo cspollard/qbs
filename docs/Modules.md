@@ -51,7 +51,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
 | `QBS.Inference.GaussReal` | 213 | lem | The standard Gaussian on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`), with `E[X] ≃ 0` and `E[X²] ≃ 1`, and no value for `π` (nor for `Z = ∫₀^∞ e^{−x²/2}`): the density is the symmetric `[φ , φ]`, `φ = ... |
+| `QBS.Inference.GaussRealAbs` | 99 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
+| `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.PolyDominationOdd` | 110 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
@@ -139,6 +141,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 108 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
 | `QBS.Analysis.GaussCert` | 300 | lem | Pointwise algebra for the Gaussian moments `∫₀^∞ xʲ e^{−x²/2} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussCertM1` | 124 |  | The Gaussian pack at `j = −1`: pointwise algebra for `∫₀^∞ x e^{−x²/2} dx = 1` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GaussExp` | 139 |  | The Gaussian `Φ x = E (½ x²)` from an exponential E (`Analysis/GaussCert`'s input), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GaussTail` | 44 |  | Small facts for the Gaussian tail and finiteness, over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
@@ -206,6 +209,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
 | `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
 | `QBS.Continuous.GaussInverse` | 129 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
+| `QBS.Continuous.GaussMean` | 109 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
+| `QBS.Continuous.GaussMeanUnit` | 194 | lem | Gaussian first moment on the half-line (part 1): the unit-interval identity for `G = e^{−x²/2}`. |
 | `QBS.Continuous.GaussMoment` | 126 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
 | `QBS.Continuous.HalfLine` | 92 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
 | `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
