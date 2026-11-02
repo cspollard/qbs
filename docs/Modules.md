@@ -111,7 +111,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.ExtNat` | 339 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 108 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
-| `QBS.Analysis.GeometricNorm` | 291 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
+| `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
 | `QBS.Analysis.Half` | 85 |  | Powers of ½ in an `OmegaSemiring` with a half (`half + half ≈ 1`): `hp n = ½ⁿ` is the stdlib power `half ^ n` (so `hp (suc n) = half * hp n` holds by definition), with `½ (x + x) = x`, the doubling law `½ⁿ⁺¹ + ½ⁿ⁺¹ = ... |
 | `QBS.Analysis.HalfOrder` | 58 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
 | `QBS.Analysis.Indicators` | 178 | lem | Indicator functions of Borel sets (classically decided), and the measure of a disjoint union as the supremum of the partial sums. |
@@ -164,6 +164,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.HalfLine` | 92 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
+| `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineNegExp` | 119 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 70 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
