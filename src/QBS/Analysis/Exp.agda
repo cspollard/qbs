@@ -274,3 +274,45 @@ module Exp {ℓ} (A : OmegaSemiring ℓ) where
 
     exp≤three^ : ∀ {x} N → x ≤ natE N → exp x ≤ pw three N
     exp≤three^ N h = ≤-trans (exp-mono h) (exp-natE N)
+
+    ----------------------------------------------------------------------------
+    -- a second-order bound: `exp x ≤ 1 + (x + x²)` for `x ≤ 1`
+    --
+    -- The terms from index 2 on satisfy `xⁿ⁺² / (n+2)! ≤ x² · ½ⁿ⁺¹` (by `ι (n+2) ≤ ½ⁿ⁺¹` and `xⁿ ≤ 1`),
+    -- and `∑_{n<N} ½ⁿ⁺¹ = ½ ∑_{n<N} ½ⁿ ≤ ½ · 2 = 1`.  It gives `1 − e^{−t} ≤ t + t²` in `Analysis/NegExp`
+    -- users, which has no upper bound for `exp` otherwise.
+
+    pw≤1 : ∀ {x} → x ≤ 1# → ∀ n → pw x n ≤ 1#
+    pw≤1 h n = ≤-trans (pw-mono n h) (≤-reflexive (pw-one n))
+
+    term0 : ∀ x → term x 0 ≈ 1#
+    term0 x = *-identityˡ 1#
+
+    term1 : ∀ x → term x 1 ≈ x
+    term1 x = trans (*-cong (trans (*-identityʳ _) inv0) (*-identityʳ x)) (*-identityˡ x)
+
+    -- `½ (1 + 1) = 1`
+    half2 : half * (1# + 1#) ≈ 1#
+    half2 = trans (distribˡ half 1# 1#) (trans (+-cong (*-identityʳ half) (*-identityʳ half)) half+half)
+
+    term2≤ : ∀ {x} → x ≤ 1# → ∀ n → term x (suc (suc n)) ≤ (x * x) * (half * pw half n)
+    term2≤ {x} h n = ≤-trans
+      (*-mono (ι (suc (suc n))) (≤-trans (*-mono x (*-mono x (pw≤1 h n))) (≤-reflexive (*-cong refl (*-identityʳ x)))))
+      (≤-trans (≤-reflexive (*-comm (ι (suc (suc n))) (x * x))) (*-mono (x * x) (ι≤half^ (suc n))))
+
+    tail≤ : ∀ {x} → x ≤ 1# → ∀ N → psum (λ n → term x (suc (suc n))) N ≤ x * x
+    tail≤ {x} h N = ≤-trans (psum-mono (term2≤ h) N)
+      (≤-trans (≤-reflexive (psum-scale (x * x) (λ n → half * pw half n) N))
+        (≤-trans (*-mono (x * x) (≤-trans (≤-reflexive (psum-scale half (pw half) N))
+                   (≤-trans (*-mono half (psum-geom≤2 N)) (≤-reflexive half2))))
+                 (≤-reflexive (*-identityʳ (x * x)))))
+
+    exp≤quad : ∀ {x} → x ≤ 1# → exp x ≤ 1# + (x + x * x)
+    exp≤quad {x} h = ⨆-lub (psum (term x)) (psum-inc (term x)) bound
+      where
+        bound : ∀ N → psum (term x) N ≤ 1# + (x + x * x)
+        bound zero = 0-least
+        bound (suc zero) = ≤-trans (≤-reflexive (trans (+-identityˡ _) (term0 x))) ≤-+ʳ
+        bound (suc (suc M)) = ≤-trans (≤-reflexive (psum-shift (term x) (suc M)))
+          (≤-trans (+-mono (≤-reflexive (term0 x)) (≤-reflexive (psum-shift (λ n → term x (suc n)) M)))
+            (+-mono ≤-refl (≤-trans (+-mono (≤-reflexive (term1 x)) (tail≤ h M)) ≤-refl)))
