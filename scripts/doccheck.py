@@ -16,7 +16,7 @@ def modfile(m): return os.path.join(ROOT, 'src', *m.split('.')) + '.agda'
 cur = []
 for ln in open(os.path.join(ROOT, 'docs', 'Interface.md')):
     if ln.startswith('### '):
-        cur = re.findall(r'`(QBS\.[A-Za-z.]+)`', ln)
+        cur = re.findall(r'`(QBS\.[A-Za-z0-9.]+)`', ln)
         if not cur and re.search(r'`(?:Borel|Analysis|Model|Continuous)', ln): cur = []
         for m in cur:
             if not os.path.exists(modfile(m)): bad.append(f'Interface.md: no module {m}')
@@ -28,7 +28,7 @@ for ln in open(os.path.join(ROOT, 'docs', 'Interface.md')):
         name = name.strip()
         txt = ' '.join(open(modfile(x)).read() for x in cur if os.path.exists(modfile(x)))
         # names mentioned with a module prefix in the line, e.g. "`QBS.Exponential`: `name`"
-        extra = re.findall(r'`(QBS\.[A-Za-z.]+)`', ln)
+        extra = re.findall(r'`(QBS\.[A-Za-z0-9.]+)`', ln)
         for x in extra:
             if os.path.exists(modfile(x)): txt += open(modfile(x)).read()
         if not re.search(r'(?<![\w])' + re.escape(name) + r'(?![\w])', txt) and \
@@ -37,7 +37,7 @@ for ln in open(os.path.join(ROOT, 'docs', 'Interface.md')):
     # secondary names on the line: `a`, `b` before the dash
     if m and cur:
         for n in re.findall(r'`([^`\s]+)`', ln.split(' — ')[0])[1:]:
-            txt = ' '.join(open(modfile(x)).read() for x in cur + re.findall(r'`(QBS\.[A-Za-z.]+)`', ln) if os.path.exists(modfile(x)))
+            txt = ' '.join(open(modfile(x)).read() for x in cur + re.findall(r'`(QBS\.[A-Za-z0-9.]+)`', ln) if os.path.exists(modfile(x)))
             if n not in txt and not n.startswith('QBS.'): bad.append(f'Interface.md: `{n}` not found in {", ".join(cur)}')
 
 # 2. excerpts

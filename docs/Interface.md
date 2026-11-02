@@ -139,7 +139,7 @@ Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
 
-### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`, `QBS.Continuous.HalfLineUnit`, `QBS.Continuous.HalfLineNorm`, `QBS.Continuous.HalfLineMean`, `QBS.Analysis.GeometricNorm`
+### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`, `QBS.Continuous.HalfLineUnit`, `QBS.Continuous.HalfLineNorm`, `QBS.Continuous.HalfLineMean`, `QBS.Continuous.HalfLineMoment2`, `QBS.Analysis.GeometricNorm`, `QBS.Analysis.GeometricMoment2`
 Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,∞]` (module parameter `lem₁ : LEM₁`).
 - `shiftPt`, `shiftPre n`, `lebPre`, `Meas-shift` (`HalfLine`) — `shiftPre n` is the uniform on [0,1] shifted to `n` (probe `r ↦ (1, n + expansion r)` over the fair coin); `lebPre = sumPre shiftPre` is Lebesgue measure on [0,∞), `λ = ∑ₙ (n + U)`.
 - `Meas-hshift`, `∫ᴹ-shift`, `∫ᴹ-leb` (`HalfLine`) — `∫ᴹ lebPre h ≈ ∑ᶠ n. J fairCoin (r ↦ h (n + expansion r))` for every morphism `h : WQ ⇒ WQ` (unbounded tests included).
@@ -147,13 +147,17 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `G`, `F`, `q`, `F-split`, `xs-rec`, `I-negExp-unit` (`HalfLineUnit`) — `∫₀¹ e^{−u} du + e^{−1} ≈ 1` (no subtraction), by self-similarity: `F j = ∫₀¹ e^{−2⁻ʲ u} du` satisfies `F j ≈ ½ (e^{−2⁻⁽ʲ⁺¹⁾} F (j+1)) + ½ F (j+1)` (first-bit split and `negExp-add`).
 - `negExp-pw`, `gb`, `norm-from`, `∫ᴹ-leb-negExp-norm` (`HalfLineNorm`) — `e^{−n} ≈ gⁿ`, and `∫ᴹ lebPre negExpH ≈ 1#`, i.e. `∫₀^∞ e^{−x} dx = 1`.
 - `xNegExpH`, `KK`, `KK-split`, `ww-rec`, `K-pin`, `shift-split`, `∫ᴹ-leb-xNegExp` (`HalfLineMean`) — the mean `∫ᴹ lebPre xNegExpH ≈ 1#`, i.e. `∫₀^∞ x e^{−x} dx = 1`, for `xNegExpH : x ↦ x e^{−x}`.  With `K = ∫₀¹ u e^{−u} du`: `K-pin : K + (g + g) ≈ 1#` (self-similarity of `Kⱼ = ∫₀¹ u e^{−2⁻ʲu} du`, via `wⱼ = hⱼ²Kⱼ + hⱼqⱼ` and `GeometricNorm.norm-s`), `shift-split : ∫₀¹ (n+u) e^{−(n+u)} du ≈ e^{−n} (n I + K)`, then `GeometricNorm.GeoMean.total`.
+- `x²NegExpH`, `LL`, `LL-split`, `x2-rec`, `L-pin`, `shift-split`, `∫ᴹ-leb-x²NegExp` (`HalfLineMoment2`) — the second moment `∫ᴹ lebPre x²NegExpH ≈ 1# + 1#`, i.e. `∫₀^∞ x² e^{−x} dx = 2`, for `x²NegExpH : x ↦ x² e^{−x}`.  With `L = ∫₀¹ u² e^{−u} du`: `L-pin : L + (((g + g) + (g + g)) + g) ≈ 1# + 1#` (self-similarity of `Lⱼ = ∫₀¹ u² e^{−2⁻ʲu} du`: the combination `x2 j = ½ hⱼ³ Lⱼ + (hⱼ + ½hⱼ²) qⱼ` has the recursion `x2-rec`, from the pins of `HalfLineUnit` and the mean at every scale, and `GeometricNorm.norm`), `shift-split : ∫₀¹ (n+u)² e^{−(n+u)} du ≈ e^{−n} (n² I + 2n K + L)`, then `GeoMom2.total`.
 - `ss`, `two`, `U-inv`, `L-inv`, `base`, `norm`, `Geo.total` (`GeometricNorm`, `module GeometricNorm A R`, abstract in any `OmegaSemiring` with `Arch`) — `norm`: the recursion `x m ≈ (1 + q (m+1)) x (m+1)`, `q m ≈ q (m+1)²`, `q m ≤ 1`, the one-step facts (`base`) and `hp m q m ≤ x m ≤ hp m` give `x 0 + q 0 ≈ 1`, by error-doubling invariants and `arch`; `Geo.total`: `I + g ≈ 1` and `gᴺ (N+1) ≤ 1` give `(∑ᶠ gⁿ) I ≈ 1`.
+- `Lsplit`, `x2-rec-alg`, `x2-lo`, `x2-hi`, `L5-alg`, `GeoMom2.total` (`GeometricMoment2`, `module GeometricMoment2 A R`, abstract) — the ring identities of the first-bit split of `L`, the recursion for `x2`, its bounds `h q ≤ x2 ≤ h`, and `GeoMom2.total`: `I + g ≈ 1`, `K + 2g ≈ 1`, `L + 5g ≈ 2` and `gᴺ (N+1) ≤ 1` give `∑ᶠ gⁿ (n² I + 2n K + L) ≈ 2` (the telescoping error `pol N gᴺ`, `pol N = N² + 2N + 2`, is small along `N = 4t`).
 
-### `QBS.Continuous.SFiniteReweight`, `QBS.Continuous.ExpDist`, `QBS.Inference.ExpDistMean`
+### `QBS.Continuous.SFiniteReweight`, `QBS.Continuous.ExpDist`, `QBS.Continuous.ExpDistSq`, `QBS.Inference.ExpDistMean`, `QBS.Inference.ExpDistVar`
 
 - `mulH`, `reweightPre`, `∫ᴹ-reweight` (`SFiniteReweight`) — reweighting `p : Pre (XW X)` by a density `d : X ⇒ WQ`: `∫ᴹ (reweightPre d p) f ≈ ∫ᴹ p (mulH d f)` with `mulH d f` the pointwise product.
 - `expW`, `∫ᴹ-expW`, `massP-expW`, `expDist`, `∫-expDist`, `∫-expDist-one`, `idW`, `∫-expDist-id` (`ExpDist`) — the exponential distribution: `expW = reweightPre negExpH lebPre`, `massP expW ≈ 1#`, `expDist = normPre expW 1# _ : C.Pre WQ`, `∫ᴹ (ιPre expDist) f ≈ ∫ᴹ lebPre (mulH negExpH f)`, total mass `1#` and mean `∫ᴹ (ιPre expDist) idW ≈ 1#`.
 - `idC`, `zeroC`, `idI`, `E-atᴵ-idI` (`ExpDistMean`) — `idI : ITest expDist` (`pos = id`, `neg = 0`) and `E-atᴵ expDist idI ≃ 1`, so `E-atᴵ-map`, `E-respᴵ` and linearity of `ExpectationInt` apply to the exponential distribution.
+- `sqW`, `∫-expDist-sq` (`ExpDistSq`) — the second moment `∫ᴹ (ιPre expDist) sqW ≈ 1# + 1#` for the squaring statistic `sqW : x ↦ x·x`.
+- `sqC`, `sqI`, `E-atᴵ-sqI`, `var-expDist` (`ExpDistVar`) — `sqI : ITest expDist` (`pos = x²`, `neg = 0`), `E-atᴵ expDist sqI ≃ 2`, and the variance `E-atᴵ expDist sqI +S (-S (E-atᴵ expDist idI *S E-atᴵ expDist idI)) ≃ 1` (`E[X²] − (E X)² = 1`; `Analysis/Variance.Var` needs a bounded function, so the difference is stated directly as a signed value).
 
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
