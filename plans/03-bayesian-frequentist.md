@@ -399,7 +399,7 @@ Product marginals (2026-11-02, done): `Inference/ProductMarginals`.
   - `var-sum : Var(X+Y) ≃ 2`.
 - **Check cost:** about 31 s and 1.4 GB, the second-slowest new module.  Moving `var-arith` into the abstract `Alg`
   saved 3 s.  The rest is unfolding of concrete cut arithmetic in `sumSqI` (9 s), `var-arith` (4.8 s) and
-  `pos-pw`/`neg-pw` (2.9 s each).  A cost pass is in progress.
+  `pos-pw`/`neg-pw` (2.9 s each).  The cost pass that followed is recorded below.
 
 n flips under a uniform prior (2026-11-02, done):
 - **`Continuous/UniformMomentN` (5.4 s):** `moment-N : (n+1)·∫uⁿ ≈ 1` for all n.
@@ -412,4 +412,29 @@ n flips under a uniform prior (2026-11-02, done):
   - Laplace's rule of succession, `succession : (n+2)·P(Hⁿ⁺¹) ≃ (n+1)·P(Hⁿ)`.
 - **`Inference/BernHalf` (5.8 s):** `bernθ-half≈bernB : bernθ ½ ≈ᵖ bernB`.
 - **`longcheck` regression:** the merge pushed `longcheck` to 37 flagged (`BernHalf.I-θ`, `UniformMomentN.S-step`).
-  The agent had misread the threshold.  A fix is in progress together with the cost pass.
+  The agent had misread the threshold.  Fixed by the cleanup below.
+
+Longcheck fix and check-cost pass (2026-11-02, done):
+- **`longcheck`:** back to 35 flagged.  `BernHalf.I-θ` lost its local helpers to module-level `θ-go`/`θ-split`, and
+  `UniformMomentN.S-step` is split into `S-step₁`/`S-step₂`.  No exported statements changed.
+- **Cause of the cost:** mixed forms of `_+_`.  The instantiated `Alg` statement uses
+  `CommutativeSemiring._+_ (commutativeSemiring A)`, while numerals like `twoS`/`sixS` use `OmegaSemiring._+_ A`.
+  Since `Cut` is an eta record, comparing the two unfolds the cut arithmetic field by field.  Separately,
+  `α expPair ⟨$⟩ r` was unfolded inside each `sumSqI` field and in `pos-pw`/`neg-pw`.
+- **Cure:**
+  - State the arithmetic in a module generic over a `CommutativeSemiring` and a `SubSemiring` (`VarGen.var-gen`,
+    `SixGen.six-gen`).  The numerals' pos/neg parts enter as small equations, discharged by `refl` at the use site,
+    so the use site compares only small terms.
+  - State the pointwise laws for an arbitrary pair `z` (`pos-z`, `neg-z`), and give `sumSqI` a typed `retest` helper.
+  - This pattern probably applies elsewhere in the library.
+- **Timings (forced recheck, dependencies warm, my run):**
+
+  | Module | Before | After |
+  |---|---|---|
+  | `ProductMarginals` | 30.7 s, 1.4 GB | 9.6 s, 1.0 GB |
+  | `ExpDistPair` | 11.6 s, 1.1 GB | 7.5 s, 1.1 GB |
+  | `BernHalf` | 5.8 s | 5.8 s |
+  | `UniformMomentN` | 5.4 s | 5.3 s |
+  | `CoinUniformPriorN` | 9.3 s | 9.1 s |
+
+  About 6.5 s of "Miscellaneous" remains as fixed overhead in both product modules.
