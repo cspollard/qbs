@@ -12,6 +12,12 @@
 --     (`h = 2⁻ᵏ`, `ε = 2ᵏ h² = h`, `y = q k`) are proved by induction on the depth (the error doubles at
 --     each level, which `2ᵏ h² = h` absorbs), from the one-step facts `y + h y ≤ 1 ≤ y + h y + h²`
 --     (these are `1 + h ≤ eʰ ≤ 1 + h + h²`).  `arch` then pins `x 0 + q 0 ≈ 1`.
+--   * `norm-s`: the same pin at every offset, `x j + q j ≈ 1` (the estimates run from the shifted sequences, with
+--     tolerances `hs j i = ½ⁱ⁺ʲ` and error `½ʲ hs j i ≤ ½ⁱ`).
+--   * `GeoMean`: if `I + g ≈ 1` and `K + 2g ≈ 1` then `(∑ gⁿ (n I + K)) ≈ 1`; the partial sums satisfy
+--     `∑_{n<N} gⁿ (n I + K) + (N+1) gᴺ = 1`, and `(2s+1) g²ˢ ≤ 2 gˢ` makes the error small.
+--   * the ring identities for the first-bit split of `K = ∫₀¹ u e^{−hu} du` (`w-alg`, `K-rec-alg`, ...), proved here
+--     over the abstract semiring because the solver is slow on the concrete cut semiring.
 module QBS.Analysis.GeometricNorm where
 
 open import Level using (suc) renaming (zero to lzero)
@@ -203,6 +209,49 @@ module GeometricNorm (A : OmegaSemiring (suc lzero)) (R : Arch A) where
   false-alg : ∀ hj e → hj * (half * e) ≈ (half * hj) * e
   false-alg hj e = solve 3 (λ h e hf → h :* (hf :* e) := (hf :* h) :* e) refl hj e half
 
+  -- the recursion for `w = (hⱼ)² K + hⱼ q` (`K = ∫₀¹ u e^{−hⱼu} du`), from `x' + q' = 1` where `x' = a F'`,
+  -- `a = ½ hⱼ`, `hⱼ = a + a`:  `(a a)(q F' + q K' + K') + (a + a) q q = (1 + q)((a a) K' + a q)`
+  w-alg : ∀ a q F K → (a * F) + q ≈ 1# → (a * a) * (q * F + q * K + K) + (a + a) * (q * q) ≈ (1# + q) * ((a * a) * K + a * q)
+  w-alg a q F K s = begin-equality
+    (a * a) * (q * F + q * K + K) + (a + a) * (q * q)
+      ≈⟨ solve 4 (λ a q F K → (a :* a) :* (q :* F :+ q :* K :+ K) :+ (a :+ a) :* (q :* q)
+                              := (a :* q) :* ((a :* F) :+ q) :+ ((a :* a) :* (q :* K) :+ (a :* a) :* K :+ a :* (q :* q))) refl a q F K ⟩
+    (a * q) * ((a * F) + q) + ((a * a) * (q * K) + (a * a) * K + a * (q * q))
+      ≈⟨ +-cong (*-cong refl s) refl ⟩
+    (a * q) * 1# + ((a * a) * (q * K) + (a * a) * K + a * (q * q))
+      ≈⟨ solve 4 (λ a q F K → (a :* q) :* con 1 :+ ((a :* a) :* (q :* K) :+ (a :* a) :* K :+ a :* (q :* q))
+                              := (con 1 :+ q) :* ((a :* a) :* K :+ a :* q)) refl a q F K ⟩
+    (1# + q) * ((a * a) * K + a * q) ∎
+
+  -- the first-bit algebra for `K = ∫₀¹ u e^{−hⱼu} du`: with `c = q ½` (`q = e^{−½hⱼ}`),
+  --   `(½ + ½e)(q G) = c G + c (e G)`,  `(½e) G = ½ (e G)`,
+  --   `hⱼ² (½ (c F + c K) + ½ (½ K)) = (a a)(q F + q K + K)`  for `a = ½ hⱼ`
+  K-true-alg : ∀ e q G → (half + half * e) * (q * G) ≈ (q * half) * G + (q * half) * (e * G)
+  K-true-alg e q G = solve 4 (λ h e q G → (h :+ h :* e) :* (q :* G) := (q :* h) :* G :+ (q :* h) :* (e :* G)) refl half e q G
+
+  K-false-alg : ∀ e G → (half * e) * G ≈ half * (e * G)
+  K-false-alg e G = solve 3 (λ h e G → (h :* e) :* G := h :* (e :* G)) refl half e G
+
+  K-rec-alg : ∀ hj q F K → (hj * hj) * (half * ((q * half) * F + (q * half) * K) + half * (half * K))
+    ≈ ((half * hj) * (half * hj)) * (q * F + q * K + K)
+  K-rec-alg hj q F K = solve 5 (λ hj h q F K → (hj :* hj) :* (h :* ((q :* h) :* F :+ (q :* h) :* K) :+ h :* (h :* K))
+    := ((h :* hj) :* (h :* hj)) :* (q :* F :+ q :* K :+ K)) refl hj half q F K
+
+  -- `h (e G) + G = G (1 + h e)` (the pointwise bound `(1 + t) e^{−t} ≤ 1`), `h² K + h F = h (h K + F)`, and
+  -- the scale-one form `(1·1) K + 1·q + q = K + 2q`
+  KG-alg : ∀ h e G → h * (e * G) + G ≈ G * (1# + h * e)
+  KG-alg h e G = solve 3 (λ h e G → h :* (e :* G) :+ G := G :* (con 1 :+ h :* e)) refl h e G
+
+  ww-alg : ∀ h K F → (h * h) * K + h * F ≈ h * (h * K + F)
+  ww-alg h K F = solve 3 (λ h K F → (h :* h) :* K :+ h :* F := h :* (h :* K :+ F)) refl h K F
+
+  K-fin-alg : ∀ K q → ((1# * 1#) * K + 1# * q) + q ≈ K + (q + q)
+  K-fin-alg K q = solve 2 (λ K q → ((con 1 :* con 1) :* K :+ con 1 :* q) :+ q := K :+ (q :+ q)) refl K q
+
+  -- `(n + e)(P (n' ...))`: `(n + e)(P N) = P (n N + e N)`
+  shift-alg : ∀ n e P N → (n + e) * (P * N) ≈ P * (n * N + e * N)
+  shift-alg n e P N = solve 4 (λ n e P N → (n :+ e) :* (P :* N) := P :* (n :* N :+ e :* N)) refl n e P N
+
   ----------------------------------------------------------------------------
   -- the pinned value: `x 0 + q 0 ≈ 1`
 
@@ -231,6 +280,64 @@ module GeometricNorm (A : OmegaSemiring (suc lzero)) (R : Arch A) where
   norm : ∀ (q x : ℕ → ∣A∣) → Hq q → H1 q → HU q hp → HL q hp → Rec q x →
     (∀ m → hp m * q m ≤ x m) → (∀ m → x m ≤ hp m) → x 0 + q 0 ≈ 1#
   norm q x hq q1 hu hl hx lo hi = ≤-antisym (arch (norm-up q x hq q1 hu hx hi)) (arch (norm-low q x hq q1 hl hx lo))
+
+  ----------------------------------------------------------------------------
+  -- the pinned value at every offset: `x j + q j ≈ 1#`.  The same estimates run from the shifted sequences
+  -- `q (i + j)`, `x (i + j)` with tolerances `hs j i = ½ⁱ⁺ʲ`: the error `2ⁱ (hs j i)²` is `½ʲ hs j i ≤ ½ⁱ`.
+
+  hs : ℕ → ℕ → ∣A∣
+  hs j i = hp (i ℕ.+ j)
+
+  hs-two : ∀ j i → hs j i * two i ≈ hp j
+  hs-two j ℕ.zero = *-identityʳ _
+  hs-two j (ℕ.suc i) = begin-equality
+    (half * hs j i) * (two i + two i)  ≈⟨ *-assoc _ _ _ ⟩
+    half * (hs j i * (two i + two i))  ≈⟨ *-cong refl (*-comm _ _) ⟩
+    half * ((two i + two i) * hs j i)  ≈⟨ sym (*-assoc _ _ _) ⟩
+    (half * (two i + two i)) * hs j i  ≈⟨ *-cong (half-twice (two i)) refl ⟩
+    two i * hs j i                     ≈⟨ *-comm _ _ ⟩
+    hs j i * two i                     ≈⟨ hs-two j i ⟩
+    hp j ∎
+
+  hs≤hp : ∀ j i → hs j i ≤ hp i
+  hs≤hp j ℕ.zero = ≤-trans (hp≤1 j) (≤-reflexive (sym hp-zero))
+  hs≤hp j (ℕ.suc i) = *-mono half (hs≤hp j i)
+
+  E-hs : ∀ j i → E (hs j) i ≤ hp i
+  E-hs j i = ≤-trans (≤-reflexive (solve 2 (λ t h → t :* (h :* h) := (h :* t) :* h) refl (two i) (hs j i)))
+    (≤-trans (≤-reflexive (*-cong (hs-two j i) refl)) (≤-trans (≤1-mul (hs j i) (hp≤1 j)) (hs≤hp j i)))
+
+  norm-up-s : ∀ q x → Hq q → H1 q → HU q hp → Rec q x → (∀ m → x m ≤ hp m) → ∀ j n → x j + q j ≤ 1# + hp n
+  norm-up-s q x hq q1 hu hx hi j n = begin
+    x j + q j                       ≈⟨ +-cong (ss-prod q′ x′ (λ m → hx (m ℕ.+ j)) k) refl ⟩
+    ss q′ k * x′ k + q j            ≤⟨ +-mono (≤-trans (*-mono (ss q′ k) (hi (k ℕ.+ j))) (≤-reflexive (*-comm _ _))) ≤-refl ⟩
+    hs j k * ss q′ k + q j          ≤⟨ U-inv q′ (hs j) (λ m → hq (m ℕ.+ j)) (λ m → q1 (m ℕ.+ j)) (λ m → hu (m ℕ.+ j)) k ⟩
+    1# + (E (hs j) k + E (hs j) k)  ≤⟨ +-mono ≤-refl (+-mono (E-hs j k) (E-hs j k)) ⟩
+    1# + (hp k + hp k)              ≈⟨ +-cong refl (hp-double n) ⟩
+    1# + hp n ∎
+    where
+      k = ℕ.suc n
+      q′ = λ i → q (i ℕ.+ j)
+      x′ = λ i → x (i ℕ.+ j)
+
+  norm-low-s : ∀ q x → Hq q → H1 q → HL q hp → Rec q x → (∀ m → hp m * q m ≤ x m) → ∀ j k → 1# ≤ (x j + q j) + hp k
+  norm-low-s q x hq q1 hl hx lo j k = begin
+    1#                                         ≤⟨ L-inv q′ (hs j) (λ m → hq (m ℕ.+ j)) (λ m → q1 (m ℕ.+ j)) (λ m → hl (m ℕ.+ j)) k ⟩
+    (hs j k * q′ k) * ss q′ k + (q j + E (hs j) k)
+                                               ≤⟨ +-mono (≤-trans (*-monoˡ (ss q′ k) (lo (k ℕ.+ j))) (≤-reflexive (*-comm _ _)))
+                                                    (+-mono ≤-refl (E-hs j k)) ⟩
+    ss q′ k * x′ k + (q j + hp k)              ≈⟨ +-cong (sym (ss-prod q′ x′ (λ m → hx (m ℕ.+ j)) k)) refl ⟩
+    x j + (q j + hp k)                         ≈⟨ sym (+-assoc _ _ _) ⟩
+    (x j + q j) + hp k ∎
+    where
+      q′ = λ i → q (i ℕ.+ j)
+      x′ = λ i → x (i ℕ.+ j)
+
+  -- `x j + q j ≈ 1#` for every `j`
+  norm-s : ∀ (q x : ℕ → ∣A∣) → Hq q → H1 q → HU q hp → HL q hp → Rec q x →
+    (∀ m → hp m * q m ≤ x m) → (∀ m → x m ≤ hp m) → ∀ j → x j + q j ≈ 1#
+  norm-s q x hq q1 hu hl hx lo hi j =
+    ≤-antisym (arch (norm-up-s q x hq q1 hu hx hi j)) (arch (norm-low-s q x hq q1 hl hx lo j))
 
   ----------------------------------------------------------------------------
   -- the geometric sum: `I + g = 1` gives `(∑ gⁿ) I = 1`
@@ -287,4 +394,81 @@ module GeometricNorm (A : OmegaSemiring (suc lzero)) (R : Arch A) where
       ∑ᶠ (pw g) * I + hp n ∎)
 
     total : ∑ᶠ (pw g) * I ≈ 1#
+    total = ≤-antisym upper lower
+
+  ----------------------------------------------------------------------------
+  -- the series `∑ gⁿ (n I + K)`: `I + g = 1` and `K + 2g = 1` give `∑ gⁿ (n I + K) = 1`.  The partial sums
+  -- telescope, `∑_{n<N} gⁿ (n I + K) + (N+1) gᴺ = 1`, and `(2s+1) g²ˢ ≤ 2 gˢ` makes the error small.
+
+  pw-add : ∀ g a b → pw g (a ℕ.+ b) ≈ pw g a * pw g b
+  pw-add g ℕ.zero b = sym (*-identityˡ _)
+  pw-add g (ℕ.suc a) b = trans (*-cong refl (pw-add g a b)) (sym (*-assoc _ _ _))
+
+  step-ring : ∀ P n I K g → P * (n * I + K) + ((n + 1#) + 1#) * (g * P) ≈ P * (n * (I + g) + (K + (g + g)))
+  step-ring P n I K g = solve 5 (λ P n I K g → P :* (n :* I :+ K) :+ ((n :+ con 1) :+ con 1) :* (g :* P)
+    := P :* (n :* (I :+ g) :+ (K :+ (g :+ g)))) refl P n I K g
+
+  step-one : ∀ P n → P * (n * 1# + 1#) ≈ (n + 1#) * P
+  step-one P n = solve 2 (λ P n → P :* (n :* con 1 :+ con 1) := (n :+ con 1) :* P) refl P n
+
+  module GeoMean (g I K : ∣A∣) (h : I + g ≈ 1#) (k : K + (g + g) ≈ 1#) (gb : ∀ N → pw g N * natE (ℕ.suc N) ≤ 1#) where
+    open Geo g I h gb using (small)
+
+    term : ℕ → ∣A∣
+    term n = pw g n * (natE n * I + K)
+
+    -- `gⁿ (n I + K) + (n + 2) gⁿ⁺¹ = (n + 1) gⁿ`
+    step-alg : ∀ N → term N + natE (ℕ.suc (ℕ.suc N)) * pw g (ℕ.suc N) ≈ natE (ℕ.suc N) * pw g N
+    step-alg N = begin-equality
+      pw g N * (natE N * I + K) + ((natE N + 1#) + 1#) * (g * pw g N)
+        ≈⟨ step-ring (pw g N) (natE N) I K g ⟩
+      pw g N * (natE N * (I + g) + (K + (g + g)))  ≈⟨ *-cong refl (+-cong (*-cong refl h) k) ⟩
+      pw g N * (natE N * 1# + 1#)                  ≈⟨ step-one (pw g N) (natE N) ⟩
+      (natE N + 1#) * pw g N ∎
+
+    tele : ∀ N → psum term N + natE (ℕ.suc N) * pw g N ≈ 1#
+    tele ℕ.zero = trans (+-cong refl (trans (*-cong (+-identityˡ 1#) refl) (*-identityˡ 1#))) (+-identityˡ 1#)
+    tele (ℕ.suc N) = begin-equality
+      (psum term N + term N) + natE (ℕ.suc (ℕ.suc N)) * pw g (ℕ.suc N)  ≈⟨ +-assoc _ _ _ ⟩
+      psum term N + (term N + natE (ℕ.suc (ℕ.suc N)) * pw g (ℕ.suc N))  ≈⟨ +-cong refl (step-alg N) ⟩
+      psum term N + natE (ℕ.suc N) * pw g N                            ≈⟨ tele N ⟩
+      1# ∎
+
+    upper : ∑ᶠ term ≤ 1#
+    upper = ∑ᶠ-lub (λ N → ≤-trans ≤-+ʳ (≤-reflexive (tele N)))
+
+    -- `(2s+1) g²ˢ ≤ 2 gˢ`
+    natE-dbl : ∀ s → natE (ℕ.suc (s ℕ.+ s)) ≤ natE (ℕ.suc s) + natE (ℕ.suc s)
+    natE-dbl s = ≤-trans (≤-reflexive (+-cong (natE-+ s s) refl))
+      (≤-trans ≤-+ʳ (≤-reflexive (solve 2 (λ n o → ((n :+ n) :+ o) :+ o := (n :+ o) :+ (n :+ o)) refl (natE s) 1#)))
+
+    err : ∀ s → natE (ℕ.suc (s ℕ.+ s)) * pw g (s ℕ.+ s) ≤ pw g s + pw g s
+    err s = begin
+      natE (ℕ.suc (s ℕ.+ s)) * pw g (s ℕ.+ s)
+        ≤⟨ *-mono′ (natE-dbl s) (pw-add g s s) ⟩
+      (natE (ℕ.suc s) + natE (ℕ.suc s)) * (pw g s * pw g s)
+        ≈⟨ solve 3 (λ N P Q → (N :+ N) :* (P :* Q) := (N :* P) :* Q :+ (N :* P) :* Q) refl (natE (ℕ.suc s)) (pw g s) (pw g s) ⟩
+      (natE (ℕ.suc s) * pw g s) * pw g s + (natE (ℕ.suc s) * pw g s) * pw g s
+        ≤⟨ +-mono (≤1-mul (pw g s) b) (≤1-mul (pw g s) b) ⟩
+      pw g s + pw g s ∎
+      where
+        b = ≤-trans (≤-reflexive (*-comm _ _)) (gb s)
+        *-mono′ : ∀ {a b c d} → a ≤ b → c ≈ d → a * c ≤ b * d
+        *-mono′ {a} {b} {c} {d} ab cd = ≤-trans (*-monoˡ c ab) (*-mono b (≤-reflexive cd))
+
+    lower-at : ∀ n → 1# ≤ ∑ᶠ term + hp n
+    lower-at n = begin
+      1#                                                       ≈⟨ sym (tele (twoN (ℕ.suc (ℕ.suc n)))) ⟩
+      psum term M + natE (ℕ.suc M) * pw g M                    ≤⟨ +-mono (psum≤∑ᶠ term M) (err s) ⟩
+      ∑ᶠ term + (pw g s + pw g s)                              ≤⟨ +-mono ≤-refl (+-mono (small (ℕ.suc n)) (small (ℕ.suc n))) ⟩
+      ∑ᶠ term + (hp (ℕ.suc n) + hp (ℕ.suc n))                  ≈⟨ +-cong refl (hp-double n) ⟩
+      ∑ᶠ term + hp n ∎
+      where
+        s = twoN (ℕ.suc n)
+        M = s ℕ.+ s
+
+    lower : 1# ≤ ∑ᶠ term
+    lower = arch lower-at
+
+    total : ∑ᶠ term ≈ 1#
     total = ≤-antisym upper lower

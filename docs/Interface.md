@@ -139,13 +139,14 @@ Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
 
-### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`, `QBS.Continuous.HalfLineUnit`, `QBS.Continuous.HalfLineNorm`, `QBS.Analysis.GeometricNorm`
+### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`, `QBS.Continuous.HalfLineUnit`, `QBS.Continuous.HalfLineNorm`, `QBS.Continuous.HalfLineMean`, `QBS.Analysis.GeometricNorm`
 Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,∞]` (module parameter `lem₁ : LEM₁`).
 - `shiftPt`, `shiftPre n`, `lebPre`, `Meas-shift` (`HalfLine`) — `shiftPre n` is the uniform on [0,1] shifted to `n` (probe `r ↦ (1, n + expansion r)` over the fair coin); `lebPre = sumPre shiftPre` is Lebesgue measure on [0,∞), `λ = ∑ₙ (n + U)`.
 - `Meas-hshift`, `∫ᴹ-shift`, `∫ᴹ-leb` (`HalfLine`) — `∫ᴹ lebPre h ≈ ∑ᶠ n. J fairCoin (r ↦ h (n + expansion r))` for every morphism `h : WQ ⇒ WQ` (unbounded tests included).
 - `negExpH`, `negExp-add`, `∫ᴹ-leb-negExp`, `∫ᴹ-leb-negExp-split`, `I-negExp` (`HalfLineNegExp`) — the test `x ↦ e^{−x}` as a morphism `WQ ⇒ WQ`; `e^{−(x+y)} ≈ e^{−x} e^{−y}` when `x`, `y`, `x+y` are bounded by naturals; `∫ e^{−x} dλ ≈ ∑ᶠ n. e^{−n} · I-negExp` with `I-negExp = ∫₀¹ e^{−u} du`.
 - `G`, `F`, `q`, `F-split`, `xs-rec`, `I-negExp-unit` (`HalfLineUnit`) — `∫₀¹ e^{−u} du + e^{−1} ≈ 1` (no subtraction), by self-similarity: `F j = ∫₀¹ e^{−2⁻ʲ u} du` satisfies `F j ≈ ½ (e^{−2⁻⁽ʲ⁺¹⁾} F (j+1)) + ½ F (j+1)` (first-bit split and `negExp-add`).
 - `negExp-pw`, `gb`, `norm-from`, `∫ᴹ-leb-negExp-norm` (`HalfLineNorm`) — `e^{−n} ≈ gⁿ`, and `∫ᴹ lebPre negExpH ≈ 1#`, i.e. `∫₀^∞ e^{−x} dx = 1`.
+- `xNegExpH`, `KK`, `KK-split`, `ww-rec`, `K-pin`, `shift-split`, `∫ᴹ-leb-xNegExp` (`HalfLineMean`) — the mean `∫ᴹ lebPre xNegExpH ≈ 1#`, i.e. `∫₀^∞ x e^{−x} dx = 1`, for `xNegExpH : x ↦ x e^{−x}`.  With `K = ∫₀¹ u e^{−u} du`: `K-pin : K + (g + g) ≈ 1#` (self-similarity of `Kⱼ = ∫₀¹ u e^{−2⁻ʲu} du`, via `wⱼ = hⱼ²Kⱼ + hⱼqⱼ` and `GeometricNorm.norm-s`), `shift-split : ∫₀¹ (n+u) e^{−(n+u)} du ≈ e^{−n} (n I + K)`, then `GeometricNorm.GeoMean.total`.
 - `ss`, `two`, `U-inv`, `L-inv`, `base`, `norm`, `Geo.total` (`GeometricNorm`, `module GeometricNorm A R`, abstract in any `OmegaSemiring` with `Arch`) — `norm`: the recursion `x m ≈ (1 + q (m+1)) x (m+1)`, `q m ≈ q (m+1)²`, `q m ≤ 1`, the one-step facts (`base`) and `hp m q m ≤ x m ≤ hp m` give `x 0 + q 0 ≈ 1`, by error-doubling invariants and `arch`; `Geo.total`: `I + g ≈ 1` and `gᴺ (N+1) ≤ 1` give `(∑ᶠ gⁿ) I ≈ 1`.
 
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
