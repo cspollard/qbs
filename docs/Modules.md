@@ -34,6 +34,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinPosterior` | 224 | lem | The posterior as an actual distribution: Bayes' rule by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 215 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
+| `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 118 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
@@ -172,6 +173,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 |---|---|---|---|
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
+| `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
