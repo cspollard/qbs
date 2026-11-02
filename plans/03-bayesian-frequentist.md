@@ -237,3 +237,11 @@ Exponential groundwork, step 1 of "What an exponential distribution would need" 
 - Next for the exponential: `e^{−x}` as a cut (`q < e^{−x}` iff `q · e^{x} < 1`, cut properties from `exp-mono` and
   `exp-add`); measurability of `r ↦ e^{−x(r)}` (`Meas-⨆` over partial sums, plus a measurable threshold for
   `q · e^{x(r)} < 1`); then a base measure on [0,∞) and normalisation (items 3–5 above).
+
+`e^{−x}` (2026-11-02, `Analysis/NegExp`, `module NegExp (lem : LEM₀)`, about 4.5 s): `negExp x` is the cut
+`q ∈ negExp x ⇔ Σ p. q < p × (∀ s ∈ expC x → p * s < 1)` (openness is immediate, `x = ∞` gives `zeroC`).  Proved:
+`negExp-anti`, `negExp-zero : negExp zeroC ≋ oneC`, `negExp≤1`, `negExp-expC≤1 : negExp x ⊗ expC x ⊑ oneC` (all x),
+`Meas-expC` and `Meas-negExp` (for any threshold-measurable `h`, not only bounded ones).  Not done: the reverse
+`oneC ⊑ negExp x ⊗ expC x` for finite x.  Missing lemma: for 0 < ρ < 1 and `expC x` bounded there is s ∈ `expC x`, s > 0,
+with ρ·s′ < s for all s′ ∈ `expC x` (by LEM; otherwise a chain s₀/ρⁿ contradicts the bound, via Bernoulli's inequality
+and `arch`); estimated about 80 lines.
