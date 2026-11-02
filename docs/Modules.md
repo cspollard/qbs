@@ -40,6 +40,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
 | `QBS.Inference.ExpMomentN` | 81 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
+| `QBS.Inference.ExpRateDist` | 146 | lem | The exponential distribution with a rate λ, through the expectation API (in the style of `Inference/ExpMomentN`). |
 | `QBS.Inference.Expectation` | 221 | lem | Calculating with the expectation `E-at` of a bounded signed statistic (`Inference/ExpectationResp`): * the algebra of signed tests: sum `_+T_`, negation `-T_`, scaling by a signed constant `scaleT c`, constants `const... |
 | `QBS.Inference.ExpectationExamples` | 227 | lem | Worked examples for the calculus of `E-at` (`Inference/Expectation`, `Inference/ExpectationProduct`). |
 | `QBS.Inference.ExpectationInt` | 170 | lem | Expectations of *integrable* (possibly unbounded) signed statistics under a measure of the monad (`Continuous/Monad`), extending `Inference/ExpectationResp` beyond bounded tests. |
@@ -121,6 +122,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
+| `QBS.Analysis.ExpRate` | 368 |  | The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1 certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`. |
+| `QBS.Analysis.ExpRateSigned` | 41 |  | The signed arithmetic of the moments of the exponential with a rate λ, over an abstract Archimedean ω-semiring (the concrete cut semiring makes Agda unify the huge signed expressions too slowly): * `var-val`: with `V₁... |
 | `QBS.Analysis.ExpTail` | 89 |  | The tail `xᵉ e^{−x} → 0` at the integers, along the multiples of ι = e + 1 (a frequent, not eventual, tail). |
 | `QBS.Analysis.ExpansionCons` | 70 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 339 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
@@ -183,6 +186,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
+| `QBS.Continuous.ExpRateInt` | 123 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for a rate λ ≤ 1, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
+| `QBS.Continuous.ExpRateMoment` | 251 | lem | All polynomial moments of the exponential with a rate λ ≤ 1: `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `c ≤ natE (suc ν)`). |
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
@@ -193,6 +198,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineMomentN` | 197 | lem | All polynomial moments of the exponential: integration by parts on each unit interval (part 1). |
 | `QBS.Continuous.HalfLineNegExp` | 119 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 70 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
+| `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
