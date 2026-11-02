@@ -369,3 +369,23 @@ Coin with a uniform prior on θ (2026-11-02, done): `Inference/CoinUniformPrior`
   - `HH-from-H : 3·P(HH) ≃ 2·P(H)`, i.e. the posterior mean after one head is 2/3, multiplied out.
 - **Discrete versus continuous:** this is the continuous-prior counterpart of `CoinBias` and `BernoulliCompare`.
   Those use an explicit two-point prior; here the prior is an expectation over a kernel on the hypothesis space.
+
+Continuous posterior (2026-11-02, done): `Inference/CoinPosterior` (7.1 s, 1.0 GB).
+- **Bayes' rule in general:** `posterior ℓ p n h = normPre (reweightPre ℓ (ιPre p)) n h` (abstract), with
+  `bayes : ∫ f d(posterior) ≈ n · ∫ ℓ·f dp`.
+- **The coin:** after one head under the uniform prior, `post1` is Beta(2,1), with
+  `post1-mean : 3 · E[θ | H] ≈ 2`.  The same result is also stated through `E-at`.
+- **Sequential = batch:** `post2-agree : post2-seq ≈ᵖ post2-batch`.  Updating on H and then on H again gives the same
+  posterior as updating on θ² at once.  So sequential updating is a theorem for continuous priors as well, matching
+  the discrete `Bayesian.sequential`.
+
+Independence for integrable tests (2026-11-02, done):
+- **`Inference/ExpectationIntProduct` (8.6 s, 1.07 GB):**
+  - `J-join`, the unbounded analogue of `∫-join`, via `Tonelli.J-bind`.  No truncation or sup interchange is needed.
+  - `J-σ`, `J-⊠ : Jp (p ⊗ᵖ q) (u·v) ≈ Jp p u · Jp q v`.
+  - `_⊗I_` and `E-atᴵ-⊗`.
+- **`Inference/ExpDistPair` (13.0 s, 1.14 GB):** for two independent exponential draws, E[XY] ≃ 1, E[X+Y] ≃ 2 and
+  E[X² + Y² + 2XY] ≃ 6.
+  - X and Y are built as products with the constant test, because the marginal law `mapPre fstQ (p ⊗ᵖ q) ≈ᵖ p` is
+    not yet proved.
+  - The expanded test is not yet identified with the pointwise statistic (x+y)².
