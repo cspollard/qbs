@@ -110,7 +110,7 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationExamples`
+### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
@@ -121,6 +121,8 @@ Expectations of bounded signed statistics under the monad's measures (module par
 - `E-at-σ` — `E-at (σPre (x , q)) (f ⊗T g) ≃ valT f x *S E-at q g`; `p ⊗ᵖ q` — the product measure `joinPre (mapPre (σq q) p)`; `E-at-⊗` — independence, `E-at (p ⊗ᵖ q) (f ⊗T g) ≃ E-at p f *S E-at q g`.
 - `ITest p`, `E-atᴵ p g`, `fromSTest`, `E-atᴵ-fromSTest`, `truncHom`, `J-resp∞`, `transportI`, `E-respᴵ`, `_+I_`, `-I_`, `scaleI`, `E-atᴵ-+`, `E-atᴵ-neg`, `E-atᴵ-scale`, `valI`, `E-atᴵ-η`, `precompI`, `E-atᴵ-map` (`QBS.Inference.ExpectationInt`) — expectations of integrable (possibly unbounded) signed statistics: `J-resp∞ : p ≈ᵖ q → J (m p) (h ∘ α p) ≈ J (m q) (h ∘ α q)` (via the truncations `truncHom h k`), `E-respᴵ : p ≈ᵖ q → E-atᴵ p g ≃ E-atᴵ q (transportI e g)`.
 - `idT`, `sqT : STest AQ`, `E-at-uniform-id`, `E-at-uniform-sq`, `bern : Pre AQ`, `E-at-bern`, `E-at-bern²`, `E-at-bern²-quarter` (`QBS.Inference.ExpectationExamples`) — worked examples: `E-at uniform idT ≃ ι ½`, `E-at uniform sqT ≃ ι m` (`3m = 1`), Bernoulli(½) as the first bit of the fair coin with `E-at bern idT ≃ ι ½`, and independence `E-at (bern ⊗ᵖ bern) (idT ⊗T idT) ≃ ι ½ *S ι ½` (four copies add up to 1).
+- `BoolQ`, `boolQ`, `trueQ`, `falseQ`, `constQ`, `ifQ a b` (`QBS.BoolQ`) — the Boolean QBS `1Q +Q 1Q` and case analysis `ifQ a b : Hom BoolQ Z` (the `Colimits.copair` of two constants); unlike `CodiscQ Bool` its indicators are measurable.
+- `bitB`, `bernB : Pre BoolQ`, `ifT a b`, `indT : STest BoolQ`, `E-at-bernB-if`, `E-at-bernB-ind`, `toAQ`, `bernB≈bern`, `E-at-bernB-id`, `indB`, `bernθ θ`, `E-at-bernθ` (`QBS.Inference.BoolDist`) — Bernoulli(½) on `BoolQ` with `E-at bernB (ifT a b) ≃ ½a + ½b`, `E-at bernB indT ≃ ι ½`, `mapPre toAQ bernB ≈ᵖ bern`; the biased coin `bernθ θ` (the indicator `[expansion r ≤ θ]`, `indB` for any decidable Borel set) has `E-at (bernθ θ) indT ≃ ι θ` for `θ ≤ 1`.
 
 ### `QBS.Inference.Sampler`, `QBS.Inference.UniformSampler`
 Statistical models as samplers (module parameter `lem₁ : LEM₁`; the `Sampler` module of `Inference/Sampler`).
