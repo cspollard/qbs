@@ -108,17 +108,17 @@ bitB-random = idxₛ (λ r → idx (lower r 0)) idx-part , idx-part , cP , λ r 
 ----------------------------------------------------------------------------
 -- the indicator of a decidable Borel set of Cantor space, as a random element of BoolQ
 
+flag : ∀ {P : Set} → P ⊎ (P → ⊥) → Bool
+flag (inj₁ _) = true
+flag (inj₂ _) = false
+
+flag-resp : ∀ {P Q : Set} (d : P ⊎ (P → ⊥)) (e : Q ⊎ (Q → ⊥)) → (P → Q) → (Q → P) → flag d ≡ flag e
+flag-resp (inj₁ p) (inj₁ q) f g = ≡.refl
+flag-resp (inj₁ p) (inj₂ nq) f g = ⊥-elim (nq (f p))
+flag-resp (inj₂ np) (inj₁ q) f g = ⊥-elim (np (g q))
+flag-resp (inj₂ np) (inj₂ nq) f g = ≡.refl
+
 private
-  flag : ∀ {P : Set} → P ⊎ (P → ⊥) → Bool
-  flag (inj₁ _) = true
-  flag (inj₂ _) = false
-
-  flag-resp : ∀ {P Q : Set} (d : P ⊎ (P → ⊥)) (e : Q ⊎ (Q → ⊥)) → (P → Q) → (Q → P) → flag d ≡ flag e
-  flag-resp (inj₁ p) (inj₁ q) f g = ≡.refl
-  flag-resp (inj₁ p) (inj₂ nq) f g = ⊥-elim (nq (f p))
-  flag-resp (inj₂ np) (inj₁ q) f g = ⊥-elim (np (g q))
-  flag-resp (inj₂ np) (inj₂ nq) f g = ≡.refl
-
   flag-0 : ∀ {P : Set} (d : P ⊎ (P → ⊥)) → (idx (flag d) ≡ 0 → P) × (P → idx (flag d) ≡ 0)
   flag-0 (inj₁ p) = (λ _ → p) , (λ _ → ≡.refl)
   flag-0 (inj₂ np) = (λ ()) , (λ p → ⊥-elim (np p))
