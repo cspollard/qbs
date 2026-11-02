@@ -931,3 +931,82 @@ Change of variables, general c (2026-11-02, investigated; not attempted).
 - **Reachable smaller piece:** the law of `expansion` under the fair coin, `fair{expansion r ≤ t} = t` for every cut t.
 - **Decision:** general c is deferred.  Dyadic rates use `HalfLineScale`; for other rates, compare moments through
   `ExpPushforward.E-atᴵ-powPush`, which needs no change of variables.
+
+## Uniqueness on the half-line (planned 2026-11-02; skeleton first, then agents)
+
+Goal: one general theorem, **measures on `WQ` that agree on dyadic intervals agree on every test**. Scaling,
+translation, monotone change of variables and density identification then each reduce to a check on intervals.
+Literature and route: `docs/UniquenessLit.md`. The theorem replaces the deferred general-c route above.
+
+**Skeleton workflow.**
+- I write every module below on an integration branch `uniq`. Each gets its header, imports and the statements
+  listed, with `?` for every proof. Named intermediate lemmas are top-level declarations, so no hole hides a big step
+  (as in the s-finite skeleton, `TODO.md` audit).
+- `make progress` checks the skeleton (`scripts/progress-overlay.py`). Strict `make check` would fail on it, so main
+  stays hole-free: agents branch from `uniq`, I merge their work into `uniq`, and `uniq` merges into main when it has
+  no holes (or module by module, as each becomes hole-free together with its imports).
+- An agent may add lemmas and helper modules, and may change a statement only after reporting why. The top-level
+  statements are the contract.
+
+**Modules (bottom-up; ← = imports).**
+1. `Analysis/UniquenessBounded` ← `Analysis/Uniqueness`.
+   - `scaleM`: a functional of mass ≤ 2ʲ, scaled by 2^{-j}, is a `Measure`.
+   - `uniq-bnd`: two such functionals with equal masses that agree on cylinders agree on every bounded `Fun`.
+   - `uniq-inf`: the same for every `FunInf`, via truncations and `Iinf-sup`.
+2. `Continuous/UniquenessR` ← 1, `Continuous/SFinite`, `Borel/Lead`. This is uniqueness on Cantor space `ℛQ` for
+   s-finite `Pre`, in the σ-finite form, along the `lead` partition.
+   - `restrict k μ`: the `Pre` restricted to `Bₖ = {true^k false …}`.
+   - `uniqR`, hypotheses:
+     - `agreeC : ∀ k {C} → Cyl C → ∫ᴹ μ (χ Bₖ · χ C) ≈ ∫ᴹ ν (χ Bₖ · χ C)`;
+     - `finB : ∀ k → Bnd (∫ᴹ μ (χ Bₖ))`;
+     - `agreeTop : ∫ᴹ μ χ{all-true} ≈ ∫ᴹ ν χ{all-true}`.
+   - `uniqR` conclusion: `μ ≈ᴹ ν`.
+   - The all-true point is handled directly: on it, the integral of g is `g(all-true) ·` its mass.
+3. `Continuous/Intervals` ← `Continuous/Weights`. These are interval tests on `WQ`:
+   - `χI n m : Hom S WQ WQ`, the indicator of `[m/2ⁿ, (m+1)/2ⁿ)`;
+   - `χInf`, the indicator of `{∞}`;
+   - `χI-split : χI n m ≈ χI (n+1) (2m) + χI (n+1) (2m+1)` pointwise.
+   - Measurability: `{ω | α ω ≥ q}` is Borel, as ⋂ of thresholds. This needs `LEM₁` to decide `x ≥ q`.
+4. `Continuous/DigitCode` ← 3, `Probes` (`ℛQ`), `Borel/Lead`, `Analysis/BinaryExpansion`. **The hard module.**
+   - `code : Hom S WQ ℛQ` and `decode : Hom S ℛQ WQ`.
+   - `decode-code : ∀ x → decode ⟨$⟩ (code ⟨$⟩ x) ≈ x`.
+   - `code-cyl`: for the cylinder `Bₖ ∩ {fractional prefix = c}`, its indicator composed with `code` is
+     `χI n (k·2ⁿ + c)` pointwise. Other cylinders are unions of these, or empty, or meet only all-true.
+   - `code-inf : code ∞ = all-true`.
+   - `code-top`: all-true's indicator composed with `code` is `χInf`.
+5. `Continuous/UniquenessWQ` ← 2, 4. **Headline.**
+   - `uniqWQ`, hypotheses:
+     - `agreeI : ∀ n m → ∫ᴹ μ (χI n m) ≈ ∫ᴹ ν (χI n m)`;
+     - `finI : ∀ k → Bnd (∫ᴹ μ (χI 0 k))`;
+     - `agreeInf : ∫ᴹ μ χInf ≈ ∫ᴹ ν χInf`.
+   - `uniqWQ` conclusion: `μ ≈ᴹ ν`.
+   - Proof: `h ≈ (h ∘ decode) ∘ code`, then `mapPre code`, then `uniqR`.
+   - Also `uniqWQ-dens` for `densDist` pairs, in density form.
+6. `Continuous/LebesgueDyadic` ← 3, `HalfLine`, `FirstBit`, `ExpansionCons`.
+   - `fair-top : fair{all-true} ≈ 0`.
+   - `exp-law n c : J fair (χ[c/2ⁿ,(c+1)/2ⁿ) ∘ expansion) ≈ 2^{-n}`, by induction on n with the first-bit split.
+   - `leb-χI : ∫ᴹ lebPre (χI n m) ≈ 2^{-n}`, `leb-inf : ∫ᴹ lebPre χInf ≈ 0`, and `leb-fin`.
+7. Payoffs, each expected to be short, given 5 and 6:
+   - `Continuous/LebesgueInterval`: `∫ᴹ lebPre χ[a,b) ≈ b − a` for cuts a ≤ b, a finite. This uses dyadic
+     approximation from inside and `J-⨆`.
+   - `Continuous/LebesgueScale`: `c · ∫ h(cx) ≈ ∫ h` for finite positive c. This subsumes `HalfLineScale`.
+   - `Continuous/LebesgueShift`: `∫ h(x + t) ≈ ∫_{[t,∞)} h`.
+   - `Continuous/ChangeOfVariables`: an increasing φ with a derivative certificate gives the pushforward density.
+     Interval masses come from `glue-D0`.
+   - Retire the particular agreements: re-derive `ExpPushforwardAgree` for every rate c.
+
+**Order of agents (one at a time).**
+- 1 and 3 are independent and small.
+- 4 is the riskiest, so it goes early to test the design.
+- Then 2, 5 and 6.
+- 7 last.
+- Estimated sizes: 1 ≈ 200 lines, 2 ≈ 400, 3 ≈ 200, 4 ≈ 500–800, 5 ≈ 200, 6 ≈ 300, 7 ≈ 150 each.
+
+**Risks to settle while writing the skeleton.**
+- `Pre` on `ℛQ` and `mapPre code` exist generically (`X : QBS S`); check `mapPre`'s law
+  `∫ᴹ (mapPre f μ) g ≈ ∫ᴹ μ (g ∘ f)`.
+- Whether `Hom S ℛQ WQ` is exactly `Meas`. This matters for `decode` and for `h ∘ decode` being a test.
+- `Uniqueness` takes cylinders `Cyl C` with arbitrary bit positions. The `code-cyl` case split must cover cylinders
+  that constrain bits beyond the unary prefix, or `UniquenessR` restates agreement on prefix cylinders only.
+- ∞: a `Pre` may put mass at ∞, hence `agreeInf`. Lebesgue and every density put none there.
+- Performance: concrete cut arithmetic only in leaf modules, solvers in generic `Alg` modules, as before.
