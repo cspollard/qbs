@@ -149,6 +149,12 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `xNegExpH`, `KK`, `KK-split`, `ww-rec`, `K-pin`, `shift-split`, `∫ᴹ-leb-xNegExp` (`HalfLineMean`) — the mean `∫ᴹ lebPre xNegExpH ≈ 1#`, i.e. `∫₀^∞ x e^{−x} dx = 1`, for `xNegExpH : x ↦ x e^{−x}`.  With `K = ∫₀¹ u e^{−u} du`: `K-pin : K + (g + g) ≈ 1#` (self-similarity of `Kⱼ = ∫₀¹ u e^{−2⁻ʲu} du`, via `wⱼ = hⱼ²Kⱼ + hⱼqⱼ` and `GeometricNorm.norm-s`), `shift-split : ∫₀¹ (n+u) e^{−(n+u)} du ≈ e^{−n} (n I + K)`, then `GeometricNorm.GeoMean.total`.
 - `ss`, `two`, `U-inv`, `L-inv`, `base`, `norm`, `Geo.total` (`GeometricNorm`, `module GeometricNorm A R`, abstract in any `OmegaSemiring` with `Arch`) — `norm`: the recursion `x m ≈ (1 + q (m+1)) x (m+1)`, `q m ≈ q (m+1)²`, `q m ≤ 1`, the one-step facts (`base`) and `hp m q m ≤ x m ≤ hp m` give `x 0 + q 0 ≈ 1`, by error-doubling invariants and `arch`; `Geo.total`: `I + g ≈ 1` and `gᴺ (N+1) ≤ 1` give `(∑ᶠ gⁿ) I ≈ 1`.
 
+### `QBS.Continuous.SFiniteReweight`, `QBS.Continuous.ExpDist`, `QBS.Inference.ExpDistMean`
+
+- `mulH`, `reweightPre`, `∫ᴹ-reweight` (`SFiniteReweight`) — reweighting `p : Pre (XW X)` by a density `d : X ⇒ WQ`: `∫ᴹ (reweightPre d p) f ≈ ∫ᴹ p (mulH d f)` with `mulH d f` the pointwise product.
+- `expW`, `∫ᴹ-expW`, `massP-expW`, `expDist`, `∫-expDist`, `∫-expDist-one`, `idW`, `∫-expDist-id` (`ExpDist`) — the exponential distribution: `expW = reweightPre negExpH lebPre`, `massP expW ≈ 1#`, `expDist = normPre expW 1# _ : C.Pre WQ`, `∫ᴹ (ιPre expDist) f ≈ ∫ᴹ lebPre (mulH negExpH f)`, total mass `1#` and mean `∫ᴹ (ιPre expDist) idW ≈ 1#`.
+- `idC`, `zeroC`, `idI`, `E-atᴵ-idI` (`ExpDistMean`) — `idI : ITest expDist` (`pos = id`, `neg = 0`) and `E-atᴵ expDist idI ≃ 1`, so `E-atᴵ-map`, `E-respᴵ` and linearity of `ExpectationInt` apply to the exponential distribution.
+
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
