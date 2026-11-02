@@ -55,7 +55,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
-| `QBS.Inference.PolyDominationOdd` | 110 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
+| `QBS.Inference.PolyDominationOdd` | 109 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
