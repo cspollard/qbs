@@ -332,20 +332,20 @@ module DigitStream (lem : LEM₀) where
   match-≗ (b ∷ w) e (p , q) = trans (sym (e zero)) p , match-≗ w (λ i → e (suc i)) q
 
   -- the unary part of the machine, run on the integer part k
-  ur : ∀ x {k} → Ge (natE k) x → (Ge (natE (suc k)) x → ⊥) →
+  unRun : ∀ x {k} → Ge (natE k) x → (Ge (natE (suc k)) x → ⊥) →
     Blk k (out x (un zero)) × (∀ i → out x (un zero) (suc k + i) ≡ out x (fr zero k) i)
-  ur x {k} gk ng = un-run x k zero k refl (ge0 x) gk ng
+  unRun x {k} gk ng = un-run x k zero k refl (ge0 x) gk ng
 
   cell-fwd : ∀ x k w → Cell k w (digits x) → Tgt (length w) (k * 2 ^ length w + val w) x
   cell-fwd x k w (blk , mt) =
     Tgt-≡ (ℕ.+-identityʳ _) refl
-      (proj₁ (fr-match x w zero k T0) (match-≗ w (proj₂ (ur x gk ng)) mt))
+      (proj₁ (fr-match x w zero k T0) (match-≗ w (proj₂ (unRun x gk ng)) mt))
     where gk = proj₁ (blk-ge x k zero k refl (ge0 x) blk)
           ng = proj₂ (blk-ge x k zero k refl (ge0 x) blk)
           T0 = fl-tgt x k gk ng
 
   cell-bwd : ∀ x k w → Tgt (length w) (k * 2 ^ length w + val w) x → Cell k w (digits x)
-  cell-bwd x k w t = proj₁ (ur x gk ng) , match-≗ w (λ i → sym (proj₂ (ur x gk ng) i))
+  cell-bwd x k w t = proj₁ (unRun x gk ng) , match-≗ w (λ i → sym (proj₂ (unRun x gk ng) i))
     (proj₂ (fr-match x w zero k (fl-tgt x k gk ng)) (Tgt-≡ (sym (ℕ.+-identityʳ _)) refl t))
     where fl = tgt-floor x (length w) k _ (ℕ.m≤m+n _ _)
                          (suc-le k (2 ^ length w) (val w) (val-lt w)) t

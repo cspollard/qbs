@@ -140,7 +140,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.DerivExp` | 92 |  | A certificate calculus for the tail FTC (part 3: the base cases `xⁿ` and `e^{−x}`, and `xʲ⁺¹ e^{−x}`). |
 | `QBS.Analysis.DerivGauss` | 65 |  | A certificate calculus for the tail FTC (part 5: the Gaussian), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.DerivProd` | 219 |  | A certificate calculus for the tail FTC (part 2: the product rule), over an abstract Archimedean ω-semiring. |
-| `QBS.Analysis.DigitAlg` | 129 |  | The algebra behind the digit code of `[0,∞]` (`Continuous/DigitStream`, `Continuous/DigitCode`), over an abstract ω-semiring with a half. |
+| `QBS.Analysis.DigitAlg` | 141 |  | The algebra behind the digit code of `[0,∞]` (`Continuous/DigitStream`, `Continuous/DigitCode`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
@@ -218,8 +218,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DerivMoment` | 70 | lem | Validation of the certificate calculus: `∫₀^∞ xⁿ e^{−x} dλ(x) = n!` from `Deriv` data built by the rules. |
 | `QBS.Continuous.DigitCode` | 104 | lem | The digit code of `[0,∞]` into Cantor space, and its decoding (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.DigitCut` | 50 | lem | Two facts about cuts that the digit code of `[0,∞]` needs (`Continuous/DigitCode`), both from `Analysis/ExpLower`: `natE (n+1)` and `m / 2ⁿ` are rational cuts, so a point is either above a dyadic threshold or below it. |
-| `QBS.Continuous.DigitDecode` | 192 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
-| `QBS.Continuous.DigitStream` | 336 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
+| `QBS.Continuous.DigitDecode` | 203 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
+| `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
