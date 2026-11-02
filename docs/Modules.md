@@ -38,6 +38,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
+| `QBS.Inference.ExpMomentN` | 81 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
 | `QBS.Inference.Expectation` | 221 | lem | Calculating with the expectation `E-at` of a bounded signed statistic (`Inference/ExpectationResp`): * the algebra of signed tests: sum `_+T_`, negation `-T_`, scaling by a signed constant `scaleT c`, constants `const... |
 | `QBS.Inference.ExpectationExamples` | 227 | lem | Worked examples for the calculus of `E-at` (`Inference/Expectation`, `Inference/ExpectationProduct`). |
 | `QBS.Inference.ExpectationInt` | 170 | lem | Expectations of *integrable* (possibly unbounded) signed statistics under a measure of the monad (`Continuous/Monad`), extending `Inference/ExpectationResp` beyond bounded tests. |
@@ -119,6 +120,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
+| `QBS.Analysis.ExpTail` | 89 |  | The tail `xᵉ e^{−x} → 0` at the integers, along the multiples of ι = e + 1 (a frequent, not eventual, tail). |
 | `QBS.Analysis.ExpansionCons` | 70 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 339 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
@@ -149,6 +151,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.OpenMeasure` | 273 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
 | `QBS.Analysis.Param` | 219 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
 | `QBS.Analysis.Pieces` | 145 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
+| `QBS.Analysis.PolyExpCert` | 370 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
 | `QBS.Analysis.RationalLemmas` | 218 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 313 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 115 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
@@ -160,6 +163,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.SignedIntegral` | 186 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
 | `QBS.Analysis.SignedOmega` | 48 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
 | `QBS.Analysis.TailFTC` | 195 |  | A derivative-free fundamental theorem of calculus in tail form (part 1: the algebra). |
+| `QBS.Analysis.TailFTCLip` | 117 |  | A tail-form fundamental theorem of calculus with Lipschitz errors (part 1: the algebra). |
 | `QBS.Analysis.Tensor` | 125 | lem | The product of two measures, integrated in either order, and Fubini's theorem: the two iterated integrals agree. |
 | `QBS.Analysis.Threshold` | 74 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
 | `QBS.Analysis.Tonelli` | 63 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |
@@ -184,6 +188,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLine` | 92 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
 | `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineMoment2` | 298 | lem | The second moment of the exponential distribution, `∫₀^∞ x² e^{−x} dλ(x) = 2`, multiplied out (no subtraction). |
+| `QBS.Continuous.HalfLineMomentFact` | 124 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
+| `QBS.Continuous.HalfLineMomentN` | 197 | lem | All polynomial moments of the exponential: integration by parts on each unit interval (part 1). |
 | `QBS.Continuous.HalfLineNegExp` | 119 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 70 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
@@ -210,6 +216,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.TailFTCExp` | 89 | lem | Validation of `Continuous/TailFTC`: `∫₀¹ e^{−u} du + e^{−1} = 1` (as `HalfLineUnit.I-negExp-unit`), with h = G = e^{−·}. |
 | `QBS.Continuous.TailFTCExpHalf` | 91 | lem | Validation of `Continuous/TailFTCHalfLine`: `∫₀^∞ e^{−x} dλ = 1` from the certificate for h = G = e^{−·} on each [n, n+1] (the same pointwise exp algebra as `TailFTCExp`, at the shifted points) and the tail `e^{−N} ≤ ... |
 | `QBS.Continuous.TailFTCHalfLine` | 94 | lem | The fundamental theorem of calculus in tail form on the half-line (`Continuous/TailFTC`, applied on each [n, n+1]). |
+| `QBS.Continuous.TailFTCLip` | 223 | lem | The tail-form fundamental theorem of calculus with Lipschitz errors and integration by parts, on the unit interval (part 2: the measure side; the algebra is `Analysis/TailFTCLip`). |
+| `QBS.Continuous.TailFTCLipHalf` | 92 | lem | Integration by parts on the half-line, from the unit-interval identities (`Continuous/TailFTCLipJ`). |
+| `QBS.Continuous.TailFTCLipJ` | 137 | lem | The Lipschitz tail-form fundamental theorem (`Continuous/TailFTCLip`) for integrands of any size, in the unbounded integral `J`. |
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
