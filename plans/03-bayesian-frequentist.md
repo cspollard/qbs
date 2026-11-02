@@ -859,9 +859,22 @@ Revised item A, the certificate calculus (2026-11-02, done except the chain rule
   DerivMoment 6.7 s.
 - **Merge:** `make check` (235 files), `longcheck` (35) and `doccheck` pass.
 - **Not done:**
-  - The chain rule.  A general monotone inner function does not fall out; the useful special case is e^{−u} for a
+  - The chain rule (done since for e^{−u}; see the next note).  A general monotone inner function does not fall out; the useful special case is e^{−u} for a
     `Deriv` inner u (h = E(u)·k_u, k = E(u)·h_u), which needs a signed-increment form of the e^{−x} facts.  It would
     give the Gaussian integrals (`∫ xφ`, `∫ x²φ`) from the calculus.
   - `DFaff` only for l ≤ 1 (l > 1 by composing with the halving of `ExpRateExt`, or by shrinking the width).
   - Measurability rules for products and compositions.
   - Item B (pushforward families, change of variables).
+
+Revised item A, the exponential chain rule (2026-11-02, done).  Item A is now complete.
+- **`Analysis/DerivChain` (`AlgDX`, 4.5 s):** `DFexp : Deriv M u h k → Deriv M (E ∘ u) (E(u)·k) (E(u)·h)`, i.e.
+  (e^{−u})′ = −e^{−u}·u′, with constant `Cx c` depending only on u's constant.  No signed increments were needed:
+  the exponential facts are taken at a bound `B ≥ 3c` covering every sum, and the two certificates close with errors
+  w²(c² + c + 4c²) and w²(c + 2c²).  Lipschitz bounds reuse `DerivProd.lipP`.
+- **`Analysis/DerivGauss` (3.0 s):** `DFquad` (x²/2 by the product rule and `half`), `DFgauss` (φ, h = xφ, k = 0),
+  `DFgauss1` (xφ, h = x²φ, k = φ).
+- **`Continuous/DerivGaussMoment` (7.0 s, 0.91 GB):** `∫-xφ : ∫ xφ ≈ 1` and `∫-x²φ : ∫ x²φ ≈ Z`, re-derived from
+  the calculus through `glue-D0`, matching `GaussMean` and `GaussMoment`.
+- **Merge:** `make check` (238 files), `longcheck` (35) and `doccheck` pass.  Timings mine, at load ≈ 6.
+- **Left from A:** `DFaff` for l > 1; measurability rules for products and compositions (still passed to the bridge).
+- **Next:** item B (families as pushforwards; one change-of-variables theorem through A).
