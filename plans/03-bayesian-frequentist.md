@@ -339,3 +339,20 @@ Second moment and variance (2026-11-02, done):
   - Lesson: polynomial expressions shared between an abstract algebra module and a concrete instance should be
     `abstract` at the boundary.  Otherwise unification unfolds them through the concrete semiring.
   - Next hot spot: `shift-split`, at 2.3 s.
+
+Bernoulli on a Boolean QBS (2026-11-02, done; this closes the "Not done" item of 3d step 3).
+- `QBS/BoolQ` (2.6 s) is generic in the random source.  It defines `BoolQ = 1Q +Q 1Q`, `boolQ`, `constQ`, and
+  `ifQ a b = copair (constQ a) (constQ b)`; the laws `ifQ-true` and `ifQ-false` hold by `refl`.
+- `Inference/BoolDist` (6.2 s):
+  - `bitB` is the first bit as a random element of `BoolQ`, and `bernB : Pre BoolQ`.
+  - Tests: `ifT a b` and `indT`.
+  - `E-at-bernB-if : E-at bernB (ifT a b) ≃ ½a + ½b` and `E-at-bernB-ind ≃ ½`.
+  - The link to the old `bern` is `bernB≈bern : mapPre toAQ bernB ≈ᵖ bern`.
+  - The biased coin is `bernθ θ`, the indicator of `{expansion ≤ θ}` (Borel by `Below-borel`, decided by LEM).  It
+    satisfies `E-at-bernθ : E-at (bernθ θ) indT ≃ θ` for every θ ≤ 1, not only dyadic θ.  `indB` turns any decidable
+    Borel set into a random element of `BoolQ`.
+- Not done:
+  - `bernθ ½ ≈ᵖ bernB`.
+  - The first bit as a `Hom`: the library has no QBS for Cantor space itself.
+- Next: the prior as a kernel.  That means θ ↦ `bernθ θ` as a `Hom AQ (TQ BoolQ)`, with the uniform prior on θ.  It
+  gives the evidence for heads as `∫ θ dθ = ½`, which is Beta–Bernoulli with a continuous prior.
