@@ -625,3 +625,41 @@ Decision-theoretic bridge, coin Bayes risk (2026-11-02, done):
   - an `≤` statement r(posterior mean) ≤ r(X);
   - a pointwise proof that the tests are (θ̂ − θ)²;
   - a general Bayes-optimality theorem.
+
+Density item 3, all exponential moments (2026-11-02, done): `∫₀^∞ xⁿ e^{−x} dx = n!` and `E[Xⁿ] ≃ n!`.
+- **Route change:** the planned `G = e^{−x} ∑ n!/k! xᵏ` failed.  At the extremum x = n of xⁿe^{−x} the certificate
+  has only third-order slack, so first-order exp facts cannot prove it.  Instead:
+  - **Lipschitz-tolerant FTC with integration by parts:** `∫h + G(b) ≈ G(a) + ∫k`.  The certificate holds up to
+    `w²c` on each piece `[a, a+w]`, and `h` and `k` are Lipschitz, not monotone.  This covers increasing, decreasing
+    and mixed shapes at once.
+  - **Induction:** with `G = h = xʲ⁺¹e^{−x}` and `k = (j+1)xʲe^{−x}`, induct from `∫e^{−x} = 1`.
+  - **Scaling:** `½ˢ` scaling handles integrands larger than 1.
+  - **Frequent tail:** for every m and N₀ there is some N ≥ N₀ with `G(N) ≤ ½ᵐ`.  This is enough because the
+    partial sums increase, and it avoids floor arithmetic.
+- **Modules (my timings):**
+
+  | Module | Time | Exports |
+  |---|---|---|
+  | `Analysis/TailFTCLip` | 3.5 s | `AlgL` |
+  | `Continuous/TailFTCLip` | 6.8 s | `ftc-lip` |
+  | `Continuous/TailFTCLipJ` | 6.5 s | `ftc-J`, for data bounded by 2ˢ |
+  | `Continuous/TailFTCLipHalf` | 5.9 s | `glue : ∫ᴹ lebPre h ≈ ∫ᴹ lebPre k` |
+  | `Analysis/PolyExpCert` | 5.9 s | polynomial × exp certificates |
+  | `Analysis/ExpTail` | 3.2 s | the frequent tail |
+  | `Continuous/HalfLineMomentN` | 9.9 s | `ibp-unit` |
+  | `Continuous/HalfLineMomentFact` | 6.8 s | `moment-succ`, `∫ᴹ-pw-moment : ∫ xⁿe^{−x} ≈ fact n` |
+  | `Inference/ExpMomentN` | 8.2 s | `E-atᴵ-powD n ≃ fact n` |
+
+  `HalfLineMomentFact` also re-derives `∫-x` and `∫-x²` with the same statements as `HalfLineMean`/`HalfLineMoment2`.
+  All modules are ≤ 1 GB.
+- **Performance lessons:**
+  - `with` on large certificate goals cost 2.5 GB.  Projections and top-level lemmas fixed it.
+  - Instantiating `module L = LipJ …` with inline lambdas cost 20 s and 3.1 GB.  Naming each hypothesis with an
+    explicit type brought it under 10 s.
+- **Note:** the agent reports that `longdecls.py`'s own defaults (18 lines, 1000 chars, 130 cols) are stricter than
+  the 25/1500/160 I have been putting in briefs.  The check `make longcheck` runs is what counts; it stays at 35.
+- **Merge:** `make check` (201 files), `longcheck` (35) and `doccheck` pass.  The old bespoke modules
+  `HalfLineMean`/`HalfLineMoment2`/`GeometricMoment2` are now redundant, and could be retired or kept as references.
+- **Remaining items of the density list:** 4 (integrability by domination), 5 (function library), 6 (real line,
+  symmetric densities, the Gaussian without π) and 7 (affine change of variables).  The Lipschitz FTC with
+  integration by parts is exactly what item 6's Gaussian variance needs.
