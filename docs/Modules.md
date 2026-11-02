@@ -41,6 +41,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
 | `QBS.Inference.ExpMomentN` | 81 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
+| `QBS.Inference.ExpPushforward` | 157 | lem | The exponential distribution with scale `c` as a pushforward of Exp(1), with no new integral (item B of `plans/03`). |
 | `QBS.Inference.ExpRateDist` | 147 | lem | The exponential distribution with a rate λ, through the expectation API (in the style of `Inference/ExpMomentN`). |
 | `QBS.Inference.ExpRateOne` | 60 | lem | Rate 1 consistency: `ExpRateDist.expDistλ` at `l = c = 1#` agrees with the exponential distribution `ExpDist.expDist`. |
 | `QBS.Inference.Expectation` | 221 | lem | Calculating with the expectation `E-at` of a bounded signed statistic (`Inference/ExpectationResp`): * the algebra of signed tests: sum `_+T_`, negation `-T_`, scaling by a signed constant `scaleT c`, constants `const... |
@@ -50,6 +51,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpectationProduct` | 135 | lem | Independence for products: expectations against the product measure of the continuous probability monad. |
 | `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
+| `QBS.Inference.GaussAffine` | 70 | lem | The Gaussian N(μ, σ²) from the standard one by the affine statistic `x ↦ μ + σx` (item B of `plans/03`), with no new integral. |
 | `QBS.Inference.GaussReal` | 213 | lem | The standard Gaussian on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`), with `E[X] ≃ 0` and `E[X²] ≃ 1`, and no value for `π` (nor for `Z = ∫₀^∞ e^{−x²/2}`): the density is the symmetric `[φ , φ]`, `φ = ... |
 | `QBS.Inference.GaussRealAbs` | 99 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
@@ -57,6 +59,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.PolyDominationOdd` | 109 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
+| `QBS.Inference.PushforwardExpectation` | 84 | lem | Expectations of pushforwards are expectations of composites, through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
@@ -111,6 +114,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
+| `QBS.Analysis.AffineAlg` | 89 |  | Algebra for moments of pushforward (affine) families, generic over an `OmegaSemiring` (so the ring solver never sees concrete cuts). |
 | `QBS.Analysis.Archimedean` | 40 |  | The extra structure of the extended non-negative reals that the construction of Lebesgue-type measures needs, beyond `OmegaSemiring`: a half, Archimedean closure, cancellation for the order, and tails of convergent se... |
 | `QBS.Analysis.BinaryExpansion` | 92 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
 | `QBS.Analysis.BorelMeasure` | 52 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
