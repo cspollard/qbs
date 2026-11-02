@@ -42,6 +42,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
 | `QBS.Inference.ExpMomentN` | 81 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
 | `QBS.Inference.ExpPushforward` | 157 | lem | The exponential distribution with scale `c` as a pushforward of Exp(1), with no new integral (item B of `plans/03`). |
+| `QBS.Inference.ExpPushforwardAgree` | 97 | lem | Validation of the dyadic scaling (`Continuous/HalfLineScale`): the pushforward Exp(c = ½) of `Inference/ExpPushforward` and the density distribution of `2 e^{−2x}` have the same integral for every non-negative test `f... |
 | `QBS.Inference.ExpRateDist` | 147 | lem | The exponential distribution with a rate λ, through the expectation API (in the style of `Inference/ExpMomentN`). |
 | `QBS.Inference.ExpRateOne` | 60 | lem | Rate 1 consistency: `ExpRateDist.expDistλ` at `l = c = 1#` agrees with the exponential distribution `ExpDist.expDist`. |
 | `QBS.Inference.Expectation` | 221 | lem | Calculating with the expectation `E-at` of a bounded signed statistic (`Inference/ExpectationResp`): * the algebra of signed tests: sum `_+T_`, negation `-T_`, scaling by a signed constant `scaleT c`, constants `const... |
@@ -138,6 +139,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.DerivExp` | 92 |  | A certificate calculus for the tail FTC (part 3: the base cases `xⁿ` and `e^{−x}`, and `xʲ⁺¹ e^{−x}`). |
 | `QBS.Analysis.DerivGauss` | 65 |  | A certificate calculus for the tail FTC (part 5: the Gaussian), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.DerivProd` | 219 |  | A certificate calculus for the tail FTC (part 2: the product rule), over an abstract Archimedean ω-semiring. |
+| `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
@@ -218,6 +220,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
+| `QBS.Continuous.FirstBitInf` | 62 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
 | `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
 | `QBS.Continuous.GaussInverse` | 129 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
@@ -232,6 +235,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineNegExp` | 119 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 70 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
+| `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
