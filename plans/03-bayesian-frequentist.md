@@ -557,3 +557,19 @@ Performance notes:
   ω-semiring, like `AlgB` in `BetaIntegral`.
 - Keep concrete instances to small equations, as `VarGen`/`SixGen` do.  Expect item 2 itself to be one or two modules
   of about 300 lines; each later integral should then be well under 100.
+
+Density item 1, generic density distributions (2026-11-02, done):
+- **`Continuous/DensityDist` (6.0 s, 0.86 GB):** `densW d = reweightPre d lebPre` (abstract) and
+  `densDist d nrm = normPre (densW d) 1# _` (abstract), for `nrm : ∫ᴹ lebPre d ≈ 1#`.  Exports `∫-dens`
+  (`∫ᴹ (ιPre (densDist d nrm)) f ≈ ∫ᴹ lebPre (mulH d f)`) and `∫-dens-one`.
+- **`Inference/DensityExpectation` (7.3 s, 0.97 GB):**
+  - `J-dens`;
+  - `densI d nrm g⁺ g⁻ b⁺ b⁻ : ITest (densDist d nrm)`, from `Bnd` of `∫ᴹ lebPre (mulH d g±)`;
+  - `E-atᴵ-dens`, giving `≃ (∫ d·g⁺ − ∫ d·g⁻)`;
+  - `zero-integral`;
+  - the exponential's mean and second moment as one-line instances, `E-atᴵ-idD` and `E-atᴵ-sqD`.
+- **Not done:**
+  - `densDist negExpH expNrm ≈ᵖ expDist`.  The integrals agree, but the two `Pre`s are not shown equal.
+  - Parts are `WQ`-valued (`toC` converts them).
+- **Merge fix (mine):** removed backticked module paths from the `Interface.md` bullets, because `doccheck` reads
+  them as identifiers.
