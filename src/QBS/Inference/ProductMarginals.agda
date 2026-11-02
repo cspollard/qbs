@@ -61,6 +61,14 @@ module Alg {c ℓ} (R : CommutativeSemiring c ℓ) where
   neg-eq = solve 2 (λ a b → (((a :* a) :* con 0 :+ con 0 :* con 1) :+ (con 1 :* con 0 :+ con 0 :* (b :* b))) :+
     ((con 1 :+ con 1) :* (a :* con 0 :+ con 0 :* b) :+ con 0 :* (a :* b :+ con 0 :* con 0)) := con 0) refl
 
+  -- `6 + (2·0 + 0·2) + 0 + 0 = (2 + (0 + (2·2 + 0·0))) + 0`, the arithmetic of `6 − 2·2 = 2`
+  var-eq : ((((1# + 1#) + (1# + 1#)) + (1# + 1#)) + ((1# + 1#) * 0# + 0# * (1# + 1#))) + 0# + 0# ≈
+    ((1# + 1#) + (0# + ((1# + 1#) * (1# + 1#) + 0# * 0#))) + 0#
+  var-eq = solve 0
+    (((((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ (con 1 :+ con 1)) :+
+        ((con 1 :+ con 1) :* con 0 :+ con 0 :* (con 1 :+ con 1))) :+ con 0 :+ con 0
+    := ((con 1 :+ con 1) :+ (con 0 :+ ((con 1 :+ con 1) :* (con 1 :+ con 1) :+ con 0 :* con 0))) :+ con 0) refl
+
 module ProductMarginals (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J-cong)
   open Integration A using (Measure; IsProb; I; I-cong; I-scale; probClass)
@@ -68,8 +76,6 @@ module ProductMarginals (lem₁ : LEM₁) where
   open OmegaSemiring A using (_≈_; _+_; _*_; 0#; 1#; refl; sym; trans; *-cong; +-cong; *-identityʳ; ≤-refl;
     commutativeSemiring)
   open Alg commutativeSemiring
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
-    using (solve; _:+_; _:*_; _:=_; con)
   open Meas (lemOf lem₁) using (Meas-⊗)
   open Bounded A using (_≃_; mk≃; ≃-trans; ≃-sym; _+S_; _*S_; -S_; 1S; +S-cong; -S-cong;
     *S-cong; finite)
@@ -192,10 +198,7 @@ module ProductMarginals (lem₁ : LEM₁) where
 
   -- `6 − 2·2 = 2`
   var-arith : (sixS +S (-S (twoS *S twoS))) ≃ twoS
-  var-arith = mk≃ 0# (Is-0 finite) (solve 0
-    (((((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ (con 1 :+ con 1)) :+
-        ((con 1 :+ con 1) :* con 0 :+ con 0 :* (con 1 :+ con 1))) :+ con 0 :+ con 0
-    := ((con 1 :+ con 1) :+ (con 0 :+ ((con 1 :+ con 1) :* (con 1 :+ con 1) :+ con 0 :* con 0))) :+ con 0) refl)
+  var-arith = mk≃ 0# (Is-0 finite) var-eq
 
   -- the variance of `X + Y`: `E[(X + Y)²] − (E[X + Y])² ≃ 2`
   var-sum : (E-atᴵ expPair sumSqI +S (-S (E-atᴵ expPair (X +I Y) *S E-atᴵ expPair (X +I Y)))) ≃ twoS
