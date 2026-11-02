@@ -663,3 +663,29 @@ Density item 3, all exponential moments (2026-11-02, done): `∫₀^∞ xⁿ e^{
 - **Remaining items of the density list:** 4 (integrability by domination), 5 (function library), 6 (real line,
   symmetric densities, the Gaussian without π) and 7 (affine change of variables).  The Lipschitz FTC with
   integration by parts is exactly what item 6's Gaussian variance needs.
+
+Density item 6, half-line part: Gaussian moments without π (2026-11-02, done).
+- **Setting:** φ(x) = e^{−x²/2} on [0,∞), with normaliser `Z = ∫ᴹ lebPre phiH` left abstract (√(π/2) is out of scope).
+- **Results:**
+  - **`Continuous/GaussHalfLine` (8.9 s):** `phiH`, `gMomH i` (xⁱφ), `gKH j` ((j+1)xʲφ), and
+    `AtInterval.ibp-unit` (integration by parts on each `[n₀, n₀+1]`, with G = xʲ⁺¹φ).
+  - **`Continuous/GaussMoment` (6.2 s):**
+    - `moment-succ : ∫ x^{j+2}φ ≈ (j+1)·∫ xʲφ`, via `TailFTCLipHalf.glue`;
+    - `∫-x²φ : ∫ x²φ ≈ Z`;
+    - `even-moment n : ∫ x^{2n}φ ≈ (2n−1)!!·Z`.
+  - **`Continuous/GaussFinite` (6.1 s):** `Z-le : Z ≤ 4`, since each unit integral is at most Φ(n) ≤ 2·½ⁿ.
+  - **`Continuous/GaussInverse` (7.7 s):** `finZ`, `posZ` (from Φ(1) ≥ ½), and `Z-inv : Σ n, Z·n ≈ 1`.
+  - **`Inference/HalfNormal` (7.6 s):** `halfNormal = normPre (densW phiH) n _` and `E-atᴵ-hn : E[X²] ≃ 1`.  The
+    canonical instance `HN` uses n = `invC Z`, so no hypotheses remain.
+- **Supporting modules:** `Analysis/GaussCert` (`AlgG`, the polynomial × Gaussian certificates, with `pack` abstract),
+  `Analysis/GaussExp`, `Analysis/CutSplit` (`split1`: x ≤ 1 or 1 ≤ x, by LEM) and `Analysis/GaussTail`.  All
+  modules are ≤ 1 GB (my timings, at load ≈ 3.5).
+- **Performance lessons:**
+  - `AtInterval` first took 134–173 s.  Conversions through the module-applied `X.hh`/`X.kh` unfolded the cut `*`.
+    Restating the pack facts at the local names (`pk j = X.pack j`) brought it to 10 s.  Making `pack` abstract
+    alone did not help.
+  - `with posOrZero Z` normalised `Z` and took minutes and 3.3 GB.  A helper function that pattern-matches,
+    with no `with`, fixed it.
+- **Merge:** `make check` (210 files), `longcheck` (35) and `doccheck` pass.
+- **Still open for item 6:** the whole real line (a signed-reals QBS, Lebesgue measure on ℝ, the symmetry lemma), the
+  Gaussian on ℝ with E[X] = 0 and Var = 1 by symmetry from these half-line moments, and `Z = √(π/2)`.
