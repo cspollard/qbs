@@ -170,7 +170,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS.Continuous.BetaIntegral` | 187 | lem | The Beta integral for integer parameters under the uniform distribution: B(k,m) = ∫ uᵏ (1−u)ᵐ du,   (k+m+1)! · B(k,m) = k! · m!   (`beta-closed`, multiplied out, no division), and the conjugacy step (k+m+2) · B(k+1,m)... |
+| `QBS.Continuous.BetaIntegral` | 192 | lem | The Beta integral for integer parameters under the uniform distribution: B(k,m) = ∫ uᵏ (1−u)ᵐ du,   (k+m+1)! · B(k,m) = k! · m!   (`beta-closed`, multiplied out, no division), and the conjugacy step (k+m+2) · B(k+1,m)... |
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
