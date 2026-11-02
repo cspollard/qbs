@@ -389,3 +389,27 @@ Independence for integrable tests (2026-11-02, done):
   - X and Y are built as products with the constant test, because the marginal law `mapPre fstQ (p ⊗ᵖ q) ≈ᵖ p` is
     not yet proved.
   - The expanded test is not yet identified with the pointwise statistic (x+y)².
+
+Product marginals (2026-11-02, done): `Inference/ProductMarginals`.
+- **Marginal laws:** `fst-marginal : mapPre fstQ (p ⊗ᵖ q) ≈ᵖ p` and `snd-marginal`.
+- **Integrable tests:** `E-atᴵ-cong` gives equal expectations for pointwise-equal tests.
+- **Exponential pair:**
+  - the coordinates `fstI`/`sndI` with E ≃ 1;
+  - the pointwise statistic `sumSqI` = (x+y)², with E ≃ 6;
+  - `var-sum : Var(X+Y) ≃ 2`.
+- **Check cost:** about 31 s and 1.4 GB, the second-slowest new module.  Moving `var-arith` into the abstract `Alg`
+  saved 3 s.  The rest is unfolding of concrete cut arithmetic in `sumSqI` (9 s), `var-arith` (4.8 s) and
+  `pos-pw`/`neg-pw` (2.9 s each).  A cost pass is in progress.
+
+n flips under a uniform prior (2026-11-02, done):
+- **`Continuous/UniformMomentN` (5.4 s):** `moment-N : (n+1)·∫uⁿ ≈ 1` for all n.
+  - It needs no binomial coefficients.  It uses the Pascal recursion `G j (k+1) = ½(G j k + G (j+1) k)` on
+    `G j k = ∫ eʲ tᵏ` with first-bit self-similarity.
+  - The unknown top moment is cancelled with `cancel≤`, `arch` and `complement`, needing only `Arch`.
+- **`Inference/CoinUniformPriorN` (9.3 s):**
+  - n+1 conditionally independent flips, `Kn n`, with the all-heads test `AH n`.
+  - `heads-prob : (n+2)·P(Hⁿ⁺¹) ≃ 1`.
+  - Laplace's rule of succession, `succession : (n+2)·P(Hⁿ⁺¹) ≃ (n+1)·P(Hⁿ)`.
+- **`Inference/BernHalf` (5.8 s):** `bernθ-half≈bernB : bernθ ½ ≈ᵖ bernB`.
+- **`longcheck` regression:** the merge pushed `longcheck` to 37 flagged (`BernHalf.I-θ`, `UniformMomentN.S-step`).
+  The agent had misread the threshold.  A fix is in progress together with the cost pass.
