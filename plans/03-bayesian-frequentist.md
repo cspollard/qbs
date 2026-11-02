@@ -273,3 +273,17 @@ cannot be a `Measure` (`I-sub` forces `I 1 ≤ 1`).  It is an s-finite `Pre (XW 
   - combining these into `∫ e^{−x} dλ ≈ 1`.
 - Item 5 (transfer) does not go through `densM`, because λ is s-finite rather than a `Measure`.  It needs a
   normalised `Pre` built from the weighted λ instead.
+
+Normalisation (2026-11-02, done): `∫ᴹ-leb-negExp-norm : ∫ᴹ lebPre negExpH ≈ 1#`, i.e. ∫₀^∞ e^{−x} dx = 1, assuming
+only LEM₁.
+- `Analysis/Exp.exp≤quad : x ≤ 1 → exp x ≤ 1 + x + x²`.  This upper bound is needed for `1 − e^{−h} ≤ h + h²`.
+- `Analysis/GeometricNorm` (abstract, `OmegaSemiring` plus `Arch`, 3.3 s):
+  - `Geo.total : I + g ≈ 1 → ∑ᶠ gⁿ · I ≈ 1`;
+  - `norm`, which pins `x 0 + q 0 ≈ 1` from a first-bit recursion plus error bounds, using `arch` and
+    error-doubling invariants, with no limits or cancellation.
+- `Continuous/HalfLineUnit` (5.6 s): `I-negExp-unit : ∫₀¹ e^{−u} du + e^{−1} ≈ 1`.  It uses self-similarity, as in
+  `UniformMean`, on the family `F j = ∫₀¹ e^{−2⁻ʲu} du`.  There are no Riemann sums.
+- `Continuous/HalfLineNorm` (5.0 s): `negExp-pw`, then the combination.
+- Next:
+  - item 4, the mean `∫ x e^{−x} dλ = 1`;
+  - item 5, the exponential as a normalised `Pre` on [0,∞) with `E-atᴵ`.
