@@ -689,3 +689,23 @@ Density item 6, half-line part: Gaussian moments without π (2026-11-02, done).
 - **Merge:** `make check` (210 files), `longcheck` (35) and `doccheck` pass.
 - **Still open for item 6:** the whole real line (a signed-reals QBS, Lebesgue measure on ℝ, the symmetry lemma), the
   Gaussian on ℝ with E[X] = 0 and Var = 1 by symmetry from these half-line moments, and `Z = √(π/2)`.
+
+Density item 4, integrability by domination (2026-11-02, done).
+- **`Inference/Domination` (7.4 s, 1.0 GB):**
+  - finiteness transfer: `Bnd-≤`, `Bnd-add`, `Bnd-scale`, `J-Bnd-mono`, `ITest-dom`;
+  - integral lemmas on `WQ` (none existed before): `∫ᴹ-mono`, `addH`, `∫ᴹ-scale`, `∫ᴹ-add`, `∫ᴹ-dom`,
+    `∫ᴹ-Bnd-dom`;
+  - for densities: `densI-dom`, an `ITest (densDist d nrm)` from `g± ≤ c·b` with `Bnd c` and `Bnd (∫ d·b)`.
+    `E-atᴵ-dom` is the corresponding instance of `E-atᴵ-dens`.
+- **`Inference/PolyDomination` (8.4 s, 1.16 GB):**
+  - `expI k c …`: any `g±` with `g± ≤ c·(1 + xᵏ)` is integrable under the exponential (`expB k` gives `0! + k!`).
+  - `HNDom`/`HNZ.hnI`: the same under `halfNormal`, for even degree `2m` (bound `Z + (2m−1)!!·Z`, scaled by `n`).
+  - Validation: `powD-dom`/`E-atᴵ-powD-dom` re-derive `ExpMomentN.powD`, and `sqI-dom` re-derives
+    `HalfNormal.sqI`.
+- **Not done:** odd-degree growth under the half-normal.  The agent missed that `Analysis/CutSplit.split1`
+  (x ≤ 1 or 1 ≤ x, by LEM, from the Gaussian work) gives the needed `xᵏ ≤ 1 + x^{2k}`.  A bound of even degree
+  ≥ k works meanwhile.
+- **Merge:** `make check` (212 files), `longcheck` (35) and `doccheck` pass.  Timings were taken at load ≈ 6.5, so
+  they are approximate.
+- **Remaining density items:** 5 (function library: much of it now exists, scattered over `PolyExpCert`,
+  `GaussCert`, `Domination`, `ExpMomentN`), 6 (the whole real line) and 7 (affine change of variables).
