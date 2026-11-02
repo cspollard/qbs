@@ -1,13 +1,13 @@
 {-# OPTIONS --safe --without-K #-}
 
--- All polynomial moments of the exponential with a rate λ ≤ 1: `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the
--- reciprocal of the rate (`l c ≈ 1`, `c ≤ natE (suc ν)`).  So `λⁿ⁺¹ ∫ xⁿ e^{−λx} = n!`: the cases n = 0, 1, 2 are
+-- All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the
+-- reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`).  So `λⁿ⁺¹ ∫ xⁿ e^{−λx} = n!`: the cases n = 0, 1, 2 are
 -- `λ ∫ e^{−λx} = 1` (`Continuous/ExpRateInt`), `λ² ∫ x e^{−λx} = 1` and `λ³ ∫ x² e^{−λx} = 2`.
 -- The step `∫ xʲ⁺¹ e^{−λx} = c (j+1) ∫ xʲ e^{−λx}` is `TailFTCLipHalf.glue` (integration by parts) with
 --   h = cʲ⁺¹ H(λx),  k = cʲ⁺¹ (j+1) K(λx),  G = cʲ⁺² H(λx),   H = (λx)ʲ⁺¹ e^{−λx}, K = (λx)ʲ e^{−λx},
 -- so that `G′ = k − h` (`cλ = 1`).  The unit-interval identities come from the rate-1 data of `Analysis/PolyExpCert` at the
 -- point λx and width λw (`AlgRate.Rate`), moved to the dyadic pieces as in `HalfLineMomentN`; the tail is `AlgRate.Tl`.
--- A positive rational (a+1)/(b+1) ≤ 1 is `Rat`: l = (a+1) · (1/(b+1)), c = (b+1) · (1/(a+1)) with the reciprocals of `Analysis/ExpLower`.
+-- Any positive rational (a+1)/(b+1) is `Rat`: l = (a+1) · (1/(b+1)), c = (b+1) · (1/(a+1)) with the reciprocals of `Analysis/ExpLower`.
 module QBS.Continuous.ExpRateMoment where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -46,7 +46,7 @@ module ExpRateMoment (lem₁ : LEM₁) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (hp)
   open AlgT A R using (P; Dy; dy-bound; hp≤1)
-  open AlgP A R using (pw; natE≤P; *-monoʳ; P-*; pwB)
+  open AlgP A R using (pw; natE≤P; *-monoʳ; *-mono₂; natE-*; P-*; pwB)
   open AlgRate A R using (module Fn; module Rate; module Tl; module Sc; fact-step; rat-lc)
   open Exp A using (natE)
   open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-zero)
@@ -64,11 +64,14 @@ module ExpRateMoment (lem₁ : LEM₁) where
   open QBS
   open Hom
 
-  module Mom (l c : ∣A∣) (ν : ℕ) (lc : l * c ≈ 1#) (l1 : l ≤ 1#) (cν : c ≤ natE (suc ν)) where
+  module Mom (l c : ∣A∣) (μ ν : ℕ) (lc : l * c ≈ 1#) (lμ : l ≤ natE (suc μ)) (cν : c ≤ natE (suc ν)) where
     open Sc l c lc
 
     cγ : c ≤ P (suc ν)
     cγ = ≤-trans cν (natE≤P (suc ν))
+
+    lμ′ : l ≤ P (suc μ)
+    lμ′ = ≤-trans lμ (natE≤P (suc μ))
 
     -- the constant `s = cʲ⁺¹ ≤ 2^σ`
     σ : ℕ → ℕ
@@ -100,11 +103,16 @@ module ExpRateMoment (lem₁ : LEM₁) where
     -- the unit-interval identity on [n₀, n₀ + 1]
 
     module AtInterval (n₀ j : ℕ) where
-      M : ∣A∣
-      M = natE (suc n₀)
+      -- the points `x ≤ Mo = n₀ + 1` are sent by the rate to `λ x ≤ M = (μ+1)(n₀+1)`, the range of the rate-1 data
+      Mo M : ∣A∣
+      Mo = natE (suc n₀)
+      M = natE (suc μ ℕ.* suc n₀)
 
-      module X = Rate negExp M (suc n₀) (natE≤P (suc n₀)) negExp≤1 negExp-anti (eadd (suc n₀))
-        (λ t1 → proj₁ (facts t1)) (λ t1 → proj₂ (facts t1)) negExp-cong l c (pw (suc j) c) lc l1 (σ j) (suc ν) (sσ j) cγ j
+      lM : ∀ {x} → x ≤ Mo → l * x ≤ M
+      lM xM = ≤-trans (*-mono₂ lμ xM) (≤-reflexive (sym (natE-* (suc μ) (suc n₀))))
+
+      module X = Rate negExp M (suc μ ℕ.* suc n₀) (natE≤P (suc μ ℕ.* suc n₀)) negExp≤1 negExp-anti (eadd (suc μ ℕ.* suc n₀))
+        (λ t1 → proj₁ (facts t1)) (λ t1 → proj₂ (facts t1)) negExp-cong l c (pw (suc j) c) lc Mo lM (suc μ) lμ′ (σ j) (suc ν) (sσ j) cγ j
 
       W Z : ℕ
       W = X.W
@@ -114,22 +122,22 @@ module ExpRateMoment (lem₁ : LEM₁) where
       hle : ∀ {n} x → x ≤ 1# → hp n * x ≤ hp n
       hle {n} x x1 = ≤-trans (*-mono (hp n) x1) (≤-reflexive (*-identityʳ _))
 
-      pt : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → (natE n₀ + a) + hp n * x ≤ M
+      pt : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → (natE n₀ + a) + hp n * x ≤ Mo
       pt {n} {a} dy x x1 = ≤-trans (≤-reflexive (+-assoc (natE n₀) a (hp n * x)))
         (+-mono ≤-refl (≤-trans (+-mono ≤-refl (hle x x1)) (dy-bound dy)))
 
-      pt1 : ∀ {n a} → Dy n a → (natE n₀ + a) + hp n ≤ M
+      pt1 : ∀ {n a} → Dy n a → (natE n₀ + a) + hp n ≤ Mo
       pt1 {n} {a} dy = ≤-trans (≤-reflexive (+-assoc (natE n₀) a (hp n))) (+-mono ≤-refl (dy-bound dy))
 
       shU : ∀ (u : ∣A∣ → ∣A∣) → (∀ {x y} → x ≈ y → u x ≈ u y) →
-        (∀ {a t} → a + t ≤ M → t ≤ 1# → u (a + t) ≤ u a + t * P W) →
+        (∀ {a t} → a + t ≤ Mo → t ≤ 1# → u (a + t) ≤ u a + t * P W) →
         ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → u (natE n₀ + (a + hp n * x)) ≤ u (natE n₀ + a) + hp n * P W
       shU u uc up {n} {a} dy x x1 =
         ≤-trans (≤-resp (uc (+-assoc (natE n₀) a (hp n * x))) refl (up (pt dy x x1) (≤-trans (hle x x1) (hp≤1 n))))
           (+-mono ≤-refl (*-monoʳ (P W) (hle x x1)))
 
       shD : ∀ (u : ∣A∣ → ∣A∣) → (∀ {x y} → x ≈ y → u x ≈ u y) →
-        (∀ {a t} → a + t ≤ M → t ≤ 1# → u a ≤ u (a + t) + t * P W) →
+        (∀ {a t} → a + t ≤ Mo → t ≤ 1# → u a ≤ u (a + t) + t * P W) →
         ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → u (natE n₀ + a) ≤ u (natE n₀ + (a + hp n * x)) + hp n * P W
       shD u uc down {n} {a} dy x x1 =
         ≤-trans (down (pt dy x x1) (≤-trans (hle x x1) (hp≤1 n)))
@@ -193,10 +201,10 @@ module ExpRateMoment (lem₁ : LEM₁) where
     G0 : ∀ j → Gf j 0# ≈ 0#
     G0 j = trans (*-cong refl (trans (*-cong (trans (*-cong (zeroʳ l) refl) (zeroˡ _)) refl) (zeroˡ _))) (zeroʳ _)
 
-    module TL (j : ℕ) = Tl negExp negExp-anti T.tail l c (pw (suc j) c * c) lc l1 ν (σ j ℕ.+ suc ν) cν
+    module TL (j : ℕ) = Tl negExp negExp-anti T.tail l c (pw (suc j) c * c) lc (suc μ) lμ′ ν (σ j ℕ.+ suc ν) cν
       (P-* {pw (suc j) c} {c} {σ j} {suc ν} (sσ j) cγ) (suc j)
 
-    module I = Int l c ν lc l1 cν
+    module I = Int l c μ ν lc lμ cν
 
     -- ∫ xʲ⁺¹ e^{−λx} = c (j+1) ∫ xʲ e^{−λx}
     moment-succ : ∀ j → ∫ᴹ {WQ} lebPre (pwRH l (suc j)) ≈ (c * natE (suc j)) * ∫ᴹ {WQ} lebPre (pwRH l j)
@@ -215,9 +223,9 @@ module ExpRateMoment (lem₁ : LEM₁) where
     moment (suc n) = trans (moment-succ n) (trans (*-cong refl (moment n)) fact-step)
 
   ----------------------------------------------------------------------------
-  -- the positive rationals (a+1)/(b+1) ≤ 1
+  -- the positive rationals (a+1)/(b+1)
 
-  module Rat (a b : ℕ) (ab : a ℕ.≤ b) where
+  module Rat (a b : ℕ) where
     qi : ℕ → ∣A∣
     qi n = qinvC (lemOf lem₁) n
 
@@ -225,10 +233,6 @@ module ExpRateMoment (lem₁ : LEM₁) where
     ratL ratC : ∣A∣
     ratL = natE (suc a) * qi b
     ratC = natE (suc b) * qi a
-
-    natE-mono : ∀ {m n} → m ℕ.≤ n → natE m ≤ natE n
-    natE-mono ℕ.z≤n = 0-least
-    natE-mono (ℕ.s≤s e) = +-mono (natE-mono e) ≤-refl
 
     qi-ok : ∀ n → qi n * natE (suc n) ≈ 1#
     qi-ok n = inv-ok (lemOf lem₁) n
@@ -239,12 +243,16 @@ module ExpRateMoment (lem₁ : LEM₁) where
     ratLC : ratL * ratC ≈ 1#
     ratLC = rat-lc {natE (suc a)} {natE (suc b)} {qi a} {qi b} (qi-ok a) (qi-ok b)
 
-    ratL1 : ratL ≤ 1#
-    ratL1 = ≤-trans (*-monoʳ (qi b) (natE-mono (ℕ.s≤s ab))) (≤-reflexive (trans (*-comm _ _) (qi-ok b)))
-
     -- 1/(a+1) ≤ 1, so the reciprocal is at most b+1
     qi≤1 : qi a ≤ 1#
     qi≤1 = ≤-trans (≤-trans (≤-reflexive (sym (*-identityʳ (qi a)))) (*-mono (qi a) (one≤ a))) (≤-reflexive (qi-ok a))
+
+    -- 1/(b+1) ≤ 1, so the rate is at most a + 1
+    qiB≤1 : qi b ≤ 1#
+    qiB≤1 = ≤-trans (≤-trans (≤-reflexive (sym (*-identityʳ (qi b)))) (*-mono (qi b) (one≤ b))) (≤-reflexive (qi-ok b))
+
+    ratLμ : ratL ≤ natE (suc a)
+    ratLμ = ≤-trans (*-mono (natE (suc a)) qiB≤1) (≤-reflexive (*-identityʳ _))
 
     ratCν : ratC ≤ natE (suc b)
     ratCν = ≤-trans (*-mono (natE (suc b)) qi≤1) (≤-reflexive (*-identityʳ _))

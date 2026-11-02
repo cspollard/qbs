@@ -1,14 +1,15 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- The exponential distribution with a rate λ, through the expectation API (in the style of `Inference/ExpMomentN`).
--- For a rate `l ≤ 1` with reciprocal `c` (`l c ≈ 1`, `c ≤ natE (suc ν)`; see `Continuous/ExpRateMoment`):
+-- For any rate `l` with reciprocal `c` (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`; see `Continuous/ExpRateMoment`):
 --   * the density `d x = λ e^{−λx}` is normalised (`expNrmλ : ∫ d ≈ 1`, from `λ ∫ e^{−λx} = 1`) and
 --     `expDistλ = densDist d expNrmλ`;
 --   * `powλD n : ITest expDistλ` has parts `xⁿ` and `0`; `∫ d xⁿ = cⁿ n!` (`pow-int`);
 --   * `E-atᴵ-powλD n : E[Xⁿ] ≃ cⁿ n!`, and rescaled `rate-moment n : E[Xⁿ] · λⁿ ≃ n!`;
 --   * the mean `E[X] · λ ≃ 1`, the second moment `E[X²] · λ² ≃ 2` and the variance `Var · λ² ≃ 1`
 --     (`mean-rate`, `second-rate`, `var-rate`, with `Var = E[X²] − (E X)²` as in `Inference/ExpDistVar`).
--- Positive rationals ≤ 1: `Continuous/ExpRateMoment.Rat` gives the data `(l, c, ν)` for (a+1)/(b+1) with a ≤ b (`DistRat`).
+-- Positive rationals: `Continuous/ExpRateMoment.Rat` gives the data `(l, c, μ, ν)` for (a+1)/(b+1), with no relation between
+-- a and b (`DistRat`); in particular every positive integer a+1 = (a+1)/1 is covered (`DistRat a 0`).
 module QBS.Inference.ExpRateDist where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -65,8 +66,8 @@ module ExpRateDist (lem₁ : LEM₁) where
   open QBS
   open Hom
 
-  module Dist (l c : ∣A∣) (ν : ℕ) (lc : l * c ≈ 1#) (l1 : l ≤ 1#) (cν : c ≤ natE (suc ν)) where
-    module M = Mom l c ν lc l1 cν
+  module Dist (l c : ∣A∣) (μ ν : ℕ) (lc : l * c ≈ 1#) (lμ : l ≤ natE (suc μ)) (cν : c ≤ natE (suc ν)) where
+    module M = Mom l c μ ν lc lμ cν
     open Sc l c lc using (l-step; pw-lc; rate-eq)
     open AlgSigned A R l c lc using (var-gen)
 
@@ -93,7 +94,7 @@ module ExpRateDist (lem₁ : LEM₁) where
     cB = proj₁ (natB (suc ν)) , ≤-trans cν (proj₂ (natB (suc ν)))
 
     lB : Bnd l
-    lB = 1 , ≤-trans l1 (≤-reflexive (sym (+-identityʳ 1#)))
+    lB = proj₁ (natB (suc μ)) , ≤-trans lμ (proj₂ (natB (suc μ)))
 
     pcB : ∀ n → Bnd (pw n c)
     pcB zero = Is-1 finite
@@ -139,7 +140,7 @@ module ExpRateDist (lem₁ : LEM₁) where
     var-rate = var-gen (fact 1) (fact 2) (vB 1) (vB 2) (plB 2) (E-atᴵ expDistλ (powλD 1)) (E-atᴵ expDistλ (powλD 2))
       (E-atᴵ-powλD 1) (E-atᴵ-powλD 2) fact-1 fact-2
 
-  -- the rate (a+1)/(b+1) ≤ 1
-  module DistRat (a b : ℕ) (ab : a ℕ.≤ b) where
-    open Rat a b ab using (ratL; ratC; ratLC; ratL1; ratCν)
-    open Dist ratL ratC b ratLC ratL1 ratCν public
+  -- the rate (a+1)/(b+1), for all a and b
+  module DistRat (a b : ℕ) where
+    open Rat a b using (ratL; ratC; ratLC; ratLμ; ratCν)
+    open Dist ratL ratC a b ratLC ratLμ ratCν public
