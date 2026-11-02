@@ -839,3 +839,29 @@ C. **Unchanged:** `Z = √(2π)` stays a separate, large item that no moment res
 
 Order: A first (B's change-of-variables theorem uses it); B's moment part needs only `mapM` and could run in
 parallel, but run one agent at a time while the machine is loaded.
+
+Revised item A, the certificate calculus (2026-11-02, done except the chain rule).
+- **Design (`Analysis/Deriv`, `AlgD`):** `D M c G h k` (G′ = k − h on [0, M]) is stated per point pair (a, a+w),
+  a + w ≤ M, w ≤ 1: bounds `G, h, k ≤ c`, Lipschitz `h`, `k` with constant `c` (both ways), and the two-sided
+  certificate `G(a+w) + w·h a ≤ G a + w·k a + w²c` and converse.  The Lipschitz bound of `G` is derived (`Gup`/`Gdn`).
+  `Deriv M G h k = Σ c (c ≤ 2ˢ × D M c G h k)` hides the constant.
+- **Rules:** `DFconst`, `DFid`, `DFsum`, `DFscale`, `DFshift` (x ↦ t + x), `DFaff` (x ↦ l·x, l ≤ 1), `DFresp`,
+  `Dmono`; `DFprod` (`Analysis/DerivProd`): multiply the two certificates directly and move the cross terms back to a
+  by `Gup`/`Gdn`, error about 10c², no cancellation.
+- **Bases (`Analysis/DerivExp`):** `DE` for e^{−x} (reusing `PolyExpCert` facts), `pwD` for xⁱ, and
+  `xjE : Deriv M (xʲ⁺¹e^{−x}) (xʲ⁺¹e^{−x}) ((j+1)xʲe^{−x})`, which is what `PolyExpCert.Ex.pack` supplied by hand.
+- **Bridge (`Continuous/DerivBridge`):** `Unit.ftc-unit` (Deriv on [0,1] to `J h + G 1 ≈ G 0 + J k` via `LipJ`),
+  `OnHalfLine.unit` (shift to [n, n+1]), `glue-D` (via `Glue`, G 0 = 0) and `glue-D0 : ∫ h ≈ G 0 + ∫ k` with no
+  G 0 = 0 hypothesis.  Measurability is still passed in as parameters.
+- **Validation (`Continuous/DerivMoment`):** `∫-moment : ∫ xⁿe^{−x} ≈ n!` re-derived in about 60 lines, replacing
+  the `PolyExpCert` pack and the hand-written interval shifting.
+- **Timings** (mine, at load ≈ 6): Deriv 4.3 s, DerivProd 4.4 s, DerivExp 3.2 s, DerivBridge 8.2 s (1.1 GB),
+  DerivMoment 6.7 s.
+- **Merge:** `make check` (235 files), `longcheck` (35) and `doccheck` pass.
+- **Not done:**
+  - The chain rule.  A general monotone inner function does not fall out; the useful special case is e^{−u} for a
+    `Deriv` inner u (h = E(u)·k_u, k = E(u)·h_u), which needs a signed-increment form of the e^{−x} facts.  It would
+    give the Gaussian integrals (`∫ xφ`, `∫ x²φ`) from the calculus.
+  - `DFaff` only for l ≤ 1 (l > 1 by composing with the halving of `ExpRateExt`, or by shrinking the width).
+  - Measurability rules for products and compositions.
+  - Item B (pushforward families, change of variables).
