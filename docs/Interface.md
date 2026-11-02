@@ -169,12 +169,13 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `const-I`, `fst-marginal`, `snd-marginal` (`ProductMarginals`) — the marginal laws `mapPre fstQ (p ⊗ᵖ q) ≈ᵖ p` and `mapPre sndQ (p ⊗ᵖ q) ≈ᵖ q` for probability `Pre`s (tower law `∫-map`/`∫-join`/`∫-σ`; a probability measure integrates a constant to itself).
 - `E-atᴵ-cong`, `fstI`, `sndI`, `E-fstI`, `E-sndI`, `sumSqI`, `E-atᴵ-sumSqI`, `var-sum` (`ProductMarginals`) — `E-atᴵ-cong`: integrable tests with pointwise-equal parts have `≃` expectations; `fstI`, `sndI : ITest expPair` (the coordinates, from `idI` by `transportI` along the marginal law and `precompI`) with expectation `1`; `sumSqI : ITest expPair` the pointwise statistic `(x , y) ↦ (x + y)²` (parts equal pointwise to those of `XYsq`), `E-atᴵ expPair sumSqI ≃ 6`, and the variance `E-atᴵ expPair sumSqI +S (-S (E[X + Y] *S E[X + Y])) ≃ 2`.
 
-### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformMomentN`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformMomentN`, `QBS.Continuous.BetaIntegral`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
 - `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
 - `moment-N` — `E[uⁿ] = 1/(n+1)` for every n, stated as `# (n+1) * M n ≈ 1#` (`module UniformMomentN lem₁`; the algebra `AlgN` is over an abstract Archimedean ω-semiring: Pascal triangle `Z`, no binomial coefficients).
+- `beta-closed`, `beta-conj` — the Beta integral `Bt k m = ∫ uᵏ (1−u)ᵐ` (`module BetaIntegral lem₁`; `1−u` is the complement `v` of the binary expansion; `Bt-add : Bt k m ≈ Bt (k+1) m + Bt k (m+1)`), multiplied out: `fact (k+m+1) * Bt k m ≈ fact k * fact m` (`beta-closed m k`) and `# (k+m+2) * Bt (k+1) m ≈ # (k+1) * Bt k m` (`beta-conj m k`, the posterior mean (k+1)/(k+m+2)); the algebra `AlgB` is over an abstract Archimedean ω-semiring.
 - `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).
 
 ## Examples and generic calculations
