@@ -183,3 +183,94 @@ module Exp {ℓ} (A : OmegaSemiring ℓ) where
       exp-add : exp (x + y) ≈ exp x * exp y
       exp-add = sym (trans (P.cauchy) (∑ᶠ-cong binomial))
 
+
+    ----------------------------------------------------------------------------
+    -- a bound: `exp x ≤ 3` for `x ≤ 1`, and `exp x ≤ 3ᴺ` for `x ≤ N`
+    --
+    -- With `h = 1/2 = inv 1` one has `ι (n+1) ≤ hⁿ` (since `inv (n+1) ≤ h`, as `2 ≤ n+2`), the partial
+    -- sums of `hⁿ` satisfy `∑_{k<N} hᵏ + 2 hᴺ = 2`, so `∑_{k<N+1} 1/k! ≤ 1 + 2`.  For `x ≤ N` use
+    -- `exp x ≤ exp (natE N) = (exp 1)ᴺ` (the addition law), so no splitting of `x` is needed.
+
+    three : ∣A∣
+    three = 1# + (1# + 1#)
+
+    half : ∣A∣
+    half = inv 1
+
+    natE2 : natE 2 ≈ 1# + 1#
+    natE2 = +-cong (+-identityˡ 1#) refl
+
+    half+half : half + half ≈ 1#
+    half+half = trans (sym (trans (distribˡ half 1# 1#) (+-cong (*-identityʳ half) (*-identityʳ half))))
+      (trans (*-cong refl (sym natE2)) (inv-ok 1))
+
+    -- `2 ≤ n + 2`
+    natE2≤ : ∀ n → natE 2 ≤ natE (suc (suc n))
+    natE2≤ zero = ≤-refl
+    natE2≤ (suc n) = ≤-trans (natE2≤ n) ≤-+ʳ
+
+    -- `1/(n+2) ≤ 1/2`
+    inv≤half : ∀ n → inv (suc n) ≤ half
+    inv≤half n = ≤-resp (*-identityʳ (inv (suc n))) e step2
+      where
+        e : half * (inv (suc n) * natE (suc (suc n))) ≈ half
+        e = trans (*-cong refl (inv-ok (suc n))) (*-identityʳ half)
+        one≈ : 1# ≈ half * natE 2
+        one≈ = sym (inv-ok 1)
+        step2 : inv (suc n) * 1# ≤ half * (inv (suc n) * natE (suc (suc n)))
+        step2 = ≤-trans (≤-reflexive (*-cong refl one≈))
+          (≤-trans (*-mono (inv (suc n)) (*-mono half (natE2≤ n)))
+            (≤-reflexive (solve 3 (λ I H N → I :* (H :* N) := H :* (I :* N)) refl (inv (suc n)) half (natE (suc (suc n))))))
+
+    -- `ι (n+1) ≤ hⁿ`
+    ι≤half^ : ∀ n → ι (suc n) ≤ pw half n
+    ι≤half^ zero = ≤-reflexive (trans (*-identityʳ (inv 0)) inv0)
+    ι≤half^ (suc n) = ≤-trans (*-mono (inv (suc n)) (ι≤half^ n))
+      (≤-trans (≤-reflexive (*-comm (inv (suc n)) (pw half n)))
+        (≤-trans (*-mono (pw half n) (inv≤half n)) (≤-reflexive (*-comm (pw half n) half))))
+
+    -- `∑_{k<N} hᵏ + 2 hᴺ = 2`
+    geom : ∀ N → psum (pw half) N + (pw half N + pw half N) ≈ 1# + 1#
+    geom zero = trans (+-identityˡ _) refl
+    geom (suc N) = begin
+      (psum (pw half) N + pw half N) + (pw half (suc N) + pw half (suc N))
+        ≈⟨ +-cong refl (trans (sym (distribʳ (pw half N) half half)) (trans (*-cong half+half refl) (*-identityˡ (pw half N)))) ⟩
+      (psum (pw half) N + pw half N) + pw half N
+        ≈⟨ +-assoc _ _ _ ⟩
+      psum (pw half) N + (pw half N + pw half N)
+        ≈⟨ geom N ⟩
+      1# + 1# ∎
+
+    psum-geom≤2 : ∀ N → psum (pw half) N ≤ 1# + 1#
+    psum-geom≤2 N = ≤-trans ≤-+ʳ (≤-reflexive (geom N))
+
+    -- `∑_{k<N+1} ι k ≤ 1 + ∑_{k<N} hᵏ`
+    psum-ι : ∀ N → psum ι (suc N) ≤ 1# + psum (pw half) N
+    psum-ι zero = ≤-reflexive (trans (+-identityˡ 1#) (sym (+-identityʳ 1#)))
+    psum-ι (suc N) = ≤-trans (+-mono (psum-ι N) (ι≤half^ N))
+      (≤-reflexive (solve 3 (λ o G P → (o :+ G) :+ P := o :+ (G :+ P)) refl 1# (psum (pw half) N) (pw half N)))
+
+    psum-ι≤3 : ∀ N → psum ι N ≤ three
+    psum-ι≤3 zero = 0-least
+    psum-ι≤3 (suc N) = ≤-trans (psum-ι N) (+-mono ≤-refl (psum-geom≤2 N))
+
+    pw-one : ∀ n → pw 1# n ≈ 1#
+    pw-one zero = refl
+    pw-one (suc n) = trans (*-cong refl (pw-one n)) (*-identityˡ 1#)
+
+    term≤ι : ∀ {x} → x ≤ 1# → ∀ n → term x n ≤ ι n
+    term≤ι {x} h n = ≤-trans (*-mono (ι n) (pw-mono n h))
+      (≤-reflexive (trans (*-cong refl (pw-one n)) (*-identityʳ (ι n))))
+
+    exp≤3 : ∀ {x} → x ≤ 1# → exp x ≤ three
+    exp≤3 {x} h = ⨆-lub (psum (term x)) (psum-inc (term x)) λ N →
+      ≤-trans (psum-mono (term≤ι h) N) (psum-ι≤3 N)
+
+    exp-natE : ∀ N → exp (natE N) ≤ pw three N
+    exp-natE zero = ≤-reflexive exp-zero
+    exp-natE (suc N) = ≤-trans (≤-reflexive (Add.exp-add (natE N) 1#))
+      (≤-trans (*-mono (exp (natE N)) (exp≤3 ≤-refl))
+        (≤-trans (≤-reflexive (*-comm (exp (natE N)) three)) (*-mono three (exp-natE N))))
+
+    exp≤three^ : ∀ {x} N → x ≤ natE N → exp x ≤ pw three N
+    exp≤three^ N h = ≤-trans (exp-mono h) (exp-natE N)

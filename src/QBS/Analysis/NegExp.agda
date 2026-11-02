@@ -7,7 +7,8 @@
 -- `q < 0` is in the cut with `p = 0`.  For `x = ∞` the cut is `zeroC`.
 -- Proved: `negExp-anti`, `negExp-zero : negExp 0 ≋ 1`, `negExp≤1`, `negExp-expC≤1 : e^{−x} e^x ≤ 1`, and
 -- for `expC x` bounded by a rational (`∀ s ∈ expC x, s < B`) the reverse `1 ≤ e^{−x} e^x`
--- (`oneC≤negExp-expC`, `negExp-expC`; by LEM, via a near-maximal element of `expC x`), and
+-- (`oneC≤negExp-expC`, `negExp-expC`; by LEM, via a near-maximal element of `expC x`), for `x ≤ N` with
+-- no side condition (`negExp-expC-nat`, from the bound `exp x ≤ 3ᴺ` of `ExpLower`), and
 -- (`Meas-negExp`) `r ↦ e^{−h r}` is threshold-measurable when `h` is, via `Meas-expC` (`expC` is the
 -- supremum of measurable partial sums).
 module QBS.Analysis.NegExp where
@@ -40,7 +41,7 @@ open import QBS.Classical using (LEM₀)
 module NegExp (lem : LEM₀) where
   private
     A = LowerRealsOmega lem
-  open Exp A using (pw)
+  open Exp A using (pw; natE)
   open Series A using (psum)
   open Meas lem
   open LevelSets lem using (Lvl; borel-prop)
@@ -208,6 +209,10 @@ module NegExp (lem : LEM₀) where
 
   negExp-expC : ∀ x B → (∀ s → mem (expC lem x) s → s < B) → negExp x ⊗ expC lem x ≋ oneC
   negExp-expC x B bd = negExp-expC≤1 x , oneC≤negExp-expC x B bd
+
+  -- for finite `x` (`x ≤ N`) the bound is automatic (`expC-bound`)
+  negExp-expC-nat : ∀ x N → x ⊑ natE N → negExp x ⊗ expC lem x ≋ oneC
+  negExp-expC-nat x N h = negExp-expC x (pow3 lem N) (expC-bound lem x N h)
 
   ----------------------------------------------------------------------------
   -- measurability
