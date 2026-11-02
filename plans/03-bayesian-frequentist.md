@@ -257,3 +257,19 @@ Bounded x (2026-11-02, done): `Exp.exp≤3 : x ≤ 1 → exp x ≤ 3` (geometric
 members of `expC x` when `x ⊑ natE N`); `NegExp.negExp-expC-nat : x ⊑ natE N → negExp x ⊗ expC x ≋ oneC`.  So
 `e^{−x}·eˣ = 1` holds for every finite x given as bounded by a natural.  Times: Exp 2.9 s, ExpLower 3.4 s,
 NegExp 11.8 s (unchanged from before the merge, 11.7 s).  Next: a base measure on [0,∞) and normalisation.
+
+Base measure on [0,∞), item 3 (2026-11-02, done except normalisation).  Lebesgue measure on [0,∞) has mass ∞, so it
+cannot be a `Measure` (`I-sub` forces `I 1 ≤ 1`).  It is an s-finite `Pre (XW WQ)` on the weight QBS `WQ` = [0,∞].
+- `Continuous/HalfLine` (4.7 s): `shiftPre n` is the uniform shifted to n, and `lebPre = sumPre shiftPre` is
+  λ = Σₙ (n + U).  `∫ᴹ-leb h : ∫ᴹ lebPre h ≈ ∑ᶠ n. J fairCoin (h ∘ shiftPt n)` holds for every `h : Hom S WQ WQ`,
+  unbounded ones included.
+- `Continuous/HalfLineNegExp` (5.2 s): `negExpH` is the test x ↦ e^{−x}.
+  - `negExp-add`: e^{−(x+y)} = e^{−x}·e^{−y} for x, y, x+y bounded by naturals.
+  - `I-negExp = ∫₀¹ e^{−u} du`, left uncomputed.
+  - `∫ᴹ-leb-negExp-split : ∫ e^{−x} dλ ≈ ∑ᶠ n. e^{−n} · I-negExp`.
+- Remaining for normalisation:
+  - `I-negExp + e^{−1} ≈ 1`;
+  - the geometric sum `(∑ᶠ n. e^{−n}) · (1 − e^{−1}) ≈ 1`, multiplied out;
+  - combining these into `∫ e^{−x} dλ ≈ 1`.
+- Item 5 (transfer) does not go through `densM`, because λ is s-finite rather than a `Measure`.  It needs a
+  normalised `Pre` built from the weighted λ instead.
