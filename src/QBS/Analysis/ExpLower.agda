@@ -107,7 +107,7 @@ module _ (lem : LEM₀) where
 
   open WithInv qinvC inv-ok public
     renaming (exp to expC; exp-zero to expC-zero; exp-mono to expC-mono; exp-cong to expC-cong;
-              1+≤exp to 1+≤expC; exp≤three^ to expC≤three^)
+              1+≤exp to 1+≤expC; exp≤three^ to expC≤three^; exp≤quad to expC≤quad)
 
   -- `3ᴺ`
   pow3 : ℕ → ℚᵘ
