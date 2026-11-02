@@ -224,3 +224,16 @@ from `UniformCDF.cdf`); `likelihood-is-expectation` (single-draw expectation ≃
 `Additive`); `evidence-is-prior-expectation` (`½·E[head | two-headed] + ½·E[head | fair] ≃ ½·1 + ½·½`, the right-hand side
 of `CoinBias.evidence-heads`).  Weaker than the skeleton's intent in one way: the prior is the explicit two-point ½/½
 sum, not an expectation over a kernel on the hypothesis space.  Branch `orphaned-wip` is now fully superseded.
+
+Exponential groundwork, step 1 of "What an exponential distribution would need" (2026-11-02): done.
+- `Analysis/Cauchy` (generic): `⨆-*-lub`, and `cauchy : ∑ᶠ a * ∑ᶠ b ≈ ∑ᶠ conv` for non-negative series, with
+  diagonal sums `diag` defined without ℕ subtraction.
+- `Analysis/Exp` (`module Exp A`, `module WithInv inv inv-ok`, abstract in any `OmegaSemiring` with inverses of
+  naturals given as plain parameters, no record): `exp x = ∑ᶠ (xⁿ/n!)`, `exp-zero`, `exp-mono`, `exp-cong`, `1+≤exp`,
+  and `Add.exp-add : exp (x + y) ≈ exp x * exp y` (Cauchy product plus the recurrence `(n+1)·T(n+1) = (x+y)·T(n)`,
+  no binomial theorem).
+- `Analysis/ExpLower`: the lower-cut instance (`inv n = qC (1/(n+1))`, new `qC-mul`), `expC`, `expC-zero`,
+  `expC-mono`, `expC-cong`, `1+≤expC`, `expC-add`.
+- Next for the exponential: `e^{−x}` as a cut (`q < e^{−x}` iff `q · e^{x} < 1`, cut properties from `exp-mono` and
+  `exp-add`); measurability of `r ↦ e^{−x(r)}` (`Meas-⨆` over partial sums, plus a measurable threshold for
+  `q · e^{x(r)} < 1`); then a base measure on [0,∞) and normalisation (items 3–5 above).
