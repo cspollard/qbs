@@ -663,3 +663,69 @@ Density item 3, all exponential moments (2026-11-02, done): `∫₀^∞ xⁿ e^{
 - **Remaining items of the density list:** 4 (integrability by domination), 5 (function library), 6 (real line,
   symmetric densities, the Gaussian without π) and 7 (affine change of variables).  The Lipschitz FTC with
   integration by parts is exactly what item 6's Gaussian variance needs.
+
+Density item 6, half-line part: Gaussian moments without π (2026-11-02, done).
+- **Setting:** φ(x) = e^{−x²/2} on [0,∞), with normaliser `Z = ∫ᴹ lebPre phiH` left abstract (√(π/2) is out of scope).
+- **Results:**
+  - **`Continuous/GaussHalfLine` (8.9 s):** `phiH`, `gMomH i` (xⁱφ), `gKH j` ((j+1)xʲφ), and
+    `AtInterval.ibp-unit` (integration by parts on each `[n₀, n₀+1]`, with G = xʲ⁺¹φ).
+  - **`Continuous/GaussMoment` (6.2 s):**
+    - `moment-succ : ∫ x^{j+2}φ ≈ (j+1)·∫ xʲφ`, via `TailFTCLipHalf.glue`;
+    - `∫-x²φ : ∫ x²φ ≈ Z`;
+    - `even-moment n : ∫ x^{2n}φ ≈ (2n−1)!!·Z`.
+  - **`Continuous/GaussFinite` (6.1 s):** `Z-le : Z ≤ 4`, since each unit integral is at most Φ(n) ≤ 2·½ⁿ.
+  - **`Continuous/GaussInverse` (7.7 s):** `finZ`, `posZ` (from Φ(1) ≥ ½), and `Z-inv : Σ n, Z·n ≈ 1`.
+  - **`Inference/HalfNormal` (7.6 s):** `halfNormal = normPre (densW phiH) n _` and `E-atᴵ-hn : E[X²] ≃ 1`.  The
+    canonical instance `HN` uses n = `invC Z`, so no hypotheses remain.
+- **Supporting modules:** `Analysis/GaussCert` (`AlgG`, the polynomial × Gaussian certificates, with `pack` abstract),
+  `Analysis/GaussExp`, `Analysis/CutSplit` (`split1`: x ≤ 1 or 1 ≤ x, by LEM) and `Analysis/GaussTail`.  All
+  modules are ≤ 1 GB (my timings, at load ≈ 3.5).
+- **Performance lessons:**
+  - `AtInterval` first took 134–173 s.  Conversions through the module-applied `X.hh`/`X.kh` unfolded the cut `*`.
+    Restating the pack facts at the local names (`pk j = X.pack j`) brought it to 10 s.  Making `pack` abstract
+    alone did not help.
+  - `with posOrZero Z` normalised `Z` and took minutes and 3.3 GB.  A helper function that pattern-matches,
+    with no `with`, fixed it.
+- **Merge:** `make check` (210 files), `longcheck` (35) and `doccheck` pass.
+- **Still open for item 6:** the whole real line (a signed-reals QBS, Lebesgue measure on ℝ, the symmetry lemma), the
+  Gaussian on ℝ with E[X] = 0 and Var = 1 by symmetry from these half-line moments, and `Z = √(π/2)`.
+
+Density item 4, integrability by domination (2026-11-02, done).
+- **`Inference/Domination` (7.4 s, 1.0 GB):**
+  - finiteness transfer: `Bnd-≤`, `Bnd-add`, `Bnd-scale`, `J-Bnd-mono`, `ITest-dom`;
+  - integral lemmas on `WQ` (none existed before): `∫ᴹ-mono`, `addH`, `∫ᴹ-scale`, `∫ᴹ-add`, `∫ᴹ-dom`,
+    `∫ᴹ-Bnd-dom`;
+  - for densities: `densI-dom`, an `ITest (densDist d nrm)` from `g± ≤ c·b` with `Bnd c` and `Bnd (∫ d·b)`.
+    `E-atᴵ-dom` is the corresponding instance of `E-atᴵ-dens`.
+- **`Inference/PolyDomination` (8.4 s, 1.16 GB):**
+  - `expI k c …`: any `g±` with `g± ≤ c·(1 + xᵏ)` is integrable under the exponential (`expB k` gives `0! + k!`).
+  - `HNDom`/`HNZ.hnI`: the same under `halfNormal`, for even degree `2m` (bound `Z + (2m−1)!!·Z`, scaled by `n`).
+  - Validation: `powD-dom`/`E-atᴵ-powD-dom` re-derive `ExpMomentN.powD`, and `sqI-dom` re-derives
+    `HalfNormal.sqI`.
+- **Not done:** odd-degree growth under the half-normal.  The agent missed that `Analysis/CutSplit.split1`
+  (x ≤ 1 or 1 ≤ x, by LEM, from the Gaussian work) gives the needed `xᵏ ≤ 1 + x^{2k}`.  A bound of even degree
+  ≥ k works meanwhile.
+- **Merge:** `make check` (212 files), `longcheck` (35) and `doccheck` pass.  Timings were taken at load ≈ 6.5, so
+  they are approximate.
+- **Remaining density items:** 5 (function library: much of it now exists, scattered over `PolyExpCert`,
+  `GaussCert`, `Domination`, `ExpMomentN`), 6 (the whole real line) and 7 (affine change of variables).
+
+Density item 6, the whole real line (2026-11-02, done for symmetric densities).
+- **Representation:** `RQ = WQ +Q WQ` (the QBS coproduct), with `inl x` read as `+x` and `inr x` as `−x`.  0 occurs
+  twice, which is harmless because only integrals against `lebR` are used.  This is not a signed-reals QBS with
+  arithmetic: there is no addition on `RQ`, so item 7's translation is still unavailable.
+- **`Continuous/RealLine`:** `lebR = sumPre tsR` (`lebPre` pushed along `inl` and `inr`, padded with zero
+  measures), and `∫ᴹ-lebR`: an integral over ℝ splits into the two half-line integrals.
+- **`Continuous/RealDensity`:** `copairH d e` densities, `lebR-sym` (total mass `c + c`), and `module Sym` with
+  `symDist` and `∫-sym`/`J-sym`.
+- **`Inference/SymExpectation`:** the symmetry lemma.  `E-atᴵ-sym` gives expectations under any symmetric density as
+  half-line integrals, and `E-atᴵ-odd` gives `E[g] ≃ 0` for odd `g`, with no value for the normaliser.  The generic
+  `E-atᴵ-≈` (expectation from `≈` of the parts) cut `E-atᴵ-sym` from 7.7 s to 0.5 s.
+- **`Inference/GaussReal`:** `gaussR` (normaliser `(Z + Z)⁻¹` via `GaussInverse.Z-inv`), `E-atᴵ-X : E[X] ≃ 0`,
+  `E-atᴵ-X² : E[X²] ≃ 1`, and `var-gaussR : Var X ≃ 1`.  Integrability of x uses `x ≤ 1 + x²` from
+  `CutSplit.split1` with `Domination.∫ᴹ-mono`/`∫ᴹ-add`.
+- **Timings** (mine, at load ≈ 6.5): RealLine 6.0 s, RealDensity 7.5 s, SymExpectation 8.0 s, GaussReal 12.5 s,
+  all ≤ 1.05 GB.
+- **Merge:** `make check` (216 files), `longcheck` (35) and `doccheck` pass.
+- **Remaining density items:** 5 (function library), 7 (affine change of variables; needs scaling on `WQ` and, for
+  N(μ, σ²), a translation on ℝ that this representation does not have), and `Z = √(2π)`.

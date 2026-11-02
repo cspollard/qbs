@@ -36,6 +36,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 215 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
+| `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
@@ -48,8 +49,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpectationProduct` | 135 | lem | Independence for products: expectations against the product measure of the continuous probability monad. |
 | `QBS.Inference.ExpectationResp` | 137 | lem | `E-at` respects the equality of measures of the monad (`Continuous/Monad`): if `p ≈ᵖ q` (all integrals of [0,1]-valued tests agree) then the expectation of a bounded signed statistic is the same under `p` and `q`. |
 | `QBS.Inference.Frequentist` | 171 | lem | Frequentist inference, layer 1 (see `plans/03-bayesian-frequentist.md`): experiments, statistics, bias, variance, mean squared error and unbiasedness, built on the signed expectation of Plan 2. |
+| `QBS.Inference.GaussReal` | 213 | lem | The standard Gaussian on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`), with `E[X] ≃ 0` and `E[X²] ≃ 1`, and no value for `π` (nor for `Z = ∫₀^∞ e^{−x²/2}`): the density is the symmetric `[φ , φ]`, `φ = ... |
+| `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
+| `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
+| `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 97 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
@@ -117,6 +122,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinSets` | 16 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
 | `QBS.Analysis.CoinSimple` | 141 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
+| `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |
 | `QBS.Analysis.CutSum` | 450 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 140 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.Estimator` | 277 |  | The generic estimator theorem, over an abstract ring of random variables. |
@@ -129,6 +135,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.ExtNat` | 339 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 108 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
+| `QBS.Analysis.GaussCert` | 300 | lem | Pointwise algebra for the Gaussian moments `∫₀^∞ xʲ e^{−x²/2} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussExp` | 139 |  | The Gaussian `Φ x = E (½ x²)` from an exponential E (`Analysis/GaussCert`'s input), over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussTail` | 44 |  | Small facts for the Gaussian tail and finiteness, over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
 | `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
 | `QBS.Analysis.Half` | 85 |  | Powers of ½ in an `OmegaSemiring` with a half (`half + half ≈ 1`): `hp n = ½ⁿ` is the stdlib power `half ^ n` (so `hp (suc n) = half * hp n` holds by definition), with `½ (x + x) = x`, the doubling law `½ⁿ⁺¹ + ½ⁿ⁺¹ = ... |
@@ -191,6 +200,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
+| `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
+| `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
+| `QBS.Continuous.GaussInverse` | 129 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
+| `QBS.Continuous.GaussMoment` | 126 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
 | `QBS.Continuous.HalfLine` | 92 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
 | `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineMoment2` | 298 | lem | The second moment of the exponential distribution, `∫₀^∞ x² e^{−x} dλ(x) = 2`, multiplied out (no subtraction). |
@@ -202,6 +215,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
+| `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
+| `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
 | `QBS.Continuous.SFinite` | 336 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 244 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
