@@ -59,15 +59,17 @@ module AlgO (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
 
   -- `p ≤ 1 + s` and `g ≤ c (1 + p)` give `g ≤ (c · 2)(1 + s)`
   dom-alg : ∀ {g c p s} → p ≤ 1# + s → g ≤ c * (1# + p) → g ≤ (c * (1# + 1#)) * (1# + s)
-  dom-alg {g} {c} {p} {s} ps gd = ≤-trans gd (≤-trans (*-mono c (≤-trans (+-mono ≤-refl ps) step))
+  dom-alg {g} {c} {p} {s} ps gd = ≤-trans gd (≤-trans (*-mono c (≤-trans (+-mono ≤-refl ps) (step s)))
     (≤-reflexive (sym (*-assoc c (1# + 1#) (1# + s)))))
     where
-    step : 1# + (1# + s) ≤ (1# + 1#) * (1# + s)
-    step = ≤-trans ≤-+ʳ (≤-reflexive (sym (solve 1 (λ s′ → (con 1 :+ con 1) :* (con 1 :+ s′) := (con 1 :+ (con 1 :+ s′)) :+ s′) refl s)))
+    alg : ∀ s → (1# + 1#) * (1# + s) ≈ (1# + (1# + s)) + s
+    alg = solve 1 (λ s′ → (con 1 :+ con 1) :* (con 1 :+ s′) := (con 1 :+ (con 1 :+ s′)) :+ s′) refl
+    step : ∀ s → 1# + (1# + s) ≤ (1# + 1#) * (1# + s)
+    step s = ≤-trans ≤-+ʳ (≤-reflexive (sym (alg s)))
 
 module PolyDominationOdd (lem₁ : LEM₁) where
   open TailFTC lem₁ using (A; R)
-  open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≤_; _≈_; 0#; 1#; _+_; _*_; refl; ≤-reflexive; 0-least; *-identityʳ)
+  open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≤_; _≈_; 0#; 1#; _+_; _*_; refl; sym; trans; *-cong; *-identityˡ; ≤-reflexive; 0-least; *-identityʳ)
   open AlgP A R using (pw)
   open AlgO A R using (sq-step; pw≤1; pw≥1; cases; dom-alg)
   open Bounded A using (Bnd; finite)
@@ -84,8 +86,8 @@ module PolyDominationOdd (lem₁ : LEM₁) where
 
   -- `x^{2k} = xᵏ · xᵏ`
   ev-sq : ∀ k x → pw (ev k) x ≈ pw k x * pw k x
-  ev-sq zero x = OmegaSemiring.sym A (OmegaSemiring.*-identityˡ A _)
-  ev-sq (suc k) x = OmegaSemiring.trans A (OmegaSemiring.*-cong A refl (OmegaSemiring.*-cong A refl (ev-sq k x))) (sq-step x (pw k x))
+  ev-sq zero x = sym (*-identityˡ _)
+  ev-sq (suc k) x = trans (*-cong refl (*-cong refl (ev-sq k x))) (sq-step x (pw k x))
 
   -- `xᵏ ≤ 1 + x^{2k}` on `WQ`
   pw≤1+ev : ∀ k x → pw k x ≤ 1# + pw (ev k) x
