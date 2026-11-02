@@ -751,7 +751,19 @@ Density item 7, scaling part: the exponential with a rate (2026-11-02, done for 
   explicitly.  Proving the variance algebra on concrete cuts exhausted a 3 GB heap, so it moved to an abstract module.
 - **Merge:** `make check` (222 files), `longcheck` (35) and `doccheck` pass.
 - **Not done:**
-  - λ > 1.  It needs a case split on `λ·w ≤ 1` (for example with `CutSplit`), or certificates re-derived with λ in
-    them.
+  - λ > 1: done since; see the next note.
   - `densDist` at rate 1 compared with `expDist` (`≈ᵖ`).
   - Translation, which N(μ, σ²) needs.  `RQ` has no addition.
+
+Density item 7, rates above 1 (2026-11-02, done).
+- **Route:** the tail FTC fixes the mesh to dyadic pieces, so neither a finer mesh nor a `CutSplit` case split helps.
+  The new abstract `Analysis/ExpRateExt` (`AlgExt`) passes certificates valid for widths t ≤ ½ᴷ to all t ≤ 1 by
+  halving [a, a+t] K times; one halving adds errors as 4(½t)²E = t²E.  With l ≤ 2^(μ+1) and K = μ+1 the rate-1
+  data is only used at width λt ≤ 1.
+- **Interface change:** `Rate`, `Tl`, `Int`, `Mom` and `Dist` take `μ` and `lμ : l ≤ natE (suc μ)` in place of
+  `l1 : l ≤ 1#`; the results keep their names and statements.  `Rat a b`/`DistRat a b` cover every positive
+  rational (a+1)/(b+1), and `DistRat a 0` every positive integer.
+- **Timings** (mine, at load ≈ 6): ExpRateExt 4.1 s, ExpRate 5.2 s, ExpRateInt 8.1 s, ExpRateMoment 11.8 s,
+  ExpRateDist 14.7 s (2.0 GB).
+- **Merge:** `make check` (223 files), `longcheck` (35) and `doccheck` pass.
+- **Still open for item 7:** `expDistλ` at rate 1 against `expDist` (`≈ᵖ`), and translation (N(μ, σ²)).
