@@ -206,6 +206,17 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 ### `QBS.Inference.ExpMomentN`
 - `powH`, `pow-integral`, `powD`, `E-atᴵ-powD` (`module ExpMomentN lem₁`) — all moments of the exponential through the expectation API: `pow-integral n : ∫ᴹ lebPre (mulH negExpH (powH n)) ≈ fact n`, `powD n : ITest (densDist negExpH expNrm)` with parts `xⁿ` and `0`, and `E-atᴵ-powD n : E-atᴵ … (powD n) ≃ (fact n − 0# [ factB n , … ])`, i.e. `E[Xⁿ] ≃ n!`.
 
+### `QBS.Inference.Domination`
+- `Bnd-≤`, `Bnd-add`, `Bnd-scale`, `J-Bnd-mono`, `ITest-dom` (`module Domination lem₁`) — finiteness by domination: `Bnd` is downward closed (`a ≤ b → Bnd b → Bnd a`) and closed under sums and products; `J-Bnd-mono m p q : (∀ x → φ x ≤ ψ x) → Bnd (J m ψ q) → Bnd (J m φ p)`; `ITest-dom p t g⁺ g⁻` is an `ITest p` whose parts are bounded pointwise by those of `t`.
+- `∫ᴹ-mono`, `addH`, `∫ᴹ-scale`, `∫ᴹ-add`, `∫ᴹ-dom`, `∫ᴹ-Bnd-dom` — the integral on `WQ` is monotone, scales (`∫ (c · f) ≈ c · ∫ f`) and adds; `g ≤ c · b` gives `∫ᴹ p g ≤ c · ∫ᴹ p b` and finiteness.
+- `dens-dom`, `densB-dom`, `densI-dom`, `E-atᴵ-dom` — for a density `d`: `densI-dom d nrm g⁺ g⁻ b c cB bB dom⁺ dom⁻ : ITest (densDist d nrm)` from `g± x ≤ c · b x` and `Bnd (∫ᴹ lebPre (mulH d b))`, with `E-atᴵ-dom` the matching `E-atᴵ-dens`.
+
+### `QBS.Inference.PolyDomination`
+- `expI`, `onePlusPow`, `expB` (`module PolyDomination lem₁`) — `expI k c cB g⁺ g⁻ dom⁺ dom⁻ : ITest (densDist negExpH expNrm)` whenever `g± x ≤ c · (1 + xᵏ)`, from the moments `n!`.
+- `HNDom`, `hnI`, `hnB`, `HNZ` — the same for the half-normal, with even growth `c · (1 + x^{ev m})`: `hnI g⁺ g⁻ m c cB dom⁺ dom⁻ : ITest halfNormal`; no bound on `n` is needed, since `n · (Z + (2m−1)‼ Z) ≈ 1 + (2m−1)‼`.
+- `powD-dom`, `E-atᴵ-powD-dom`, `sqI-dom` — validation: `powD`, `E[Xⁿ] ≃ n!`, and the half-normal second-moment test re-derived by domination.
+- `hn-alg` (`module AlgD`) — the algebra over an abstract ω-semiring.
+
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformMomentN`, `QBS.Continuous.BetaIntegral`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
