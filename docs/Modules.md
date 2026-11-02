@@ -158,6 +158,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Signed` | 243 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
 | `QBS.Analysis.SignedIntegral` | 186 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
 | `QBS.Analysis.SignedOmega` | 48 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
+| `QBS.Analysis.TailFTC` | 195 |  | A derivative-free fundamental theorem of calculus in tail form (part 1: the algebra). |
 | `QBS.Analysis.Tensor` | 125 | lem | The product of two measures, integrated in either order, and Fubini's theorem: the two iterated integrals agree. |
 | `QBS.Analysis.Threshold` | 74 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
 | `QBS.Analysis.Tonelli` | 63 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |
@@ -202,6 +203,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Strong` | 165 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
+| `QBS.Continuous.TailFTC` | 173 | lem | A derivative-free fundamental theorem of calculus in tail form, on the unit interval (part 2: the measure side). |
+| `QBS.Continuous.TailFTCExp` | 89 | lem | Validation of `Continuous/TailFTC`: `∫₀¹ e^{−u} du + e^{−1} = 1` (as `HalfLineUnit.I-negExp-unit`), with h = G = e^{−·}. |
+| `QBS.Continuous.TailFTCExpHalf` | 91 | lem | Validation of `Continuous/TailFTCHalfLine`: `∫₀^∞ e^{−x} dλ = 1` from the certificate for h = G = e^{−·} on each [n, n+1] (the same pointwise exp algebra as `TailFTCExp`, at the shifted points) and the tail `e^{−N} ≤ ... |
+| `QBS.Continuous.TailFTCHalfLine` | 94 | lem | The fundamental theorem of calculus in tail form on the half-line (`Continuous/TailFTC`, applied on each [n, n+1]). |
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
