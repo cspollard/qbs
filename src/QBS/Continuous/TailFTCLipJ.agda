@@ -93,7 +93,8 @@ module TailFTCLipJ (lem₁ : LEM₁) where
     sLU u {n} {a} le = ≤-trans (*-mono (hp s) le) (≤-reflexive (alg3 (hp s) (u a) (hp n) c))
 
     sG : ∀ {n a} → Dy n a → hp s * G a ≤ P K
-    sG {n} {a} dy = ≤-trans (≤-reflexive (*-comm _ _)) (≤-trans (*-mono (G a) (hp≤1 s)) (≤-trans (≤-reflexive (*-identityʳ _)) (G-bnd dy)))
+    sG {n} {a} dy = ≤-trans (≤-reflexive (*-comm _ _))
+      (≤-trans (*-mono (G a) (hp≤1 s)) (≤-trans (≤-reflexive (*-identityʳ _)) (G-bnd dy)))
 
     alg1 : ∀ p g w x → p * g + w * (p * x) ≈ p * (g + w * x)
     alg1 p g w x = solve 4 (λ p′ g′ w′ x′ → p′ :* g′ :+ w′ :* (p′ :* x′) := p′ :* (g′ :+ w′ :* x′)) refl p g w x

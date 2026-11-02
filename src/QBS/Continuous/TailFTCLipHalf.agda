@@ -54,30 +54,32 @@ module TailFTCLipHalf (lem₁ : LEM₁) where
       (trans (sym (+-assoc (psum a N) (g N) (b N)))
         (trans (+-cong (tele-ibp a b g e N) refl) (+-assoc (g 0) (psum b N) (b N)))))
 
+  psum-eq : ∀ (a b g : ℕ → ∣A∣) → (∀ n → a n + g (suc n) ≈ g n + b n) → g 0 ≈ 0# → ∀ N → psum a N + g N ≈ psum b N
+  psum-eq a b g e g0 N = trans (tele-ibp a b g e N) (trans (+-cong g0 refl) (+-identityˡ _))
+
+  psum-mono : ∀ (b : ℕ → ∣A∣) N N′ → psum b N′ ≤ psum b (N ℕ.+ N′)
+  psum-mono b zero N′ = ≤-refl
+  psum-mono b (suc N) N′ = ≤-trans (psum-mono b N N′) (psum-inc b (N ℕ.+ N′))
+
+  psum-≈ : ∀ (b : ℕ → ∣A∣) {k l} → k ≡.≡ l → psum b k ≈ psum b l
+  psum-≈ b ≡.refl = refl
+
+  psum-mono≤ : ∀ (b : ℕ → ∣A∣) {N′ N} → N′ ℕ.≤ N → psum b N′ ≤ psum b N
+  psum-mono≤ b {N′} le with ℕ.m≤n⇒∃[o]m+o≡n le
+  ... | o , ≡.refl = ≤-trans (psum-mono b o N′) (≤-reflexive (psum-≈ b (ℕ.+-comm o N′)))
+
+  -- the far-out bound: `psum b N′ ≤ ∑ a + ½ᵐ` once some N ≥ N′ has `G N ≤ ½ᵐ`
+  far : ∀ (a b g : ℕ → ∣A∣) → (∀ n → a n + g (suc n) ≈ g n + b n) → g 0 ≈ 0# → ∀ m N′ →
+    Σ ℕ (λ N → N′ ℕ.≤ N × g N ≤ hp m) → psum b N′ ≤ ∑ᶠ a + hp m
+  far a b g e g0 m N′ (N , le , gb) = ≤-trans (psum-mono≤ b le)
+    (≤-trans (≤-reflexive (sym (psum-eq a b g e g0 N))) (+-mono (psum≤∑ᶠ a N) gb))
+
   -- sums: `∑ a ≈ ∑ b` when `G 0 = 0` and G tends to 0 along a subsequence
   sum-ibp : ∀ (a b g : ℕ → ∣A∣) → (∀ n → a n + g (suc n) ≈ g n + b n) → g 0 ≈ 0# →
     (∀ m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × g N ≤ hp m)) → ∑ᶠ a ≈ ∑ᶠ b
   sum-ibp a b g e g0 tl = ≤-antisym
-    (∑ᶠ-lub (λ N → ≤-trans ≤-+ʳ (≤-trans (≤-reflexive (psum-eq N)) (psum≤∑ᶠ b N))))
-    (arch (λ m → ∑ᶠ-lub (λ N′ → go m N′ (tl m N′))))
-    where
-    psum-eq : ∀ N → psum a N + g N ≈ psum b N
-    psum-eq N = trans (tele-ibp a b g e N) (trans (+-cong g0 refl) (+-identityˡ _))
-
-    mono : ∀ N N′ → psum b N′ ≤ psum b (N ℕ.+ N′)
-    mono zero N′ = ≤-refl
-    mono (suc N) N′ = ≤-trans (mono N N′) (psum-inc b (N ℕ.+ N′))
-
-    pe : ∀ {k l} → k ≡.≡ l → psum b k ≈ psum b l
-    pe ≡.refl = refl
-
-    mono≤ : ∀ {N′ N} → N′ ℕ.≤ N → psum b N′ ≤ psum b N
-    mono≤ {N′} le with ℕ.m≤n⇒∃[o]m+o≡n le
-    ... | o , ≡.refl = ≤-trans (mono o N′) (≤-reflexive (pe (ℕ.+-comm o N′)))
-
-    go : ∀ m N′ → Σ ℕ (λ N → N′ ℕ.≤ N × g N ≤ hp m) → psum b N′ ≤ ∑ᶠ a + hp m
-    go m N′ (N , le , gb) = ≤-trans (mono≤ le) (≤-trans (≤-reflexive (sym (psum-eq N)))
-      (+-mono (psum≤∑ᶠ a N) gb))
+    (∑ᶠ-lub (λ N → ≤-trans ≤-+ʳ (≤-trans (≤-reflexive (psum-eq a b g e g0 N)) (psum≤∑ᶠ b N))))
+    (arch (λ m → ∑ᶠ-lub (λ N′ → far a b g e g0 m N′ (tl m N′))))
 
   module Glue (h k : Hom S WQ WQ) (G : ∣A∣ → ∣A∣)
     (unit : ∀ n → J fairCoin (λ r → map h ⟨$⟩ shiftPt n r) (Meas-hshift n h) + G (natE (suc n))

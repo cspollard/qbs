@@ -110,18 +110,23 @@ module AlgP (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
           := (a′ :* q :+ t′ :* (q :+ a′ :* d)) :+ (t′ :* t′) :* (d :+ (a′ :+ t′) :* c)) refl a t (pw i a) (dpw i a) (P C)))
         (+-mono ≤-refl (*-mono (t * t) (P-+ (g (≤-trans ≤-+ʳ at)) (P-* (≤-trans at Mm) (≤-refl {P C})))))))
 
-  lem-lo : ∀ {A′ D C p y w c} → y + w ≤ 1# + w * w → y ≤ 1# → p ≤ 1# → A′ + C ≤ c →
-    ((A′ + w * D) + (w * w) * C) * (p * y) + w * (A′ * p) ≤ (A′ * p + w * (D * p)) + (w * w) * c
-  lem-lo {A′} {D} {C} {p} {y} {w} {c} yw y1 p1 AC =
+  lem-lo-a : ∀ {A′ D C p y w} → y + w ≤ 1# + w * w → y ≤ 1# → p ≤ 1# →
+    ((A′ + w * D) + (w * w) * C) * (p * y) + w * (A′ * p) ≤ p * (A′ + (w * D + (w * w) * (A′ + C)))
+  lem-lo-a {A′} {D} {C} {p} {y} {w} yw y1 p1 =
     ≤-trans (≤-reflexive (solve 6 (λ a d c′ p′ y′ w′ → ((a :+ w′ :* d) :+ (w′ :* w′) :* c′) :* (p′ :* y′) :+ w′ :* (a :* p′)
         := p′ :* ((a :* (y′ :+ w′) :+ (w′ :* d) :* y′) :+ ((w′ :* w′) :* c′) :* y′)) refl A′ D C p y w))
     (≤-trans (*-mono p (+-mono (+-mono (*-mono A′ yw) (*-mono (w * D) y1)) (*-mono ((w * w) * C) y1)))
-    (≤-trans (≤-reflexive (solve 5 (λ a d c′ p′ w′ → p′ :* ((a :* (con 1 :+ w′ :* w′) :+ (w′ :* d) :* con 1) :+ ((w′ :* w′) :* c′) :* con 1)
-        := p′ :* (a :+ (w′ :* d :+ (w′ :* w′) :* (a :+ c′)))) refl A′ D C p w))
+      (≤-reflexive (solve 5 (λ a d c′ p′ w′ → p′ :* ((a :* (con 1 :+ w′ :* w′) :+ (w′ :* d) :* con 1) :+ ((w′ :* w′) :* c′) :* con 1)
+        := p′ :* (a :+ (w′ :* d :+ (w′ :* w′) :* (a :+ c′)))) refl A′ D C p w)))
+
+  lem-lo : ∀ {A′ D C p y w c} → y + w ≤ 1# + w * w → y ≤ 1# → p ≤ 1# → A′ + C ≤ c →
+    ((A′ + w * D) + (w * w) * C) * (p * y) + w * (A′ * p) ≤ (A′ * p + w * (D * p)) + (w * w) * c
+  lem-lo {A′} {D} {C} {p} {y} {w} {c} yw y1 p1 AC =
+    ≤-trans (lem-lo-a yw y1 p1)
     (≤-trans (*-mono p (+-mono ≤-refl (+-mono ≤-refl (*-mono (w * w) AC))))
     (≤-trans (≤-reflexive (solve 5 (λ a d c′ p′ w′ → p′ :* (a :+ (w′ :* d :+ (w′ :* w′) :* c′))
         := (a :* p′ :+ w′ :* (d :* p′)) :+ (w′ :* w′) :* (c′ :* p′)) refl A′ D c p w))
-      (+-mono ≤-refl (*-mono (w * w) (≤-trans (*-mono c p1) (≤-reflexive (*-identityʳ c)))))))))
+      (+-mono ≤-refl (*-mono (w * w) (≤-trans (*-mono c p1) (≤-reflexive (*-identityʳ c)))))))
 
   lem-hi : ∀ {A′ B D p y w c} → 1# ≤ y + w → A′ + w * D ≤ B → D ≤ c → p ≤ 1# →
     A′ * p + w * (D * p) ≤ (B * (p * y) + w * (A′ * p)) + (w * w) * c
@@ -196,55 +201,43 @@ module AlgP (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
           (+-mono (≤-refl {pw i (a + t) * E (a + t)})
             (*-mono t (≤-trans (g at) (P-mono (ℕ.m≤n+m K₂ K₁))))))
 
-    -- the certificate for G = h = hh (j+1) and k = (j+1) hh j, up to w² 2ᴷ
-    cert : ∀ j → Σ ℕ (λ K →
-      (∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * (natE (suc j) * hh j a)) + (w * w) * P K)
-      × (∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) a + w * (natE (suc j) * hh j a) ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P K))
-    cert j = K , c1 , c2
-      where
-      C K₁ K₃ : ℕ
-      C = proj₁ (up-bern m Mm (suc j))
-      K₁ = proj₁ (pwB m Mm (suc j))
-      K₃ = proj₁ (dpwB m Mm (suc j))
+    -- k = (j+1) hh j, so that (hh (j+1))′ = k − hh (j+1)
+    kh : ℕ → ∣A∣ → ∣A∣
+    kh j x = natE (suc j) * hh j x
 
-      ub : ∀ {a t} → a + t ≤ M → pw (suc j) (a + t) ≤ (pw (suc j) a + t * dpw (suc j) a) + (t * t) * P C
-      ub = proj₂ (up-bern m Mm (suc j))
+    -- the certificate for G = h = hh (j+1) and k = kh j, up to w² 2ᴷ
+    cC cB cD cK : ℕ → ℕ
+    cC j = proj₁ (up-bern m Mm (suc j))
+    cB j = proj₁ (pwB m Mm (suc j))
+    cD j = proj₁ (dpwB m Mm (suc j))
+    cK j = suc (cB j ℕ.+ cC j) ℕ.+ cD j
 
-      pb : ∀ {a} → a ≤ M → pw (suc j) a ≤ P K₁
-      pb = proj₂ (pwB m Mm (suc j))
+    cub : ∀ j {a t} → a + t ≤ M → pw (suc j) (a + t) ≤ (pw (suc j) a + t * dpw (suc j) a) + (t * t) * P (cC j)
+    cub j = proj₂ (up-bern m Mm (suc j))
 
-      db : ∀ {a} → a ≤ M → dpw (suc j) a ≤ P K₃
-      db = proj₂ (dpwB m Mm (suc j))
+    cAC : ∀ j {a} → a ≤ M → pw (suc j) a + P (cC j) ≤ P (cK j)
+    cAC j aM = ≤-trans (P-+ (proj₂ (pwB m Mm (suc j)) aM) (≤-refl {P (cC j)}))
+      (P-mono (ℕ.m≤m+n (suc (cB j ℕ.+ cC j)) (cD j)))
 
-      K₂ : ℕ
-      K₂ = suc (K₁ ℕ.+ C)
-      K : ℕ
-      K = K₂ ℕ.+ K₃
+    cDc : ∀ j {a} → a ≤ M → dpw (suc j) a ≤ P (cK j)
+    cDc j aM = ≤-trans (proj₂ (dpwB m Mm (suc j)) aM) (P-mono (ℕ.m≤n+m (cD j) (suc (cB j ℕ.+ cC j))))
 
-      AC : ∀ {a} → a ≤ M → pw (suc j) a + P C ≤ P K
-      AC aM = ≤-trans (P-+ (pb aM) (≤-refl {P C})) (P-mono (ℕ.m≤m+n K₂ K₃))
+    kk : ∀ j a → kh j a ≈ dpw (suc j) a * E a
+    kk j a = trans (sym (*-assoc _ _ _)) (*-cong (sym (dpw-eq j a)) refl)
 
-      Dc : ∀ {a} → a ≤ M → dpw (suc j) a ≤ P K
-      Dc aM = ≤-trans (db aM) (P-mono (ℕ.m≤n+m K₃ K₂))
+    cert1 : ∀ j {a w} → a + w ≤ M → w ≤ 1# →
+      hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * kh j a) + (w * w) * P (cK j)
+    cert1 j {a} {w} aw w1 = ≤-trans (+-mono (*-mono₂ (cub j aw) (≤-reflexive (E-add aw w1))) ≤-refl)
+      (≤-trans (lem-lo {pw (suc j) a} {dpw (suc j) a} {P (cC j)} {E a} {E w} {w} {P (cK j)}
+                 (yt (E-b w1) (E-c w1)) (E≤1 w) (E≤1 a) (cAC j (≤-trans ≤-+ʳ aw)))
+        (≤-reflexive (+-cong (+-cong refl (*-cong refl (sym (kk j a)))) refl)))
 
-      kk : ∀ a → natE (suc j) * hh j a ≈ dpw (suc j) a * E a
-      kk a = trans (sym (*-assoc _ _ _)) (*-cong (sym (dpw-eq j a)) refl)
-
-      c1 : ∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * (natE (suc j) * hh j a)) + (w * w) * P K
-      c1 {a} {w} aw w1 = ≤-trans (+-mono (*-mono₂ (ub aw) (≤-reflexive (E-add aw w1))) ≤-refl)
-        (≤-trans (lem-lo {pw (suc j) a} {dpw (suc j) a} {P C} {E a} {E w} {w} {P K}
-                   (yt (E-b w1) (E-c w1)) (E≤1 w) (E≤1 a) (AC (≤-trans ≤-+ʳ aw)))
-          (≤-reflexive (+-cong (+-cong refl (*-cong refl (sym (kk a)))) refl)))
-
-      c2 : ∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) a + w * (natE (suc j) * hh j a) ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P K
-      c2 {a} {w} aw w1 = ≤-trans (≤-reflexive (+-cong refl (*-cong refl (kk a))))
-        (≤-trans (lem-hi {pw (suc j) a} {pw (suc j) (a + w)} {dpw (suc j) a} {E a} {E w} {w} {P K}
-                   (E-c w1) (lo-bern (suc j)) (Dc (≤-trans ≤-+ʳ aw)) (E≤1 a))
-          (≤-reflexive (+-cong (+-cong (*-cong refl (sym (E-add aw w1))) refl) refl)))
+    cert2 : ∀ j {a w} → a + w ≤ M → w ≤ 1# →
+      hh (suc j) a + w * kh j a ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P (cK j)
+    cert2 j {a} {w} aw w1 = ≤-trans (≤-reflexive (+-cong refl (*-cong refl (kk j a))))
+      (≤-trans (lem-hi {pw (suc j) a} {pw (suc j) (a + w)} {dpw (suc j) a} {E a} {E w} {w} {P (cK j)}
+                 (E-c w1) (lo-bern (suc j)) (cDc j (≤-trans ≤-+ʳ aw)) (E≤1 a))
+        (≤-reflexive (+-cong (+-cong (*-cong refl (sym (E-add aw w1))) refl) refl)))
 
     lip-mono : ∀ {u K K′} → K ℕ.≤ K′ → LipOK u (P K) → LipOK u (P K′)
     lip-mono e (up , down) =
@@ -260,77 +253,85 @@ module AlgP (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
     lip-scale : ∀ {u K L N} → N ≤ P L → LipOK u (P K) → LipOK (λ x → N * u x) (P (L ℕ.+ K))
     lip-scale NL (up , down) = (λ at t1 → scale-step NL (up at t1)) , (λ at t1 → scale-step NL (down at t1))
 
-    -- all the data for `hh (j+1)` against `(j+1) hh j` with one constant 2ˢ, bounds by 2^(sIdx S)
+    -- all the data for `hh (j+1)` against `kh j` with one constant 2ˢ, bounds by 2^(sIdx S)
     sIdx : ℕ → ℕ
     sIdx S = suc (S ℕ.+ suc (S ℕ.+ S))
 
     Pack : ℕ → ℕ → Set₁
     Pack j S = (P S + (P S + P S) ≤ P (sIdx S))
       × (∀ {x} → x ≤ M → hh (suc j) x + P S ≤ P (sIdx S))
-      × (∀ {x} → x ≤ M → natE (suc j) * hh j x + P S ≤ P (sIdx S))
-      × LipOK (hh (suc j)) (P S) × LipOK (λ x → natE (suc j) * hh j x) (P S)
-      × (∀ {a w} → a + w ≤ M → w ≤ 1# →
-          hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * (natE (suc j) * hh j a)) + (w * w) * P S)
-      × (∀ {a w} → a + w ≤ M → w ≤ 1# →
-          hh (suc j) a + w * (natE (suc j) * hh j a) ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P S)
+      × (∀ {x} → x ≤ M → kh j x + P S ≤ P (sIdx S))
+      × LipOK (hh (suc j)) (P S) × LipOK (kh j) (P S)
+      × (∀ {a w} → a + w ≤ M → w ≤ 1# → hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * kh j a) + (w * w) * P S)
+      × (∀ {a w} → a + w ≤ M → w ≤ 1# → hh (suc j) a + w * kh j a ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P S)
       × (∀ {x} → x ≤ M → hh (suc j) x ≤ P (sIdx S))
 
+    -- the common constant: a sum of all the indices involved
+    pL pV pS : ℕ → ℕ
+    pL j = proj₁ (hh-lip (suc j))
+    pV j = proj₁ (pwB m Mm j)
+    pS j = (suc j ℕ.+ proj₁ (hh-lip j)) ℕ.+ (pL j ℕ.+ (cK j ℕ.+ (cB j ℕ.+ (suc j ℕ.+ pV j))))
+
+    pI1 : ∀ j → (suc j ℕ.+ proj₁ (hh-lip j)) ℕ.≤ pS j
+    pI1 j = ℕ.m≤m+n _ _
+
+    pI2 : ∀ j → pL j ℕ.≤ pS j
+    pI2 j = ℕ.≤-trans (ℕ.m≤m+n _ _) (ℕ.m≤n+m _ (suc j ℕ.+ proj₁ (hh-lip j)))
+
+    pI3 : ∀ j → cK j ℕ.≤ pS j
+    pI3 j = ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n _ _) (ℕ.m≤n+m _ (pL j))) (ℕ.m≤n+m _ (suc j ℕ.+ proj₁ (hh-lip j)))
+
+    pI4 : ∀ j → cB j ℕ.≤ pS j
+    pI4 j = ℕ.≤-trans (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n _ _) (ℕ.m≤n+m _ (cK j))) (ℕ.m≤n+m _ (pL j)))
+      (ℕ.m≤n+m _ (suc j ℕ.+ proj₁ (hh-lip j)))
+
+    pI5 : ∀ j → (suc j ℕ.+ pV j) ℕ.≤ pS j
+    pI5 j = ℕ.≤-trans (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤n+m _ (cB j)) (ℕ.m≤n+m _ (cK j))) (ℕ.m≤n+m _ (pL j)))
+      (ℕ.m≤n+m _ (suc j ℕ.+ proj₁ (hh-lip j)))
+
+    pKl : ∀ j → LipOK (kh j) (P (pS j))
+    pKl j = lip-mono (pI1 j) (lip-scale (natE≤P (suc j)) (proj₂ (hh-lip j)))
+
+    pVh : ∀ j {x} → x ≤ M → hh (suc j) x ≤ P (pS j)
+    pVh j {x} xM = ≤-trans (*-mono (pw (suc j) x) (E≤1 x)) (≤-trans (≤-reflexive (*-identityʳ _))
+      (≤-trans (proj₂ (pwB m Mm (suc j)) xM) (P-mono (pI4 j))))
+
+    pVk : ∀ j {x} → x ≤ M → kh j x ≤ P (pS j)
+    pVk j {x} xM = ≤-trans (P-* (natE≤P (suc j)) (≤-trans (*-mono (pw j x) (E≤1 x)) (≤-trans (≤-reflexive (*-identityʳ _))
+      (proj₂ (pwB m Mm j) xM)))) (P-mono (pI5 j))
+
+    pSl : ∀ S → suc (S ℕ.+ S) ℕ.≤ sIdx S
+    pSl S = ℕ.s≤s (ℕ.+-monoʳ-≤ S (ℕ.≤-trans (ℕ.m≤m+n S S) (ℕ.n≤1+n (S ℕ.+ S))))
+
+    pC3 : ∀ S → P S + (P S + P S) ≤ P (sIdx S)
+    pC3 S = P-+ {i = S} {j = suc (S ℕ.+ S)} ≤-refl (P-+ {i = S} {j = S} ≤-refl ≤-refl)
+
+    pGb : ∀ j {x} → x ≤ M → hh (suc j) x ≤ P (sIdx (pS j))
+    pGb j xM = ≤-trans (pVh j xM) (P-mono (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n _ _) (ℕ.n≤1+n _)) (pSl (pS j))))
+
+    pCr1 : ∀ j {a w} → a + w ≤ M → w ≤ 1# →
+      hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * kh j a) + (w * w) * P (pS j)
+    pCr1 j aw w1 = ≤-trans (cert1 j aw w1) (+-mono ≤-refl (*-mono (_ * _) (P-mono (pI3 j))))
+
+    pCr2 : ∀ j {a w} → a + w ≤ M → w ≤ 1# →
+      hh (suc j) a + w * kh j a ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P (pS j)
+    pCr2 j aw w1 = ≤-trans (cert2 j aw w1) (+-mono ≤-refl (*-mono (_ * _) (P-mono (pI3 j))))
+
     pack : ∀ j → Σ ℕ (Pack j)
-    pack j = S , c3 , hb , kb , lip-mono i2 (proj₂ (hh-lip (suc j))) , lip-mono i1 kl , cr1 , cr2 , gb
+    pack j = pS j , pC3 (pS j) , hb , kb , lip-mono (pI2 j) (proj₂ (hh-lip (suc j))) , pKl j , pCr1 j , pCr2 j , pGb j
       where
-      K₁ K₂ K₃ K₄ K₅ : ℕ
-      K₁ = proj₁ (hh-lip (suc j))
-      K₂ = proj₁ (hh-lip j)
-      K₃ = proj₁ (cert j)
-      K₄ = proj₁ (pwB m Mm (suc j))
-      K₅ = proj₁ (pwB m Mm j)
-      S : ℕ
-      S = (suc j ℕ.+ K₂) ℕ.+ (K₁ ℕ.+ (K₃ ℕ.+ (K₄ ℕ.+ (suc j ℕ.+ K₅))))
+      hb : ∀ {x} → x ≤ M → hh (suc j) x + P (pS j) ≤ P (sIdx (pS j))
+      hb xM = ≤-trans (P-+ {i = pS j} {j = pS j} (pVh j xM) ≤-refl) (P-mono (pSl (pS j)))
+      kb : ∀ {x} → x ≤ M → kh j x + P (pS j) ≤ P (sIdx (pS j))
+      kb xM = ≤-trans (P-+ {i = pS j} {j = pS j} (pVk j xM) ≤-refl) (P-mono (pSl (pS j)))
 
-      i1 : (suc j ℕ.+ K₂) ℕ.≤ S
-      i1 = ℕ.m≤m+n _ _
-      i2 : K₁ ℕ.≤ S
-      i2 = ℕ.≤-trans (ℕ.m≤m+n K₁ _) (ℕ.m≤n+m _ (suc j ℕ.+ K₂))
-      i3 : K₃ ℕ.≤ S
-      i3 = ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n K₃ _) (ℕ.m≤n+m _ K₁)) (ℕ.m≤n+m _ (suc j ℕ.+ K₂))
-      i4 : K₄ ℕ.≤ S
-      i4 = ℕ.≤-trans (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n K₄ _) (ℕ.m≤n+m _ K₃)) (ℕ.m≤n+m _ K₁)) (ℕ.m≤n+m _ (suc j ℕ.+ K₂))
-      i5 : (suc j ℕ.+ K₅) ℕ.≤ S
-      i5 = ℕ.≤-trans (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤n+m _ K₄) (ℕ.m≤n+m _ K₃)) (ℕ.m≤n+m _ K₁)) (ℕ.m≤n+m _ (suc j ℕ.+ K₂))
-
-      kl : LipOK (λ x → natE (suc j) * hh j x) (P (suc j ℕ.+ K₂))
-      kl = lip-scale (natE≤P (suc j)) (proj₂ (hh-lip j))
-
-      vh : ∀ {x} → x ≤ M → hh (suc j) x ≤ P S
-      vh {x} xM = ≤-trans (*-mono (pw (suc j) x) (E≤1 x)) (≤-trans (≤-reflexive (*-identityʳ _))
-        (≤-trans (proj₂ (pwB m Mm (suc j)) xM) (P-mono i4)))
-
-      vk : ∀ {x} → x ≤ M → natE (suc j) * hh j x ≤ P S
-      vk {x} xM = ≤-trans (P-* (natE≤P (suc j)) (≤-trans (*-mono (pw j x) (E≤1 x)) (≤-trans (≤-reflexive (*-identityʳ _))
-        (proj₂ (pwB m Mm j) xM)))) (P-mono i5)
-
-      sl : suc (S ℕ.+ S) ℕ.≤ sIdx S
-      sl = ℕ.s≤s (ℕ.+-monoʳ-≤ S (ℕ.≤-trans (ℕ.m≤m+n S S) (ℕ.n≤1+n (S ℕ.+ S))))
-
-      c3 : P S + (P S + P S) ≤ P (sIdx S)
-      c3 = P-+ {i = S} {j = suc (S ℕ.+ S)} ≤-refl (P-+ {i = S} {j = S} ≤-refl ≤-refl)
-
-      hb : ∀ {x} → x ≤ M → hh (suc j) x + P S ≤ P (sIdx S)
-      hb xM = ≤-trans (P-+ {i = S} {j = S} (vh xM) ≤-refl) (P-mono sl)
-
-      kb : ∀ {x} → x ≤ M → natE (suc j) * hh j x + P S ≤ P (sIdx S)
-      kb xM = ≤-trans (P-+ {i = S} {j = S} (vk xM) ≤-refl) (P-mono sl)
-
-      gb : ∀ {x} → x ≤ M → hh (suc j) x ≤ P (sIdx S)
-      gb xM = ≤-trans (vh xM) (P-mono (ℕ.≤-trans (ℕ.≤-trans (ℕ.m≤m+n S S) (ℕ.n≤1+n _)) sl))
-
-      cr1 : ∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * (natE (suc j) * hh j a)) + (w * w) * P S
-      cr1 aw w1 = ≤-trans (proj₁ (proj₂ (cert j)) aw w1) (+-mono ≤-refl (*-mono (_ * _) (P-mono i3)))
-
-      cr2 : ∀ {a w} → a + w ≤ M → w ≤ 1# →
-        hh (suc j) a + w * (natE (suc j) * hh j a) ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P S
-      cr2 aw w1 = ≤-trans (proj₂ (proj₂ (cert j)) aw w1) (+-mono ≤-refl (*-mono (_ * _) (P-mono i3)))
+    -- the certificate in the packaged form
+    cert : ∀ j → Σ ℕ (λ K →
+      (∀ {a w} → a + w ≤ M → w ≤ 1# →
+        hh (suc j) (a + w) + w * hh (suc j) a ≤ (hh (suc j) a + w * kh j a) + (w * w) * P K)
+      × (∀ {a w} → a + w ≤ M → w ≤ 1# →
+        hh (suc j) a + w * kh j a ≤ (hh (suc j) (a + w) + w * hh (suc j) a) + (w * w) * P K))
+    cert j = cK j , cert1 j , cert2 j
 
   ----------------------------------------------------------------------------
   -- natural numbers and powers of ½ (used for the tail `xʲ e^{−x} → 0`)

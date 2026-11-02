@@ -53,39 +53,36 @@ module AlgTail (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
       eq : hp s * (P s * E (natE n)) ≈ E (natE n)
       eq = trans (sym (*-assoc _ _ _)) (trans (*-cong (trans (*-comm _ _) (P*hp s)) refl) (*-identityˡ _))
 
-    tail : ∀ e m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × pw e (natE N) * E (natE N) ≤ hp m)
-    tail e m N₀ = N , N₀≤N , bound
+    -- the data of the tail: ιᵉ ≤ 2ᴷ, L = N₀ + 2^{K+m} and N = ι L
+    tK : ℕ → ℕ
+    tK e = proj₁ (pwB {natE (suc e)} (suc e) (natE≤P (suc e)) e)
+
+    tL tN : ℕ → ℕ → ℕ → ℕ
+    tL e m N₀ = N₀ ℕ.+ pnat (tK e ℕ.+ m)
+    tN e m N₀ = suc e ℕ.* tL e m N₀
+
+    tP≤L : ∀ e m N₀ → P (tK e ℕ.+ m) ≤ natE (tL e m N₀)
+    tP≤L e m N₀ = ≤-trans (≤-reflexive (sym (natE-pnat (tK e ℕ.+ m)))) (≤-trans ≤-+ʳ
+      (≤-trans (≤-reflexive (+-comm (natE (pnat (tK e ℕ.+ m))) (natE N₀))) (≤-reflexive (sym (natE-+ N₀ (pnat (tK e ℕ.+ m)))))))
+
+    -- (L e^{−L})ᵉ ≤ 1
+    tLy : ∀ e L → pw e (natE L) * pw e (E (natE L)) ≤ 1#
+    tLy e L = ≤-trans (≤-reflexive (sym (pw-mul e (natE L) (E (natE L)))))
+      (≤-trans (pw-mono e (≤-trans (≤-reflexive (*-comm _ _)) (E-L L))) (≤-reflexive (pw-one e)))
+
+    tbound : ∀ e m N₀ → pw e (natE (tN e m N₀)) * E (natE (tN e m N₀)) ≤ hp m
+    tbound e m N₀ = ≤-trans (≤-reflexive (trans (*-cong (pw-cong e (natE-* (suc e) L)) (y-iter L (suc e)))
+        (trans (*-cong (pw-mul e (natE (suc e)) (natE L)) refl)
+          (solve 4 (λ a b c d → (a :* b) :* (d :* c) := (a :* (b :* c)) :* d) refl (pw e (natE (suc e))) (pw e (natE L)) (pw e y) y))))
+      (≤-trans (*-mono₂ (≤-trans (*-mono (pw e (natE (suc e))) (tLy e L)) (≤-trans (≤-reflexive (*-identityʳ _)) pbd)) (≤-refl {y}))
+        (≤-trans (*-mono₂ (≤-refl {P (tK e)}) (small L (tK e ℕ.+ m) (tP≤L e m N₀))) (≤-reflexive (Phz (tK e) m))))
       where
-      ι : ℕ
-      ι = suc e
-      K : ℕ
-      K = proj₁ (pwB {natE ι} ι (natE≤P ι) e)
-      pbd : pw e (natE ι) ≤ P K
-      pbd = proj₂ (pwB {natE ι} ι (natE≤P ι) e) ≤-refl
-      p Lc N : ℕ
-      p = pnat (K ℕ.+ m)
-      Lc = N₀ ℕ.+ p
-      N = ι ℕ.* Lc
+      L : ℕ
+      L = tL e m N₀
       y : ∣A∣
-      y = E (natE Lc)
+      y = E (natE L)
+      pbd : pw e (natE (suc e)) ≤ P (tK e)
+      pbd = proj₂ (pwB {natE (suc e)} (suc e) (natE≤P (suc e)) e) ≤-refl
 
-      N₀≤N : N₀ ℕ.≤ N
-      N₀≤N = ℕ.≤-trans (ℕ.m≤m+n N₀ p) (ℕ.m≤m+n Lc (e ℕ.* Lc))
-
-      P≤L : P (K ℕ.+ m) ≤ natE Lc
-      P≤L = ≤-trans (≤-reflexive (sym (natE-pnat (K ℕ.+ m)))) (≤-trans ≤-+ʳ
-        (≤-trans (≤-reflexive (+-comm (natE p) (natE N₀))) (≤-reflexive (sym (natE-+ N₀ p)))))
-
-      yb : y ≤ hp (K ℕ.+ m)
-      yb = small Lc (K ℕ.+ m) P≤L
-
-      Ly : pw e (natE Lc) * pw e y ≤ 1#
-      Ly = ≤-trans (≤-reflexive (sym (pw-mul e (natE Lc) y)))
-        (≤-trans (pw-mono e (≤-trans (≤-reflexive (*-comm _ _)) (E-L Lc))) (≤-reflexive (pw-one e)))
-
-      bound : pw e (natE N) * E (natE N) ≤ hp m
-      bound = ≤-trans (≤-reflexive (trans (*-cong (pw-cong e (natE-* ι Lc)) (y-iter Lc ι))
-          (trans (*-cong (pw-mul e (natE ι) (natE Lc)) refl)
-            (solve 4 (λ a b c d → (a :* b) :* (d :* c) := (a :* (b :* c)) :* d) refl (pw e (natE ι)) (pw e (natE Lc)) (pw e y) y))))
-        (≤-trans (*-mono₂ (≤-trans (*-mono (pw e (natE ι)) Ly) (≤-trans (≤-reflexive (*-identityʳ _)) pbd)) (≤-refl {y}))
-          (≤-trans (*-mono₂ (≤-refl {P K}) yb) (≤-reflexive (Phz K m))))
+    tail : ∀ e m N₀ → Σ ℕ (λ N → N₀ ℕ.≤ N × pw e (natE N) * E (natE N) ≤ hp m)
+    tail e m N₀ = tN e m N₀ , ℕ.≤-trans (ℕ.m≤m+n N₀ _) (ℕ.m≤m+n (tL e m N₀) (e ℕ.* tL e m N₀)) , tbound e m N₀
