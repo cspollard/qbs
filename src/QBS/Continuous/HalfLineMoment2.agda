@@ -62,7 +62,7 @@ module HalfLineMoment2 (lem₁ : LEM₁) where
   R = lowerRealsArch (lemOf lem₁)
   open Arch R using (half; hp; hp-zero; hp-double) renaming (half+half to hh)
   open GeometricNorm A R using (hp≤1; norm; *-monoˡ)
-  open GeometricMoment2 A R using (L-true-alg; L-false-alg; Lsplit; x2-rec-alg; x2-lo; x2-hi; L5-alg; shift-alg2; module GeoMom2)
+  open GeometricMoment2 A R using (L-true-alg; L-false-alg; Lsplit; x2-rec-alg; x2-lo; x2-hi; L5-alg; Lsplit-def; shift-alg2; module GeoMom2)
   open Exp A using (natE; pw)
   open Series A using (∑ᶠ; ∑ᶠ-cong)
   open Integration A using (I; I-cong; I-mono; I-add; I-scale)
@@ -192,7 +192,9 @@ module HalfLineMoment2 (lem₁ : LEM₁) where
     (LL-pt-false j)
 
   LL-split : ∀ j → LL j ≈ Lsplit (q (ℕ.suc j)) (F (ℕ.suc j)) (KK (ℕ.suc j)) (LL (ℕ.suc j))
-  LL-split j = trans (firstBit-fun (Fun-LG j)) (+-cong (*-cong refl (LL-true j)) (*-cong refl (LL-false j)))
+  LL-split j = trans (firstBit-fun (Fun-LG j))
+    (trans (+-cong (*-cong refl (LL-true j)) (*-cong refl (LL-false j)))
+      (Lsplit-def (q (ℕ.suc j)) (F (ℕ.suc j)) (KK (ℕ.suc j)) (LL (ℕ.suc j))))
 
   ----------------------------------------------------------------------------
   -- the pins at every scale, and the combination `x j`
@@ -280,12 +282,15 @@ module HalfLineMoment2 (lem₁ : LEM₁) where
   ----------------------------------------------------------------------------
   -- the second moment
 
-  ∫ᴹ-leb-x²NegExp-split : ∫ᴹ {WQ} lebPre x²NegExpH
-    ≈ ∑ᶠ (λ n → pw g n * ((natE n * natE n) * I-negExp + ((natE n + natE n) * K + L)))
-  ∫ᴹ-leb-x²NegExp-split = trans (∫ᴹ-leb x²NegExpH)
-    (∑ᶠ-cong (λ n → trans (shift-split n) (*-cong (negExp-pw n) refl)))
+  open GeoMom2 using (total; term)
 
-  open GeoMom2 using (total)
+  -- the series of `GeoMom2` (stated with `term`, so that no unfolding of it is needed at the end)
+  split-pt : ∀ n → J fairCoin (λ r → (shiftPt n r * shiftPt n r) * negExp (shiftPt n r)) (Meas-x2shift n)
+    ≈ term g I-negExp K L I-negExp-unit K-pin L-pin gb n
+  split-pt n = trans (shift-split n) (*-cong (negExp-pw n) refl)
+
+  ∫ᴹ-leb-x²NegExp-split : ∫ᴹ {WQ} lebPre x²NegExpH ≈ ∑ᶠ (term g I-negExp K L I-negExp-unit K-pin L-pin gb)
+  ∫ᴹ-leb-x²NegExp-split = trans (∫ᴹ-leb x²NegExpH) (∑ᶠ-cong split-pt)
 
   -- `∫₀^∞ x² e^{−x} dx = 2`
   ∫ᴹ-leb-x²NegExp : ∫ᴹ {WQ} lebPre x²NegExpH ≈ 1# + 1#
