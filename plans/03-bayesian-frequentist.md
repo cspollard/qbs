@@ -287,3 +287,15 @@ only LEM₁.
 - Next:
   - item 4, the mean `∫ x e^{−x} dλ = 1`;
   - item 5, the exponential as a normalised `Pre` on [0,∞) with `E-atᴵ`.
+
+Mean, item 4 (2026-11-02, done): `HalfLineMean.∫ᴹ-leb-xNegExp : ∫ᴹ lebPre xNegExpH ≈ 1#`, i.e. ∫₀^∞ x e^{−x} dx = 1.
+- **K on [0,1]:** `K-pin : K + 2e^{−1} ≈ 1` for K = ∫₀¹ u e^{−u} du.
+  - It uses self-similarity on `KK j = ∫₀¹ u e^{−2⁻ʲu} du`.
+  - It pins via the new `GeometricNorm.norm-s`, which pins at every scale, not just j = 0.
+  - The upper bound comes from the pointwise `(1+t)e^{−t} ≤ 1`.
+- **Series:** `GeoMean.total : ∑ gⁿ(nI + K) ≈ 1`, by telescoping `∑_{n<N} gⁿ(nI+K) + (N+1)gᴺ = 1`.
+- **Ring identities:** these were moved to the abstract module, because the solver is slow on concrete cuts.
+- **Timings:** GeometricNorm 4.1 s (was 3.3 s), HalfLineMean 7.6 s.
+- **Correction:** the agent caught a wrong form in my brief (`K + 2g ≈ I`).  The correct forms are `K + 2g = 1` and
+  `K + g = I`.
+- **Next:** item 5, the exponential as a normalised `Pre` on [0,∞), so that `E-atᴵ` gives E[X] = 1.
