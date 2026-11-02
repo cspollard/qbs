@@ -5,8 +5,7 @@
 -- `1 + xᵏ ≤ 2 (1 + x^{2k})` and a growth bound `g ≤ c (1 + xᵏ)` becomes `g ≤ 2c (1 + x^{ev k})`.
 --   * `hnIk g⁺ g⁻ k c cB dom⁺ dom⁻ : ITest halfNormal` for `g± x ≤ c · (1 + xᵏ)` with `k` arbitrary and `c` finite;
 --   * validation: `xI : ITest halfNormal` for the first moment `x ↦ x` (degree 1, odd).
--- The value `E[X] = n` (that is, `∫₀^∞ x e^{−x²/2} = 1`) is not done: it needs the tail FTC with `G = e^{−x²/2}`, `G′ = −x e^{−x²/2}`,
--- and `GaussHalfLine.AtInterval` only provides the interval identities for `G = xʲ⁺¹ e^{−x²/2}`, i.e. a new `Gauss` pack at `j = −1`.
+-- The value `E[X] = n` (that is, `∫₀^∞ x e^{−x²/2} = 1`) is in `Inference/HalfNormalMean`.
 module QBS.Inference.PolyDominationOdd where
 
 open import Data.Nat.Base using (ℕ; zero; suc)

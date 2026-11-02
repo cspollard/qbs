@@ -779,4 +779,22 @@ Density follow-ups: odd-degree half-normal domination and rate-1 consistency (20
 - **Not done:** the value of E[X] under the half-normal (`∫ x φ = 1`).  The Gauss packs only cover
   `G = x^{j+1}φ` with j ≥ 0; `G = φ` needs a new pack (Lipschitz bounds, certificates, tail).
 - **Remaining density items:** 5 (a consolidated function library), translation on ℝ (for N(μ, σ²); `RQ` has no
-  addition), the half-normal mean, and `Z = √(2π)`.
+  addition), the half-normal mean (done since; see the next note), and `Z = √(2π)`.
+
+The half-normal mean and the Gaussian E|X| (2026-11-02, done).
+- **Route:** `G = φ` is the j = −1 case of the Gauss packs, with `h = xφ` and `k = 0`, so the certificate is first
+  order (no Bernstein bounds).  `TailFTCLipHalf.Glue` assumes `G 0 = 0`, which fails for φ, so the sum is handled
+  directly: `∑_{n<N} aₙ + φ(N) ≈ φ(0) ≈ 1`, with `≥` from a far-out N where `φ(N) ≤ ½ᵐ` (`GaussTail.big`).
+- **Modules** (timings mine, at load ≈ 6):
+  - `Analysis/GaussCertM1` (3.4 s): abstract `AlgGM`, the first-order certificate.
+  - `Continuous/GaussMeanUnit` (16.3 s, 1.0 GB): `AtInterval1.ibp-unit1`, reusing `GaussHalfLine.AtInterval`'s
+    skeleton.
+  - `Continuous/GaussMean` (7.2 s): `∫-xφ : ∫ xφ ≈ 1`.
+  - `Inference/HalfNormalMean` (8.6 s): `E-atᴵ-xI : E[X] ≃ n` under `halfNormal` (n the canonical normaliser from
+    `Z-inv`).
+  - `Inference/GaussRealAbs` (8.8 s): `E-atᴵ-abs`, `Z2-abs : (Z+Z)·E|X| ≈ 2` under `gaussR`.
+- **Merge:** `make check` (230 files), `longcheck` (35) and `doccheck` pass.
+- **Notes:** `E[X] ≃ n` holds only for the canonical normaliser, because `PolyDominationOdd.xI` is built at
+  `Z-inv`.  `PolyDominationOdd`'s header still calls the mean "not done".
+- **Remaining density items:** 5 (a consolidated function library), translation on ℝ (N(μ, σ²)), and
+  `Z = √(2π)`.
