@@ -110,7 +110,7 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationIntProduct`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinPosterior`
+### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationIntProduct`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinPosterior`, `QBS.Inference.CoinUniformPriorN`, `QBS.Inference.BernHalf`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
@@ -126,6 +126,8 @@ Expectations of bounded signed statistics under the monad's measures (module par
 - `bitB`, `bernB : Pre BoolQ`, `ifT a b`, `indT : STest BoolQ`, `E-at-bernB-if`, `E-at-bernB-ind`, `toAQ`, `bernB≈bern`, `E-at-bernB-id`, `indB`, `bernθ θ`, `E-at-bernθ` (`QBS.Inference.BoolDist`) — Bernoulli(½) on `BoolQ` with `E-at bernB (ifT a b) ≃ ½a + ½b`, `E-at bernB indT ≃ ι ½`, `mapPre toAQ bernB ≈ᵖ bern`; the biased coin `bernθ θ` (the indicator `[expansion r ≤ θ]`, `indB` for any decidable Borel set) has `E-at (bernθ θ) indT ≃ ι θ` for `θ ≤ 1`.
 - `Below2-borel`, `flipS`, `coinKernel : Model AQ BoolQ`, `marg`, `E-at-marg`, `coinKernel²`, `E-at-kernel²`, `marg²`, `E-at-marg²`, `HH-from-H` (`QBS.Inference.CoinUniformPrior`) — the coin with a uniform prior on its bias: `coinKernel θ = bernθ θ` is a morphism (measurability in θ from the variable-threshold Borel set `Below2-borel`), `E-at (joinPre (mapPre coinKernel uniform)) indT ≃ ι ½` (P(heads) = ∫ θ dθ), and for two conditionally independent flips `E-at marg² (indT ⊗T indT) ≃ ι m` with `3m = 1` (P(HH) = ∫ θ² dθ), multiplied out `3·P(HH) = 2·P(H)`.
 - `posterior`, `massP-rw`, `bayes`, `post1`, `post1-mean`, `E-at-post1-id³`, `post2-seq`, `post2-batch`, `post2-agree` (`QBS.Inference.CoinPosterior`) — Bayes' rule by reweighting and normalising: `posterior ℓ p n h = normPre (reweightPre ℓ (ιPre p)) n h` with `∫ f d(posterior) ≈ n · ∫ ℓ·f dp`; after one head under the uniform prior, `post1` is Beta(2,1) with `3 · E[θ | H] ≈ 2`; updating on H then H (`post2-seq`) is `≈ᵖ` updating on HH at once (`post2-batch`).
+- `powT n`, `E-at-uniform-pow`, `nsum`, `moment-E`, `Fl`, `Kn`, `AH`, `E-at-Kn`, `margN`, `E-at-margN`, `heads-prob`, `HP`, `succession` (`QBS.Inference.CoinUniformPriorN`) — n flips of the coin with a uniform prior: `Kn n : AQ → T (Fl n)` is θ ↦ n+1 flips conditionally independent given θ (`nextK`, the recursion of `coinKernel²`), `E-at (lawAt (Kn n) θ) (AH n) ≃ θⁿ⁺¹`, `(n+1)·∫ uⁿ du ≃ 1` (`moment-E`, `nsum k x` the k-fold sum), `(n+2)·P(Hⁿ⁺¹) ≃ 1` (`heads-prob`) and Laplace's rule of succession multiplied out, `(n+2)·P(Hⁿ⁺¹) ≃ (n+1)·P(Hⁿ)` (`succession`, with `HP 0 = 1`).
+- `bernθ-half≈bernB : bernθ ½ ≈ᵖ bernB` (`QBS.Inference.BernHalf`) — the biased coin at ½ is the fair coin of `BoolDist`.
 
 ### `QBS.Inference.Sampler`, `QBS.Inference.UniformSampler`
 Statistical models as samplers (module parameter `lem₁ : LEM₁`; the `Sampler` module of `Inference/Sampler`).
@@ -167,11 +169,12 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `const-I`, `fst-marginal`, `snd-marginal` (`ProductMarginals`) — the marginal laws `mapPre fstQ (p ⊗ᵖ q) ≈ᵖ p` and `mapPre sndQ (p ⊗ᵖ q) ≈ᵖ q` for probability `Pre`s (tower law `∫-map`/`∫-join`/`∫-σ`; a probability measure integrates a constant to itself).
 - `E-atᴵ-cong`, `fstI`, `sndI`, `E-fstI`, `E-sndI`, `sumSqI`, `E-atᴵ-sumSqI`, `var-sum` (`ProductMarginals`) — `E-atᴵ-cong`: integrable tests with pointwise-equal parts have `≃` expectations; `fstI`, `sndI : ITest expPair` (the coordinates, from `idI` by `transportI` along the marginal law and `precompI`) with expectation `1`; `sumSqI : ITest expPair` the pointwise statistic `(x , y) ↦ (x + y)²` (parts equal pointwise to those of `XYsq`), `E-atᴵ expPair sumSqI ≃ 6`, and the variance `E-atᴵ expPair sumSqI +S (-S (E[X + Y] *S E[X + Y])) ≃ 2`.
 
-### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
+### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformMomentN`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
 - `mean` — `E[u] = ½`; `cdf` — `P(u ≤ t) = t` (`module UniformMean lem₁`, `UniformCDF`).
 - `second-moment` — `E[u²] = ⅓`, stated as `m + m + m ≈ 1` for `m = I fairCoin (u·u)` (`module UniformMoment lem₁`).
+- `moment-N` — `E[uⁿ] = 1/(n+1)` for every n, stated as `# (n+1) * M n ≈ 1#` (`module UniformMomentN lem₁`; the algebra `AlgN` is over an abstract Archimedean ω-semiring: Pascal triangle `Z`, no binomial coefficients).
 - `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).
 
 ## Examples and generic calculations
