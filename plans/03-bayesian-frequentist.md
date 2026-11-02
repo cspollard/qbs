@@ -312,5 +312,20 @@ now all done.
     `sumPre`.
 - **`Inference/ExpDistMean` (6.3 s):** `idI : ITest expDist` and `E-atᴵ-idI : E-atᴵ expDist idI ≃ 1`.  So
   `E-atᴵ-map`, `E-respᴵ` and linearity now apply to the exponential, with no bridging lemma.
-- **Possible follow-ups:** E[X²] = 2 (variance 1), memorylessness, the exponential as a prior or likelihood in a
-  `Sampler` model.
+- **Possible follow-ups:** memorylessness, the exponential as a prior or likelihood in a `Sampler` model.  E[X²] = 2 is
+  now done (below).
+
+Second moment and variance (2026-11-02, done):
+- **`Continuous/HalfLineMoment2`:** `∫ᴹ-leb-x²NegExp : ∫ x² e^{−x} dλ ≈ 2`.  On [0,1] it uses
+  `L-pin : L + 5e^{−1} ≈ 2`, pinned with `norm` on a combined quantity, using the K and I pins at every scale.
+- **`Analysis/GeometricMoment2`:** `GeoMom2.total`, which telescopes with error (N²+2N+2)gᴺ.
+- **`Continuous/ExpDistSq`:** `∫-expDist-sq ≈ 2`.
+- **`Inference/ExpDistVar`:**
+  - `sqI` and `E-atᴵ-sqI ≃ 2`.
+  - `var-expDist : E[X²] − (E X)² ≃ 1`, stated in `Sg`.  `Analysis/Variance.Var` needs a bounded function, so it does
+    not apply here.
+- **`scripts/doccheck.py`:** module-name regexes now accept digits.  Before this they silently skipped names like
+  `HalfLineMoment2`.
+- **Times:** GeometricMoment2 4.1 s, ExpDistSq 6.0 s, ExpDistVar 7.8 s, and HalfLineMoment2 **45.9 s, 1.0 GB**.  That
+  makes HalfLineMoment2 the slowest module in the tree, ahead of `Continuous/Strong` at about 41 s.  It is a
+  candidate for a check-cost pass.
