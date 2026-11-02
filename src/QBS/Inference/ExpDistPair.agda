@@ -29,6 +29,29 @@ import QBS.Inference.ExpectationInt as EI
 import QBS.Inference.ExpectationProduct as EP
 import QBS.Inference.ExpectationIntProduct as EIP
 import QBS.Inference.Expectation as EX
+open import Algebra using (CommutativeSemiring)
+open import QBS.Analysis.Signed using (module Signed)
+
+-- `2 + 2 + 2·1 = 6` for signed values, whatever their representation: only the positive and negative parts of the
+-- numerals enter, as plain equations (so no concrete cut arithmetic is compared at the use site)
+module SixGen {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) where
+  open CommutativeSemiring R
+  open Signed R F using (Sg; _≃_; mk≃; _+S_; _*S_; 1S)
+  open Signed.Sg
+  open SubSemiring F using (Is-0)
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default R
+
+  six-gen : ∀ t u → pos t ≈ 1# + 1# → neg t ≈ 0# → pos u ≈ ((1# + 1#) + (1# + 1#)) + (1# + 1#) → neg u ≈ 0# →
+    ((t +S t) +S (t *S 1S)) ≃ u
+  six-gen t u pt nt pu nu = mk≃ 0# Is-0 (trans
+    (+-cong (+-cong (+-cong (+-cong pt pt) (+-cong (*-cong pt refl) (*-cong nt refl))) nu) refl)
+    (trans eq (sym (+-cong (+-cong pu (+-cong (+-cong nt nt) (+-cong (*-cong pt refl) (*-cong nt refl)))) refl))))
+    where
+    eq : ((((1# + 1#) + (1# + 1#)) + ((1# + 1#) * 1# + 0# * 0#)) + 0# + 0#) ≈
+      ((((1# + 1#) + (1# + 1#)) + (1# + 1#)) + ((0# + 0#) + ((1# + 1#) * 0# + 0# * 1#))) + 0#
+    eq = solve 0 ((((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ ((con 1 :+ con 1) :* con 1 :+ con 0 :* con 0)) :+ con 0 :+ con 0
+      := (((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ (con 1 :+ con 1)) :+
+         ((con 0 :+ con 0) :+ ((con 1 :+ con 1) :* con 0 :+ con 0 :* con 1)) :+ con 0) refl
 
 module ExpDistPair (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
@@ -105,10 +128,7 @@ module ExpDistPair (lem₁ : LEM₁) where
   XYsq = (Xsq +I Ysq) +I scaleI twoS XY
 
   six-arith : ((twoS +S twoS) +S (twoS *S 1S)) ≃ sixS
-  six-arith = mk≃ 0# (Is-0 finite) (solve 0
-    ((((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ ((con 1 :+ con 1) :* con 1 :+ con 0 :* con 0)) :+ con 0 :+ con 0
-    := (((con 1 :+ con 1) :+ (con 1 :+ con 1)) :+ (con 1 :+ con 1)) :+
-         ((con 0 :+ con 0) :+ ((con 1 :+ con 1) :* con 0 :+ con 0 :* con 1)) :+ con 0) refl)
+  six-arith = SixGen.six-gen (OmegaSemiring.commutativeSemiring A) finite twoS sixS refl refl refl refl
 
   E-XYsq : E-atᴵ expPair XYsq ≃ sixS
   E-XYsq = ≃-trans (E-atᴵ-+ expPair (Xsq +I Ysq) (scaleI twoS XY))
