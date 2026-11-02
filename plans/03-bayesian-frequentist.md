@@ -438,3 +438,18 @@ Longcheck fix and check-cost pass (2026-11-02, done):
   | `CoinUniformPriorN` | 9.3 s | 9.1 s |
 
   About 6.5 s of "Miscellaneous" remains as fixed overhead in both product modules.
+
+Beta integral for integer parameters (2026-11-02, done):
+- **`Continuous/BetaIntegral` (4.5 s, 0.6 GB):** `Bt k m = ∫ uᵏ vᵐ`, where `v` is the complement of the binary
+  expansion (`complF`) and `uv : u + v ≈ 1` holds pointwise.
+  - `Bt-add : B(k,m) ≈ B(k+1,m) + B(k,m+1)`; `Bt-base : (k+1)·B(k,0) ≈ 1`, from `moment-N`.
+  - `beta-closed : (k+m+1)!·B(k,m) ≈ k!·m!`.
+  - `beta-conj : (k+m+2)·B(k+1,m) ≈ (k+1)·B(k,m)`.  This is the general Beta–Bernoulli posterior mean
+    (k+1)/(k+m+2) after k heads and m tails, on the integral side; it is not yet tied to a coin kernel.
+  - The algebra is in `AlgB`, over an abstract Archimedean ω-semiring.  Each induction step cancels a bounded term
+    with `BoundedCancel.cancel-bnd`.
+- **Merge fixes (mine):**
+  - The agent used `rewrite`, which `doccheck` forbids (plans/04).  I replaced it with an index-transport helper,
+    `ix`.
+  - The branch was cut from `597bc3a`, before the cleanup.  That is why the agent saw 37 flagged; main stays at 35.
+- **Not done:** the symmetry B(k,m) = B(m,k); a coin model with k heads among k+m flips.
