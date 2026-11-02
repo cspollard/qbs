@@ -246,8 +246,14 @@ Exponential groundwork, step 1 of "What an exponential distribution would need" 
 with ρ·s′ < s for all s′ ∈ `expC x` (by LEM; otherwise a chain s₀/ρⁿ contradicts the bound, via Bernoulli's inequality
 and `arch`); estimated about 80 lines.
 
-Reverse inequality (2026-11-02, done, about 120 lines, NegExp still about 3 s): `oneC≤negExp-expC` and
+Reverse inequality (2026-11-02, done, about 120 lines; NegExp checks in 11.7 s, timed cold on an idle machine): `oneC≤negExp-expC` and
 `negExp-expC : negExp x ⊗ expC x ≋ oneC`, both for `expC x` bounded by a rational B (`∀ s ∈ expC x → s < B`).  Route:
 the near-maximal element by LEM, but with a linear chain (`s₀ + n·(1−ρ)·s₀ ≤ s`, by induction) in place of `ρⁿ` and
 Bernoulli, then `arch B`.  Still missing: "x ⊑ nat N ⇒ expC x bounded", which needs a bound on the partial sums of
 the series (≤ 3 for x ≤ 1, then `expC-add` up to N) in the abstract `Exp` module.
+
+Bounded x (2026-11-02, done): `Exp.exp≤3 : x ≤ 1 → exp x ≤ 3` (geometric bound `ι(n+1) ≤ ½ⁿ`) and
+`exp≤three^ : x ≤ natE N → exp x ≤ 3ᴺ` (via `exp-add`, abstract); `ExpLower.expC-bound` (strict rational bound 3ᴺ on
+members of `expC x` when `x ⊑ natE N`); `NegExp.negExp-expC-nat : x ⊑ natE N → negExp x ⊗ expC x ≋ oneC`.  So
+`e^{−x}·eˣ = 1` holds for every finite x given as bounded by a natural.  Times: Exp 2.9 s, ExpLower 3.4 s,
+NegExp 11.8 s (unchanged from before the merge, 11.7 s).  Next: a base measure on [0,∞) and normalisation.
