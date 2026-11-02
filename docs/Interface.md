@@ -139,6 +139,12 @@ Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.
 
+### `QBS.Continuous.HalfLine`, `QBS.Continuous.HalfLineNegExp`
+Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,∞]` (module parameter `lem₁ : LEM₁`).
+- `shiftPt`, `shiftPre n`, `lebPre`, `Meas-shift` (`HalfLine`) — `shiftPre n` is the uniform on [0,1] shifted to `n` (probe `r ↦ (1, n + expansion r)` over the fair coin); `lebPre = sumPre shiftPre` is Lebesgue measure on [0,∞), `λ = ∑ₙ (n + U)`.
+- `Meas-hshift`, `∫ᴹ-shift`, `∫ᴹ-leb` (`HalfLine`) — `∫ᴹ lebPre h ≈ ∑ᶠ n. J fairCoin (r ↦ h (n + expansion r))` for every morphism `h : WQ ⇒ WQ` (unbounded tests included).
+- `negExpH`, `negExp-add`, `∫ᴹ-leb-negExp`, `∫ᴹ-leb-negExp-split`, `I-negExp` (`HalfLineNegExp`) — the test `x ↦ e^{−x}` as a morphism `WQ ⇒ WQ`; `e^{−(x+y)} ≈ e^{−x} e^{−y}` when `x`, `y`, `x+y` are bounded by naturals; `∫ e^{−x} dλ ≈ ∑ᶠ n. e^{−n} · I-negExp` with `I-negExp = ∫₀¹ e^{−u} du` left uncomputed.
+
 ### Distributions: `QBS.Continuous.Uniform`, `QBS.Continuous.UniformMean`, `QBS.Continuous.UniformMoment`, `QBS.Continuous.UniformVariance`, `QBS.Continuous.UniformCDF`, `QBS.Continuous.SubModel`
 - `uniformSub` (`QBS.Continuous.SubModel`), `cdfTest` (`UniformCDF`) — the sub-probability form of `uniform` and the CDF's test function.
 - `uniform` — `U[0,1]` as a `Pre AQ` (`module Uniform lem₁`).
