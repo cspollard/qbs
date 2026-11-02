@@ -15,6 +15,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
+| `QBS.BoolQ` | 59 |  | The Boolean QBS `BoolQ = 1Q +Q 1Q`, the coproduct (`Colimits`) of two points, over any random source. |
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
 | `QBS.Category.Cartesian` | 24 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
 | `QBS.Category.Concrete` | 182 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
@@ -27,6 +28,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Exponential` | 134 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 134 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.BernoulliCompare` | 141 | lem | The two views of inference on one model: is the coin fair or two-headed?  (`plans/03-bayesian-frequentist.md`, 3c.) Bayesian (`Inference/CoinBias`): the likelihood `heads` of a head is 1 under "two-headed" and ½ under... |
+| `QBS.Inference.BoolDist` | 349 | lem | Bernoulli(½) on a genuine Boolean QBS (`QBS.BoolQ`, `BoolQ = 1Q +Q 1Q`), in which indicators are measurable. |
 | `QBS.Inference.CoinBias` | 79 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistVar` | 90 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
