@@ -230,7 +230,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DigitDecode` | 203 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
 | `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
-| `QBS.Continuous.DominatedSigned` | 63 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
+| `QBS.Continuous.DominatedSigned` | 64 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
