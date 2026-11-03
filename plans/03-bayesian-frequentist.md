@@ -1083,13 +1083,28 @@ for every scale, both from the uniqueness tools above rather than integrand-spec
 - Every-rate agreement is `∫-scale` for the test y ↦ l g(l y) f(y), for any normalised density g; Exp is g = e^{−x}.
 
 **Modules (skeleton on `cov`).**
-11. `Continuous/FTCDyadic`: `hp-inv`, `hp-dy`, `rescH`, `piece`, `resc`, `dv-resc`, `ftc-dy`.
-12. `Continuous/ChangeOfVariables` (imports 11): hypotheses `dv`, `gc-to`, `gc-from`, `φψ`, `ψ-fin`; `Φ-mono`,
+11. `Continuous/FTCDyadic` [done]: `hp-inv`, `hp-dy`, `rescH`, `piece`, `resc`, `dv-resc`, `ftc-dy`.
+12. `Continuous/ChangeOfVariables` [done] (imports 11): hypotheses `dv`, `gc-to`, `gc-from`, `φψ`, `ψ-fin`; `Φ-mono`,
     `Φ-zero`, `Φ-fin`, `χIv-ψ`, `χInf-ψ`, `lebψ`, `lebφ′`, `massψ`, `massφ′`, `agreeI`, `finI`, `inf-ψ`, `inf-φ′`,
     `push-eq`, `cov-inv : ∫ h(ψ y) dy ≈ ∫ h φ′`, `cov : ∫ g(φ x) φ′(x) dx ≈ ∫ g`.
-13. `Inference/ScaleDensity` (independent of 11–12): `scD g = l g(l ·)`, `scD-pt`, `nrm-sc`, `push-dens`
+13. `Inference/ScaleDensity` [done] (independent of 11–12): `scD g = l g(l ·)`, `scD-pt`, `nrm-sc`, `push-dens`
     (pushforward of `densDist g` by x ↦ c x is `densDist (scD g)`), `densR`, `∫-negExpR`, `nrmR`, `scD-negExp`,
     `agree` (Exp(c) pushforward ≈ density λ e^{−λx}), `agree-dist` (against `ExpRateDist.Dist.expDistλ`).
+
+**Outcome (2026-11-03, merged into `cov`; no holes, contracts unchanged).**
+- `ScaleDensity`: `push-dens` is `ι-nat`/`∫ᴹ-map`/`∫-dens` then `∫-scale c l`; `∫-negExpR` from `∫-scale l c` on e^{−x};
+  `scD-negExp` is `refl`.  No helper module.
+- `FTCDyadic`: helper `FTCDyadicPiece` proves `piece` with `null-le` (F ≤ F′ off the all-true point, F constant there,
+  possibly ∞ ⇒ J F ≤ J F′, from F ≤ F′ + c·χ_Top and `fair-top`), so neither monotone convergence nor the j = 0
+  fallback was needed.  The two `hp`s are definitionally equal (`hp-dy` is `*-comm`).
+- `ChangeOfVariables`: helper `ChangeOfVariablesAlg` (`inf-bnd`/`bnd-notinf` by excluded middle; `module Pull` with
+  `χIv-pull`, `χInf-pull`; `inf-null : ∫ lebPre (f · χInf) ≈ 0` for every f, even f(∞) = ∞).  `agreeI` cancels with
+  `cancel-bnd` as in `leb-unique`.
+- Lessons: `hp 0` is not definitionally `1#` (`hp-zero`); `with <-cmp i j` on a goal mentioning
+  `map (χI 0 j) ⟨$⟩ shiftPt i r` hangs Agda; pass the comparison to a helper instead.
+- Timings (measurement agent, two runs, load ≈ 5): `ScaleDensity` 10.6 s, 1.44 GB (closest to the 1.5 GB line);
+  `FTCDyadicPiece` 7.4 s, 1.02 GB; `FTCDyadic` 9.5 s, 1.22 GB; `ChangeOfVariablesAlg` 7.5 s, 1.06 GB;
+  `ChangeOfVariables` 9.6 s, 1.24 GB.
 
 **Order of agents.** 13 and 11 are independent and can run in parallel; 12 after 11.  Estimated sizes: 11 ≈ 300
 lines (`piece` is the riskiest), 12 ≈ 300, 13 ≈ 150.
