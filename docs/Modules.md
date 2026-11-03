@@ -250,8 +250,11 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueDyadicNat` | 68 |  | Natural-number arithmetic for the dyadic cells of `LebesgueDyadic`: the cell `[j·2ⁿ, (j+1)·2ⁿ)` of indices `m`, its two halves (the cells `2j` and `2j+1` at level n, for `p = 2ⁿ`), the level-0 cell, and the unique `k ... |
 | `QBS.Continuous.LebesgueInterval` | 82 | lem | Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueIntervalAlg` | 120 | lem | The mass of an interval under a measure whose dyadic cells have mass ½ⁿ (plan 03, "Uniqueness on the half-line"), the engine of `LebesgueInterval.leb-Iv`. |
-| `QBS.Continuous.LebesgueScale` | 55 | lem | Scaling of Lebesgue measure on [0,∞) by every finite positive constant (plan 03, "Uniqueness on the half-line"). |
-| `QBS.Continuous.LebesgueShift` | 61 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueScale` | 85 | lem | Scaling of Lebesgue measure on [0,∞) by every finite positive constant (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueScaleAlg` | 76 | lem | Algebra of scaling the tests of Lebesgue measure (helper for `LebesgueScale`): for c · c′ ≈ 1, `Ge a (c x) ↔ Ge (a c′) x`, hence `χ[a,b)(c x) ≈ χ[a c′, b c′)(x)` (`χIv-scale`), and for c finite, `c x = ∞ ↔ x = ∞` (`χI... |
+| `QBS.Continuous.LebesgueShift` | 128 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueShiftAlg` | 131 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
+| `QBS.Continuous.LebesgueShiftCut` | 81 | lem | The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`). |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |

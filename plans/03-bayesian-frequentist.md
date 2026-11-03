@@ -969,8 +969,8 @@ the top-level statements are the contract.
    `leb-χI`, `leb-inf`, `leb-fin`.
 8. `Continuous/LebesgueInterval` [done]: `leb-Iv : a + ∫ lebPre χ[a,b) ≈ b`; `leb-unique` (interval masses
    characterise Lebesgue measure).
-9. `Continuous/LebesgueScale` [4]: `scaledLeb`, `∫ᴹ-scaledLeb`, `scaled-Iv`, `∫-scale : c · ∫ h(cx) ≈ ∫ h`.
-10. `Continuous/LebesgueShift` [4]: `shiftH`, `shiftedLeb`, `∫ᴹ-shiftedLeb`, `shifted-Iv`,
+9. `Continuous/LebesgueScale` [done]: `scaledLeb`, `∫ᴹ-scaledLeb`, `scaled-Iv`, `∫-scale : c · ∫ h(cx) ≈ ∫ h`.
+10. `Continuous/LebesgueShift` [done]: `shiftH`, `shiftedLeb`, `∫ᴹ-shiftedLeb`, `shifted-Iv`,
     `∫-shift : ∫ h(x+t) + ∫_{[0,t)} h ≈ ∫ h`.
 - Not yet stated: monotone change of variables with a derivative certificate (interval masses from `glue-D0`) and
   re-deriving `ExpPushforwardAgree` for every rate; state them once 8 is filled.
@@ -1032,6 +1032,21 @@ the top-level statements are the contract.
   `uniqWQ` with the left endpoint cancelled by `cancel-bnd`.
 - Timings (measurement agent, two runs, load ≈ 4): `LebesgueIntervalAlg` 7.0 s, 1.00 GB; `LebesgueInterval` 7.5 s,
   1.04 GB.
+
+**Outcome: `Continuous/LebesgueScale` and `Continuous/LebesgueShift` (2026-11-03, two agents in parallel, merged).
+`uniq` has no holes left.**
+- All holes filled in both, contracts unchanged.
+- `LebesgueScale`: `scaledLeb c = scalePre c (mapM (scaleH c idW) lebPre)`; helper `LebesgueScaleAlg` (`Ge a (c·x)` iff
+  `Ge (a·c′) x`, `χIv-scale`, `χInf-scale`).
+- `LebesgueShift`: `shiftedLeb t` is a `sumPre` padded with zero-weight terms (no binary sum in `SFinite`); the interval
+  law reduces to masses of [0,b) (`Iv-from-F`), split by the classical totality of cuts.  The library had no cut
+  difference, so `LebesgueShiftCut` builds `diffC t b` with `t ⊕ diffC ≋ b` for t bounded by a rational, and
+  `diff-⇐ : b ⊑ x ⊕ t → diffC ⊑ x` (no cancellation, x may be ∞).  Helper `LebesgueShiftAlg`.
+- Lesson: implicit arguments of lemmas about `Ge` or `mk⊑` do not unify (membership is not injective); make them
+  explicit.
+- Timings (measurement agent, two runs, load ≈ 4): `LebesgueScaleAlg` 6.2 s, 0.82 GB; `LebesgueScale` 9.1 s, 1.21 GB;
+  `LebesgueShiftCut` 3.3 s, 0.48 GB; `LebesgueShiftAlg` 7.0 s, 1.00 GB; `LebesgueShift` 9.7 s, 1.40 GB (closest to
+  the 1.5 GB line).
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
