@@ -34,7 +34,8 @@ open import QBS.Continuous.UniquenessRQAlg using (module UniquenessRQAlg)
 
 module UniquenessRQ (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _≤_; _+_; 0#; 1#; refl; sym; trans; +-cong; ≤-trans; ≤-reflexive; ≤-antisym; ≤-+ʳ; 0-least; *-identityˡ; zeroˡ; +-identityˡ; +-identityʳ; +-comm) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _≤_; _+_; 0#; 1#
+    ; refl; sym; trans; +-cong; ≤-trans; ≤-reflexive; ≤-antisym; ≤-+ʳ; 0-least; *-identityˡ; zeroˡ; +-identityˡ; +-identityʳ; +-comm) renaming (Carrier to ∣A∣)
   open Bounded A using (Bnd)
   open Weights (lemOf lem₁) using (WQ; constW)
   open SFinite (lemOf lem₁) using (XW; ∫ᴹ; _≈ᴹ_; mapM; ∫ᴹ-map; ∫ᴹ-cong; module C)
