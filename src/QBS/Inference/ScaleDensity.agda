@@ -74,7 +74,8 @@ module ScaleDensity (lem₁ : LEM₁) where
     lc = trans (*-comm l c) cl
 
     scD-pt : ∀ (g : Hom S WQ WQ) x → map (scD g) ⟨$⟩ (map sc ⟨$⟩ x) ≈ l * (map g ⟨$⟩ x)
-    scD-pt g x = *-cong refl (Func.cong (map g) (trans (sym (*-assoc l c x)) (trans (*-cong (trans (*-comm l c) cl) refl) (*-identityˡ x))))
+    scD-pt g x = *-cong refl (Func.cong (map g)
+      (trans (sym (*-assoc l c x)) (trans (*-cong (trans (*-comm l c) cl) refl) (*-identityˡ x))))
 
     nrm-sc : ∀ (g : Hom S WQ WQ) → ∫ᴹ {WQ} lebPre g ≈ 1# → ∫ᴹ {WQ} lebPre (scD g) ≈ 1#
     nrm-sc g nrm = trans (∫-scaleH l (_∘H_ S g (scaleH l idW))) (trans (∫-scale l c lc lB cB g) nrm)

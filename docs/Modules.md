@@ -62,7 +62,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.PushforwardExpectation` | 84 | lem | Expectations of pushforwards are expectations of composites, through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
-| `QBS.Inference.ScaleDensity` | 107 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables"). |
+| `QBS.Inference.ScaleDensity` | 124 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables"). |
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 97 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
