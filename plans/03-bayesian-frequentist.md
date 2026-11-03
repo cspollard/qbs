@@ -1133,14 +1133,14 @@ Goal: stop proving measurability by hand.  A function on the cuts that is monoto
 
 **Modules (skeleton on `rq`).**
 14. `Continuous/MonoTest` [done]: `Meas-mono`, `monoH F cF mF`, `Meas-anti`, `antiH`.
-15. `Continuous/LipTest`: `LocLip`, `Meas-lip`, `lipH`; from `dv : ∀ N → Deriv (N+1) G h k`: `deriv-cgG/h/k`,
+15. `Continuous/LipTest` [done]: `LocLip`, `Meas-lip`, `lipH`; from `dv : ∀ N → Deriv (N+1) G h k`: `deriv-cgG/h/k`,
     `deriv-lipG/h/k`, `derivH`, `liphH`, `lipkH`.
-16. `Continuous/ChangeOfVariablesFn` (imports 14, 15, `ChangeOfVariables`): functions Φ, Ψ, k with the hypotheses of
+16. `Continuous/ChangeOfVariablesFn` [done] (imports 14, 15, `ChangeOfVariables`): functions Φ, Ψ, k with the hypotheses of
     `ChangeOfVariables`; `Ψ-mono`, `Ψ-cong`, `φH`, `ψH`, `φ′H`, `covF-inv`, `covF`.
 17. `Continuous/UniquenessRQ` [done]: `foldH`, `oneL`, `oneR`, `restrL`, `restrR`, `∫-restrL`, `∫-restrR`, `∫-split`,
     `uniqRQ`, `restrL-lebR`, `restrR-lebR`, `lebR-unique`.
-18. `Continuous/RealScale`: `scaleRH c`, `reflRH`, `∫-scaleR`, `∫-reflR`.
-19. `Inference/GaussScale` (imports 18, `ScaleDensity`, `GaussReal`): `scDs`, `scD-int`, `push-sym`, `gaussσ`,
+18. `Continuous/RealScale` [done]: `scaleRH c`, `reflRH`, `∫-scaleR`, `∫-reflR`.
+19. `Inference/GaussScale` [done] (imports 18, `ScaleDensity`, `GaussReal`): `scDs`, `scD-int`, `push-sym`, `gaussσ`,
     `gauss-dens`, `second : ∫ x² dN(0, s²) ≈ s²`.
 
 **Outcome 14, 17 (2026-11-03, merged into `rq`; no holes, contracts unchanged).**
@@ -1153,6 +1153,22 @@ Goal: stop proving measurability by hand.  A function on the cuts that is monoto
   (`inf-sp`, `infL`, `infR`, …) to keep longcheck at 35.
 - Timings (orchestrator, sequential, load ≈ 4.3): `MonoTestAlg` 4.1 s, 0.57 GB; `MonoTest` 4.7 s, 0.68 GB;
   `UniquenessRQAlg` 4.9 s, 0.70 GB; `UniquenessRQ` 9.2 s, 1.27 GB.
+
+**Outcome 15, 16, 18, 19 (2026-11-03, merged into `rq`; no holes, contracts unchanged; batch hole-free).**
+- `LipTest`: helper `LipTestAlg` (`module LipAlg`).  The real gap was that `LocLip` speaks only of points a + w, so
+  each cell point needs w with a + w ≈ x: `sub-le`, from `LebesgueShiftCut.diffC`.  Route: q ∈ F x iff `Ge (ratC ρ)
+  (F x)` for some rational ρ > q, and `Ge Q (F x)` for x ≤ N+1 iff every level n has a cell with
+  Q ≤ F(m/2ⁿ) + ½ⁿ c; Borel as {∞} ∩ const ∪ ⋃_N (≤ N+1 ∩ ⋂ₙ ⋃ₘ (cell ∩ const)).  `deriv-*` read off `D-cG`/`D-ch`/
+  `D-ck`, `Gup`/`Gdn` (constant c + c), `D-hU`/`D-hD`, `D-kU`/`D-kD`.  A `with` on a cut term timed out (300 s) again.
+- `ChangeOfVariablesFn`: `cov`/`cov-inv` at `φH ψH φ′H`; the hypotheses transfer by identity.  `Ψ-mono` from the
+  Galois connection, `Ψ-cong` by antisymmetry.
+- `RealScale`: helper lemma `scl` (the halves of h ∘ scaleRH c, pointwise `refl`); `∫-scaleR` is `∫ᴹ-lebR`,
+  `distribˡ`, `∫-scale` per half; `∫-reflR` is `+-comm`.
+- `GaussScale`: `gaussR` is definitionally `Sym.symDist phiH Z refl n′ nn`.  Helper `half` (the per-half substitution
+  of `push-dens`), shared by `push-sym` and `sqhalf`; solver lemmas `sq2`, `cm`, `fin`.
+- Timings (orchestrator, sequential, load ≈ 4.0): `LipTestAlg` 8.1 s, 1.04 GB; `LipTest` 7.5 s, 0.99 GB;
+  `ChangeOfVariablesFn` 9.4 s, 1.23 GB; `RealScale` 9.3 s, 1.20 GB; `GaussScale` 12.4 s, 1.46 GB (closest to the
+  1.5 GB line).
 
 **Order of agents.** 14 ∥ 17, then 15 ∥ 18, then 16 ∥ 19.  Estimated sizes: 14 ≈ 250 lines, 15 ≈ 350 (the riskiest),
 16 ≈ 100, 17 ≈ 200, 18 ≈ 100, 19 ≈ 150.
