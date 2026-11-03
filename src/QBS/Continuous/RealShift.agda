@@ -13,6 +13,7 @@
 -- ∫ h(inl (x + t)) + ∫_{[0,t)} h(inl (t ∸ x)) + ∫_{[t,∞)} h(inr (x ∸ t)); the first two give ∫ h∘inl by `∫-reflIv` and
 -- `LebesgueShift.∫-shift`, the last gives ∫ h∘inr by `∫-shift` (the point x = t is null).  `∫-reflIv`: the reflected
 -- measure has the interval masses of Lebesgue measure on [0,t) (`LebesgueInterval.leb-unique`), or any other route.
+-- Helpers: `RealShiftNull` (null points, splitting at t) and `RealShiftRefl` (`reflMeas`, reflection of [0,t)).
 module QBS.Continuous.RealShift where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
