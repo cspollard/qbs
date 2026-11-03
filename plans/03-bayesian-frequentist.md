@@ -1114,3 +1114,76 @@ lines (`piece` is the riskiest), 12 ≈ 300, 13 ≈ 150.
   by `fair-top` with monotone convergence, not by a bound on f.  Fallback: prove it for j = 0 and move by `∫-shift`.
 - Two `hp`s: `FTCDyadic` uses `Arch R`'s, `Intervals.dy` uses `Half`'s; `hp-dy` is where they meet.
 - `gc-to`/`gc-from` are stated with `_≤_` (`Set₁`); `χIv-ψ` needs them at `Ge`, as in `LebesgueScaleAlg`.
+
+## Tests from function properties, and the real line (planned 2026-11-03; skeleton first, then agents; branch `rq`)
+
+Goal: stop proving measurability by hand.  A function on the cuts that is monotone, or locally Lipschitz, or carries
+`Deriv` data, is a test automatically; change of variables then takes plain functions.  On the whole real line
+`RQ = WQ +Q WQ`: uniqueness from the two halves, scaling and reflection, and N(0, s²) as a pushforward of `gaussR`.
+
+**Route.**
+- Monotone F: the threshold set {x | q ∈ F x} is an up-set (down-set), so with excluded middle it is a countable union
+  of {x ≥ d} for rationals d (`Intervals.ge-borel`), plus possibly the single point inf U.
+- Locally Lipschitz F: q ∈ F x on [0, N+1] iff some dyadic cell ∋ x has q + c/2ⁿ ∈ F(m/2ⁿ); countable union of cells
+  intersected with decided conditions, plus {∞}.  `Deriv` data gives local Lipschitz bounds for G, h, k
+  (`Ct1`/`Ct2`, `LpU`/`LpD`).
+- RQ: a measure is determined by its halves `restrL`/`restrR` (reweight by the summand indicator, fold onto WQ),
+  because every test is the sum of its halves (`∫-split`).  `lebR-unique` reduces to `leb-unique` on each half.
+- Scaling on RQ is `∫-scale` on each half; N(0, s²) integrates like the symmetric density `scD phiH` (`push-sym`).
+
+**Modules (skeleton on `rq`).**
+14. `Continuous/MonoTest` [done]: `Meas-mono`, `monoH F cF mF`, `Meas-anti`, `antiH`.
+15. `Continuous/LipTest` [done]: `LocLip`, `Meas-lip`, `lipH`; from `dv : ∀ N → Deriv (N+1) G h k`: `deriv-cgG/h/k`,
+    `deriv-lipG/h/k`, `derivH`, `liphH`, `lipkH`.
+16. `Continuous/ChangeOfVariablesFn` [done] (imports 14, 15, `ChangeOfVariables`): functions Φ, Ψ, k with the hypotheses of
+    `ChangeOfVariables`; `Ψ-mono`, `Ψ-cong`, `φH`, `ψH`, `φ′H`, `covF-inv`, `covF`.
+17. `Continuous/UniquenessRQ` [done]: `foldH`, `oneL`, `oneR`, `restrL`, `restrR`, `∫-restrL`, `∫-restrR`, `∫-split`,
+    `uniqRQ`, `restrL-lebR`, `restrR-lebR`, `lebR-unique`.
+18. `Continuous/RealScale` [done]: `scaleRH c`, `reflRH`, `∫-scaleR`, `∫-reflR`.
+19. `Inference/GaussScale` [done] (imports 18, `ScaleDensity`, `GaussReal`): `scDs`, `scD-int`, `push-sym`, `gaussσ`,
+    `gauss-dens`, `second : ∫ x² dN(0, s²) ≈ s²`.
+
+**Outcome 14, 17 (2026-11-03, merged into `rq`; no holes, contracts unchanged).**
+- `MonoTest`: helper `MonoTestAlg.up-borel` (any ≈-respecting up-closed V : ∣A∣ → Set has Borel preimages).  Not the
+  inf-U route: E = ⋂ V as a set of rationals; V agrees with {E ⊆ x} except where x = E as sets, where V is a constant
+  P decided by `lem₁`; {E ⊆ h c} and {h c ⊆ E} are countable intersections (`all-enum`).  `Meas-anti` uses the
+  complement and double negation.
+- `UniquenessRQ`: helper `UniquenessRQAlg` (`addX`, `∫ᴹ-addX`: `Domination.addH`/`∫ᴹ-add` for any X); pointwise
+  equalities on RQ by splitting on `inj₁`/`inj₂`.  `lebR-unique`'s `where` block was lifted to top-level lemmas
+  (`inf-sp`, `infL`, `infR`, …) to keep longcheck at 35.
+- Timings (orchestrator, sequential, load ≈ 4.3): `MonoTestAlg` 4.1 s, 0.57 GB; `MonoTest` 4.7 s, 0.68 GB;
+  `UniquenessRQAlg` 4.9 s, 0.70 GB; `UniquenessRQ` 9.2 s, 1.27 GB.
+
+**Outcome 15, 16, 18, 19 (2026-11-03, merged into `rq`; no holes, contracts unchanged; batch hole-free).**
+- `LipTest`: helper `LipTestAlg` (`module LipAlg`).  The real gap was that `LocLip` speaks only of points a + w, so
+  each cell point needs w with a + w ≈ x: `sub-le`, from `LebesgueShiftCut.diffC`.  Route: q ∈ F x iff `Ge (ratC ρ)
+  (F x)` for some rational ρ > q, and `Ge Q (F x)` for x ≤ N+1 iff every level n has a cell with
+  Q ≤ F(m/2ⁿ) + ½ⁿ c; Borel as {∞} ∩ const ∪ ⋃_N (≤ N+1 ∩ ⋂ₙ ⋃ₘ (cell ∩ const)).  `deriv-*` read off `D-cG`/`D-ch`/
+  `D-ck`, `Gup`/`Gdn` (constant c + c), `D-hU`/`D-hD`, `D-kU`/`D-kD`.  A `with` on a cut term timed out (300 s) again.
+- `ChangeOfVariablesFn`: `cov`/`cov-inv` at `φH ψH φ′H`; the hypotheses transfer by identity.  `Ψ-mono` from the
+  Galois connection, `Ψ-cong` by antisymmetry.
+- `RealScale`: helper lemma `scl` (the halves of h ∘ scaleRH c, pointwise `refl`); `∫-scaleR` is `∫ᴹ-lebR`,
+  `distribˡ`, `∫-scale` per half; `∫-reflR` is `+-comm`.
+- `GaussScale`: `gaussR` is definitionally `Sym.symDist phiH Z refl n′ nn`.  Helper `half` (the per-half substitution
+  of `push-dens`), shared by `push-sym` and `sqhalf`; solver lemmas `sq2`, `cm`, `fin`.
+- Timings (orchestrator, sequential, load ≈ 4.0): `LipTestAlg` 8.1 s, 1.04 GB; `LipTest` 7.5 s, 0.99 GB;
+  `ChangeOfVariablesFn` 9.4 s, 1.23 GB; `RealScale` 9.3 s, 1.20 GB; `GaussScale` 12.4 s, 1.46 GB (closest to the
+  1.5 GB line).
+
+**Order of agents.** 14 ∥ 17, then 15 ∥ 18, then 16 ∥ 19.  Estimated sizes: 14 ≈ 250 lines, 15 ≈ 350 (the riskiest),
+16 ≈ 100, 17 ≈ 200, 18 ≈ 100, 19 ≈ 150.
+
+**Risks.**
+- 14: inf U of an up-set of cuts must be built as a cut (union of the rationals below every element of U); whether
+  inf U ∈ U is decided by excluded middle (`LEM₁` on a `Set₁` proposition).  `Meas` may want the threshold sets at
+  `Set` level (`Ge`), not `_≤_`.
+- 15: `LocLip` uses `_≤_`; the cell argument needs roundedness of F x (`Cut` rounded) and Bnd c.  If `Deriv` does not
+  bound G's increments directly, `deriv-lipG` goes through `Ct1`/`Ct2` with h, k ≤ c from `LpU`/`LpD`.  Fallback:
+  derive `deriv-lip*` from `D` fields one at a time in a helper module.
+- 16: the values of φ′ at ∞ in `LipTest.lipkH` and in `ChangeOfVariables` must agree; `ChangeOfVariables` takes φ′ as a
+  morphism, so `covF` is `cov` at `φH`, `ψH`, `φ′H` plus `Ψ-mono`/`Ψ-cong` from `gc-to`/`gc-from`.
+- 17: additivity of `∫ᴹ` on tests over RQ (Domination's `addH` is over WQ only); `copair` computes only on `inl`/`inr`,
+  and pointwise equalities on RQ need the coproduct's elimination (`Colimits`).
+- 19: `Sym.symDist` is abstract; `push-sym` must go through `∫-sym` only.
+- Deferred: translation x ↦ x + t on RQ (needs gluing the pieces of [0, t) and the cut difference), N(μ, σ²),
+  products ℝ × ℝ, signed expectations with dominated convergence.

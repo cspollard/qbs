@@ -55,6 +55,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussAffine` | 70 | lem | The Gaussian N(μ, σ²) from the standard one by the affine statistic `x ↦ μ + σx` (item B of `plans/03`), with no new integral. |
 | `QBS.Inference.GaussReal` | 213 | lem | The standard Gaussian on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`), with `E[X] ≃ 0` and `E[X²] ≃ 1`, and no value for `π` (nor for `Z = ∫₀^∞ e^{−x²/2}`): the density is the symmetric `[φ , φ]`, `φ = ... |
 | `QBS.Inference.GaussRealAbs` | 99 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
+| `QBS.Inference.GaussScale` | 132 | lem | Scaled symmetric distributions on the real line, and N(0, s²) (plan 03, "Tests and the real line"). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
@@ -213,6 +214,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.BetaIntegral` | 192 | lem | The Beta integral for integer parameters under the uniform distribution: B(k,m) = ∫ uᵏ (1−u)ᵐ du,   (k+m+1)! · B(k,m) = k! · m!   (`beta-closed`, multiplied out, no division), and the conjugacy step (k+m+2) · B(k+1,m)... |
 | `QBS.Continuous.ChangeOfVariables` | 169 | lem | Monotone change of variables on the half-line with a derivative certificate (plan 03, "Change of variables"). |
 | `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
+| `QBS.Continuous.ChangeOfVariablesFn` | 72 | lem | Change of variables from functions alone (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
@@ -260,11 +262,16 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueShift` | 128 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueShiftAlg` | 131 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
 | `QBS.Continuous.LebesgueShiftCut` | 81 | lem | The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`). |
+| `QBS.Continuous.LipTest` | 91 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.LipTestAlg` | 249 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
+| `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.MonoTestAlg` | 117 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
+| `QBS.Continuous.RealScale` | 74 | lem | Scaling and reflection of the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.SFinite` | 336 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 244 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 453 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
@@ -297,6 +304,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformSample` | 125 | lem | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 159 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.UniquenessR` | 326 | lem | Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.UniquenessRQ` | 157 | lem | Uniqueness of measures on the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`). |
 | `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
