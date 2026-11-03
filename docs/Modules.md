@@ -262,7 +262,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueShift` | 128 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueShiftAlg` | 131 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
 | `QBS.Continuous.LebesgueShiftCut` | 81 | lem | The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`). |
-| `QBS.Continuous.LipTest` | 81 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.LipTest` | 91 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.LipTestAlg` | 249 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.MonoTestAlg` | 117 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
