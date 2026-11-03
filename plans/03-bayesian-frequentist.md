@@ -1281,3 +1281,34 @@ pointwise finiteness), so the fallback was not needed.
 - `Dominated`: `prob-mass` (a probability measure integrates a constant c to c) for `dct-prob`.
 - Timings (orchestrator, sequential, load ≈ 5.3): `LowerRealsInf` 3.3 s, 0.60 GB; `LowerRealsNear` 3.5 s, 0.54 GB;
   `SupTest` 4.9 s, 0.73 GB; `FatouAux` 7.3 s, 1.03 GB; `Fatou` 7.6 s, 1.00 GB; `Dominated` 7.7 s, 1.04 GB.
+
+## Signed dominated convergence (planned 2026-11-03; skeleton first, then agents; branch `sdct`)
+
+Goal: dominated convergence for signed tests, h⁺ n − h⁻ n → f⁺ − f⁻, on any X and any s-finite measure, with the
+difference of expectations converging.  Signed values stay as pairs (no subtraction of lower reals); convergence of
+a difference is stated by cross-adding (`SConv`).
+
+**Route.**
+- Convergence with explicit tolerances ½ᵏ (`EConv`) agrees with lim inf ≈ lim sup ≈ l for finite l (`Conv`):
+  one direction by `inter-add` and `approx`, the other by excluded middle and `near-sup-bnd`.
+- Where the dominating g is infinite the integral sees nothing (∫ g finite gives k · [g = ∞] ≤ g for all k).
+- For the signed theorem: d n = h⁺ n + f⁻, e n = h⁻ n + f⁺ cut to {g finite}; p n = d n ∸ e n, q n = e n ∸ d n tend
+  to 0 pointwise under the bound g + g, so ∫ p n, ∫ q n → 0 (`dct`); d n + q n ≈ e n + p n pointwise; integrate,
+  drop the cut, rearrange.
+
+**Modules.**
+- 29 `Continuous/ConvEps`: `EConv`, `conv-econv`, `econv-conv`, `SConv`, `sconv-pair`, `sconv-shift`.
+- 30 `Continuous/NullInf`: `finχ`, `infχ` with pointwise lemmas, `∫-infχ`, `∫-null`, `∫-fin-cut`, `∫-off-inf`.
+- 31 `Continuous/DominatedSigned`: `dct-signed`, `dct-signed-prob`.
+
+**Order of agents.** One agent on 29 and 30 (independent), then 31.  Estimated sizes: 29 ≈ 200 lines, 30 ≈ 200,
+31 ≈ 250.
+
+**Risks.**
+- 29: `conv-econv` needs, from ⋂ₙ ⋃_{k≥n} a ≤ l with l finite, a single tail ≤ l + ½ᵏ: excluded middle per tail, then a
+  rational above l in every tail gives one in the interior of the intersection (needs a strict gap, via `hp`).
+- 30: Borel-ness of {r | α r rationally bounded} (`indH`); `∫-null` via `∫ᴹ-sup` on j · [g = ∞] ⊓ u.
+- 31: the pointwise identity d + q ≈ e + p needs a case split d ≤ e or e ≤ d, which lower reals do not decide;
+  fallback: by excluded middle on d ≤ e, and on its failure derive e ≤ d by locatedness of bounded cuts
+  (`near-sup-bnd`), or report.
+
