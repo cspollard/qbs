@@ -1251,12 +1251,12 @@ Fatou in both directions, and dominated convergence, with convergence in [0, ∞
   Fatou from downward convergence, dominated convergence by chaining the two.
 
 **Modules.**
-- 25 `Analysis/LowerRealsInf`: `interC`, `inter-lb/glb/mono`, `union-mono`, `liminfC`, `limsupC`, `liminf-limsup`,
+- [done] 25 `Analysis/LowerRealsInf`: `interC`, `inter-lb/glb/mono`, `union-mono`, `liminfC`, `limsupC`, `liminf-limsup`,
   `liminf-mono`, `limsup-mono`.
-- 26 `Continuous/SupTest`: `Meas-inter`, `supH`, `infH`, `liminfH`, `limsupH` with pointwise lemmas, `∫ᴹ-monoX`,
+- [done] 26 `Continuous/SupTest`: `Meas-inter`, `supH`, `infH`, `liminfH`, `limsupH` with pointwise lemmas, `∫ᴹ-monoX`,
   `∫ᴹ-sup`.
-- 27 `Continuous/Fatou`: `minH`, `approx`, `∫ᴹ-inf-fin`, `tail-small`, `∫ᴹ-inf`, `fatou`, `rev-fatou`.
-- 28 `Continuous/Dominated`: `Conv`, `dct`, `mct-conv`, `dct-prob`.
+- [done] 27 `Continuous/Fatou`: `minH`, `approx`, `∫ᴹ-inf-fin`, `tail-small`, `∫ᴹ-inf`, `fatou`, `rev-fatou`.
+- [done] 28 `Continuous/Dominated`: `Conv`, `dct`, `mct-conv`, `dct-prob`.
 
 **Order of agents.** One agent on 25 → 26, then 27 → 28 (each depends on the last).  Splitting: 25 → 26 first, then
 27 → 28.  Estimated sizes: 25 ≈ 100 lines, 26 ≈ 150, 27 ≈ 300 (the riskiest), 28 ≈ 80.
@@ -1269,3 +1269,15 @@ Fatou in both directions, and dominated convergence, with convergence in [0, ∞
   first (from `∫ᴹ-inf-fin`) and report.
 - Deferred: signed dominated convergence (needs a convergence notion on the signed ring; the canonical f⁺, f⁻
   decomposition), the standard Gaussian pair, uniqueness of products on rectangles.
+
+**Outcome (2026-11-03).** All four modules hole-free; no statement changed; `∫ᴹ-inf` proved as stated (no
+pointwise finiteness), so the fallback was not needed.
+- New helper modules: `Analysis/LowerRealsNear` (`near-sup-bnd`: a rationally bounded cut is approached from below,
+  by excluded middle; `cancel-bnd-⊑`, order cancellation; `inter-add`; `min-split-⊑`) and `Continuous/FatouAux`
+  (`monusH`, the test x ↦ f x ∸ g x for pointwise-bounded g; `addX`, `∫ᴹ-addX` on any X).
+- `∫ᴹ-inf-fin`: the differences h 0 ∸ h n increase; `inter-add` gives h 0 ≤ ⋂ h + E pointwise, then cancellation.
+  `∫ᴹ-inf`: `step-A` (∫ h n ≤ ∫ (h n ⊓ N) + ½ᵏ, via `min-split-⊑` and `cancel-bnd-⊑`) replaces the planned split
+  f ≈ (f ⊓ N) + (f ∸ N), which would have needed a case split on cut comparison.
+- `Dominated`: `prob-mass` (a probability measure integrates a constant c to c) for `dct-prob`.
+- Timings (orchestrator, sequential, load ≈ 5.3): `LowerRealsInf` 3.3 s, 0.60 GB; `LowerRealsNear` 3.5 s, 0.54 GB;
+  `SupTest` 4.9 s, 0.73 GB; `FatouAux` 7.3 s, 1.03 GB; `Fatou` 7.6 s, 1.00 GB; `Dominated` 7.7 s, 1.04 GB.
