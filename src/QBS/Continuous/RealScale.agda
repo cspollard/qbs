@@ -29,7 +29,8 @@ open import QBS.Continuous.LebesgueScale using (module LebesgueScale)
 
 module RealScale (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _+_; _*_; 1#; refl; sym; trans; +-cong; *-cong; +-comm; distribˡ) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _+_; _*_; 1#; refl; sym; trans; +-cong; *-cong; +-comm; distribˡ)
+    renaming (Carrier to ∣A∣)
   open Bounded A using (Bnd)
   open Weights (lemOf lem₁) using (WQ)
   open SFinite (lemOf lem₁) using (∫ᴹ; ∫ᴹ-cong)
@@ -53,8 +54,10 @@ module RealScale (lem₁ : LEM₁) where
   scl : ∀ c (h : Hom S RQ WQ) → let g = _∘H_ S h (scaleRH c) in
     ∫ᴹ {WQ} lebPre (_∘H_ S g inlH) ≈ ∫ᴹ {WQ} lebPre (_∘H_ S (_∘H_ S h inlH) (scaleH c idW)) ×
     ∫ᴹ {WQ} lebPre (_∘H_ S g inrH) ≈ ∫ᴹ {WQ} lebPre (_∘H_ S (_∘H_ S h inrH) (scaleH c idW))
-  scl c h = ∫ᴹ-cong {WQ} lebPre {_∘H_ S (_∘H_ S h (scaleRH c)) inlH} {_∘H_ S (_∘H_ S h inlH) (scaleH c idW)} (λ x → refl) ,
-            ∫ᴹ-cong {WQ} lebPre {_∘H_ S (_∘H_ S h (scaleRH c)) inrH} {_∘H_ S (_∘H_ S h inrH) (scaleH c idW)} (λ x → refl)
+  scl c h = ∫ᴹ-cong {WQ} lebPre {_∘H_ S (_∘H_ S h (scaleRH c)) inlH}
+              {_∘H_ S (_∘H_ S h inlH) (scaleH c idW)} (λ x → refl) ,
+            ∫ᴹ-cong {WQ} lebPre {_∘H_ S (_∘H_ S h (scaleRH c)) inrH}
+              {_∘H_ S (_∘H_ S h inrH) (scaleH c idW)} (λ x → refl)
 
   ∫-scaleR : ∀ c c′ → c * c′ ≈ 1# → Bnd c → Bnd c′ → ∀ (h : Hom S RQ WQ) →
     c * ∫ᴹ {RQ} lebR (_∘H_ S h (scaleRH c)) ≈ ∫ᴹ {RQ} lebR h
