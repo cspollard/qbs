@@ -950,13 +950,13 @@ Literature and route: `docs/UniquenessLit.md`. The theorem replaces the deferred
 
 **Modules (skeleton written 2026-11-02 on branch `uniq`; holes per module in brackets).**  The headers state the route;
 the top-level statements are the contract.
-1. `Borel/Cells` [8]: `Blk k`, `Cell k w`, `Top`, `words n`; `cylBlk`, `cylCell`, `borelTop`; disjointness
+1. `Borel/Cells` [done]: `Blk k`, `Cell k w`, `Top`, `words n`; `cylBlk`, `cylCell`, `borelTop`; disjointness
    (`blk-unique`, `top-blk`, `cell-unique`), `cell-words`, and `cyl-refine` (every cylinder is decided on the cells of
    some depth inside a block).  Combinatorics only, no `lem`.
 2. `Analysis/UniquenessWeighted` [5]: the weighted pushforward `Jw m mw mx g mg = ∫ w(r) · g(x r) dm`;
    `wM` (mass ≤ 1 gives a `Measure`), `I-wM`; `uniqW-le1`, `uniqW-fun`, `uniqW` (equal finite mass and agreement on
    cylinders give agreement on every `Meas` g).
-3. `Continuous/Intervals` [8]: `Ge` (the order of cuts at level `Set`), `InIv`, `InInf`, `ge-borel`; the tests
+3. `Continuous/Intervals` [done]: `Ge` (the order of cuts at level `Set`), `InIv`, `InInf`, `ge-borel`; the tests
    `χIv a b`, `χInf` with their `-in`/`-out` laws; `dy n m = m·½ⁿ`, `χI n m`, `χI-split`.
 4. `Continuous/UniquenessR` [7]: `χR` (indicator test of a Borel set of `ℛ = Probes.ℛQ S`), `χR-pt`, `onTop`,
    `onBlk`, `∫ᴹ-split`; under `agreeCell`, `finBlk`, `agreeTop`: `agree-blkCyl`, `agree-blk`, `agree-top`,
@@ -985,6 +985,17 @@ the top-level statements are the contract.
 - New helpers: `Analysis/DigitAlg` (4.1 s, 0.45 GB), `Continuous/DigitCut` (5.8 s, 0.64 GB),
   `Continuous/DigitStream` (7.3 s, 0.68 GB), `Continuous/DigitDecode` (6.4 s, 0.70 GB).  `DigitCode` itself:
   6.2 s, 0.69 GB.  Timings mine, through the progress overlay.
+
+**Outcome: `Borel/Cells` and `Continuous/Intervals` (2026-11-03, two agents in parallel, merged into `uniq`).**
+- All holes filled in both, contracts unchanged, no new modules.
+- `Cells`: no excluded middle.  `cyl-refine` takes the finite support of the cylinder (`cyl-fin`), decides it at a
+  canonical point of each cell (`dec-cyl`, by `Bool`) and transfers the answer to the whole cell.
+- `Intervals`: one helper `indH` builds a test from a Borel predicate; `ge-borel` is an intersection over the
+  rationals; `χI-split` via `split-iv` and the halving of dyadic points from `DigitAlg`.
+- The cleanup of the Digit modules (long declarations) is also merged; the helper `ur` was renamed `unRun`.
+- Timings (measurement agent, two runs, load ≈ 3.7): `Cells` 3.9 s, 0.54 GB; `Intervals` 4.8 s, 0.69 GB; `DigitAlg`
+  3.1 s, 0.45 GB; `DigitCut` 4.6 s, 0.67 GB; `DigitStream` 6.6 s, 0.85 GB; `DigitDecode` 6.4 s, 0.82 GB;
+  `DigitCode` 6.2 s, 0.90 GB.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
