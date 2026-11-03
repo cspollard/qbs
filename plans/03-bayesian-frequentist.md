@@ -1202,12 +1202,12 @@ of two variables reduce to iterated integrals.
   `Fub.fubiniᴹ`.  Rectangles, marginals and congruence follow; on the plane: iterated integrals, area, swap.
 
 **Modules.**
-- 20 `Continuous/Monus`: `monus`, `monus-cong/mono/anti/add/zero/+`, `subH`, `rsubH`.
-- 21 `Continuous/RealShift`: `shiftRH`, `shift-inl/inr-le/inr-gt`, `∫-reflIv`, `∫-shiftR`, `shiftNegRH`,
+- [done] 20 `Continuous/Monus`: `monus`, `monus-cong/mono/anti/add/zero/+`, `subH`, `rsubH`.
+- [done] 21 `Continuous/RealShift`: `shiftRH`, `shift-inl/inr-le/inr-gt`, `∫-reflIv`, `∫-shiftR`, `shiftNegRH`,
   `∫-shiftNegR`.
-- 22 `Inference/GaussShift`: `gaussμ`, `gaussμ⁻`, `∫-gaussμ(⁻)`, `sym-X`, `fin-X`, `shift-id`, `mean`, `mean⁻`.
-- 23 `Continuous/Product`: `prodPre`, `intL/intR(-pt)`, `∫-prod`, `∫-prod′`, `∫-rect`, `marg₁/₂`, `prod-cong`.
-- 24 `Continuous/LebPlane`: `leb2`, `∫-leb2(′)`, `∫-leb2-rect`, `rectH`, `area`, `swapH`, `∫-swap`.
+- [done] 22 `Inference/GaussShift`: `gaussμ`, `gaussμ⁻`, `∫-gaussμ(⁻)`, `sym-X`, `fin-X`, `shift-id`, `mean`, `mean⁻`.
+- [done] 23 `Continuous/Product`: `prodPre`, `intL/intR(-pt)`, `∫-prod`, `∫-prod′`, `∫-rect`, `marg₁/₂`, `prod-cong`.
+- [done] 24 `Continuous/LebPlane`: `leb2`, `∫-leb2(′)`, `∫-leb2-rect`, `rectH`, `area`, `swapH`, `∫-swap`.
 
 **Order of agents.** One agent on 20 → 21 → 22, in parallel with one agent on 23 → 24.  Estimated sizes: 20 ≈ 150 lines,
 21 ≈ 300 (the riskiest), 22 ≈ 150, 23 ≈ 150, 24 ≈ 120.
@@ -1221,3 +1221,19 @@ of two variables reduce to iterated integrals.
 - 23: `intL` must be a morphism, i.e. `Fub.Gs` (built from `∫ᶠ` and `τH`); `intL-pt` is then `τ-int`.
 - Deferred: the standard Gaussian pair N(0, I₂) with E[X² + Y²] = 2, uniqueness of products on rectangles, signed
   expectations with dominated convergence.
+
+**Outcome (2026-11-03).** All five modules hole-free; no statement changed.
+- `Monus`: `monus x t` is a direct cut (q < 0, or t rationally bounded and some q′ > q with q′ + s ∈ x for all s ∈ t),
+  not `diffC t (x ⊔ t)`, which would make `monus-anti`/`monus-zero` false for unbounded t; `monus-diffC` relates the
+  two.  `monus-zero` by an Archimedean argument (`closure`, `no-shift`).
+- `RealShift`: `shiftRH = copair (inlH ∘ shiftH t) (gH t)`, where `gH t` picks by excluded middle and glues
+  `map-random` on the Borel set {α ≤ t}.  Helper modules `RealShiftNull` (indicators of {x ≤ c} and its complement,
+  the points 0 and t are null, `gt-shift`) and `RealShiftRefl` (h ↦ ∫_{[0,t)} h(t ∸ x) + ∫ h(x + t) is Lebesgue measure
+  by `leb-unique`, giving `∫-reflIv`).
+- `GaussShift`: finiteness from `Bnd (s · ∫ Xn)`; symmetry of N₀ via the reflection; `mean⁻` from `mean`'s key step by
+  reflection.
+- `Product`: `intL s g = fixH s (∫ᶠ g ∘ τH)`, `intR t g = fixH₂ t (∫ᶠ g ∘ σH)`; Fubini is `commA` and `fubiniᴹ`; helper
+  `cmul`.  `LebPlane`: `area` via `leb-Iv` and `cancel-bnd`; `∫-swap` from the two iterated forms.
+- Timings (orchestrator, sequential, load ≈ 3.2): `Monus` 7.2 s, 0.93 GB; `RealShiftNull` 10.5 s, 1.28 GB;
+  `RealShiftRefl` 10.7 s, 1.32 GB; `RealShift` 10.4 s, 1.39 GB; `GaussShift` 14.9 s, 1.56 GB (over the 1.5 GB line);
+  `Product` 6.7 s, 0.88 GB; `LebPlane` 8.4 s, 1.08 GB.
