@@ -43,6 +43,13 @@ module Product (lem : LEM₀) where
   open QBS
   open Hom
 
+  -- c · f integrates to c · ∫ f
+  cmul : ∀ {Z : QBS S} (p : C.Pre (XW Z)) c (f : Hom S Z WQ) → ∫ᴹ {Z} p (mulH {Z} (constW {Z} c) f) ≈ c * ∫ᴹ {Z} p f
+  cmul {Z} p c f = trans (J-cong (m p) {ψ {Z} p (mulH {Z} (constW {Z} c) f)} {λ r → c * ψ {Z} p f r}
+    (mψ {Z} p (mulH {Z} (constW {Z} c) f)) (Meas-⊗ {λ _ → c} {ψ {Z} p f} (Meas-const c) (mψ {Z} p f))
+    (λ r → trans (sym (*-assoc _ _ _)) (trans (*-cong (*-comm _ _) refl) (*-assoc _ _ _))))
+    (J-scale (m p) c {ψ {Z} p f} (mψ {Z} p f))
+
   module _ {X Y : QBS S} where
 
     XY : QBS S
@@ -64,13 +71,6 @@ module Product (lem : LEM₀) where
 
     intR-pt : ∀ t g x → map (intR t g) ⟨$⟩ x ≈ ∫ᴹ {Y} t (fixH {X} {Y} x g)
     intR-pt t g x = ∫ᴹ-σ {X} {Y} x t g
-
-    -- c · f integrates to c · ∫ f
-    cmul : ∀ {Z : QBS S} (p : C.Pre (XW Z)) c (f : Hom S Z WQ) → ∫ᴹ {Z} p (mulH {Z} (constW {Z} c) f) ≈ c * ∫ᴹ {Z} p f
-    cmul {Z} p c f = trans (J-cong (m p) {ψ {Z} p (mulH {Z} (constW {Z} c) f)} {λ r → c * ψ {Z} p f r}
-      (mψ {Z} p (mulH {Z} (constW {Z} c) f)) (Meas-⊗ {λ _ → c} {ψ {Z} p f} (Meas-const c) (mψ {Z} p f))
-      (λ r → trans (sym (*-assoc _ _ _)) (trans (*-cong (*-comm _ _) refl) (*-assoc _ _ _))))
-      (J-scale (m p) c {ψ {Z} p f} (mψ {Z} p f))
 
     rect-pt : ∀ s (g : Hom S X WQ) (h : Hom S Y WQ) y →
       map (intL s (mulH {XY} (_∘H_ S g (fstQ S)) (_∘H_ S h (sndQ S)))) ⟨$⟩ y ≈ map (mulH {Y} (constW {Y} (∫ᴹ {X} s g)) h) ⟨$⟩ y
