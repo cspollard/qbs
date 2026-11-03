@@ -1187,3 +1187,37 @@ Goal: stop proving measurability by hand.  A function on the cuts that is monoto
 - 19: `Sym.symDist` is abstract; `push-sym` must go through `∫-sym` only.
 - Deferred: translation x ↦ x + t on RQ (needs gluing the pieces of [0, t) and the cut difference), N(μ, σ²),
   products ℝ × ℝ, signed expectations with dominated convergence.
+
+## Translation and products (planned 2026-11-03; skeleton first, then agents; branch `shift`)
+
+Goal: the Gaussian N(μ, s²) for every finite μ, and product measures with Fubini, so that expectations of functions
+of two variables reduce to iterated integrals.
+
+**Route.**
+- Translation: truncated subtraction of cuts gives the tests x ↦ x ∸ t and x ↦ t ∸ x (`MonoTest`).  The translation
+  x ↦ x + t of RQ maps `inl x` to `inl (x + t)`.  It maps `inr x` to `inl (t ∸ x)` when x ≤ t and to `inr (x ∸ t)`
+  otherwise; the case split is by excluded middle, and on random elements by the Borel set {β ≤ t}.  Invariance of
+  `lebR` splits into three half-line pieces: `LebesgueShift.∫-shift` twice, plus the reflection of [0, t).
+- Products: `prodPre s t = join (mapM τ (σ (s , t)))`; Fubini in both orders comes from `SFiniteCommute.commA` and
+  `Fub.fubiniᴹ`.  Rectangles, marginals and congruence follow; on the plane: iterated integrals, area, swap.
+
+**Modules.**
+- 20 `Continuous/Monus`: `monus`, `monus-cong/mono/anti/add/zero/+`, `subH`, `rsubH`.
+- 21 `Continuous/RealShift`: `shiftRH`, `shift-inl/inr-le/inr-gt`, `∫-reflIv`, `∫-shiftR`, `shiftNegRH`,
+  `∫-shiftNegR`.
+- 22 `Inference/GaussShift`: `gaussμ`, `gaussμ⁻`, `∫-gaussμ(⁻)`, `sym-X`, `fin-X`, `shift-id`, `mean`, `mean⁻`.
+- 23 `Continuous/Product`: `prodPre`, `intL/intR(-pt)`, `∫-prod`, `∫-prod′`, `∫-rect`, `marg₁/₂`, `prod-cong`.
+- 24 `Continuous/LebPlane`: `leb2`, `∫-leb2(′)`, `∫-leb2-rect`, `rectH`, `area`, `swapH`, `∫-swap`.
+
+**Order of agents.** One agent on 20 → 21 → 22, in parallel with one agent on 23 → 24.  Estimated sizes: 20 ≈ 150 lines,
+21 ≈ 300 (the riskiest), 22 ≈ 150, 23 ≈ 150, 24 ≈ 120.
+
+**Risks.**
+- 20: `diffC` needs t ⊑ b and a rational bound on t; b = x ⊔ t needs a max of cuts (`LowerRealsMin` has min only).
+- 21: `shiftRH`'s `map-random` glues pieces of a random element of RQ along a Borel set (`Colimits`, `LipTestAlg.
+  le-borel`); `∫-reflIv` may need `LebesgueInterval.leb-unique` on [0, t) with reflected intervals.  The point x = t
+  must be shown null, or absorbed by choosing ≤ versus < consistently.
+- 22: `sym-X` from `GaussScale.gauss-dens`, whose two halves are equal by `copairH` computing by `refl`.
+- 23: `intL` must be a morphism, i.e. `Fub.Gs` (built from `∫ᶠ` and `τH`); `intL-pt` is then `τ-int`.
+- Deferred: the standard Gaussian pair N(0, I₂) with E[X² + Y²] = 2, uniqueness of products on rectangles, signed
+  expectations with dominated convergence.
