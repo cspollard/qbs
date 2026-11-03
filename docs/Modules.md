@@ -211,7 +211,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | module | lines | hyp | purpose |
 |---|---|---|---|
 | `QBS.Continuous.BetaIntegral` | 192 | lem | The Beta integral for integer parameters under the uniform distribution: B(k,m) = ∫ uᵏ (1−u)ᵐ du,   (k+m+1)! · B(k,m) = k! · m!   (`beta-closed`, multiplied out, no division), and the conjugacy step (k+m+2) · B(k+1,m)... |
-| `QBS.Continuous.ChangeOfVariables` | 114 | lem | Monotone change of variables on the half-line with a derivative certificate (plan 03, "Change of variables"). |
+| `QBS.Continuous.ChangeOfVariables` | 169 | lem | Monotone change of variables on the half-line with a derivative certificate (plan 03, "Change of variables"). |
+| `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
