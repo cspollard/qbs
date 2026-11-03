@@ -1297,9 +1297,9 @@ a difference is stated by cross-adding (`SConv`).
   drop the cut, rearrange.
 
 **Modules.**
-- 29 `Continuous/ConvEps`: `EConv`, `conv-econv`, `econv-conv`, `SConv`, `sconv-pair`, `sconv-shift`.
-- 30 `Continuous/NullInf`: `finχ`, `infχ` with pointwise lemmas, `∫-infχ`, `∫-null`, `∫-fin-cut`, `∫-off-inf`.
-- 31 `Continuous/DominatedSigned`: `dct-signed`, `dct-signed-prob`.
+- [done] 29 `Continuous/ConvEps`: `EConv`, `conv-econv`, `econv-conv`, `SConv`, `sconv-pair`, `sconv-shift`.
+- [done] 30 `Continuous/NullInf`: `finχ`, `infχ` with pointwise lemmas, `∫-infχ`, `∫-null`, `∫-fin-cut`, `∫-off-inf`.
+- [done] 31 `Continuous/DominatedSigned`: `dct-signed`, `dct-signed-prob`.
 
 **Order of agents.** One agent on 29 and 30 (independent), then 31.  Estimated sizes: 29 ≈ 200 lines, 30 ≈ 200,
 31 ≈ 250.
@@ -1312,3 +1312,15 @@ a difference is stated by cross-adding (`SConv`).
   fallback: by excluded middle on d ≤ e, and on its failure derive e ≤ d by locatedness of bounded cuts
   (`near-sup-bnd`), or report.
 
+**Outcome (2026-11-03).** All three modules hole-free; no statement changed.
+- New helper module `Continuous/MonusAlg`: `BndQ` closure lemmas, `rat-bnd` (`BndQ` to `Bnd`), `cut-total` (any two
+  cuts are comparable, by excluded middle on a rational witness), `monus-le`, `monus-small`, `monus-swap`.  The
+  locatedness fallback for item 31 was not needed: `cut-total` gives the case split d ≤ e or e ≤ d directly.
+- `ConvEps` uses `Arch.arch` in place of `Fatou.approx` (stated under an implicit X there).
+- `NullInf`: `∫-infχ` by `zero-of` (k · E ≤ N for all k forces E ≈ 0); `∫-null` by `∫ᴹ-sup` on
+  [g = ∞] · (u ⊓ n); finiteness as "some n ∉ g x", Borel by `⋃` and complement.
+- `dct-signed` is proved directly from the integrated identity (∫ h⁺ + ∫ f⁻) + ∫ q ≈ (∫ h⁻ + ∫ f⁺) + ∫ p and
+  ∫ p, ∫ q ≤ ½ᵏ eventually; `sconv-pair` and `sconv-shift` are proved but unused.  `dct-signed-prob` is `dct-signed`
+  with g = N.
+- Timings (orchestrator, sequential): MonusAlg 6.5 s / 1.03 GB, ConvEps 7.3 s / 1.09 GB, NullInf 8.7 s / 1.07 GB,
+  DominatedSigned 7.8 s / 1.09 GB.
