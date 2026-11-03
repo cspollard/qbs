@@ -174,6 +174,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.LowerInverse` | 259 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
 | `QBS.Analysis.LowerReals` | 424 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
 | `QBS.Analysis.LowerRealsArch` | 162 | lem | The `Arch` structure (a half, tolerances 2⁻ⁿ, Archimedean closure, order cancellation, tails) on the extended non-negative reals as lower cuts of the rationals. |
+| `QBS.Analysis.LowerRealsInf` | 46 |  | Infima of sequences of lower cuts, and lim inf / lim sup of sequences (plan 03, "Dominated convergence"). |
 | `QBS.Analysis.LowerRealsMin` | 105 | lem | The minimum of two lower cuts is their intersection: the `Min` structure on the extended non-negative reals as lower cuts of the rationals. |
 | `QBS.Analysis.Meas` | 123 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |
 | `QBS.Analysis.MeasFun` | 223 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
@@ -226,6 +227,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DigitCut` | 50 | lem | Two facts about cuts that the digit code of `[0,∞]` needs (`Continuous/DigitCode`), both from `Analysis/ExpLower`: `natE (n+1)` and `m / 2ⁿ` are rational cuts, so a point is either above a dyadic threshold or below it. |
 | `QBS.Continuous.DigitDecode` | 203 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
 | `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
+| `QBS.Continuous.Dominated` | 68 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
@@ -234,6 +236,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FTCDyadic` | 140 | lem | The fundamental theorem of calculus on every dyadic interval, from `Deriv` data (plan 03, "Change of variables"). |
 | `QBS.Continuous.FTCDyadicPiece` | 126 | lem | The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`, plan 03, "Change of variables"). |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
+| `QBS.Continuous.Fatou` | 95 | lem | Downward monotone convergence and Fatou's lemma in both directions, for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 62 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
@@ -295,6 +298,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Strong` | 188 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
+| `QBS.Continuous.SupTest` | 72 | lem | Pointwise suprema, infima, lim inf and lim sup of sequences of tests on any X, and monotone convergence for `∫ᴹ` (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.TailFTC` | 173 | lem | A derivative-free fundamental theorem of calculus in tail form, on the unit interval (part 2: the measure side). |
 | `QBS.Continuous.TailFTCExp` | 89 | lem | Validation of `Continuous/TailFTC`: `∫₀¹ e^{−u} du + e^{−1} = 1` (as `HalfLineUnit.I-negExp-unit`), with h = G = e^{−·}. |
 | `QBS.Continuous.TailFTCExpHalf` | 91 | lem | Validation of `Continuous/TailFTCHalfLine`: `∫₀^∞ e^{−x} dλ = 1` from the certificate for h = G = e^{−·} on each [n, n+1] (the same pointwise exp algebra as `TailFTCExp`, at the shifted points) and the tail `e^{−N} ≤ ... |
