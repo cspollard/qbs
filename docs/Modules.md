@@ -248,7 +248,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueDyadic` | 219 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueDyadicAlg` | 237 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
 | `QBS.Continuous.LebesgueDyadicNat` | 68 |  | Natural-number arithmetic for the dyadic cells of `LebesgueDyadic`: the cell `[j·2ⁿ, (j+1)·2ⁿ)` of indices `m`, its two halves (the cells `2j` and `2j+1` at level n, for `p = 2ⁿ`), the level-0 cell, and the unique `k ... |
-| `QBS.Continuous.LebesgueInterval` | 45 | lem | Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueInterval` | 82 | lem | Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueIntervalAlg` | 120 | lem | The mass of an interval under a measure whose dyadic cells have mass ½ⁿ (plan 03, "Uniqueness on the half-line"), the engine of `LebesgueInterval.leb-Iv`. |
 | `QBS.Continuous.LebesgueScale` | 55 | lem | Scaling of Lebesgue measure on [0,∞) by every finite positive constant (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueShift` | 61 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |

@@ -967,7 +967,7 @@ the top-level statements are the contract.
    `agreeInf`: `uniqPush`, `uniqWQ : μ ≈ᴹ ν`.
 7. `Continuous/LebesgueDyadic` [done]: `fair-top`, `cell-in`, `cell-out` (law of `j + expansion r` on dyadic intervals),
    `leb-χI`, `leb-inf`, `leb-fin`.
-8. `Continuous/LebesgueInterval` [2]: `leb-Iv : a + ∫ lebPre χ[a,b) ≈ b`; `leb-unique` (interval masses
+8. `Continuous/LebesgueInterval` [done]: `leb-Iv : a + ∫ lebPre χ[a,b) ≈ b`; `leb-unique` (interval masses
    characterise Lebesgue measure).
 9. `Continuous/LebesgueScale` [4]: `scaledLeb`, `∫ᴹ-scaledLeb`, `scaled-Iv`, `∫-scale : c · ∫ h(cx) ≈ ∫ h`.
 10. `Continuous/LebesgueShift` [4]: `shiftH`, `shiftedLeb`, `∫ᴹ-shiftedLeb`, `shifted-Iv`,
@@ -1024,6 +1024,14 @@ the top-level statements are the contract.
 - All 6 holes filled, contract unchanged, no new lemmas.  `pushBlk` reads `Blk k` as `Cell k []` and transports the
   index along `k * 2 ^ 0 + 0 ≡ k`; `finBlk` transports `Bnd` along `pushBlk` with `≤-resp`.
 - Timing (measurement agent, two runs, load ≈ 4): 7.0 s, 0.91 GB.
+
+**Outcome: `Continuous/LebesgueInterval` (2026-11-03, merged into `uniq`).**
+- Both holes filled, contract unchanged.  New helper `LebesgueIntervalAlg`, generic in a pre-measure whose dyadic
+  cells have mass ½ⁿ: `F b = ∫ χ[0,b)` is monotone, `F (m/2ⁿ) ≈ m/2ⁿ` by induction on m, and `F b ≈ b` for bounded b
+  from the dyadic points either side of b with `arch`, so no monotone convergence was needed.  `leb-unique` is
+  `uniqWQ` with the left endpoint cancelled by `cancel-bnd`.
+- Timings (measurement agent, two runs, load ≈ 4): `LebesgueIntervalAlg` 7.0 s, 1.00 GB; `LebesgueInterval` 7.5 s,
+  1.04 GB.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
