@@ -202,7 +202,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Unbounded` | 438 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
 | `QBS.Analysis.UnboundedLowerReals` | 17 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 117 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.UniquenessWeighted` | 77 | lem | Uniqueness for finite weighted pushforwards on Cantor space (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Analysis.UniquenessWeighted` | 144 | lem | Uniqueness for finite weighted pushforwards on Cantor space (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Analysis.Variance` | 246 | lem | Variance of a signed random variable (skeleton: holes first). |
 
 ## Continuous model
@@ -245,7 +245,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
-| `QBS.Continuous.LebesgueDyadic` | 76 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueDyadic` | 219 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.LebesgueDyadicAlg` | 237 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
+| `QBS.Continuous.LebesgueDyadicNat` | 68 |  | Natural-number arithmetic for the dyadic cells of `LebesgueDyadic`: the cell `[j·2ⁿ, (j+1)·2ⁿ)` of indices `m`, its two halves (the cells `2j` and `2j+1` at level n, for `p = 2ⁿ`), the level-0 cell, and the unique `k ... |
 | `QBS.Continuous.LebesgueInterval` | 45 | lem | Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueScale` | 55 | lem | Scaling of Lebesgue measure on [0,∞) by every finite positive constant (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueShift` | 61 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line"). |

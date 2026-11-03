@@ -953,7 +953,7 @@ the top-level statements are the contract.
 1. `Borel/Cells` [done]: `Blk k`, `Cell k w`, `Top`, `words n`; `cylBlk`, `cylCell`, `borelTop`; disjointness
    (`blk-unique`, `top-blk`, `cell-unique`), `cell-words`, and `cyl-refine` (every cylinder is decided on the cells of
    some depth inside a block).  Combinatorics only, no `lem`.
-2. `Analysis/UniquenessWeighted` [5]: the weighted pushforward `Jw m mw mx g mg = ∫ w(r) · g(x r) dm`;
+2. `Analysis/UniquenessWeighted` [done]: the weighted pushforward `Jw m mw mx g mg = ∫ w(r) · g(x r) dm`;
    `wM` (mass ≤ 1 gives a `Measure`), `I-wM`; `uniqW-le1`, `uniqW-fun`, `uniqW` (equal finite mass and agreement on
    cylinders give agreement on every `Meas` g).
 3. `Continuous/Intervals` [done]: `Ge` (the order of cuts at level `Set`), `InIv`, `InInf`, `ge-borel`; the tests
@@ -965,7 +965,7 @@ the top-level statements are the contract.
    `code-pt`, `decode : Hom S ℛ WQ`, `decode-code`, `code-cell`, `code-top`.
 6. `Continuous/UniquenessWQ` [6, headline]: `test-factor`, `pushCell`, `pushBlk`, `pushTop`; under `agreeI`, `finI`,
    `agreeInf`: `uniqPush`, `uniqWQ : μ ≈ᴹ ν`.
-7. `Continuous/LebesgueDyadic` [6]: `fair-top`, `cell-in`, `cell-out` (law of `j + expansion r` on dyadic intervals),
+7. `Continuous/LebesgueDyadic` [done]: `fair-top`, `cell-in`, `cell-out` (law of `j + expansion r` on dyadic intervals),
    `leb-χI`, `leb-inf`, `leb-fin`.
 8. `Continuous/LebesgueInterval` [2]: `leb-Iv : a + ∫ lebPre χ[a,b) ≈ b`; `leb-unique` (interval masses
    characterise Lebesgue measure).
@@ -996,6 +996,19 @@ the top-level statements are the contract.
 - Timings (measurement agent, two runs, load ≈ 3.7): `Cells` 3.9 s, 0.54 GB; `Intervals` 4.8 s, 0.69 GB; `DigitAlg`
   3.1 s, 0.45 GB; `DigitCut` 4.6 s, 0.67 GB; `DigitStream` 6.6 s, 0.85 GB; `DigitDecode` 6.4 s, 0.82 GB;
   `DigitCode` 6.2 s, 0.90 GB.
+
+**Outcome: `Analysis/UniquenessWeighted` and `Continuous/LebesgueDyadic` (2026-11-03, two agents in parallel, merged).**
+- All holes filled in both, contracts unchanged.
+- `UniquenessWeighted`: `wM` is the pushforward of a density measure (`Density.densM`); finite mass is scaled by `hp N`
+  and unscaled by `pw N` (no additive cancellation); `uniqW` via `Density.Approx` truncations and `⨆-cong`.
+- `LebesgueDyadic`: `fair-top` by induction with `FirstBit` (no cylinders) and `Arch.arch`; `cell-in`/`cell-out` by
+  induction on n with the first-bit step `χI (n+1) m (shiftPt j (b∷r)) ≈ χI n m (shiftPt (2j+b) r)`; the cell
+  `[j+1, j+2)` meets `j + expansion r` only at the all-true point.  New helpers `LebesgueDyadicAlg` (cut facts) and
+  `LebesgueDyadicNat` (ℕ arithmetic).
+- Lesson (agent report): a `with` on a term mentioning cuts, and unannotated binders or `_` arguments to `χIv-in`/`-out`,
+  blew the 3 GB heap; use helper lemmas with projections and explicit arguments.
+- Timings (measurement agent, two runs, load ≈ 4): `UniquenessWeighted` 5.5 s, 0.72 GB; `LebesgueDyadicNat` 3.0 s,
+  0.44 GB; `LebesgueDyadicAlg` 6.4 s, 0.87 GB; `LebesgueDyadic` 7.6 s, 1.00 GB.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
