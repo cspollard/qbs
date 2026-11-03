@@ -1114,3 +1114,49 @@ lines (`piece` is the riskiest), 12 ≈ 300, 13 ≈ 150.
   by `fair-top` with monotone convergence, not by a bound on f.  Fallback: prove it for j = 0 and move by `∫-shift`.
 - Two `hp`s: `FTCDyadic` uses `Arch R`'s, `Intervals.dy` uses `Half`'s; `hp-dy` is where they meet.
 - `gc-to`/`gc-from` are stated with `_≤_` (`Set₁`); `χIv-ψ` needs them at `Ge`, as in `LebesgueScaleAlg`.
+
+## Tests from function properties, and the real line (planned 2026-11-03; skeleton first, then agents; branch `rq`)
+
+Goal: stop proving measurability by hand.  A function on the cuts that is monotone, or locally Lipschitz, or carries
+`Deriv` data, is a test automatically; change of variables then takes plain functions.  On the whole real line
+`RQ = WQ +Q WQ`: uniqueness from the two halves, scaling and reflection, and N(0, s²) as a pushforward of `gaussR`.
+
+**Route.**
+- Monotone F: the threshold set {x | q ∈ F x} is an up-set (down-set), so with excluded middle it is a countable union
+  of {x ≥ d} for rationals d (`Intervals.ge-borel`), plus possibly the single point inf U.
+- Locally Lipschitz F: q ∈ F x on [0, N+1] iff some dyadic cell ∋ x has q + c/2ⁿ ∈ F(m/2ⁿ); countable union of cells
+  intersected with decided conditions, plus {∞}.  `Deriv` data gives local Lipschitz bounds for G, h, k
+  (`Ct1`/`Ct2`, `LpU`/`LpD`).
+- RQ: a measure is determined by its halves `restrL`/`restrR` (reweight by the summand indicator, fold onto WQ),
+  because every test is the sum of its halves (`∫-split`).  `lebR-unique` reduces to `leb-unique` on each half.
+- Scaling on RQ is `∫-scale` on each half; N(0, s²) integrates like the symmetric density `scD phiH` (`push-sym`).
+
+**Modules (skeleton on `rq`).**
+14. `Continuous/MonoTest`: `Meas-mono`, `monoH F cF mF`, `Meas-anti`, `antiH`.
+15. `Continuous/LipTest`: `LocLip`, `Meas-lip`, `lipH`; from `dv : ∀ N → Deriv (N+1) G h k`: `deriv-cgG/h/k`,
+    `deriv-lipG/h/k`, `derivH`, `liphH`, `lipkH`.
+16. `Continuous/ChangeOfVariablesFn` (imports 14, 15, `ChangeOfVariables`): functions Φ, Ψ, k with the hypotheses of
+    `ChangeOfVariables`; `Ψ-mono`, `Ψ-cong`, `φH`, `ψH`, `φ′H`, `covF-inv`, `covF`.
+17. `Continuous/UniquenessRQ`: `foldH`, `oneL`, `oneR`, `restrL`, `restrR`, `∫-restrL`, `∫-restrR`, `∫-split`,
+    `uniqRQ`, `restrL-lebR`, `restrR-lebR`, `lebR-unique`.
+18. `Continuous/RealScale`: `scaleRH c`, `reflRH`, `∫-scaleR`, `∫-reflR`.
+19. `Inference/GaussScale` (imports 18, `ScaleDensity`, `GaussReal`): `scDs`, `scD-int`, `push-sym`, `gaussσ`,
+    `gauss-dens`, `second : ∫ x² dN(0, s²) ≈ s²`.
+
+**Order of agents.** 14 ∥ 17, then 15 ∥ 18, then 16 ∥ 19.  Estimated sizes: 14 ≈ 250 lines, 15 ≈ 350 (the riskiest),
+16 ≈ 100, 17 ≈ 200, 18 ≈ 100, 19 ≈ 150.
+
+**Risks.**
+- 14: inf U of an up-set of cuts must be built as a cut (union of the rationals below every element of U); whether
+  inf U ∈ U is decided by excluded middle (`LEM₁` on a `Set₁` proposition).  `Meas` may want the threshold sets at
+  `Set` level (`Ge`), not `_≤_`.
+- 15: `LocLip` uses `_≤_`; the cell argument needs roundedness of F x (`Cut` rounded) and Bnd c.  If `Deriv` does not
+  bound G's increments directly, `deriv-lipG` goes through `Ct1`/`Ct2` with h, k ≤ c from `LpU`/`LpD`.  Fallback:
+  derive `deriv-lip*` from `D` fields one at a time in a helper module.
+- 16: the values of φ′ at ∞ in `LipTest.lipkH` and in `ChangeOfVariables` must agree; `ChangeOfVariables` takes φ′ as a
+  morphism, so `covF` is `cov` at `φH`, `ψH`, `φ′H` plus `Ψ-mono`/`Ψ-cong` from `gc-to`/`gc-from`.
+- 17: additivity of `∫ᴹ` on tests over RQ (Domination's `addH` is over WQ only); `copair` computes only on `inl`/`inr`,
+  and pointwise equalities on RQ need the coproduct's elimination (`Colimits`).
+- 19: `Sym.symDist` is abstract; `push-sym` must go through `∫-sym` only.
+- Deferred: translation x ↦ x + t on RQ (needs gluing the pieces of [0, t) and the cut difference), N(μ, σ²),
+  products ℝ × ℝ, signed expectations with dominated convergence.
