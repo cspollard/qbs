@@ -6,11 +6,11 @@
 -- finite points), and the morphisms are built by the rules: φ = `LipTest.derivH`, φ′ = `LipTest.lipkH`, and
 -- ψ = `MonoTest.monoH Ψ` (Ψ is increasing and respects ≈ by the Galois connection: `Ψ-mono`, `Ψ-cong`).  Then
 --   `covF : ∫ g(Φ x) k(x) dx ≈ ∫ g`   and   `covF-inv : ∫ h(Ψ y) dy ≈ ∫ h k`   for every test g, h.
---   Skeleton: holes first.
 module QBS.Continuous.ChangeOfVariablesFn where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ; suc)
+open import Data.Product.Base using (proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -31,7 +31,7 @@ open import QBS.Continuous.ChangeOfVariables using (module ChangeOfVariables)
 
 module ChangeOfVariablesFn (lem₁ : LEM₁) where
   open TailFTC lem₁ using (A; R)
-  open OmegaSemiring A using (_≈_; _≤_; 0#) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _≤_; 0#; ≤-refl; ≤-trans; ≤-antisym) renaming (Carrier to ∣A∣)
   open Exp A using (natE)
   open Bounded A using (Bnd)
   open AlgD A R using (Deriv)
@@ -54,10 +54,10 @@ module ChangeOfVariablesFn (lem₁ : LEM₁) where
 
     -- Ψ is increasing and respects ≈
     Ψ-mono : ∀ {x y} → x ≤ y → Ψ x ≤ Ψ y
-    Ψ-mono = ?
+    Ψ-mono {x} {y} x≤y = gc-from (Ψ x) y (≤-trans (gc-to (Ψ x) x ≤-refl) x≤y)
 
     Ψ-cong : ∀ {x y} → x ≈ y → Ψ x ≈ Ψ y
-    Ψ-cong = ?
+    Ψ-cong e = ≤-antisym (Ψ-mono (proj₁ e)) (Ψ-mono (proj₂ e))
 
     φH ψH φ′H : Hom S WQ WQ
     φH = derivH Φ (λ _ → 0#) k dv
@@ -65,7 +65,7 @@ module ChangeOfVariablesFn (lem₁ : LEM₁) where
     φ′H = lipkH Φ (λ _ → 0#) k dv
 
     covF-inv : ∀ (h : Hom S WQ WQ) → ∫ᴹ {WQ} lebPre (_∘H_ S h ψH) ≈ ∫ᴹ {WQ} lebPre (mulH {WQ} φ′H h)
-    covF-inv = ?
+    covF-inv = cov-inv φH ψH φ′H dv gc-to gc-from φψ ψ-fin
 
     covF : ∀ (g : Hom S WQ WQ) → ∫ᴹ {WQ} lebPre (mulH {WQ} φ′H (_∘H_ S g φH)) ≈ ∫ᴹ {WQ} lebPre g
-    covF = ?
+    covF = cov φH ψH φ′H dv gc-to gc-from φψ ψ-fin
