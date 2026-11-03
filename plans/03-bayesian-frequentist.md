@@ -1132,16 +1132,27 @@ Goal: stop proving measurability by hand.  A function on the cuts that is monoto
 - Scaling on RQ is `∫-scale` on each half; N(0, s²) integrates like the symmetric density `scD phiH` (`push-sym`).
 
 **Modules (skeleton on `rq`).**
-14. `Continuous/MonoTest`: `Meas-mono`, `monoH F cF mF`, `Meas-anti`, `antiH`.
+14. `Continuous/MonoTest` [done]: `Meas-mono`, `monoH F cF mF`, `Meas-anti`, `antiH`.
 15. `Continuous/LipTest`: `LocLip`, `Meas-lip`, `lipH`; from `dv : ∀ N → Deriv (N+1) G h k`: `deriv-cgG/h/k`,
     `deriv-lipG/h/k`, `derivH`, `liphH`, `lipkH`.
 16. `Continuous/ChangeOfVariablesFn` (imports 14, 15, `ChangeOfVariables`): functions Φ, Ψ, k with the hypotheses of
     `ChangeOfVariables`; `Ψ-mono`, `Ψ-cong`, `φH`, `ψH`, `φ′H`, `covF-inv`, `covF`.
-17. `Continuous/UniquenessRQ`: `foldH`, `oneL`, `oneR`, `restrL`, `restrR`, `∫-restrL`, `∫-restrR`, `∫-split`,
+17. `Continuous/UniquenessRQ` [done]: `foldH`, `oneL`, `oneR`, `restrL`, `restrR`, `∫-restrL`, `∫-restrR`, `∫-split`,
     `uniqRQ`, `restrL-lebR`, `restrR-lebR`, `lebR-unique`.
 18. `Continuous/RealScale`: `scaleRH c`, `reflRH`, `∫-scaleR`, `∫-reflR`.
 19. `Inference/GaussScale` (imports 18, `ScaleDensity`, `GaussReal`): `scDs`, `scD-int`, `push-sym`, `gaussσ`,
     `gauss-dens`, `second : ∫ x² dN(0, s²) ≈ s²`.
+
+**Outcome 14, 17 (2026-11-03, merged into `rq`; no holes, contracts unchanged).**
+- `MonoTest`: helper `MonoTestAlg.up-borel` (any ≈-respecting up-closed V : ∣A∣ → Set has Borel preimages).  Not the
+  inf-U route: E = ⋂ V as a set of rationals; V agrees with {E ⊆ x} except where x = E as sets, where V is a constant
+  P decided by `lem₁`; {E ⊆ h c} and {h c ⊆ E} are countable intersections (`all-enum`).  `Meas-anti` uses the
+  complement and double negation.
+- `UniquenessRQ`: helper `UniquenessRQAlg` (`addX`, `∫ᴹ-addX`: `Domination.addH`/`∫ᴹ-add` for any X); pointwise
+  equalities on RQ by splitting on `inj₁`/`inj₂`.  `lebR-unique`'s `where` block was lifted to top-level lemmas
+  (`inf-sp`, `infL`, `infR`, …) to keep longcheck at 35.
+- Timings (orchestrator, sequential, load ≈ 4.3): `MonoTestAlg` 4.1 s, 0.57 GB; `MonoTest` 4.7 s, 0.68 GB;
+  `UniquenessRQAlg` 4.9 s, 0.70 GB; `UniquenessRQ` 9.2 s, 1.27 GB.
 
 **Order of agents.** 14 ∥ 17, then 15 ∥ 18, then 16 ∥ 19.  Estimated sizes: 14 ≈ 250 lines, 15 ≈ 350 (the riskiest),
 16 ≈ 100, 17 ≈ 200, 18 ≈ 100, 19 ≈ 150.
