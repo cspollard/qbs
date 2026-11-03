@@ -253,7 +253,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
-| `QBS.Continuous.LebPlane` | 80 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
+| `QBS.Continuous.LebPlane` | 106 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
 | `QBS.Continuous.LebesgueDyadic` | 219 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueDyadicAlg` | 237 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
 | `QBS.Continuous.LebesgueDyadicNat` | 68 |  | Natural-number arithmetic for the dyadic cells of `LebesgueDyadic`: the cell `[j·2ⁿ, (j+1)·2ⁿ)` of indices `m`, its two halves (the cells `2j` and `2j+1` at level n, for `p = 2ⁿ`), the level-0 cell, and the unique `k ... |
@@ -271,7 +271,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.MonoTestAlg` | 117 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
 | `QBS.Continuous.Monus` | 59 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x (plan 03, "Translation and products"). |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
-| `QBS.Continuous.Product` | 86 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
+| `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
