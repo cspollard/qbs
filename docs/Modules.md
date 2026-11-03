@@ -62,7 +62,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.PushforwardExpectation` | 84 | lem | Expectations of pushforwards are expectations of composites, through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
-| `QBS.Inference.ScaleDensity` | 124 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables"). |
+| `QBS.Inference.ScaleDensity` | 125 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables"). |
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 97 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
@@ -227,7 +227,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
 | `QBS.Continuous.ExtNatModel` | 25 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
-| `QBS.Continuous.FTCDyadic` | 88 | lem | The fundamental theorem of calculus on every dyadic interval, from `Deriv` data (plan 03, "Change of variables"). |
+| `QBS.Continuous.FTCDyadic` | 140 | lem | The fundamental theorem of calculus on every dyadic interval, from `Deriv` data (plan 03, "Change of variables"). |
+| `QBS.Continuous.FTCDyadicPiece` | 126 | lem | The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`, plan 03, "Change of variables"). |
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 62 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
