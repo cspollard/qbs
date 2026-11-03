@@ -963,7 +963,7 @@ the top-level statements are the contract.
    `uniqR : μ ≈ᴹ ν`.
 5. `Continuous/DigitCode` [done]: `val`, `digits`, `digits-cong`, `meas-digits`, `code : Hom S WQ ℛ`,
    `code-pt`, `decode : Hom S ℛ WQ`, `decode-code`, `code-cell`, `code-top`.
-6. `Continuous/UniquenessWQ` [6, headline]: `test-factor`, `pushCell`, `pushBlk`, `pushTop`; under `agreeI`, `finI`,
+6. `Continuous/UniquenessWQ` [done, headline]: `test-factor`, `pushCell`, `pushBlk`, `pushTop`; under `agreeI`, `finI`,
    `agreeInf`: `uniqPush`, `uniqWQ : μ ≈ᴹ ν`.
 7. `Continuous/LebesgueDyadic` [done]: `fair-top`, `cell-in`, `cell-out` (law of `j + expansion r` on dyadic intervals),
    `leb-χI`, `leb-inf`, `leb-fin`.
@@ -1019,6 +1019,11 @@ the top-level statements are the contract.
 - The agent used the agda MCP (`agda_load_and_goals`, 1–2 s per reload, precise errors), but wrote proofs directly
   rather than through hole actions.
 - Timing (measurement agent, two runs, load ≈ 5): 7.8 s, 0.92 GB.
+
+**Outcome: `Continuous/UniquenessWQ` (2026-11-03, merged into `uniq`): the headline theorem is proved.**
+- All 6 holes filled, contract unchanged, no new lemmas.  `pushBlk` reads `Blk k` as `Cell k []` and transports the
+  index along `k * 2 ^ 0 + 0 ≡ k`; `finBlk` transports `Bnd` along `pushBlk` with `≤-resp`.
+- Timing (measurement agent, two runs, load ≈ 4): 7.0 s, 0.91 GB.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.

@@ -288,7 +288,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformSample` | 125 | lem | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 159 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.UniquenessR` | 326 | lem | Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form (plan 03, "Uniqueness on the half-line"). |
-| `QBS.Continuous.UniquenessWQ` | 69 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`). |
+| `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`). |
 | `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
 
 ## Examples
