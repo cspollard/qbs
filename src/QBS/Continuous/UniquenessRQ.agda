@@ -116,33 +116,41 @@ module UniquenessRQ (lem₁ : LEM₁) where
                    (∫ᴹ-cong {WQ} lebPre {_∘H_ S (copairH zeroW g) inrH} {g} (λ x → refl)))
       (+-identityˡ _)))
 
+  -- no mass at ±∞ on RQ gives no mass at ∞ on either half
+  module _ (μ : Pre (XW RQ)) (hinf : ∫ᴹ {RQ} μ (copairH χInf χInf) ≈ 0#) where
+    inf-sp : ∫ᴹ {RQ} μ (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW)
+       + ∫ᴹ {RQ} μ (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ≈ 0#
+    inf-sp = trans (sym (∫-split μ (copairH χInf χInf))) hinf
+
+    inf-ptL : ∀ x → map (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW) ⟨$⟩ x ≈ map (copairH χInf zeroW) ⟨$⟩ x
+    inf-ptL (inj₁ a) = refl
+    inf-ptL (inj₂ b) = refl
+
+    inf-ptR : ∀ x → map (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ⟨$⟩ x ≈ map (copairH zeroW χInf) ⟨$⟩ x
+    inf-ptR (inj₁ a) = refl
+    inf-ptR (inj₂ b) = refl
+
+    inf-cL : ∫ᴹ {RQ} μ (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW) ≈ ∫ᴹ {RQ} μ (copairH χInf zeroW)
+    inf-cL = ∫ᴹ-cong {RQ} μ {copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW} {copairH χInf zeroW} inf-ptL
+
+    inf-cR : ∫ᴹ {RQ} μ (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ≈ ∫ᴹ {RQ} μ (copairH zeroW χInf)
+    inf-cR = ∫ᴹ-cong {RQ} μ {copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)} {copairH zeroW χInf} inf-ptR
+
+    infL : ∫ᴹ {WQ} (restrL μ) χInf ≈ 0#
+    infL = trans (∫-restrL μ χInf)
+      (≤-antisym (≤-trans (≤-reflexive (sym inf-cL)) (≤-trans ≤-+ʳ (≤-reflexive inf-sp))) 0-least)
+
+    infR : ∫ᴹ {WQ} (restrR μ) χInf ≈ 0#
+    infR = trans (∫-restrR μ χInf) (≤-antisym (≤-trans (≤-reflexive (sym inf-cR))
+      (≤-trans (≤-trans ≤-+ʳ (≤-reflexive (+-comm _ _))) (≤-reflexive inf-sp))) 0-least)
+
   -- Lebesgue measure on RQ from its interval masses
   lebR-unique : ∀ (μ : Pre (XW RQ)) →
     (∀ a b → a ≤ b → Bnd b → a + ∫ᴹ {RQ} μ (copairH (χIv a b) zeroW) ≈ b) →
     (∀ a b → a ≤ b → Bnd b → a + ∫ᴹ {RQ} μ (copairH zeroW (χIv a b)) ≈ b) →
     ∫ᴹ {RQ} μ (copairH χInf χInf) ≈ 0# → _≈ᴹ_ {RQ} μ lebR
   lebR-unique μ hL hR hinf = uniqRQ μ lebR
-    (λ f → trans (leb-unique (restrL μ) (λ a b le B → trans (+-cong refl (∫-restrL μ (χIv a b))) (hL a b le B)) infL f)
+    (λ f → trans (leb-unique (restrL μ) (λ a b le B → trans (+-cong refl (∫-restrL μ (χIv a b))) (hL a b le B)) (infL μ hinf) f)
                  (sym (restrL-lebR f)))
-    (λ f → trans (leb-unique (restrR μ) (λ a b le B → trans (+-cong refl (∫-restrR μ (χIv a b))) (hR a b le B)) infR f)
+    (λ f → trans (leb-unique (restrR μ) (λ a b le B → trans (+-cong refl (∫-restrR μ (χIv a b))) (hR a b le B)) (infR μ hinf) f)
                  (sym (restrR-lebR f)))
-    where
-      sp : ∫ᴹ {RQ} μ (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW)
-         + ∫ᴹ {RQ} μ (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ≈ 0#
-      sp = trans (sym (∫-split μ (copairH χInf χInf))) hinf
-      cL : ∫ᴹ {RQ} μ (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW) ≈ ∫ᴹ {RQ} μ (copairH χInf zeroW)
-      cL = ∫ᴹ-cong {RQ} μ {copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW} {copairH χInf zeroW} pt
-        where pt : ∀ x → map (copairH (_∘H_ S (copairH χInf χInf) inlH) zeroW) ⟨$⟩ x ≈ map (copairH χInf zeroW) ⟨$⟩ x
-              pt (inj₁ a) = refl
-              pt (inj₂ b) = refl
-      cR : ∫ᴹ {RQ} μ (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ≈ ∫ᴹ {RQ} μ (copairH zeroW χInf)
-      cR = ∫ᴹ-cong {RQ} μ {copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)} {copairH zeroW χInf} pt
-        where pt : ∀ x → map (copairH zeroW (_∘H_ S (copairH χInf χInf) inrH)) ⟨$⟩ x ≈ map (copairH zeroW χInf) ⟨$⟩ x
-              pt (inj₁ a) = refl
-              pt (inj₂ b) = refl
-      infL : ∫ᴹ {WQ} (restrL μ) χInf ≈ 0#
-      infL = trans (∫-restrL μ χInf)
-        (≤-antisym (≤-trans (≤-reflexive (sym cL)) (≤-trans ≤-+ʳ (≤-reflexive sp))) 0-least)
-      infR : ∫ᴹ {WQ} (restrR μ) χInf ≈ 0#
-      infR = trans (∫-restrR μ χInf) (≤-antisym (≤-trans (≤-reflexive (sym cR))
-        (≤-trans (≤-trans ≤-+ʳ (≤-reflexive (+-comm _ _))) (≤-reflexive sp))) 0-least)
