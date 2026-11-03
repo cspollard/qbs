@@ -948,65 +948,120 @@ Literature and route: `docs/UniquenessLit.md`. The theorem replaces the deferred
 - An agent may add lemmas and helper modules, and may change a statement only after reporting why. The top-level
   statements are the contract.
 
-**Modules (bottom-up; ← = imports).**
-1. `Analysis/UniquenessBounded` ← `Analysis/Uniqueness`.
-   - `scaleM`: a functional of mass ≤ 2ʲ, scaled by 2^{-j}, is a `Measure`.
-   - `uniq-bnd`: two such functionals with equal masses that agree on cylinders agree on every bounded `Fun`.
-   - `uniq-inf`: the same for every `FunInf`, via truncations and `Iinf-sup`.
-2. `Continuous/UniquenessR` ← 1, `Continuous/SFinite`, `Borel/Lead`. This is uniqueness on Cantor space `ℛQ` for
-   s-finite `Pre`, in the σ-finite form, along the `lead` partition.
-   - `restrict k μ`: the `Pre` restricted to `Bₖ = {true^k false …}`.
-   - `uniqR`, hypotheses:
-     - `agreeC : ∀ k {C} → Cyl C → ∫ᴹ μ (χ Bₖ · χ C) ≈ ∫ᴹ ν (χ Bₖ · χ C)`;
-     - `finB : ∀ k → Bnd (∫ᴹ μ (χ Bₖ))`;
-     - `agreeTop : ∫ᴹ μ χ{all-true} ≈ ∫ᴹ ν χ{all-true}`.
-   - `uniqR` conclusion: `μ ≈ᴹ ν`.
-   - The all-true point is handled directly: on it, the integral of g is `g(all-true) ·` its mass.
-3. `Continuous/Intervals` ← `Continuous/Weights`. These are interval tests on `WQ`:
-   - `χI n m : Hom S WQ WQ`, the indicator of `[m/2ⁿ, (m+1)/2ⁿ)`;
-   - `χInf`, the indicator of `{∞}`;
-   - `χI-split : χI n m ≈ χI (n+1) (2m) + χI (n+1) (2m+1)` pointwise.
-   - Measurability: `{ω | α ω ≥ q}` is Borel, as ⋂ of thresholds. This needs `LEM₁` to decide `x ≥ q`.
-4. `Continuous/DigitCode` ← 3, `Probes` (`ℛQ`), `Borel/Lead`, `Analysis/BinaryExpansion`. **The hard module.**
-   - `code : Hom S WQ ℛQ` and `decode : Hom S ℛQ WQ`.
-   - `decode-code : ∀ x → decode ⟨$⟩ (code ⟨$⟩ x) ≈ x`.
-   - `code-cyl`: for the cylinder `Bₖ ∩ {fractional prefix = c}`, its indicator composed with `code` is
-     `χI n (k·2ⁿ + c)` pointwise. Other cylinders are unions of these, or empty, or meet only all-true.
-   - `code-inf : code ∞ = all-true`.
-   - `code-top`: all-true's indicator composed with `code` is `χInf`.
-5. `Continuous/UniquenessWQ` ← 2, 4. **Headline.**
-   - `uniqWQ`, hypotheses:
-     - `agreeI : ∀ n m → ∫ᴹ μ (χI n m) ≈ ∫ᴹ ν (χI n m)`;
-     - `finI : ∀ k → Bnd (∫ᴹ μ (χI 0 k))`;
-     - `agreeInf : ∫ᴹ μ χInf ≈ ∫ᴹ ν χInf`.
-   - `uniqWQ` conclusion: `μ ≈ᴹ ν`.
-   - Proof: `h ≈ (h ∘ decode) ∘ code`, then `mapPre code`, then `uniqR`.
-   - Also `uniqWQ-dens` for `densDist` pairs, in density form.
-6. `Continuous/LebesgueDyadic` ← 3, `HalfLine`, `FirstBit`, `ExpansionCons`.
-   - `fair-top : fair{all-true} ≈ 0`.
-   - `exp-law n c : J fair (χ[c/2ⁿ,(c+1)/2ⁿ) ∘ expansion) ≈ 2^{-n}`, by induction on n with the first-bit split.
-   - `leb-χI : ∫ᴹ lebPre (χI n m) ≈ 2^{-n}`, `leb-inf : ∫ᴹ lebPre χInf ≈ 0`, and `leb-fin`.
-7. Payoffs, each expected to be short, given 5 and 6:
-   - `Continuous/LebesgueInterval`: `∫ᴹ lebPre χ[a,b) ≈ b − a` for cuts a ≤ b, a finite. This uses dyadic
-     approximation from inside and `J-⨆`.
-   - `Continuous/LebesgueScale`: `c · ∫ h(cx) ≈ ∫ h` for finite positive c. This subsumes `HalfLineScale`.
-   - `Continuous/LebesgueShift`: `∫ h(x + t) ≈ ∫_{[t,∞)} h`.
-   - `Continuous/ChangeOfVariables`: an increasing φ with a derivative certificate gives the pushforward density.
-     Interval masses come from `glue-D0`.
-   - Retire the particular agreements: re-derive `ExpPushforwardAgree` for every rate c.
+**Modules (skeleton written 2026-11-02 on branch `uniq`; holes per module in brackets).**  The headers state the route;
+the top-level statements are the contract.
+1. `Borel/Cells` [done]: `Blk k`, `Cell k w`, `Top`, `words n`; `cylBlk`, `cylCell`, `borelTop`; disjointness
+   (`blk-unique`, `top-blk`, `cell-unique`), `cell-words`, and `cyl-refine` (every cylinder is decided on the cells of
+   some depth inside a block).  Combinatorics only, no `lem`.
+2. `Analysis/UniquenessWeighted` [done]: the weighted pushforward `Jw m mw mx g mg = ∫ w(r) · g(x r) dm`;
+   `wM` (mass ≤ 1 gives a `Measure`), `I-wM`; `uniqW-le1`, `uniqW-fun`, `uniqW` (equal finite mass and agreement on
+   cylinders give agreement on every `Meas` g).
+3. `Continuous/Intervals` [done]: `Ge` (the order of cuts at level `Set`), `InIv`, `InInf`, `ge-borel`; the tests
+   `χIv a b`, `χInf` with their `-in`/`-out` laws; `dy n m = m·½ⁿ`, `χI n m`, `χI-split`.
+4. `Continuous/UniquenessR` [done]: `χR` (indicator test of a Borel set of `ℛ = Probes.ℛQ S`), `χR-pt`, `onTop`,
+   `onBlk`, `∫ᴹ-split`; under `agreeCell`, `finBlk`, `agreeTop`: `agree-blkCyl`, `agree-blk`, `agree-top`,
+   `uniqR : μ ≈ᴹ ν`.
+5. `Continuous/DigitCode` [done]: `val`, `digits`, `digits-cong`, `meas-digits`, `code : Hom S WQ ℛ`,
+   `code-pt`, `decode : Hom S ℛ WQ`, `decode-code`, `code-cell`, `code-top`.
+6. `Continuous/UniquenessWQ` [done, headline]: `test-factor`, `pushCell`, `pushBlk`, `pushTop`; under `agreeI`, `finI`,
+   `agreeInf`: `uniqPush`, `uniqWQ : μ ≈ᴹ ν`.
+7. `Continuous/LebesgueDyadic` [done]: `fair-top`, `cell-in`, `cell-out` (law of `j + expansion r` on dyadic intervals),
+   `leb-χI`, `leb-inf`, `leb-fin`.
+8. `Continuous/LebesgueInterval` [done]: `leb-Iv : a + ∫ lebPre χ[a,b) ≈ b`; `leb-unique` (interval masses
+   characterise Lebesgue measure).
+9. `Continuous/LebesgueScale` [done]: `scaledLeb`, `∫ᴹ-scaledLeb`, `scaled-Iv`, `∫-scale : c · ∫ h(cx) ≈ ∫ h`.
+10. `Continuous/LebesgueShift` [done]: `shiftH`, `shiftedLeb`, `∫ᴹ-shiftedLeb`, `shifted-Iv`,
+    `∫-shift : ∫ h(x+t) + ∫_{[0,t)} h ≈ ∫ h`.
+- Not yet stated: monotone change of variables with a derivative certificate (interval masses from `glue-D0`) and
+  re-deriving `ExpPushforwardAgree` for every rate; state them once 8 is filled.
+
+**Outcome: `Continuous/DigitCode` (2026-11-02, merged into `uniq`).**
+- All 9 holes filled; contract unchanged (`val` is now an alias of `DigitStream.val`).  No new statements were needed
+  in `Intervals` or `Cells`.
+- Route: a digit machine with states `un j` (unary part) and `fr d m` (x ∈ [m/2ᵈ, (m+1)/2ᵈ)) decides one threshold
+  `Ge thr x` per bit by excluded middle.  So `meas-digits` is induction on the position, each step a Boolean
+  combination of `ge-borel` sets.  `decode` is the run length plus the expansion of the rest, via `lead`.
+  `decode-code` needed no "sup of dyadic truncations" lemma, only `below-dec`, `arch` and `nat-big`.
+- New helpers: `Analysis/DigitAlg` (4.1 s, 0.45 GB), `Continuous/DigitCut` (5.8 s, 0.64 GB),
+  `Continuous/DigitStream` (7.3 s, 0.68 GB), `Continuous/DigitDecode` (6.4 s, 0.70 GB).  `DigitCode` itself:
+  6.2 s, 0.69 GB.  Timings mine, through the progress overlay.
+
+**Outcome: `Borel/Cells` and `Continuous/Intervals` (2026-11-03, two agents in parallel, merged into `uniq`).**
+- All holes filled in both, contracts unchanged, no new modules.
+- `Cells`: no excluded middle.  `cyl-refine` takes the finite support of the cylinder (`cyl-fin`), decides it at a
+  canonical point of each cell (`dec-cyl`, by `Bool`) and transfers the answer to the whole cell.
+- `Intervals`: one helper `indH` builds a test from a Borel predicate; `ge-borel` is an intersection over the
+  rationals; `χI-split` via `split-iv` and the halving of dyadic points from `DigitAlg`.
+- The cleanup of the Digit modules (long declarations) is also merged; the helper `ur` was renamed `unRun`.
+- Timings (measurement agent, two runs, load ≈ 3.7): `Cells` 3.9 s, 0.54 GB; `Intervals` 4.8 s, 0.69 GB; `DigitAlg`
+  3.1 s, 0.45 GB; `DigitCut` 4.6 s, 0.67 GB; `DigitStream` 6.6 s, 0.85 GB; `DigitDecode` 6.4 s, 0.82 GB;
+  `DigitCode` 6.2 s, 0.90 GB.
+
+**Outcome: `Analysis/UniquenessWeighted` and `Continuous/LebesgueDyadic` (2026-11-03, two agents in parallel, merged).**
+- All holes filled in both, contracts unchanged.
+- `UniquenessWeighted`: `wM` is the pushforward of a density measure (`Density.densM`); finite mass is scaled by `hp N`
+  and unscaled by `pw N` (no additive cancellation); `uniqW` via `Density.Approx` truncations and `⨆-cong`.
+- `LebesgueDyadic`: `fair-top` by induction with `FirstBit` (no cylinders) and `Arch.arch`; `cell-in`/`cell-out` by
+  induction on n with the first-bit step `χI (n+1) m (shiftPt j (b∷r)) ≈ χI n m (shiftPt (2j+b) r)`; the cell
+  `[j+1, j+2)` meets `j + expansion r` only at the all-true point.  New helpers `LebesgueDyadicAlg` (cut facts) and
+  `LebesgueDyadicNat` (ℕ arithmetic).
+- Lesson (agent report): a `with` on a term mentioning cuts, and unannotated binders or `_` arguments to `χIv-in`/`-out`,
+  blew the 3 GB heap; use helper lemmas with projections and explicit arguments.
+- Timings (measurement agent, two runs, load ≈ 4): `UniquenessWeighted` 5.5 s, 0.72 GB; `LebesgueDyadicNat` 3.0 s,
+  0.44 GB; `LebesgueDyadicAlg` 6.4 s, 0.87 GB; `LebesgueDyadic` 7.6 s, 1.00 GB.
+
+**Outcome: `Continuous/UniquenessR` (2026-11-03, merged into `uniq`).**
+- All 7 holes filled, contract unchanged, no new modules (325 lines).
+- `χR` is `Probes.probe` of `χ U`; `∫ᴹ-split` pointwise (`top-or-blk` via `Borel/Lead`) then `J-add`, `JSum.J-∑`;
+  `agree-blkCyl` sums cells of depth n by a recursive `sumW` (no word lists); `agree-blk` is `uniqW` on the weighted
+  pushforward with weight `w·χBlk`, with equal masses from `agree-blkCyl k cylTop`; `agree-top` via
+  `∫ᴹ p (onTop g) ≈ g(all-true) * ∫ᴹ p χTop`.
+- The agent used the agda MCP (`agda_load_and_goals`, 1–2 s per reload, precise errors), but wrote proofs directly
+  rather than through hole actions.
+- Timing (measurement agent, two runs, load ≈ 5): 7.8 s, 0.92 GB.
+
+**Outcome: `Continuous/UniquenessWQ` (2026-11-03, merged into `uniq`): the headline theorem is proved.**
+- All 6 holes filled, contract unchanged, no new lemmas.  `pushBlk` reads `Blk k` as `Cell k []` and transports the
+  index along `k * 2 ^ 0 + 0 ≡ k`; `finBlk` transports `Bnd` along `pushBlk` with `≤-resp`.
+- Timing (measurement agent, two runs, load ≈ 4): 7.0 s, 0.91 GB.
+
+**Outcome: `Continuous/LebesgueInterval` (2026-11-03, merged into `uniq`).**
+- Both holes filled, contract unchanged.  New helper `LebesgueIntervalAlg`, generic in a pre-measure whose dyadic
+  cells have mass ½ⁿ: `F b = ∫ χ[0,b)` is monotone, `F (m/2ⁿ) ≈ m/2ⁿ` by induction on m, and `F b ≈ b` for bounded b
+  from the dyadic points either side of b with `arch`, so no monotone convergence was needed.  `leb-unique` is
+  `uniqWQ` with the left endpoint cancelled by `cancel-bnd`.
+- Timings (measurement agent, two runs, load ≈ 4): `LebesgueIntervalAlg` 7.0 s, 1.00 GB; `LebesgueInterval` 7.5 s,
+  1.04 GB.
+
+**Outcome: `Continuous/LebesgueScale` and `Continuous/LebesgueShift` (2026-11-03, two agents in parallel, merged).
+`uniq` has no holes left.**
+- All holes filled in both, contracts unchanged.
+- `LebesgueScale`: `scaledLeb c = scalePre c (mapM (scaleH c idW) lebPre)`; helper `LebesgueScaleAlg` (`Ge a (c·x)` iff
+  `Ge (a·c′) x`, `χIv-scale`, `χInf-scale`).
+- `LebesgueShift`: `shiftedLeb t` is a `sumPre` padded with zero-weight terms (no binary sum in `SFinite`); the interval
+  law reduces to masses of [0,b) (`Iv-from-F`), split by the classical totality of cuts.  The library had no cut
+  difference, so `LebesgueShiftCut` builds `diffC t b` with `t ⊕ diffC ≋ b` for t bounded by a rational, and
+  `diff-⇐ : b ⊑ x ⊕ t → diffC ⊑ x` (no cancellation, x may be ∞).  Helper `LebesgueShiftAlg`.
+- Lesson: implicit arguments of lemmas about `Ge` or `mk⊑` do not unify (membership is not injective); make them
+  explicit.
+- Timings (measurement agent, two runs, load ≈ 4): `LebesgueScaleAlg` 6.2 s, 0.82 GB; `LebesgueScale` 9.1 s, 1.21 GB;
+  `LebesgueShiftCut` 3.3 s, 0.48 GB; `LebesgueShiftAlg` 7.0 s, 1.00 GB; `LebesgueShift` 9.7 s, 1.40 GB (closest to
+  the 1.5 GB line).
 
 **Order of agents (one at a time).**
-- 1 and 3 are independent and small.
-- 4 is the riskiest, so it goes early to test the design.
-- Then 2, 5 and 6.
-- 7 last.
-- Estimated sizes: 1 ≈ 200 lines, 2 ≈ 400, 3 ≈ 200, 4 ≈ 500–800, 5 ≈ 200, 6 ≈ 300, 7 ≈ 150 each.
+- 1, 2 and 3 are independent and small.
+- 5 is the riskiest, so it goes early to test the design.
+- Then 4, 6 and 7.
+- 8–10 last.
+- Estimated sizes: 1 ≈ 200 lines, 2 ≈ 300, 3 ≈ 200, 4 ≈ 400, 5 ≈ 500–800, 6 ≈ 200, 7 ≈ 300, 8–10 ≈ 150 each.
 
-**Risks to settle while writing the skeleton.**
-- `Pre` on `ℛQ` and `mapPre code` exist generically (`X : QBS S`); check `mapPre`'s law
-  `∫ᴹ (mapPre f μ) g ≈ ∫ᴹ μ (g ∘ f)`.
-- Whether `Hom S ℛQ WQ` is exactly `Meas`. This matters for `decode` and for `h ∘ decode` being a test.
-- `Uniqueness` takes cylinders `Cyl C` with arbitrary bit positions. The `code-cyl` case split must cover cylinders
-  that constrain bits beyond the unary prefix, or `UniquenessR` restates agreement on prefix cylinders only.
-- ∞: a `Pre` may put mass at ∞, hence `agreeInf`. Lebesgue and every density put none there.
+**Risks, as settled by the skeleton.**
+- Settled: `mapM` is generic in `X : QBS S`, with `∫ᴹ-map : ∫ᴹ (mapM f p) h ≈ ∫ᴹ p (h ∘ f)`.
+- Settled: `Hom S ℛQ WQ` is exactly `Meas` (`Probes.probe`/`unprobe`), so `decode` and `h ∘ decode` are tests.
+- Settled: the order of cuts `_≤_` lives in `Set₁`, but Borel predicates live in `Set`.  `Intervals.Ge` restates
+  `a ≤ x` as `∀ q → mem a q → mem x q`.
+- Settled: cylinders constrain arbitrary bits.  `UniquenessR` assumes agreement on cells only and derives it for
+  cylinders inside a block (`Cells.cyl-refine`).
+- Settled: mass at ∞ is handled by `agreeInf`/`agreeTop`.
+- Settled (DigitCode outcome): `digits` respects `≈` of cuts (`digits-cong`) and is measurable (`meas-digits`).
 - Performance: concrete cut arithmetic only in leaf modules, solvers in generic `Alg` modules, as before.
