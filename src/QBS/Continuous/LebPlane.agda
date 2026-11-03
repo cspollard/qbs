@@ -36,7 +36,8 @@ open import QBS.Continuous.Product using (module Product)
 
 module LebPlane (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; refl; sym; trans; ≤-+ʳ; ≤-trans; ≤-reflexive; +-identityʳ; +-cong; zeroˡ; *-cong) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; refl; sym; trans; ≤-+ʳ; ≤-trans; ≤-reflexive; +-identityʳ; +-cong; zeroˡ; *-cong)
+    renaming (Carrier to ∣A∣)
   open Bounded A using (Bnd)
   open Weights (lemOf lem₁) using (WQ; constW)
   open SFinite (lemOf lem₁) using (XW; ∫ᴹ; module C)
