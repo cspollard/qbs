@@ -972,8 +972,7 @@ the top-level statements are the contract.
 9. `Continuous/LebesgueScale` [done]: `scaledLeb`, `∫ᴹ-scaledLeb`, `scaled-Iv`, `∫-scale : c · ∫ h(cx) ≈ ∫ h`.
 10. `Continuous/LebesgueShift` [done]: `shiftH`, `shiftedLeb`, `∫ᴹ-shiftedLeb`, `shifted-Iv`,
     `∫-shift : ∫ h(x+t) + ∫_{[0,t)} h ≈ ∫ h`.
-- Not yet stated: monotone change of variables with a derivative certificate (interval masses from `glue-D0`) and
-  re-deriving `ExpPushforwardAgree` for every rate; state them once 8 is filled.
+- Monotone change of variables and every-rate agreement: stated in "Change of variables" below.
 
 **Outcome: `Continuous/DigitCode` (2026-11-02, merged into `uniq`).**
 - All 9 holes filled; contract unchanged (`val` is now an alias of `DigitStream.val`).  No new statements were needed
@@ -1065,3 +1064,53 @@ the top-level statements are the contract.
 - Settled: mass at ∞ is handled by `agreeInf`/`agreeTop`.
 - Settled (DigitCode outcome): `digits` respects `≈` of cuts (`digits-cong`) and is measurable (`meas-digits`).
 - Performance: concrete cut arithmetic only in leaf modules, solvers in generic `Alg` modules, as before.
+
+## Change of variables (planned 2026-11-03; skeleton first, then agents; branch `cov`)
+
+Goal: substitution for every increasing bijection with a derivative certificate, and the density/pushforward agreement
+for every scale, both from the uniqueness tools above rather than integrand-specific estimates.
+
+**Route.**
+- Change of variables works on the source side, which avoids an FTC at arbitrary points.  For φ with inverse ψ,
+  compare `lebψ = mapM ψ lebPre` with `lebφ′ = reweightPre φ′ lebPre` by `UniquenessWQ.uniqWQ`.
+  - On a dyadic interval [d, d′), `lebψ` gives φ d′ − φ d: pull back by ψ (`χIv-ψ`) to [φ d, φ d′), then `leb-Iv`.
+    The arbitrary endpoints φ d are exactly what `leb-Iv` handles.
+  - `lebφ′` gives the same by the FTC at dyadic points only (`FTCDyadic.ftc-dy` with h = 0).
+  - Cancel the finite φ d.
+- `ftc-dy` rescales: G(t/2ⁿ) has `Deriv` data by `DFaff` (slope ½ⁿ ≤ 1), so `DerivBridge.OnHalfLine.unit m` gives
+  [m, m+1) for it; `piece` converts the fair-coin integral to `χ[m, m+1)` (null set: the all-true point), and `resc`
+  moves back to [m/2ⁿ, (m+1)/2ⁿ) by `∫-scale` at 2ⁿ.
+- Every-rate agreement is `∫-scale` for the test y ↦ l g(l y) f(y), for any normalised density g; Exp is g = e^{−x}.
+
+**Modules (skeleton on `cov`).**
+11. `Continuous/FTCDyadic` [done]: `hp-inv`, `hp-dy`, `rescH`, `piece`, `resc`, `dv-resc`, `ftc-dy`.
+12. `Continuous/ChangeOfVariables` [done] (imports 11): hypotheses `dv`, `gc-to`, `gc-from`, `φψ`, `ψ-fin`; `Φ-mono`,
+    `Φ-zero`, `Φ-fin`, `χIv-ψ`, `χInf-ψ`, `lebψ`, `lebφ′`, `massψ`, `massφ′`, `agreeI`, `finI`, `inf-ψ`, `inf-φ′`,
+    `push-eq`, `cov-inv : ∫ h(ψ y) dy ≈ ∫ h φ′`, `cov : ∫ g(φ x) φ′(x) dx ≈ ∫ g`.
+13. `Inference/ScaleDensity` [done] (independent of 11–12): `scD g = l g(l ·)`, `scD-pt`, `nrm-sc`, `push-dens`
+    (pushforward of `densDist g` by x ↦ c x is `densDist (scD g)`), `densR`, `∫-negExpR`, `nrmR`, `scD-negExp`,
+    `agree` (Exp(c) pushforward ≈ density λ e^{−λx}), `agree-dist` (against `ExpRateDist.Dist.expDistλ`).
+
+**Outcome (2026-11-03, merged into `cov`; no holes, contracts unchanged).**
+- `ScaleDensity`: `push-dens` is `ι-nat`/`∫ᴹ-map`/`∫-dens` then `∫-scale c l`; `∫-negExpR` from `∫-scale l c` on e^{−x};
+  `scD-negExp` is `refl`.  No helper module.
+- `FTCDyadic`: helper `FTCDyadicPiece` proves `piece` with `null-le` (F ≤ F′ off the all-true point, F constant there,
+  possibly ∞ ⇒ J F ≤ J F′, from F ≤ F′ + c·χ_Top and `fair-top`), so neither monotone convergence nor the j = 0
+  fallback was needed.  The two `hp`s are definitionally equal (`hp-dy` is `*-comm`).
+- `ChangeOfVariables`: helper `ChangeOfVariablesAlg` (`inf-bnd`/`bnd-notinf` by excluded middle; `module Pull` with
+  `χIv-pull`, `χInf-pull`; `inf-null : ∫ lebPre (f · χInf) ≈ 0` for every f, even f(∞) = ∞).  `agreeI` cancels with
+  `cancel-bnd` as in `leb-unique`.
+- Lessons: `hp 0` is not definitionally `1#` (`hp-zero`); `with <-cmp i j` on a goal mentioning
+  `map (χI 0 j) ⟨$⟩ shiftPt i r` hangs Agda; pass the comparison to a helper instead.
+- Timings (measurement agent, two runs, load ≈ 5): `ScaleDensity` 10.6 s, 1.44 GB (closest to the 1.5 GB line);
+  `FTCDyadicPiece` 7.4 s, 1.02 GB; `FTCDyadic` 9.5 s, 1.22 GB; `ChangeOfVariablesAlg` 7.5 s, 1.06 GB;
+  `ChangeOfVariables` 9.6 s, 1.24 GB.
+
+**Order of agents.** 13 and 11 are independent and can run in parallel; 12 after 11.  Estimated sizes: 11 ≈ 300
+lines (`piece` is the riskiest), 12 ≈ 300, 13 ≈ 150.
+
+**Risks.**
+- `piece`: `χ[j, j+1)(j + expansion r)` fails only at the all-true r; f may be ∞ there, so the null set must be handled
+  by `fair-top` with monotone convergence, not by a bound on f.  Fallback: prove it for j = 0 and move by `∫-shift`.
+- Two `hp`s: `FTCDyadic` uses `Arch R`'s, `Intervals.dy` uses `Half`'s; `hp-dy` is where they meet.
+- `gc-to`/`gc-from` are stated with `_≤_` (`Set₁`); `χIv-ψ` needs them at `Ge`, as in `LebesgueScaleAlg`.
