@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Blocks and cells of Cantor space: the cylinders that the digit code of `[0,∞]` (`Continuous/DigitCode`) sends to
--- dyadic intervals (plan 03, "Uniqueness on the half-line").  Skeleton: holes first.
+-- dyadic intervals (plan 03, "Uniqueness on the half-line").
 --   * `Blk k = {trueᵏ false …}`, the k-th block of the unary integer part (as `Borel/Lead`, without the all-true point);
 --   * `Cell k w = Blk k ∩ {the bits after the block start with the word w}`, the code of a dyadic interval of length
 --     2^{-|w|} inside [k, k+1);
