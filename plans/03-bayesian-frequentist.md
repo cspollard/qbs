@@ -958,7 +958,7 @@ the top-level statements are the contract.
    cylinders give agreement on every `Meas` g).
 3. `Continuous/Intervals` [done]: `Ge` (the order of cuts at level `Set`), `InIv`, `InInf`, `ge-borel`; the tests
    `χIv a b`, `χInf` with their `-in`/`-out` laws; `dy n m = m·½ⁿ`, `χI n m`, `χI-split`.
-4. `Continuous/UniquenessR` [7]: `χR` (indicator test of a Borel set of `ℛ = Probes.ℛQ S`), `χR-pt`, `onTop`,
+4. `Continuous/UniquenessR` [done]: `χR` (indicator test of a Borel set of `ℛ = Probes.ℛQ S`), `χR-pt`, `onTop`,
    `onBlk`, `∫ᴹ-split`; under `agreeCell`, `finBlk`, `agreeTop`: `agree-blkCyl`, `agree-blk`, `agree-top`,
    `uniqR : μ ≈ᴹ ν`.
 5. `Continuous/DigitCode` [done]: `val`, `digits`, `digits-cong`, `meas-digits`, `code : Hom S WQ ℛ`,
@@ -1009,6 +1009,16 @@ the top-level statements are the contract.
   blew the 3 GB heap; use helper lemmas with projections and explicit arguments.
 - Timings (measurement agent, two runs, load ≈ 4): `UniquenessWeighted` 5.5 s, 0.72 GB; `LebesgueDyadicNat` 3.0 s,
   0.44 GB; `LebesgueDyadicAlg` 6.4 s, 0.87 GB; `LebesgueDyadic` 7.6 s, 1.00 GB.
+
+**Outcome: `Continuous/UniquenessR` (2026-11-03, merged into `uniq`).**
+- All 7 holes filled, contract unchanged, no new modules (325 lines).
+- `χR` is `Probes.probe` of `χ U`; `∫ᴹ-split` pointwise (`top-or-blk` via `Borel/Lead`) then `J-add`, `JSum.J-∑`;
+  `agree-blkCyl` sums cells of depth n by a recursive `sumW` (no word lists); `agree-blk` is `uniqW` on the weighted
+  pushforward with weight `w·χBlk`, with equal masses from `agree-blkCyl k cylTop`; `agree-top` via
+  `∫ᴹ p (onTop g) ≈ g(all-true) * ∫ᴹ p χTop`.
+- The agent used the agda MCP (`agda_load_and_goals`, 1–2 s per reload, precise errors), but wrote proofs directly
+  rather than through hole actions.
+- Timing (measurement agent, two runs, load ≈ 5): 7.8 s, 0.92 GB.
 
 **Order of agents (one at a time).**
 - 1, 2 and 3 are independent and small.
