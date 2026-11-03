@@ -37,7 +37,8 @@ open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 
 module ChangeOfVariablesAlg (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J; J-cong)
-  open OmegaSemiring A using (_≈_; _≤_; 0#; refl; trans; *-cong; ≤-trans; ≤-reflexive; sym; zeroʳ; 0-least) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _≤_; 0#; refl; trans; *-cong; ≤-trans; ≤-reflexive; sym; zeroʳ; 0-least)
+    renaming (Carrier to ∣A∣)
   open Bounded A using (Bnd)
   open Exp A using (natE)
   open Meas (lemOf lem₁) using (Meas-const)
