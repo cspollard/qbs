@@ -270,7 +270,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
-| `QBS.Continuous.RealScale` | 53 | lem | Scaling and reflection of the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line"). |
+| `QBS.Continuous.RealScale` | 74 | lem | Scaling and reflection of the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.SFinite` | 336 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 244 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 453 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
