@@ -300,7 +300,14 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteStrong` | 132 | lem | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 263 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 150 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
+| `QBS.Continuous.SignedExpect` | 113 | lem | Expectations of signed tests against any s-finite measure (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedFubini` | 76 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedInf` | 142 | lem | Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04). |
+| `QBS.Continuous.SignedLimits` | 85 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedLog` | 123 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedTest` | 134 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
+| `QBS.Continuous.SignedTransport` | 88 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |
 | `QBS.Continuous.Strong` | 188 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |

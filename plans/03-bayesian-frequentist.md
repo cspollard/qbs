@@ -1356,7 +1356,7 @@ parts.
   (Jacobians), and there is no value for π, so Gaussian vectors are characterised by construction and moments.
 - Uniqueness of product measures from their values on rectangles: needs a π-λ style argument; a separate project.
 
-## Signed layer (planned 2026-11-04; not skeletoned yet; branch `signed` when started)
+## Signed layer (planned 2026-11-04; skeletons on branch `signed`, then agents)
 
 Goal: one vocabulary for signed tests and their expectations against any s-finite measure, so that signed
 quantities (centred moments, covariances, scores, log-likelihood ratios, a signed log) are stated uniformly.  The
@@ -1387,9 +1387,10 @@ measurability and arithmetic lemma would be rebuilt.
   `scaleT` (signed constant, via `mulH` and `constW`), `_*T_` (f⁺g⁺ + f⁻g⁻, f⁺g⁻ + f⁻g⁺), `constT`, `fromW` (a
   nonnegative test), precomposition `_∘T_`; on the real line `idT` (x = x⁺ − x⁻ via `copairH`) and `sqT`.  Bridge
   `CutQ` ↔ `WQ` (identity homs) so `ITest` parts convert.
-- 32a `Analysis/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
+- 32a `Continuous/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
   equivalence), `_+∞_`, scaling by finite nonnegative constants, `ι∞ : Sg → Sg∞`, `top∞` (+∞), order `_≤∞_`
-  (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Generic, like `Analysis/Signed`.
+  (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Specific to lower reals (`infC` is +∞; transitivity uses
+  `MonusAlg.cut-total`), so it lives under `Continuous/` (no `Analysis` module imports `Continuous`).
 - 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
   ∫ f⁻ finite only (positive part arbitrary), with `Ex∞-ι` (agrees with `ι∞ (Ex p f i)` when both are finite),
   `Ex∞-+`, `Ex∞-mono`, and `Ex∞-fin` (finite when ∫ f⁺ is); `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
@@ -1404,13 +1405,14 @@ measurability and arithmetic lemma would be rebuilt.
 - 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
   integrals are finite off a null set; cut there (`NullInf.finχ`) to get a signed test on Y, and
   Ex (s ⊗ t) f ≃ Ex t (inner f); independence `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f *S Ex t g`.
-- 37 `Analysis/SignedLog` (independent of 32–36): for 0 < x < ∞ (bounded above and below by rationals),
-  `log⁺ x = {q | ∃ s ∈ x, eᵠ < s}` truncated at 0 and `log⁻ x = {q | ∃ p > q, ∀ s ∈ x, s eᵖ < 1}` (as `NegExp`
-  builds e^{−x}), `logS x : Sg`; `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
+- 37 `Continuous/SignedLog` (needs only 32a): for 0 < x < ∞ (bounded above and below by rationals),
+  `logP`, `logN` characterised by e^{logP x} ≈ x on [1, ∞) and e^{−logN x} ≈ x on (0, 1] (definitions left to the
+  agent, suggested in the header), `logS x : Sg`, one-sided `log∞` and `nlog∞` (−log 0 = ∞); `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
   r ↦ log⁺/log⁻ (h r) for use as test parts.
 
-**Order of agents.** Two at a time: one chain 32 → 32a → 33 → 34 → 35, and 37 alongside; then 36.  Estimated
-sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
+**Order of agents.** Strict agda refuses imports with holes, so: round 1, one agent on 32 and 32a (independent,
+both small); round 2, two agents, one on 33 → 34 → 35 and one on 37; round 3, 36 (needs 33 and `NullInf`).
+Estimated sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
 
 **Risks.**
 - 32a: transitivity of `_≃∞_` in `Analysis/Signed` uses the witness c + d + p′ + n′, which is not finite when
