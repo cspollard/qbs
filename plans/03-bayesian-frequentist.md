@@ -1455,3 +1455,49 @@ The signed layer (32–37) is complete.
 E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood
 with +∞ allowed, covariance matrices and the affine rule (multidimensional directions), signed Fubini.
 
+
+## Information quantities (planned 2026-11-04; skeletons on branch `info`, then agents)
+
+Definitions of KL divergence, entropy and variance on top of the signed layer, with their first general properties.
+Fisher information waits for a more complete theory of derivatives (only `SignedLimits.deriv-Ex` along h = ½ⁿ exists).
+
+**Decisions.**
+- Densities, not Radon–Nikodym: a distribution with density p : X ⇒ WQ w.r.t. a base measure Q is
+  `densPre Q p = reweightPre p Q`, and KL and entropy are stated for p·Q against Q.  No absolute-continuity theory.
+- Values in (−∞, ∞] (`Sg∞`): KL(p·Q ‖ Q) = E_{p·Q}[log p] needs only ∫ p log⁻ p dQ finite (automatic for finite Q);
+  entropy relative to μ, E_{p·μ}[−log p], needs only ∫ p log⁺ p dμ finite (automatic for p ≤ 1, the discrete case,
+  where it is a value in [0, ∞]).
+- log p as a signed test from `SignedLog.logP`/`logN` composed with p, made morphisms by `MonoTest.monoH`/`antiH`
+  (monotone, so no measurability proof); log 0 = −∞ and log ∞ = ∞ are handled by the parts, not excluded.
+- Variance as E[f²] − (E f)² in `Sg` for a probability `Pre`, with the centred form E[(f − E f)²] as a theorem.
+
+**Modules (numbering continues plan 03).**
+- 38 `Continuous/SignedVar`: `Int₂`, `Var`, `Var-irr`, `Var-cong`; the centred test `cen f c = f − c`, `Int-cen`,
+  `Ex-cen` (E[(f − c)²] ≃ E[f²] − 2c E f + c²), `Var-cen`; `Var-shift`, `Var-scale` with `Int₂-shift`, `Int₂-scale`.
+- 39 `Inference/GaussVar` (needs 38): `cvar : ∫ (x − μ)² dN(μ, s²) ≈ s²` and `cvar⁻` for N(−μ, s²) in [0, ∞]; signed
+  `Ex-id ≃ μ`, `Var-gaussμ ≃ s²`, and `Ex-id⁻ ≃ −μ`, `Var-gaussμ⁻ ≃ s²`.
+- 40 `Continuous/Entropy`: `logPH`, `logNH`, `logT`, `nlogT`, `densPre`, `∫-dens`; `EntInt`, `Ent`; discrete case
+  `Le1`, `EntInt-le1`, `ent` (∫ p log(1/p) dμ ∈ [0, ∞]), `Ent-le1`, `ent-const` (c log(1/c) · mass; uniform 1/n on n
+  points gives log n), `ent-one`.
+- 41 `Continuous/KLDiv` (needs 40): `KLInt`, `KL`, `xlogN-le` (x log(1/x) ≤ 1), `KLInt-fin` (finite Q), `gibbs-pt`
+  (x log x ≥ x − 1 on the parts), `KL-nonneg` (Gibbs' inequality, Q and p·Q probabilities), `KL-one`, `KL-cong`.
+- 42 `Continuous/InfoProduct` (needs 41): for normalised, pointwise strictly positive and finite densities,
+  `KL-⊗` (KL(p₁ ⊗ p₂) ≃ KL(p₁) + KL(p₂)) and `Ent-⊗`, with `KLInt-⊗`, `EntInt-⊗`.
+
+**Order of agents.** Round 1, two agents: 38 → 39 and 40 → 41.  Round 2: 42.  Estimated sizes: 38 ≈ 200 lines,
+39 ≈ 200, 40 ≈ 150, 41 ≈ 250, 42 ≈ 200.
+
+**Risks.**
+- 38: integrability of (f − c)² from that of f and f² needs a domination or transport-of-`Int`-along-`≐` helper.
+- 39: (x ↦ x − μ) ∘ (x ↦ x + μ) ≐ id on RQ needs the case analysis of `RealShift` both ways; `idT ∘ shift ≐ idT + μ`
+  repeats `GaussShift.shift-id` in signed form.
+- 41: `gibbs-pt` on the parts at x = ∞ and x = 0 relies on 0 · ∞ = 0 in `Cut`; the x ≥ 1 case needs e^{−y} ≥ 1 − y
+  or a direct near-sup argument from `LogCore`.
+- 42: `log-mul` needs PosQ and BndQ, hence the pointwise positivity and finiteness hypotheses; dropping them needs
+  log-mul on the parts with ∞ and 0 (p₁ p₂ = 0 · ∞ cases), left for later.
+
+**Out of scope for now.**
+- Fisher information (needs derivatives beyond ½ⁿ difference quotients, and differentiation of log-densities).
+- KL between Gaussians, e.g. KL(N(μ, 1) ‖ N(0, 1)) = μ²/2: needs N(μ, 1) as a density e^{μx − μ²/2} times N(0, 1)
+  (exp of a signed argument and completing the square on RQ); differential entropy needs π.
+- Data-processing inequality and chain rules for conditional KL (need disintegration).
