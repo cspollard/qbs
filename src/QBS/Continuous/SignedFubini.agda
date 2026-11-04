@@ -8,11 +8,10 @@
 -- Route: `Product.∫-prod` for each part, so ∫ (intL s f±) dt = ∫ f± d(s ⊗ t) is finite; the set where an inner
 -- integral is infinite is t-null (`NullInf.∫-fin-cut` with g = intL f⁺ + intL f⁻).  `Ex-⊗` from `Product.∫-rect`
 -- on the four products of parts and `FatouAux.∫ᴹ-addX`.
---   Skeleton: holes first.
 module QBS.Continuous.SignedFubini where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_,_)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -37,11 +36,16 @@ module SignedFubini (lem₁ : LEM₁) where
   open Weights (lemOf lem₁) using (WQ)
   open SFinite (lemOf lem₁) using (XW; ∫ᴹ; module C)
   open SFiniteReweight (lemOf lem₁) using (mulH)
-  open FatouAux lem₁ using (addX)
-  open Product (lemOf lem₁) using (prodPre; intL)
-  open NullInf lem₁ using (finχ)
+  open FatouAux lem₁ using (addX; ∫ᴹ-addX)
+  open Product (lemOf lem₁) using (prodPre; intL; ∫-prod; ∫-rect)
+  open NullInf lem₁ using (finχ; ∫-fin-cut)
+  open OmegaSemiring A using (_≈_; _+_; _*_; 0#; refl; sym; trans; +-cong)
+  open Bounded A using (mk≃; finite)
+  open import QBS.Analysis.Signed using (SubSemiring)
+  open SubSemiring finite using (Is-+; Is-*; Is-0)
+  open Sg
   open SignedTest lem₁ using (SgT; posT; negT; _*T_; _∘T_)
-  open SignedExpect lem₁ using (Int; Ex)
+  open SignedExpect lem₁ using (Int; Ex; bnd≈)
   open QBS
   open Hom
 
@@ -55,21 +59,48 @@ module SignedFubini (lem₁ : LEM₁) where
     innerT s f = mulH {Y} cut (intL {X} {Y} s (posT f)) , mulH {Y} cut (intL {X} {Y} s (negT f))
       where cut = finχ {Y} (addX (intL {X} {Y} s (posT f)) (intL {X} {Y} s (negT f)))
 
+    -- the inner integrals are t-integrable, and the cut does not change their integrals
+    bnd-sum : ∀ s t (f : SgT XY) → Int {XY} (prodPre {X} {Y} s t) f →
+      Bnd (∫ᴹ {Y} t (addX (intL {X} {Y} s (posT f)) (intL {X} {Y} s (negT f))))
+    bnd-sum s t f (i⁺ , i⁻) = bnd≈ {Y} (∫ᴹ-addX {Y} t _ _) (Is-+ {_} {_}
+      (bnd≈ {XY} (sym (∫-prod {X} {Y} s t (posT f))) i⁺) (bnd≈ {XY} (sym (∫-prod {X} {Y} s t (negT f))) i⁻))
+
+    ∫-cut : ∀ s t (f : SgT XY) → Int {XY} (prodPre {X} {Y} s t) f → ∀ (u : SgT XY → Hom S XY WQ) →
+      ∫ᴹ {Y} t (mulH {Y} (finχ {Y} (addX (intL {X} {Y} s (posT f)) (intL {X} {Y} s (negT f)))) (intL {X} {Y} s (u f)))
+        ≈ ∫ᴹ {XY} (prodPre {X} {Y} s t) (u f)
+    ∫-cut s t f i u = trans (∫-fin-cut {Y} t _ _ (bnd-sum s t f i)) (sym (∫-prod {X} {Y} s t (u f)))
+
     Int-inner : ∀ s t (f : SgT XY) → Int {XY} (prodPre {X} {Y} s t) f → Int {Y} t (innerT s f)
-    Int-inner = ?
+    Int-inner s t f i = bnd≈ {Y} (∫-cut s t f i posT) (proj₁ i) , bnd≈ {Y} (∫-cut s t f i negT) (proj₂ i)
 
     Ex-fubini : ∀ s t (f : SgT XY) (i : Int {XY} (prodPre {X} {Y} s t) f) →
       Ex {XY} (prodPre {X} {Y} s t) f i ≃ Ex {Y} t (innerT s f) (Int-inner s t f i)
-    Ex-fubini = ?
+    Ex-fubini s t f i = mk≃ 0# Is-0 (+-cong (+-cong (sym (∫-cut s t f i posT)) (∫-cut s t f i negT)) refl)
 
     -- f(x) g(y)
     infixl 7 _⊗T_
     _⊗T_ : SgT X → SgT Y → SgT XY
     f ⊗T g = (f ∘T fstQ S) *T (g ∘T sndQ S)
 
+    -- the parts of f ⊗ g integrate to the cross products of the parts' integrals
+    ∫⊗⁺ : ∀ s t (f : SgT X) (g : SgT Y) → ∫ᴹ {XY} (prodPre {X} {Y} s t) (posT (f ⊗T g)) ≈
+      ∫ᴹ {X} s (posT f) * ∫ᴹ {Y} t (posT g) + ∫ᴹ {X} s (negT f) * ∫ᴹ {Y} t (negT g)
+    ∫⊗⁺ s t f g = trans (∫ᴹ-addX {XY} (prodPre {X} {Y} s t) _ _)
+      (+-cong (∫-rect {X} {Y} s t (posT f) (posT g))
+        (∫-rect {X} {Y} s t (negT f) (negT g)))
+
+    ∫⊗⁻ : ∀ s t (f : SgT X) (g : SgT Y) → ∫ᴹ {XY} (prodPre {X} {Y} s t) (negT (f ⊗T g)) ≈
+      ∫ᴹ {X} s (posT f) * ∫ᴹ {Y} t (negT g) + ∫ᴹ {X} s (negT f) * ∫ᴹ {Y} t (posT g)
+    ∫⊗⁻ s t f g = trans (∫ᴹ-addX {XY} (prodPre {X} {Y} s t) _ _)
+      (+-cong (∫-rect {X} {Y} s t (posT f) (negT g))
+        (∫-rect {X} {Y} s t (negT f) (posT g)))
+
     Int-⊗ : ∀ s t (f : SgT X) (g : SgT Y) → Int {X} s f → Int {Y} t g → Int {XY} (prodPre {X} {Y} s t) (f ⊗T g)
-    Int-⊗ = ?
+    Int-⊗ s t f g (i⁺ , i⁻) (j⁺ , j⁻) =
+      bnd≈ {XY} (∫⊗⁺ s t f g) (Is-+ {_} {_} (Is-* {_} {_} i⁺ j⁺) (Is-* {_} {_} i⁻ j⁻)) ,
+      bnd≈ {XY} (∫⊗⁻ s t f g) (Is-+ {_} {_} (Is-* {_} {_} i⁺ j⁻) (Is-* {_} {_} i⁻ j⁺))
 
     Ex-⊗ : ∀ s t (f : SgT X) (g : SgT Y) (i : Int {X} s f) (j : Int {Y} t g) →
       Ex {XY} (prodPre {X} {Y} s t) (f ⊗T g) (Int-⊗ s t f g i j) ≃ Ex {X} s f i *S Ex {Y} t g j
-    Ex-⊗ = ?
+    Ex-⊗ s t f g i j = mk≃ 0# Is-0 (trans (+-cong (+-cong (∫⊗⁺ s t f g) refl) refl)
+      (+-cong (+-cong refl (sym (∫⊗⁻ s t f g))) refl))
