@@ -276,7 +276,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LipTestAlg` | 249 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
 | `QBS.Continuous.LogCore` | 281 | lem | The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (plan 03, "Signed layer", helper for `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`). |
 | `QBS.Continuous.LogNeg` | 156 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
-| `QBS.Continuous.LogRat` | 160 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
+| `QBS.Continuous.LogRat` | 164 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
 | `QBS.Continuous.LogRecip` | 131 | lem | The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
@@ -306,7 +306,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteSum` | 263 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 150 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
 | `QBS.Continuous.SignedExpect` | 159 | lem | Expectations of signed tests against any s-finite measure (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedFubini` | 76 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedFubini` | 107 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedInf` | 214 | lem | Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04). |
 | `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |

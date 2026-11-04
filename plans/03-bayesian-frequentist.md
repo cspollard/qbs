@@ -1356,7 +1356,7 @@ parts.
   (Jacobians), and there is no value for π, so Gaussian vectors are characterised by construction and moments.
 - Uniqueness of product measures from their values on rectangles: needs a π-λ style argument; a separate project.
 
-## Signed layer (planned 2026-11-04; skeletons on branch `signed`, then agents)
+## Signed layer (planned 2026-11-04; done 2026-11-04 on branch `signed`)
 
 Goal: one vocabulary for signed tests and their expectations against any s-finite measure, so that signed
 quantities (centred moments, covariances, scores, log-likelihood ratios, a signed log) are stated uniformly.  The
@@ -1402,7 +1402,7 @@ measurability and arithmetic lemma would be rebuilt.
   `dct-Ex`: `dct-signed` restated as Ex f n → Ex f.  Then differentiation under the integral along h = ½ⁿ:
   difference quotients 2ⁿ (f(θ + ½ⁿ) − f(θ)) converging pointwise to f′ and dominated by g give
   2ⁿ (Ex f(θ + ½ⁿ) − Ex f(θ)) → Ex f′ (no division needed).
-- 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
+- [done] 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
   integrals are finite off a null set; cut there (`NullInf.finχ`) to get a signed test on Y, and
   Ex (s ⊗ t) f ≃ Ex t (inner f); independence `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f *S Ex t g`.
 - [done] 37 `Continuous/SignedLog` (needs only 32a): for 0 < x < ∞ (bounded above and below by rationals),
@@ -1445,6 +1445,11 @@ clipped rational cut and near-sup (`LogRat`, `LogCore`); `logN x = logP (recC (x
 19-line declaration (LogRat) the agents missed.  Timings (sequential, cold `.agdai`): SignedLimitsAlg 8.6 s / 1.02 GB,
 SignedExpect 8.7 s / 1.22 GB, SignedTransport 8.6 s / 1.22 GB, SignedLimits 10.0 s / 1.22 GB, LogRat 3.6 s / 0.50 GB,
 LogRecip 3.5 s / 0.55 GB, LogCore 9.5 s / 1.32 GB, LogNeg 4.6 s / 0.65 GB, SignedLog 7.0 s / 1.06 GB.  longcheck 35.
+
+**Outcome, round 3 (2026-11-04).** 36 done, statements unchanged, no extra hypotheses, no helper module; route as
+planned (`Product.∫-prod` for the bound, `NullInf.∫-fin-cut` to move it onto the cut inner integrals; `Product.∫-rect`
+on the four part products for `Ex-⊗`).  Timing (cold `.agdai`): SignedFubini 10.6 s / 1.16 GB.  longcheck 35.
+The signed layer (32–37) is complete.
 
 **Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
 E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood
