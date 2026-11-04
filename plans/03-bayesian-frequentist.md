@@ -1356,7 +1356,7 @@ parts.
   (Jacobians), and there is no value for π, so Gaussian vectors are characterised by construction and moments.
 - Uniqueness of product measures from their values on rectangles: needs a π-λ style argument; a separate project.
 
-## Signed layer (planned 2026-11-04; not skeletoned yet; branch `signed` when started)
+## Signed layer (planned 2026-11-04; done 2026-11-04 on branch `signed`)
 
 Goal: one vocabulary for signed tests and their expectations against any s-finite measure, so that signed
 quantities (centred moments, covariances, scores, log-likelihood ratios, a signed log) are stated uniformly.  The
@@ -1383,34 +1383,36 @@ measurability and arithmetic lemma would be rebuilt.
   `Inference/Sampler`); a plain Σ or a top-level record.
 
 **Modules (sketch; numbering continues plan 03).**
-- 32 `Continuous/SignedTest`: `SgT X` (parts `pos`, `neg`), `_≐_` with refl/sym/trans; pointwise `_+T_`, `-T_`,
+- [done] 32 `Continuous/SignedTest`: `SgT X` (parts `pos`, `neg`), `_≐_` with refl/sym/trans; pointwise `_+T_`, `-T_`,
   `scaleT` (signed constant, via `mulH` and `constW`), `_*T_` (f⁺g⁺ + f⁻g⁻, f⁺g⁻ + f⁻g⁺), `constT`, `fromW` (a
   nonnegative test), precomposition `_∘T_`; on the real line `idT` (x = x⁺ − x⁻ via `copairH`) and `sqT`.  Bridge
   `CutQ` ↔ `WQ` (identity homs) so `ITest` parts convert.
-- 32a `Analysis/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
+- [done] 32a `Continuous/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
   equivalence), `_+∞_`, scaling by finite nonnegative constants, `ι∞ : Sg → Sg∞`, `top∞` (+∞), order `_≤∞_`
-  (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Generic, like `Analysis/Signed`.
-- 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
+  (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Specific to lower reals (`infC` is +∞; transitivity uses
+  `MonusAlg.cut-total`), so it lives under `Continuous/` (no `Analysis` module imports `Continuous`).
+- [done] 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
   ∫ f⁻ finite only (positive part arbitrary), with `Ex∞-ι` (agrees with `ι∞ (Ex p f i)` when both are finite),
   `Ex∞-+`, `Ex∞-mono`, and `Ex∞-fin` (finite when ∫ f⁺ is); `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
   by `∫ᴹ-addX`), linearity `Ex-+`, `Ex-neg`, `Ex-scale`, `Ex-const` (probability, via `prob-mass`), monotonicity in
   cross-added form, `Int-dom` (|f| ≤ g with ∫ g finite), `Int-+`, `Int-scale`.
-- 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
+- [done] 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
   `E-atᴵ p t ≃ Ex (ιPre p) (toSgT t) _`, so `var-gaussR`, `var-affI`, `ExpDistVar`, `GaussRealAbs` port by one lemma.
-- 35 `Continuous/SignedLimits`: convergence in `Sg` (`SgConv`, tolerances ½ᵏ, as `ConvEps.SConv` on representatives);
+- [done] 35 `Continuous/SignedLimits`: convergence in `Sg` (`SgConv`, tolerances ½ᵏ, as `ConvEps.SConv` on representatives);
   `dct-Ex`: `dct-signed` restated as Ex f n → Ex f.  Then differentiation under the integral along h = ½ⁿ:
   difference quotients 2ⁿ (f(θ + ½ⁿ) − f(θ)) converging pointwise to f′ and dominated by g give
   2ⁿ (Ex f(θ + ½ⁿ) − Ex f(θ)) → Ex f′ (no division needed).
-- 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
+- [done] 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
   integrals are finite off a null set; cut there (`NullInf.finχ`) to get a signed test on Y, and
   Ex (s ⊗ t) f ≃ Ex t (inner f); independence `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f *S Ex t g`.
-- 37 `Analysis/SignedLog` (independent of 32–36): for 0 < x < ∞ (bounded above and below by rationals),
-  `log⁺ x = {q | ∃ s ∈ x, eᵠ < s}` truncated at 0 and `log⁻ x = {q | ∃ p > q, ∀ s ∈ x, s eᵖ < 1}` (as `NegExp`
-  builds e^{−x}), `logS x : Sg`; `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
+- [done] 37 `Continuous/SignedLog` (needs only 32a): for 0 < x < ∞ (bounded above and below by rationals),
+  `logP`, `logN` characterised by e^{logP x} ≈ x on [1, ∞) and e^{−logN x} ≈ x on (0, 1] (definitions left to the
+  agent, suggested in the header), `logS x : Sg`, one-sided `log∞` and `nlog∞` (−log 0 = ∞); `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
   r ↦ log⁺/log⁻ (h r) for use as test parts.
 
-**Order of agents.** Two at a time: one chain 32 → 32a → 33 → 34 → 35, and 37 alongside; then 36.  Estimated
-sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
+**Order of agents.** Strict agda refuses imports with holes, so: round 1, one agent on 32 and 32a (independent,
+both small); round 2, two agents, one on 33 → 34 → 35 and one on 37; round 3, 36 (needs 33 and `NullInf`).
+Estimated sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
 
 **Risks.**
 - 32a: transitivity of `_≃∞_` in `Analysis/Signed` uses the witness c + d + p′ + n′, which is not finite when
@@ -1425,6 +1427,29 @@ sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈
 - 36: inner integrals are finite only almost everywhere; relies on `NullInf` and on Fubini for each part.
 - 37: `log⁻` needs x bounded below by a positive rational; `log-mul` needs `exp` addition (`Analysis/Exp`) and
   near-sup arguments (excluded middle) for the reverse inequalities.
+
+**Outcome, round 1 (2026-11-04).** 32 and 32a done, statements unchanged; helper module `Continuous/InfAlg`
+(`not-bnd-top` by `cut-total`, ∞-absorption lemmas, `cancel-bnd` re-export).  `≐-trans` needs no case split
+(`FinT g` makes the middle finite; add and cancel).  `≃∞-trans`/`≤∞-trans` follow the planned LEM route on
+`Bnd (pos∞ y)`, witness 0 in the infinite case; `≤∞-antisym` with witness k₁ + k₂.  Pitfall again: `with` on cut
+terms hung Agda (> 5 min) in a first draft of `InfAlg`.  Timings (sequential, cold `.agdai`): InfAlg 6.5 s / 0.94 GB,
+SignedTest 7.6 s / 1.06 GB, SignedInf 9.3 s / 1.10 GB.  longcheck still 35.
+
+**Outcome, round 2 (2026-11-04).** 33, 34, 35 and 37 done, statements unchanged (two re-wrapped).  33–35: helper
+`Continuous/SignedLimitsAlg` (`cancel-le`, ≤-cancellation by a finite value, absent elsewhere; tolerance scaling);
+the `E-atᴵ` bridge is two lemmas `∫ι`/`∫ιW` (∫ᴹ (ιPre P) is the pulled-back `J`); `deriv-Ex` from `dct-Ex` and
+linearity of `Ex`; `SgConv-scale` needs tolerance ½^(m+k) with c⁺ + c⁻ ≤ m.  37: route changed — `logP` via a
+clipped rational cut and near-sup (`LogRat`, `LogCore`); `logN x = logP (recC (x ⊓ 1))` with a reciprocal cut
+(`LogRecip`, generalising `NegExp.near-max`); `log-mul` by exponentiating and injectivity of exp (`LogNeg`);
+`log-exp`'s `BndQ` hypothesis turned out unused.  I wrapped one 143-column line (SignedLimits) and split one
+19-line declaration (LogRat) the agents missed.  Timings (sequential, cold `.agdai`): SignedLimitsAlg 8.6 s / 1.02 GB,
+SignedExpect 8.7 s / 1.22 GB, SignedTransport 8.6 s / 1.22 GB, SignedLimits 10.0 s / 1.22 GB, LogRat 3.6 s / 0.50 GB,
+LogRecip 3.5 s / 0.55 GB, LogCore 9.5 s / 1.32 GB, LogNeg 4.6 s / 0.65 GB, SignedLog 7.0 s / 1.06 GB.  longcheck 35.
+
+**Outcome, round 3 (2026-11-04).** 36 done, statements unchanged, no extra hypotheses, no helper module; route as
+planned (`Product.∫-prod` for the bound, `NullInf.∫-fin-cut` to move it onto the cut inner integrals; `Product.∫-rect`
+on the four part products for `Ex-⊗`).  Timing (cold `.agdai`): SignedFubini 10.6 s / 1.16 GB.  longcheck 35.
+The signed layer (32–37) is complete.
 
 **Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
 E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood
