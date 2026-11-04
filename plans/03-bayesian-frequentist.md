@@ -1413,8 +1413,10 @@ measurability and arithmetic lemma would be rebuilt.
 sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
 
 **Risks.**
-- 32a: transitivity of `_≃∞_` adds witnesses (finite + finite), as in `Analysis/Signed`; check it does not need
-  cancellation of a possibly infinite p.
+- 32a: transitivity of `_≃∞_` in `Analysis/Signed` uses the witness c + d + p′ + n′, which is not finite when
+  p′ = ∞.  Route: by excluded middle, either p′ is finite (the old proof) or p′ ≈ ∞, and then p ≈ p″ ≈ ∞ (x + a ≈ ∞
+  with a finite forces x ≈ ∞, from `Bnd` and `cancel-bnd`), so the pairs are equal with any witness.  Alternative:
+  define `_≃∞_` as "both p, p′ infinite, or the finite cross-added equality", if the first route is awkward.
 - 33: `Sg` elements carry `Bnd` proofs; `Ex-irr` must hold so that proofs never leak into statements.
 - 34: `CutQ` and `WQ` are distinct QBSs on the same carrier; the bridge must be definitional enough that
   `E-atᴵ`'s pulled-back `J` matches `∫ᴹ (ιPre p)` (`ψ` unfolds to weight · f).
