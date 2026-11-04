@@ -178,6 +178,14 @@ module LogCore (lem : LEM₀) where
   ... | inj₁ s≤t = ⊥-elim (no (q , mq , down (E q) s≤t mt))
   ... | inj₂ t<s = t<s
 
+  bwd-cases : ∀ {x s s₁ m ε r r′} → mem x s₁ → 0ℚᵘ < s → 1ℚᵘ ≤ s → 0ℚᵘ < m → m ≤ 1ℚᵘ → 0ℚᵘ < ε → ε + ε < m →
+    s * cst m < s₁ → (∀ q → mem (logP x) q → Le q s) → (∀ q → mem (logP x) q → q ≤ r + ε) → r < r′ →
+    mem (logP x) r′ → 0ℚᵘ < r′ ⊎ r′ ≤ 0ℚᵘ → ⊥
+  bwd-cases {x} ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (inj₁ 0<r′) =
+    bwdP ms₁ 0<s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ 0<r′
+  bwd-cases {x} ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (inj₂ r′≤0) =
+    bwdN {x} ms₁ 1≤s 0<m m≤1 0<ε εε hs hr r<r′ r′≤0
+
   bwd-contra : ∀ {x s} → BndQ x → 1ℚᵘ ≤ s → mem x s → (∀ q → mem (logP x) q → Le q s) → ⊥
   bwd-contra {x} {s} bx 1≤s ms noLe =
     let 0<s = <-≤-trans 0<1 1≤s
@@ -186,13 +194,7 @@ module LogCore (lem : LEM₀) where
         B , 0<B , bd = bnd-pos {x} bx
         r , mr , hr = near-sup-bnd (logP x) B {ε} (logP-bd 0<B bd) 0<ε
         r′ , r<r′ , mr′ = open′ (logP x) mr
-    in cases ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (pos-or-nonpos r′)
-    where
-      cases : ∀ {s₁ m ε r r′} → mem x s₁ → 0ℚᵘ < s → 1ℚᵘ ≤ s → 0ℚᵘ < m → m ≤ 1ℚᵘ → 0ℚᵘ < ε → ε + ε < m →
-        s * cst m < s₁ → (∀ q → mem (logP x) q → Le q s) → (∀ q → mem (logP x) q → q ≤ r + ε) → r < r′ →
-        mem (logP x) r′ → 0ℚᵘ < r′ ⊎ r′ ≤ 0ℚᵘ → ⊥
-      cases ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (inj₁ 0<r′) = bwdP ms₁ 0<s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ 0<r′
-      cases ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (inj₂ r′≤0) = bwdN {x} ms₁ 1≤s 0<m m≤1 0<ε εε hs hr r<r′ r′≤0
+    in bwd-cases {x} ms₁ 0<s 1≤s 0<m m≤1 0<ε εε hs noLe hr r<r′ mr′ (pos-or-nonpos r′)
 
   -- the lower half of the characterisation
   logP-ge-bwd : ∀ x → BndQ x → x ⊑ expC lem (logP x)

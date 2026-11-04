@@ -141,16 +141,15 @@ module LogNeg (lem : LEM₀) where
   exp-inj : ∀ {a b} → expC lem a ≋ expC lem b → a ≋ b
   exp-inj {a} {b} h = ≋-trans (≋-sym (log-exp-P a)) (≋-trans (logP-cong h) (log-exp-P b))
 
+  logmul-eq : ∀ x y d dx dy → ((x ⊗ y) ⊗ d) ⊗ (dx ⊗ dy) ≋ ((x ⊗ dx) ⊗ (y ⊗ dy)) ⊗ d
+  logmul-eq = solve 5 (λ x y d dx dy → ((x :* y) :* d) :* (dx :* dy) := ((x :* dx) :* (y :* dy)) :* d) refl
+
   -- the exponentials of both sides of log (x y) + log x⁻ + log y⁻ = log x⁺ + log y⁺ + log (x y)⁻ agree
   logmul-exp : ∀ {x y} → PosQ′ x → PosQ′ y → PosQ′ (x ⊗ y) → BndQ x → BndQ y → BndQ (x ⊗ y) →
     expC lem (logP (x ⊗ y) ⊕ (logN x ⊕ logN y)) ≋ expC lem ((logP x ⊕ logP y) ⊕ logN (x ⊗ y))
   logmul-exp {x} {y} px py pxy bx by bxy = ≋-trans (Add.exp-add lem (logP (x ⊗ y)) (logN x ⊕ logN y))
     (≋-trans (⊗-cong (≋-sym (UD pxy bxy)) (Add.exp-add lem (logN x) (logN y)))
-      (≋-trans eq (≋-trans (⊗-cong (⊗-cong (UD px bx) (UD py by)) (≋-refl {expC lem (logN (x ⊗ y))}))
-        (≋-sym (≋-trans (Add.exp-add lem (logP x ⊕ logP y) (logN (x ⊗ y)))
-          (⊗-cong (Add.exp-add lem (logP x) (logP y)) (≋-refl {expC lem (logN (x ⊗ y))})))))))
-    where
-      eq : ((x ⊗ y) ⊗ expC lem (logN (x ⊗ y))) ⊗ (expC lem (logN x) ⊗ expC lem (logN y)) ≋
-           ((x ⊗ expC lem (logN x)) ⊗ (y ⊗ expC lem (logN y))) ⊗ expC lem (logN (x ⊗ y))
-      eq = solve 5 (λ x y d dx dy → ((x :* y) :* d) :* (dx :* dy) := ((x :* dx) :* (y :* dy)) :* d) refl
-             x y (expC lem (logN (x ⊗ y))) (expC lem (logN x)) (expC lem (logN y))
+      (≋-trans (logmul-eq x y (expC lem (logN (x ⊗ y))) (expC lem (logN x)) (expC lem (logN y)))
+        (≋-trans (⊗-cong (⊗-cong (UD px bx) (UD py by)) (≋-refl {expC lem (logN (x ⊗ y))}))
+          (≋-sym (≋-trans (Add.exp-add lem (logP x ⊕ logP y) (logN (x ⊗ y)))
+            (⊗-cong (Add.exp-add lem (logP x) (logP y)) (≋-refl {expC lem (logN (x ⊗ y))})))))))

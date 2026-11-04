@@ -51,6 +51,23 @@ module LogRecip (lem : LEM₀) where
     ; q (inj₂ (r , s , 0<r , 0<s , (p , r<p , f) , ms , h)) →
         ≤-<-trans h (<-trans (*-mono-<-posʳ 0<s r<p) (f s ms)) }
 
+  -- if there is no near-maximal element, every positive element has a larger one
+  stepG : ∀ (S : Cut) ρ → 0ℚᵘ < ρ → (Σ ℚᵘ (λ s → mem S s × 0ℚᵘ < s × (∀ s′ → mem S s′ → ρ * s′ < s)) → ⊥) →
+    ∀ s → mem S s → 0ℚᵘ < s → Σ ℚᵘ (λ s′ → mem S s′ × s ≤ ρ * s′)
+  stepG S ρ 0<ρ no s ms 0<s with lem (Σ ℚᵘ (λ s′ → mem S s′ × s ≤ ρ * s′))
+  ... | inj₁ w = w
+  ... | inj₂ none = ⊥-elim (no (s , ms , 0<s , λ s′ ms′ → not-≤⇒< (λ le → none (s′ , ms′ , le))))
+
+  -- the chain s₀ + n (1 − ρ) s₀ ≤ sₙ
+  chainG : ∀ (S : Cut) {s₀ ρ} → 0ℚᵘ < ρ → ρ < 1ℚᵘ → 0ℚᵘ < s₀ → mem S s₀ →
+    (∀ s → mem S s → 0ℚᵘ < s → Σ ℚᵘ (λ s′ → mem S s′ × s ≤ ρ * s′)) →
+    ∀ n → Σ ℚᵘ (λ s → mem S s × s₀ + nat n * ((1ℚᵘ + - ρ) * s₀) ≤ s)
+  chainG S {s₀} 0<ρ ρ<1 0<s₀ m₀ step zero =
+    s₀ , m₀ , ≤-≃ (≃-trans (+-cong (≃-refl {s₀}) (*-zeroˡ _)) (+-identityʳ s₀))
+  chainG S {s₀} 0<ρ ρ<1 0<s₀ m₀ step (suc n) with chainG S 0<ρ ρ<1 0<s₀ m₀ step n
+  ... | s , ms , h with step s ms (<-≤-trans 0<s₀ (chain-base n (*-pos (pos-diff ρ<1) 0<s₀) h))
+  ... | s′ , ms′ , hs = s′ , ms′ , bump n 0<ρ ρ<1 0<s₀ h hs
+
   -- a near-maximal element of a bounded cut with a positive element
   near-maxG : ∀ (S : Cut) B → (∀ s → mem S s → s < B) → ∀ {s₀} → 0ℚᵘ < s₀ → mem S s₀ → ∀ ρ → 0ℚᵘ < ρ → ρ < 1ℚᵘ →
     Σ ℚᵘ (λ s → mem S s × 0ℚᵘ < s × (∀ s′ → mem S s′ → ρ * s′ < s))
@@ -58,24 +75,15 @@ module LogRecip (lem : LEM₀) where
     with lem (Σ ℚᵘ (λ s → mem S s × 0ℚᵘ < s × (∀ s′ → mem S s′ → ρ * s′ < s)))
   ... | inj₁ w = w
   ... | inj₂ no = ⊥-elim (<-irrefl ≃-refl (≤-<-trans (≤-trans arch-le (≤-trans (≤-≃ (≃-sym (+-identityˡ (nat k * c))))
-        (≤-trans (+-mono-≤ (<-≤ 0<s₀) (≤-refl {nat k * c})) lo))) (bd s₁ ms₁)))
+        (≤-trans (+-mono-≤ (<-≤ 0<s₀) (≤-refl {nat k * c})) lo))) (bd _ ms₁)))
     where
-      step : ∀ s → mem S s → 0ℚᵘ < s → Σ ℚᵘ (λ s′ → mem S s′ × s ≤ ρ * s′)
-      step s ms 0<s with lem (Σ ℚᵘ (λ s′ → mem S s′ × s ≤ ρ * s′))
-      ... | inj₁ w = w
-      ... | inj₂ none = ⊥-elim (no (s , ms , 0<s , λ s′ ms′ → not-≤⇒< (λ le → none (s′ , ms′ , le))))
       c = (1ℚᵘ + - ρ) * s₀
       0<c = *-pos (pos-diff ρ<1) 0<s₀
-      chain : ∀ n → Σ ℚᵘ (λ s → mem S s × s₀ + nat n * c ≤ s)
-      chain zero = s₀ , m₀ , ≤-≃ (≃-trans (+-cong (≃-refl {s₀}) (*-zeroˡ c)) (+-identityʳ s₀))
-      chain (suc n) with chain n
-      ... | s , ms , h with step s ms (<-≤-trans 0<s₀ (chain-base n 0<c h))
-      ... | s′ , ms′ , hs = s′ , ms′ , bump n 0<ρ ρ<1 0<s₀ h hs
+      ch = chainG S 0<ρ ρ<1 0<s₀ m₀ (stepG S ρ 0<ρ no)
       k = proj₁ (arch B 0<c)
       arch-le = proj₂ (arch B 0<c)
-      s₁ = proj₁ (chain k)
-      ms₁ = proj₁ (proj₂ (chain k))
-      lo = proj₂ (proj₂ (chain k))
+      ms₁ = proj₁ (proj₂ (ch k))
+      lo = proj₂ (proj₂ (ch k))
 
   reachG : ∀ (S : Cut) {q q′ s} → 0ℚᵘ ≤ q → q < q′ → 0ℚᵘ < s → mem S s →
     (∀ s′ → mem S s′ → q′ * s′ < s) → mem (recC S ⊗ S) q
