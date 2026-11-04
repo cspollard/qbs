@@ -1391,21 +1391,21 @@ measurability and arithmetic lemma would be rebuilt.
   equivalence), `_+∞_`, scaling by finite nonnegative constants, `ι∞ : Sg → Sg∞`, `top∞` (+∞), order `_≤∞_`
   (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Specific to lower reals (`infC` is +∞; transitivity uses
   `MonusAlg.cut-total`), so it lives under `Continuous/` (no `Analysis` module imports `Continuous`).
-- 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
+- [done] 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
   ∫ f⁻ finite only (positive part arbitrary), with `Ex∞-ι` (agrees with `ι∞ (Ex p f i)` when both are finite),
   `Ex∞-+`, `Ex∞-mono`, and `Ex∞-fin` (finite when ∫ f⁺ is); `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
   by `∫ᴹ-addX`), linearity `Ex-+`, `Ex-neg`, `Ex-scale`, `Ex-const` (probability, via `prob-mass`), monotonicity in
   cross-added form, `Int-dom` (|f| ≤ g with ∫ g finite), `Int-+`, `Int-scale`.
-- 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
+- [done] 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
   `E-atᴵ p t ≃ Ex (ιPre p) (toSgT t) _`, so `var-gaussR`, `var-affI`, `ExpDistVar`, `GaussRealAbs` port by one lemma.
-- 35 `Continuous/SignedLimits`: convergence in `Sg` (`SgConv`, tolerances ½ᵏ, as `ConvEps.SConv` on representatives);
+- [done] 35 `Continuous/SignedLimits`: convergence in `Sg` (`SgConv`, tolerances ½ᵏ, as `ConvEps.SConv` on representatives);
   `dct-Ex`: `dct-signed` restated as Ex f n → Ex f.  Then differentiation under the integral along h = ½ⁿ:
   difference quotients 2ⁿ (f(θ + ½ⁿ) − f(θ)) converging pointwise to f′ and dominated by g give
   2ⁿ (Ex f(θ + ½ⁿ) − Ex f(θ)) → Ex f′ (no division needed).
 - 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
   integrals are finite off a null set; cut there (`NullInf.finχ`) to get a signed test on Y, and
   Ex (s ⊗ t) f ≃ Ex t (inner f); independence `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f *S Ex t g`.
-- 37 `Continuous/SignedLog` (needs only 32a): for 0 < x < ∞ (bounded above and below by rationals),
+- [done] 37 `Continuous/SignedLog` (needs only 32a): for 0 < x < ∞ (bounded above and below by rationals),
   `logP`, `logN` characterised by e^{logP x} ≈ x on [1, ∞) and e^{−logN x} ≈ x on (0, 1] (definitions left to the
   agent, suggested in the header), `logS x : Sg`, one-sided `log∞` and `nlog∞` (−log 0 = ∞); `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
   r ↦ log⁺/log⁻ (h r) for use as test parts.
@@ -1434,6 +1434,17 @@ Estimated sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 2
 `Bnd (pos∞ y)`, witness 0 in the infinite case; `≤∞-antisym` with witness k₁ + k₂.  Pitfall again: `with` on cut
 terms hung Agda (> 5 min) in a first draft of `InfAlg`.  Timings (sequential, cold `.agdai`): InfAlg 6.5 s / 0.94 GB,
 SignedTest 7.6 s / 1.06 GB, SignedInf 9.3 s / 1.10 GB.  longcheck still 35.
+
+**Outcome, round 2 (2026-11-04).** 33, 34, 35 and 37 done, statements unchanged (two re-wrapped).  33–35: helper
+`Continuous/SignedLimitsAlg` (`cancel-le`, ≤-cancellation by a finite value, absent elsewhere; tolerance scaling);
+the `E-atᴵ` bridge is two lemmas `∫ι`/`∫ιW` (∫ᴹ (ιPre P) is the pulled-back `J`); `deriv-Ex` from `dct-Ex` and
+linearity of `Ex`; `SgConv-scale` needs tolerance ½^(m+k) with c⁺ + c⁻ ≤ m.  37: route changed — `logP` via a
+clipped rational cut and near-sup (`LogRat`, `LogCore`); `logN x = logP (recC (x ⊓ 1))` with a reciprocal cut
+(`LogRecip`, generalising `NegExp.near-max`); `log-mul` by exponentiating and injectivity of exp (`LogNeg`);
+`log-exp`'s `BndQ` hypothesis turned out unused.  I wrapped one 143-column line (SignedLimits) and split one
+19-line declaration (LogRat) the agents missed.  Timings (sequential, cold `.agdai`): SignedLimitsAlg 8.6 s / 1.02 GB,
+SignedExpect 8.7 s / 1.22 GB, SignedTransport 8.6 s / 1.22 GB, SignedLimits 10.0 s / 1.22 GB, LogRat 3.6 s / 0.50 GB,
+LogRecip 3.5 s / 0.55 GB, LogCore 9.5 s / 1.32 GB, LogNeg 4.6 s / 0.65 GB, SignedLog 7.0 s / 1.06 GB.  longcheck 35.
 
 **Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
 E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood

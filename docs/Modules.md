@@ -274,6 +274,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueShiftCut` | 81 | lem | The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`). |
 | `QBS.Continuous.LipTest` | 91 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.LipTestAlg` | 249 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
+| `QBS.Continuous.LogCore` | 281 | lem | The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (plan 03, "Signed layer", helper for `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`). |
+| `QBS.Continuous.LogNeg` | 156 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
+| `QBS.Continuous.LogRat` | 160 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
+| `QBS.Continuous.LogRecip` | 131 | lem | The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
 | `QBS.Continuous.Monad` | 433 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.MonoTestAlg` | 117 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
@@ -304,9 +308,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedExpect` | 159 | lem | Expectations of signed tests against any s-finite measure (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedFubini` | 76 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedInf` | 214 | lem | Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04). |
-| `QBS.Continuous.SignedLimits` | 135 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |
-| `QBS.Continuous.SignedLog` | 123 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedLog` | 151 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |

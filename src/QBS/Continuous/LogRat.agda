@@ -51,6 +51,13 @@ cst m = 1ℚᵘ + (m + m * m)
 0<cst : ∀ {m} → 0ℚᵘ < m → 0ℚᵘ < cst m
 0<cst 0<m = +-pos 0<1 (+-pos 0<m (*-pos 0<m 0<m))
 
+-- the inverse of 1 + (s + s) is at most 1
+inv-le1 : ∀ {s t} → 0ℚᵘ < s → 0ℚᵘ < t → t * (1ℚᵘ + (s + s)) ≃ 1ℚᵘ → t ≤ 1ℚᵘ
+inv-le1 {s} {t} 0<s 0<t ht = ≤-trans (≤-≃ (≃-sym (P-id t))) (≤-trans (*-mono-≤-nn (<-≤ 0<t) 1≤L) (≤-≃ ht))
+  where
+    1≤L : 1ℚᵘ ≤ 1ℚᵘ + (s + s)
+    1≤L = <-≤ (lt-add {1ℚᵘ} (+-pos 0<s 0<s))
+
 -- a small m with (s + s) m < d, for d ≤ 1
 small-d : ∀ {s d} → 0ℚᵘ < s → 0ℚᵘ < d → d ≤ 1ℚᵘ → Σ ℚᵘ (λ m → 0ℚᵘ < m × m ≤ 1ℚᵘ × (s + s) * m < d)
 small-d {s} {d} 0<s 0<d d≤1 = m , 0<m , m≤1 , ≃-<ʳ eq (lt-add {(s + s) * m} 0<m)
@@ -60,10 +67,7 @@ small-d {s} {d} 0<s 0<d d≤1 = m , 0<m , m≤1 , ≃-<ʳ eq (lt-add {(s + s) * 
     t = proj₁ (inv 0<L)
     ht = proj₂ (inv 0<L)
     0<t = pos-inv 0<L ht
-    1≤L : 1ℚᵘ ≤ L
-    1≤L = <-≤ (lt-add {1ℚᵘ} (+-pos 0<s 0<s))
-    t≤1 : t ≤ 1ℚᵘ
-    t≤1 = ≤-trans (≤-≃ (≃-sym (P-id t))) (≤-trans (*-mono-≤-nn (<-≤ 0<t) 1≤L) (≤-≃ ht))
+    t≤1 = inv-le1 0<s 0<t ht
     m = d * t
     0<m = *-pos 0<d 0<t
     m≤1 : m ≤ 1ℚᵘ
