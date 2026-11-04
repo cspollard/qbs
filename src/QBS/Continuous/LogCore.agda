@@ -22,11 +22,15 @@ open import QBS.Analysis.LowerReals
 open Cut
 open _⊑_
 open import QBS.Analysis.LowerRealsNear using (BndQ; module Near)
+open import Level using (lift)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import QBS.Analysis.ExpLower
 open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
+open import QBS.Borel.Core using (inter₂; union₂)
+open import QBS.Analysis.Meas using (module Meas)
+open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Continuous.LogRat
 open import QBS.Classical using (LEM₀)
 
@@ -44,6 +48,8 @@ module LogCore (lem : LEM₀) where
   open Near lem using (near-sup-bnd)
   open NegExp lem using (negExp; negExp-expC-nat)
   open Exp (LowerRealsOmega lem) using (natE)
+  open Meas lem using (Meas; ex-enum)
+  open LevelSets lem using (borel-prop)
 
   logP : Cut → Cut
   logP x = record
@@ -263,3 +269,10 @@ module LogCore (lem : LEM₀) where
 
   log-exp-P : ∀ a → logP (expC lem a) ≋ a
   log-exp-P a = logP-exp-fwd a , logP-exp-bwd a
+
+  -- measurability of r ↦ logP (h r)
+  Meas-logP : ∀ {h} → Meas h → Meas (λ r → logP (h r))
+  Meas-logP {h} mh q = union₂ (borel-prop (q < 0ℚᵘ))
+    (ex-enum (λ p c → (q < p) × Σ ℚᵘ (λ s → mem (h (lift c)) s × Le p s))
+      (λ p → inter₂ (borel-prop (q < p)) (ex-enum (λ s c → mem (h (lift c)) s × Le p s)
+        (λ s → inter₂ (mh s) (borel-prop (Le p s))))))
