@@ -99,14 +99,16 @@ module SignedExpect (lem₁ : LEM₁) where
       (trans (∫ᴹ-cong p {addX (posT f) (negT g)} {addX (posT g) (negT f)} e) (∫+ p (posT g) (negT f)))) refl)
 
     -- integrability
-    Int-dom : ∀ p (f : SgT X) (g : Hom S X WQ) → Bnd (∫ᴹ {X} p g) → (∀ x → at⁺ f x + at⁻ f x ≤ map g ⟨$⟩ x) → Int p f
+    Int-dom : ∀ p (f : SgT X) (g : Hom S X WQ) → Bnd (∫ᴹ {X} p g) →
+      (∀ x → at⁺ f x + at⁻ f x ≤ map g ⟨$⟩ x) → Int p f
     Int-dom p f g bg le =
       bnd≤ (∫ᴹ-monoX p {posT f} {g} (λ x → ≤-trans (≤-+ʳ {at⁺ f x} {at⁻ f x}) (le x))) bg ,
       bnd≤ (∫ᴹ-monoX p {negT f} {g} (λ x → ≤-trans (≤-trans (≤-+ʳ {at⁻ f x} {at⁺ f x})
         (≤-reflexive (+-comm (at⁻ f x) (at⁺ f x)))) (le x))) bg
 
     Int-+ : ∀ p {f g : SgT X} → Int p f → Int p g → Int p (f +T g)
-    Int-+ p (i⁺ , i⁻) (j⁺ , j⁻) = bnd≈ (∫+ p _ _) (Is-+ {_} {_} i⁺ j⁺) , bnd≈ (∫+ p _ _) (Is-+ {_} {_} i⁻ j⁻)
+    Int-+ p (i⁺ , i⁻) (j⁺ , j⁻) =
+      bnd≈ (∫+ p _ _) (Is-+ {_} {_} i⁺ j⁺) , bnd≈ (∫+ p _ _) (Is-+ {_} {_} i⁻ j⁻)
 
     Int-neg : ∀ p {f : SgT X} → Int p f → Int p (-T f)
     Int-neg p (i⁺ , i⁻) = i⁻ , i⁺
@@ -146,7 +148,8 @@ module SignedExpect (lem₁ : LEM₁) where
     Int⁻-+ : ∀ p {f g : SgT X} → Int⁻ p f → Int⁻ p g → Int⁻ p (f +T g)
     Int⁻-+ p i j = bnd≈ (∫+ p _ _) (Is-+ {_} {_} i j)
 
-    Ex∞-+ : ∀ p (f g : SgT X) (i : Int⁻ p f) (j : Int⁻ p g) → Ex∞ p (f +T g) (Int⁻-+ p i j) ≃∞ Ex∞ p f i +∞ Ex∞ p g j
+    Ex∞-+ : ∀ p (f g : SgT X) (i : Int⁻ p f) (j : Int⁻ p g) →
+      Ex∞ p (f +T g) (Int⁻-+ p i j) ≃∞ Ex∞ p f i +∞ Ex∞ p g j
     Ex∞-+ p f g i j = mk≃∞ 0# Is-0 (sumEq p f g)
 
     Ex∞-mono : ∀ p (f g : SgT X) (i : Int⁻ p f) (j : Int⁻ p g) →
