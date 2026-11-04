@@ -3,6 +3,8 @@
 -- Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer").
 --   * `not-bnd-top`: a value with no natural bound is ∞;  `∞-abs`: ∞ + b ≈ ∞;
 --   * `cancel-bnd` (re-exported from `BoundedCancel` for `lemOf lem₁`);
+--   * `top-sum`, `top-ge`, `sum-top-bnd`, `top-left`, `top-right-le`: ∞ absorbs sums and bounds everything, and a sum
+--     p + n′ + k with n′, k bounded equal to (or above) ∞ has p equal to ∞;
 --   * `bnd-top-⊥`: ∞ is not bounded;  `fin-sum-⊥`: x + a ≈ ∞ with a bounded forces x unbounded.
 -- Route: `MonusAlg.cut-total` against `nat n` (excluded middle), with `ExpLower.natE≋` for membership in `nat n`;
 -- `bnd-rat` for the rational bound of a bounded value.
@@ -36,7 +38,7 @@ open _⊑_ using (ap)
 
 module InfAlg (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _≤_; _+_; ≤-trans; ≤-reflexive; ≤-+ʳ; +-comm; ≤-antisym; trans; sym)
+  open OmegaSemiring A using (_≈_; _≤_; _+_; ≤-trans; ≤-reflexive; ≤-+ʳ; +-comm; +-cong; ≤-antisym; trans; sym)
     renaming (Carrier to ∣A∣)
   open Bounded A using (Bnd; nat; finite)
   open Arch (lowerRealsArch (lemOf lem₁)) using (half) renaming (half+half to hh)
@@ -72,3 +74,23 @@ module InfAlg (lem₁ : LEM₁) where
   fin-sum-⊥ : ∀ {x a} → Bnd a → x + a ≈ infC → Bnd x → ⊥
   fin-sum-⊥ {x} {a} ba e bx = bnd-top-⊥ (Is-resp {x + a} {infC} e (Is-+ {x} {a} bx ba))
     where open import QBS.Analysis.Signed using (SubSemiring); open SubSemiring finite
+
+  top-sum : ∀ {p} → p ≈ infC → ∀ b → p + b ≈ infC
+  top-sum h b = trans (+-cong h (OmegaSemiring.refl A)) (∞-abs b)
+
+  top-ge : ∀ {x} → x ≈ infC → ∀ y → y ≤ x
+  top-ge {x} h y = ≤-trans (mk⊑ (λ _ _ → tt)) (≤-reflexive (sym h))
+
+  sum-top-bnd : ∀ {x a} → Bnd a → x + a ≈ infC → x ≈ infC
+  sum-top-bnd {x} ba e = not-bnd-top x (fin-sum-⊥ ba e)
+
+  -- p + n′ + k ≈ p′ + n + k with p′ = ∞ and n′, k bounded gives p = ∞
+  top-left : ∀ {p p′ n n′ k} → Bnd n′ → Bnd k → p′ ≈ infC → p + n′ + k ≈ p′ + n + k → p ≈ infC
+  top-left {p} {n′ = n′} {k} bn′ bk h e =
+    sum-top-bnd {p} {n′} bn′ (sum-top-bnd {p + n′} {k} bk (trans e (top-sum (top-sum h _) _)))
+
+  -- the same for `≤`: ∞ ≈ p′ + n″ + k ≤ p″ + n′ + k gives p″ = ∞
+  top-right-le : ∀ {p′ p″ n′ n″ k} → Bnd n′ → Bnd k → p′ ≈ infC → p′ + n″ + k ≤ p″ + n′ + k → p″ ≈ infC
+  top-right-le {p″ = p″} {n′} {n″} {k} bn′ bk h le =
+    sum-top-bnd {p″} {n′} bn′ (sum-top-bnd {p″ + n′} {k} bk
+      (top-⊑ {p″ + n′ + k} (≤-trans (≤-reflexive (sym (top-sum (top-sum h n″) k))) le)))
