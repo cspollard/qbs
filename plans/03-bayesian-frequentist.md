@@ -1356,3 +1356,62 @@ parts.
   (Jacobians), and there is no value for π, so Gaussian vectors are characterised by construction and moments.
 - Uniqueness of product measures from their values on rectangles: needs a π-λ style argument; a separate project.
 
+## Signed layer (planned 2026-11-04; not skeletoned yet; branch `signed` when started)
+
+Goal: one vocabulary for signed tests and their expectations against any s-finite measure, so that signed
+quantities (centred moments, covariances, scores, log-likelihood ratios, a signed log) are stated uniformly.  The
+[0, ∞] core stays as it is: `OmegaSemiring`, `J`, `Meas` and monotone convergence are what make the integral total
+and computable (about 217 of 296 modules depend on them), and the signed integral is defined from it,
+∫ f = ∫ f⁺ − ∫ f⁻, under an integrability condition, as in standard measure theory.  Replacing [0, ∞] by [−∞, ∞]
+throughout is rejected: lower reals cannot be negated, the integral would stop being total (∞ − ∞), and every
+measurability and arithmetic lemma would be rebuilt.
+
+**Decisions.**
+- Signed values are `Sg` (`Analysis/Signed`, `SignedOmega.Bounded A`): finite differences.  No ±∞ in this layer;
+  quantities that can be +∞ (KL) stay in [0, ∞] or carry a finiteness hypothesis.
+- A signed test on X is a pair of tests `Hom S X WQ` (as `dct-signed` uses), not of `CutQ` tests; equality is
+  cross-added pointwise, f⁺ + g⁻ ≈ g⁺ + f⁻ (parts may be infinite pointwise).
+- The expectation is for s-finite `∫ᴹ`, with integrability `Bnd (∫ᴹ p f⁺) × Bnd (∫ᴹ p f⁻)` as a separate argument
+  (values must not depend on the proof).  The probability monad enters by `ιPre`; existing `ITest`/`E-atᴵ` results
+  are bridged, not redone.
+- Avoid records inside parameterised modules where possible (expensive to check: `Analysis/Exp` header,
+  `Inference/Sampler`); a plain Σ or a top-level record.
+
+**Modules (sketch; numbering continues plan 03).**
+- 32 `Continuous/SignedTest`: `SgT X` (parts `pos`, `neg`), `_≐_` with refl/sym/trans; pointwise `_+T_`, `-T_`,
+  `scaleT` (signed constant, via `mulH` and `constW`), `_*T_` (f⁺g⁺ + f⁻g⁻, f⁺g⁻ + f⁻g⁺), `constT`, `fromW` (a
+  nonnegative test), precomposition `_∘T_`; on the real line `idT` (x = x⁺ − x⁻ via `copairH`) and `sqT`.  Bridge
+  `CutQ` ↔ `WQ` (identity homs) so `ITest` parts convert.
+- 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
+  by `∫ᴹ-addX`), linearity `Ex-+`, `Ex-neg`, `Ex-scale`, `Ex-const` (probability, via `prob-mass`), monotonicity in
+  cross-added form, `Int-dom` (|f| ≤ g with ∫ g finite), `Int-+`, `Int-scale`.
+- 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
+  `E-atᴵ p t ≃ Ex (ιPre p) (toSgT t) _`, so `var-gaussR`, `var-affI`, `ExpDistVar`, `GaussRealAbs` port by one lemma.
+- 35 `Continuous/SignedLimits`: convergence in `Sg` (`SgConv`, tolerances ½ᵏ, as `ConvEps.SConv` on representatives);
+  `dct-Ex`: `dct-signed` restated as Ex f n → Ex f.  Then differentiation under the integral along h = ½ⁿ:
+  difference quotients 2ⁿ (f(θ + ½ⁿ) − f(θ)) converging pointwise to f′ and dominated by g give
+  2ⁿ (Ex f(θ + ½ⁿ) − Ex f(θ)) → Ex f′ (no division needed).
+- 36 `Continuous/SignedFubini`: for s ⊗ t (`Product.prodPre`) and an integrable signed test on X × Y, the inner
+  integrals are finite off a null set; cut there (`NullInf.finχ`) to get a signed test on Y, and
+  Ex (s ⊗ t) f ≃ Ex t (inner f); independence `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f *S Ex t g`.
+- 37 `Analysis/SignedLog` (independent of 32–36): for 0 < x < ∞ (bounded above and below by rationals),
+  `log⁺ x = {q | ∃ s ∈ x, eᵠ < s}` truncated at 0 and `log⁻ x = {q | ∃ p > q, ∀ s ∈ x, s eᵖ < 1}` (as `NegExp`
+  builds e^{−x}), `logS x : Sg`; `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
+  r ↦ log⁺/log⁻ (h r) for use as test parts.
+
+**Order of agents.** Two at a time: one chain 32 → 33 → 34 → 35, and 37 alongside; then 36.  Estimated sizes:
+32 ≈ 200 lines, 33 ≈ 250, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
+
+**Risks.**
+- 33: `Sg` elements carry `Bnd` proofs; `Ex-irr` must hold so that proofs never leak into statements.
+- 34: `CutQ` and `WQ` are distinct QBSs on the same carrier; the bridge must be definitional enough that
+  `E-atᴵ`'s pulled-back `J` matches `∫ᴹ (ιPre p)` (`ψ` unfolds to weight · f).
+- 35: the derivative form needs f(θ + ½ⁿ) as a family of signed tests indexed by the parameter; stated for an
+  explicit family, not a general parametric model.
+- 36: inner integrals are finite only almost everywhere; relies on `NullInf` and on Fubini for each part.
+- 37: `log⁻` needs x bounded below by a positive rational; `log-mul` needs `exp` addition (`Analysis/Exp`) and
+  near-sup arguments (excluded middle) for the reverse inequalities.
+
+**Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
+E_P[log dP/dQ] (via 37), covariance matrices and the affine rule (multidimensional directions), signed Fubini.
+
