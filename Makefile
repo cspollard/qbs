@@ -8,11 +8,11 @@
 #                      files with holes get --allow-unsolved-metas, their importers lose --safe).  Any other
 #                      error or a postulate still fails; files with holes are listed with their counts
 #                      (scripts/holes.py counts the `?` tokens, since Agda prints nothing for them).
-#   make html          generate build/Everything.agda (imports every module), the Agda HTML documentation in
+#   make htmlserve     generate build/Everything.agda (imports every module), the Agda HTML documentation in
 #                      html/ (from the progress overlay, so skeleton modules with holes are included), then
 #                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
 #                      only serves.
-#   make htmlbuild     the same without serving (used by .github/workflows/pages.yml, which publishes html/ to
+#   make html          the same without serving (used by .github/workflows/pages.yml, which publishes html/ to
 #                      GitHub Pages; html/index.html is a copy of Everything.html, listing every module).
 #   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
 #                      known offenders are listed in scripts/longdecls.baseline, anything new fails.  Needs no Agda.
@@ -59,7 +59,7 @@ progress:
 	@$(MAKE) --no-print-directory -C $(PROGDIR) -f $(CURDIR)/Makefile report MODE=progress SRC=src HOLES=$(CURDIR)/scripts/holes.py
 
 PORT ?= 8081
-htmlbuild:
+html:
 	@python3 scripts/progress-overlay.py $(SRC) $(PROGDIR)
 	@mkdir -p build $(PROGDIR)/build html
 	@{ echo '{-# OPTIONS --without-K #-}'; echo 'module Everything where'; \
@@ -67,7 +67,7 @@ htmlbuild:
 	@cp build/Everything.agda $(PROGDIR)/build/Everything.agda
 	@cd $(PROGDIR) && $(AGDA) -i build --html --html-dir=$(CURDIR)/html build/Everything.agda
 	@cp html/Everything.html html/index.html
-html: htmlbuild
+htmlserve: htmlbuild
 	@$(MAKE) --no-print-directory serve
 serve:
 	@echo "serving html/ at http://$$(ipconfig getifaddr en0 2>/dev/null || hostname):$(PORT)/"
