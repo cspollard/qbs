@@ -1383,11 +1383,11 @@ measurability and arithmetic lemma would be rebuilt.
   `Inference/Sampler`); a plain Σ or a top-level record.
 
 **Modules (sketch; numbering continues plan 03).**
-- 32 `Continuous/SignedTest`: `SgT X` (parts `pos`, `neg`), `_≐_` with refl/sym/trans; pointwise `_+T_`, `-T_`,
+- [done] 32 `Continuous/SignedTest`: `SgT X` (parts `pos`, `neg`), `_≐_` with refl/sym/trans; pointwise `_+T_`, `-T_`,
   `scaleT` (signed constant, via `mulH` and `constW`), `_*T_` (f⁺g⁺ + f⁻g⁻, f⁺g⁻ + f⁻g⁺), `constT`, `fromW` (a
   nonnegative test), precomposition `_∘T_`; on the real line `idT` (x = x⁺ − x⁻ via `copairH`) and `sqT`.  Bridge
   `CutQ` ↔ `WQ` (identity homs) so `ITest` parts convert.
-- 32a `Continuous/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
+- [done] 32a `Continuous/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
   equivalence), `_+∞_`, scaling by finite nonnegative constants, `ι∞ : Sg → Sg∞`, `top∞` (+∞), order `_≤∞_`
   (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Specific to lower reals (`infC` is +∞; transitivity uses
   `MonusAlg.cut-total`), so it lives under `Continuous/` (no `Analysis` module imports `Continuous`).
@@ -1427,6 +1427,13 @@ Estimated sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 2
 - 36: inner integrals are finite only almost everywhere; relies on `NullInf` and on Fubini for each part.
 - 37: `log⁻` needs x bounded below by a positive rational; `log-mul` needs `exp` addition (`Analysis/Exp`) and
   near-sup arguments (excluded middle) for the reverse inequalities.
+
+**Outcome, round 1 (2026-11-04).** 32 and 32a done, statements unchanged; helper module `Continuous/InfAlg`
+(`not-bnd-top` by `cut-total`, ∞-absorption lemmas, `cancel-bnd` re-export).  `≐-trans` needs no case split
+(`FinT g` makes the middle finite; add and cancel).  `≃∞-trans`/`≤∞-trans` follow the planned LEM route on
+`Bnd (pos∞ y)`, witness 0 in the infinite case; `≤∞-antisym` with witness k₁ + k₂.  Pitfall again: `with` on cut
+terms hung Agda (> 5 min) in a first draft of `InfAlg`.  Timings (sequential, cold `.agdai`): InfAlg 6.5 s / 0.94 GB,
+SignedTest 7.6 s / 1.06 GB, SignedInf 9.3 s / 1.10 GB.  longcheck still 35.
 
 **Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
 E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood
