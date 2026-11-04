@@ -115,7 +115,8 @@ module SignedLog (lem₁ : LEM₁) where
       0<B₂ = proj₁ (proj₂ (bnd-pos {y} by))
       f : ∀ q → mem (x ⊗ y) q → q < B₁ * B₂
       f q (inj₁ lt) = <-trans lt (*-pos 0<B₁ 0<B₂)
-      f q (inj₂ (r , s , 0<r , 0<s , mr , ms , h)) = ≤-<-trans h (<-trans (*-mono-<-posʳ 0<s (proj₂ (proj₂ (bnd-pos {x} bx)) r mr))
+      f q (inj₂ (r , s , 0<r , 0<s , mr , ms , h)) = ≤-<-trans h
+        (<-trans (*-mono-<-posʳ 0<s (proj₂ (proj₂ (bnd-pos {x} bx)) r mr))
         (*-mono-<-pos 0<B₁ (proj₂ (proj₂ (bnd-pos {y} by)) s ms)))
 
   log-one : logS oneC PosQ-one BndQ-one ≃ 0S
