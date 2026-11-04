@@ -74,7 +74,8 @@ module SignedLimits (lem₁ : LEM₁) where
     (A + A₂) + (M + M₂) ≤ (L + L₂) + (B + B₂) + hp k
   plus-tol k A B A₂ B₂ L M L₂ M₂ p q = ≤-trans (≤-reflexive (solve 4
     (λ A M A₂ M₂ → (A :+ A₂) :+ (M :+ M₂) := (A :+ M) :+ (A₂ :+ M₂)) refl A M A₂ M₂))
-    (≤-trans (add-tol k p q) (≤-reflexive (+-cong (solve 4 (λ L B L₂ B₂ → (L :+ B) :+ (L₂ :+ B₂) := (L :+ L₂) :+ (B :+ B₂)) refl L B L₂ B₂) refl)))
+    (≤-trans (add-tol k p q) (≤-reflexive (+-cong (solve 4
+      (λ L B L₂ B₂ → (L :+ B) :+ (L₂ :+ B₂) := (L :+ L₂) :+ (B :+ B₂)) refl L B L₂ B₂) refl)))
 
   -- swapping the two terms on each side
   swap-tol : ∀ a b c d h → a + b ≤ c + d + h → b + a ≤ d + c + h
