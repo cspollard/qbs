@@ -1367,8 +1367,13 @@ throughout is rejected: lower reals cannot be negated, the integral would stop b
 measurability and arithmetic lemma would be rebuilt.
 
 **Decisions.**
-- Signed values are `Sg` (`Analysis/Signed`, `SignedOmega.Bounded A`): finite differences.  No ±∞ in this layer;
-  quantities that can be +∞ (KL) stay in [0, ∞] or carry a finiteness hypothesis.
+- Finite signed values are `Sg` (`Analysis/Signed`, `SignedOmega.Bounded A`).  Values in (−∞, ∞] are a second,
+  one-sided type `Sg∞` (decided 2026-11-04): pairs (p, n) with n finite and p any element of [0, ∞], equal when
+  p + n′ + c ≈ p′ + n + c for a finite c.  Addition is total (no −∞, so no ∞ − ∞) and the witness cannot collapse
+  the type, since n, n′ and c are finite; negation is not total.  `Sg` embeds into `Sg∞`.  Two-sided infinities are
+  rejected: [−∞, ∞] is not a group, the cross-added equality collapses when the witness may be ∞, and the integral
+  would stay partial anyway.  The mirror case [−∞, ∞) (log-likelihoods, log 0 = −∞) is handled by negation of
+  statements, not a third type; genuinely two-sided quantities (differential entropy) take a finiteness hypothesis.
 - A signed test on X is a pair of tests `Hom S X WQ` (as `dct-signed` uses), not of `CutQ` tests; equality is
   cross-added pointwise, f⁺ + g⁻ ≈ g⁺ + f⁻ (parts may be infinite pointwise).
 - The expectation is for s-finite `∫ᴹ`, with integrability `Bnd (∫ᴹ p f⁺) × Bnd (∫ᴹ p f⁻)` as a separate argument
@@ -1382,7 +1387,12 @@ measurability and arithmetic lemma would be rebuilt.
   `scaleT` (signed constant, via `mulH` and `constW`), `_*T_` (f⁺g⁺ + f⁻g⁻, f⁺g⁻ + f⁻g⁺), `constT`, `fromW` (a
   nonnegative test), precomposition `_∘T_`; on the real line `idT` (x = x⁺ − x⁻ via `copairH`) and `sqT`.  Bridge
   `CutQ` ↔ `WQ` (identity homs) so `ITest` parts convert.
-- 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
+- 32a `Analysis/SignedInf`: `Sg∞` over an `OmegaSemiring` with the `Bounded` finite elements: `_≃∞_` (an
+  equivalence), `_+∞_`, scaling by finite nonnegative constants, `ι∞ : Sg → Sg∞`, `top∞` (+∞), order `_≤∞_`
+  (cross-added), `+∞-mono`, `ι∞-+`, and `fromPos : ∣A∣ → Sg∞` (a value in [0, ∞]).  Generic, like `Analysis/Signed`.
+- 33 `Continuous/SignedExpect`: `Int p f`, `Ex p f i : Sg`; the one-sided expectation `Ex∞ p f i⁻ : Sg∞` for f with
+  ∫ f⁻ finite only (positive part arbitrary), with `Ex∞-ι` (agrees with `ι∞ (Ex p f i)` when both are finite),
+  `Ex∞-+`, `Ex∞-mono`, and `Ex∞-fin` (finite when ∫ f⁺ is); `Ex-irr` (independent of `i`), `Ex-cong` (from `_≐_`,
   by `∫ᴹ-addX`), linearity `Ex-+`, `Ex-neg`, `Ex-scale`, `Ex-const` (probability, via `prob-mass`), monotonicity in
   cross-added form, `Int-dom` (|f| ≤ g with ∫ g finite), `Int-+`, `Int-scale`.
 - 34 `Continuous/SignedTransport`: `Ex-map` (pushforward, `∫ᴹ-map`), `Ex-scalePre`, the bridge
@@ -1399,10 +1409,12 @@ measurability and arithmetic lemma would be rebuilt.
   builds e^{−x}), `logS x : Sg`; `log-mul` (log xy ≃ log x + log y), `log-mono`, `log-exp`, and measurability of
   r ↦ log⁺/log⁻ (h r) for use as test parts.
 
-**Order of agents.** Two at a time: one chain 32 → 33 → 34 → 35, and 37 alongside; then 36.  Estimated sizes:
-32 ≈ 200 lines, 33 ≈ 250, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
+**Order of agents.** Two at a time: one chain 32 → 32a → 33 → 34 → 35, and 37 alongside; then 36.  Estimated
+sizes: 32 ≈ 200 lines, 32a ≈ 150, 33 ≈ 300, 34 ≈ 150, 35 ≈ 250, 36 ≈ 300, 37 ≈ 300.
 
 **Risks.**
+- 32a: transitivity of `_≃∞_` adds witnesses (finite + finite), as in `Analysis/Signed`; check it does not need
+  cancellation of a possibly infinite p.
 - 33: `Sg` elements carry `Bnd` proofs; `Ex-irr` must hold so that proofs never leak into statements.
 - 34: `CutQ` and `WQ` are distinct QBSs on the same carrier; the bridge must be definitional enough that
   `E-atᴵ`'s pulled-back `J` matches `∫ᴹ (ιPre p)` (`ψ` unfolds to weight · f).
@@ -1413,5 +1425,6 @@ measurability and arithmetic lemma would be rebuilt.
   near-sup arguments (excluded middle) for the reverse inequalities.
 
 **Unlocks.** Centred variance under N(μ, s²), Fisher information as E[score²] and E[score] ≃ 0 (via 35), KL as
-E_P[log dP/dQ] (via 37), covariance matrices and the affine rule (multidimensional directions), signed Fubini.
+E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), discrete entropy and −log-likelihood
+with +∞ allowed, covariance matrices and the affine rule (multidimensional directions), signed Fubini.
 
