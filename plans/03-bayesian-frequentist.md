@@ -1324,3 +1324,35 @@ a difference is stated by cross-adding (`SConv`).
   with g = N.
 - Timings (orchestrator, sequential): MonusAlg 6.5 s / 1.03 GB, ConvEps 7.3 s / 1.09 GB, NullInf 8.7 s / 1.07 GB,
   DominatedSigned 7.8 s / 1.09 GB.
+
+## Directions: multidimensional (proposed 2026-11-04; not started, not skeletoned)
+
+Possible next batches, recorded for later; none is scheduled.  Statements below are sketches, not settled signatures.
+
+**On hand.** `Continuous/Product` (s-finite s ⊗ t, Fubini both orders, rectangles, marginals, `prod-cong`),
+`Continuous/LebPlane` (Lebesgue on ℝ², `area`, `∫-swap`), `Inference/ExpectationProduct` and `Inference/ExpDistPair`
+(independence for signed tests under the probability monad), `Continuous/DominatedSigned` (signed limits).
+
+**Candidate items (most general first).**
+- *Finite products.* Xⁿ as iterated `_×Q_`, the n-fold product measure by induction on n over `Product.prodPre`,
+  coordinate projections, iterated Fubini, and ∫ ∏ fᵢ(xᵢ) ≈ ∏ ∫ fᵢ.  Open: whether to index by `Fin n` or nest pairs.
+- *Moments of random vectors.* For a random vector with finite second moments: mean vector and covariance matrix as
+  signed values (`Sg`); independent coordinates have zero covariance; the affine rule mean(AX + b) = A mean + b and
+  Cov(AX + b) = A Cov(X) Aᵀ for a signed matrix A.  Route: the pushforward principle and linearity of
+  `ExpectationInt` only, so no change of variables.  Open: how to represent vectors and matrices of `Sg`.
+- *Gaussian vectors.* N(0, Iₙ) as the n-fold product of `GaussReal.gaussR`: mean 0, covariance I, E‖X‖² ≃ n (the
+  pair N(0, I₂) with E[X² + Y²] ≃ 2 is the small first case).  N(μ, AAᵀ) defined as AX + μ, with mean μ and covariance
+  AAᵀ, as a corollary of the affine rule.
+- *Variance under the measure N(μ, s²)* (one-dimensional gap, noted alongside): centred ∫ (x − μ)² dN(μ, s²) ≈ s² from
+  `GaussShift.∫-gaussμ`, a shift-then-unshift lemma (`RealShift.shiftNegRH`) and `GaussScale.second`; the signed form
+  E[X²] − (E X)² ≃ s² needs `ITest gaussμ` for X and X².  Both come in μ ≥ 0 and μ < 0 versions (`gaussμ`, `gaussμ⁻`).
+
+**Main risk.** Fubini is proved for nonnegative tests; covariances need integrable signed tests on products, i.e.
+moving `ITest`s across the product (the strength route of `ExpectationProduct`), and possibly a signed Fubini from the
+parts.
+
+**Out of scope for now.**
+- Rotation invariance of N(0, I₂) and the density of N(μ, Σ): both need change of variables in two dimensions
+  (Jacobians), and there is no value for π, so Gaussian vectors are characterised by construction and moments.
+- Uniqueness of product measures from their values on rectangles: needs a π-λ style argument; a separate project.
+
