@@ -9,8 +9,8 @@
 --     test), precomposition `_∘T_`, and on the real line `idT` (x⁺ − x⁻) and `sqT = idT *T idT`;
 --   * the bridge between the two QBSs of [0, ∞]: `toW : (X ⇒ CutQ) → (X ⇒ WQ)` and `toCut`, both the identity pointwise.
 -- Route: everything is pointwise from `FatouAux.addX`, `SFiniteReweight.mulH`, `Weights.constW` and `_∘H_`; the bridge
--- because `CutQ` and `WQ` have the same carrier and the same random elements (`Meas`).
---   Skeleton: holes first.
+-- because `CutQ` and `WQ` have the same carrier and the same random elements (`Meas`).  Transitivity of `≐` through a
+-- finite middle is `trans-core`: add c + d (finite, `InfAlg.cancel-bnd`) to both sides.
 module QBS.Continuous.SignedTest where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -28,6 +28,7 @@ open import QBS.Continuous.SignedTests using (module SignedTests)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.FatouAux using (module FatouAux)
 open import QBS.Continuous.RealLine using (module RealLine)
+open import QBS.Continuous.InfAlg using (module InfAlg)
 
 module SignedTest (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
@@ -41,6 +42,28 @@ module SignedTest (lem₁ : LEM₁) where
   open RealLine lem₁ using (RQ; copairH)
   open QBS
   open Hom
+  open InfAlg lem₁ using (cancel-bnd)
+  open OmegaSemiring A using (refl; sym; trans; +-cong; +-comm; commutativeSemiring)
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
+  open import Relation.Binary.Reasoning.Setoid (OmegaSemiring.setoid A)
+  open Bounded A using (finite)
+  open import QBS.Analysis.Signed using (SubSemiring)
+  open SubSemiring finite using (Is-+)
+
+  -- transitivity through a finite middle: a + d ≈ c + b and c + k ≈ e + d give a + k ≈ e + b
+  trans-core : ∀ a b c d e k → Bnd c → Bnd d → a + d ≈ c + b → c + k ≈ e + d → a + k ≈ e + b
+  trans-core a b c d e k bc bd p q = cancel-bnd {c + d} (Is-+ {c} {d} bc bd) (begin
+    (c + d) + (a + k) ≈⟨ solve 6 (λ a b c d e k → (c :+ d) :+ (a :+ k) := (a :+ d) :+ (c :+ k)) refl a b c d e k ⟩
+    (a + d) + (c + k) ≈⟨ +-cong p q ⟩
+    (c + b) + (e + d) ≈⟨ solve 6 (λ a b c d e k → (c :+ b) :+ (e :+ d) := (c :+ d) :+ (e :+ b)) refl a b c d e k ⟩
+    (c + d) + (e + b) ∎)
+
+  add-cong-core : ∀ a b c d a′ b′ c′ d′ → a + b′ ≈ a′ + b → c + d′ ≈ c′ + d → (a + c) + (b′ + d′) ≈ (a′ + c′) + (b + d)
+  add-cong-core a b c d a′ b′ c′ d′ p q = begin
+    (a + c) + (b′ + d′) ≈⟨ solve 6 (λ a b′ c d′ x y → (a :+ c) :+ (b′ :+ d′) := (a :+ b′) :+ (c :+ d′)) refl a b′ c d′ a a ⟩
+    (a + b′) + (c + d′) ≈⟨ +-cong p q ⟩
+    (a′ + b) + (c′ + d) ≈⟨ solve 4 (λ a′ b c′ d → (a′ :+ b) :+ (c′ :+ d) := (a′ :+ c′) :+ (b :+ d)) refl a′ b c′ d ⟩
+    (a′ + c′) + (b + d) ∎
 
   SgT : QBS S → Set₁
   SgT X = Hom S X WQ × Hom S X WQ
@@ -62,13 +85,14 @@ module SignedTest (lem₁ : LEM₁) where
   f ≐ g = ∀ x → at⁺ f x + at⁻ g x ≈ at⁺ g x + at⁻ f x
 
   ≐-refl : ∀ {X : QBS S} {f : SgT X} → f ≐ f
-  ≐-refl = ?
+  ≐-refl x = refl
 
   ≐-sym : ∀ {X : QBS S} {f g : SgT X} → f ≐ g → g ≐ f
-  ≐-sym = ?
+  ≐-sym e x = sym (e x)
 
   ≐-trans : ∀ {X : QBS S} {f g h : SgT X} → FinT g → f ≐ g → g ≐ h → f ≐ h
-  ≐-trans = ?
+  ≐-trans {f = f} {g} {h} fg pg gh x =
+    trans-core (at⁺ f x) (at⁻ f x) (at⁺ g x) (at⁻ g x) (at⁺ h x) (at⁻ h x) (proj₁ (fg x)) (proj₂ (fg x)) (pg x) (gh x)
 
   -- pointwise operations
   infixl 6 _+T_
@@ -100,16 +124,17 @@ module SignedTest (lem₁ : LEM₁) where
 
   -- pointwise algebra
   +T-pt⁺ : ∀ {X : QBS S} (f g : SgT X) x → at⁺ (f +T g) x ≈ at⁺ f x + at⁺ g x
-  +T-pt⁺ = ?
+  +T-pt⁺ f g x = refl
 
   +T-pt⁻ : ∀ {X : QBS S} (f g : SgT X) x → at⁻ (f +T g) x ≈ at⁻ f x + at⁻ g x
-  +T-pt⁻ = ?
+  +T-pt⁻ f g x = refl
 
   +T-cong : ∀ {X : QBS S} {f f′ g g′ : SgT X} → f ≐ f′ → g ≐ g′ → f +T g ≐ f′ +T g′
-  +T-cong = ?
+  +T-cong {f = f} {f′} {g} {g′} e e′ x =
+    add-cong-core (at⁺ f x) (at⁻ f x) (at⁺ g x) (at⁻ g x) (at⁺ f′ x) (at⁻ f′ x) (at⁺ g′ x) (at⁻ g′ x) (e x) (e′ x)
 
   +T-inverse : ∀ {X : QBS S} (f : SgT X) → f +T (-T f) ≐ constT (Bounded.0S A)
-  +T-inverse = ?
+  +T-inverse f x = solve 2 (λ p n → (p :+ n) :+ con 0 := con 0 :+ (n :+ p)) refl (at⁺ f x) (at⁻ f x)
 
   -- the real line: x⁺ − x⁻ (`inl x ↦ x`, `inr x ↦ −x`) and its square
   idW′ : Hom S WQ WQ
@@ -121,13 +146,13 @@ module SignedTest (lem₁ : LEM₁) where
 
   -- `CutQ` and `WQ`
   toW : ∀ {X : QBS S} → Hom S X CutQ → Hom S X WQ
-  toW = ?
+  toW f = record { map = map f ; map-random = map-random f }
 
   toCut : ∀ {X : QBS S} → Hom S X WQ → Hom S X CutQ
-  toCut = ?
+  toCut f = record { map = map f ; map-random = map-random f }
 
   toW-pt : ∀ {X : QBS S} (f : Hom S X CutQ) x → map (toW f) ⟨$⟩ x ≈ map f ⟨$⟩ x
-  toW-pt = ?
+  toW-pt f x = refl
 
   toCut-pt : ∀ {X : QBS S} (f : Hom S X WQ) x → map (toCut f) ⟨$⟩ x ≈ map f ⟨$⟩ x
-  toCut-pt = ?
+  toCut-pt f x = refl
