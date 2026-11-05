@@ -11,8 +11,10 @@
 module QBS.Continuous.SignedVarAlg where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+import Relation.Binary.PropositionalEquality as ≡
+open ≡ using (_≡_)
+open import QBS.Continuous.SignedVarRing using (module Ring)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -42,7 +44,6 @@ module SignedVarAlg (lem₁ : LEM₁) where
   open SignedExpect lem₁ using (Int; Int-dom; bnd≈; ∫+)
   open QBS
   open Hom
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
 
   -- (f − c)² expanded: f² − 2c f + c²
   cen : ∀ {X : QBS S} → SgT X → Sg → SgT X
@@ -51,118 +52,17 @@ module SignedVarAlg (lem₁ : LEM₁) where
   Sq : ∀ {X : QBS S} → SgT X → Sg → SgT X
   Sq f c = (f *T f +T scaleT (-S (c +S c)) f) +T constT (c *S c)
 
-  -- parts as pairs of polynomials
-  Pr : ℕ → Set
-  Pr n = Polynomial n × Polynomial n
-
-  infixl 6 _⊕_
-  infixl 7 _⊗_
-  _⊕_ _⊗_ : ∀ {n} → Pr n → Pr n → Pr n
-  (x , y) ⊕ (z , w) = x :+ z , y :+ w
-  (x , y) ⊗ (z , w) = x :* z :+ y :* w , x :* w :+ y :* z
-
-  ng : ∀ {n} → Pr n → Pr n
-  ng (x , y) = y , x
-
-  one two : ∀ {n} → Pr n
-  one = con 1 , con 0
-  two = one ⊕ one
-
-  -- cross-added and part-summed equations
-  cross sums : ∀ {n} → Pr n → Pr n → Pr n
-  cross (x , y) (z , w) = (x :+ w) := (z :+ y)
-  sums (x , y) (z , w) = (x :+ y) := (z :+ w)
-
-  crossS : ∀ {n} → Pr n → Pr n → Pr n
-  crossS (x , y) (z , w) = ((x :+ w) :+ con 0) := ((z :+ y) :+ con 0)
-
-  -- the polynomials of `(f − c)²`, of `Sq f c`, of `(c f)²` and of `c² f²`
-  cenP sqP sclP sclP′ : ∀ {n} → Pr n → Pr n → Pr n
-  cenP f c = (f ⊕ ng c) ⊗ (f ⊕ ng c)
-  sqP f c = ((f ⊗ f) ⊕ (ng (c ⊕ c) ⊗ f)) ⊕ (c ⊗ c)
-  sclP f c = (c ⊗ f) ⊗ (c ⊗ f)
-  sclP′ f c = (c ⊗ c) ⊗ (f ⊗ f)
-
-  -- the same operations on pairs of elements, so that the lemmas are stated (and checked) before unfolding the tests
-  Pa : Set₁
-  Pa = ∣A∣ × ∣A∣
-
-  infixl 6 _⊕ᵃ_
-  infixl 7 _⊗ᵃ_
-  _⊕ᵃ_ _⊗ᵃ_ : Pa → Pa → Pa
-  (x , y) ⊕ᵃ (z , w) = x + z , y + w
-  (x , y) ⊗ᵃ (z , w) = x * z + y * w , x * w + y * z
-
-  ngᵃ : Pa → Pa
-  ngᵃ (x , y) = y , x
-
-  twoᵃ : Pa
-  twoᵃ = (1# , 0#) ⊕ᵃ (1# , 0#)
-
-  crossᵃ sumsᵃ crossSᵃ : Pa → Pa → Set₁
-  crossᵃ (x , y) (z , w) = x + w ≈ z + y
-  sumsᵃ (x , y) (z , w) = x + y ≈ z + w
-  crossSᵃ (x , y) (z , w) = (x + w) + 0# ≈ (z + y) + 0#
-
-  cenA sqA sclA sclA′ : Pa → Pa → Pa
-  cenA f c = (f ⊕ᵃ ngᵃ c) ⊗ᵃ (f ⊕ᵃ ngᵃ c)
-  sqA f c = ((f ⊗ᵃ f) ⊕ᵃ (ngᵃ (c ⊕ᵃ c) ⊗ᵃ f)) ⊕ᵃ (c ⊗ᵃ c)
-  sclA f c = (c ⊗ᵃ f) ⊗ᵃ (c ⊗ᵃ f)
-  sclA′ f c = (c ⊗ᵃ c) ⊗ᵃ (f ⊗ᵃ f)
-
-  cen-alg : ∀ a b p n → crossᵃ (cenA (a , b) (p , n)) (sqA (a , b) (p , n))
-  cen-alg a b p n = solve 4 (λ a b p n → cross (cenP (a , b) (p , n)) (sqP (a , b) (p , n))) refl a b p n
-
-  cen-sums : ∀ a b p n → sumsᵃ (cenA (a , b) (p , n)) (sqA (a , b) (p , n))
-  cen-sums a b p n = solve 4 (λ a b p n → sums (cenP (a , b) (p , n)) (sqP (a , b) (p , n))) refl a b p n
-
-  scl-alg : ∀ a b p n → crossᵃ (sclA (a , b) (p , n)) (sclA′ (a , b) (p , n))
-  scl-alg a b p n = solve 4 (λ a b p n → cross (sclP (a , b) (p , n)) (sclP′ (a , b) (p , n))) refl a b p n
-
-  scl-sums : ∀ a b p n → sumsᵃ (sclA (a , b) (p , n)) (sclA′ (a , b) (p , n))
-  scl-sums a b p n = solve 4 (λ a b p n → sums (sclP (a , b) (p , n)) (sclP′ (a , b) (p , n))) refl a b p n
-
-  -- ring identities for `Var-cen` (c = E f), `Var-shift`, `Var-scale`
-  L1 : ∀ {n} → Pr n → Pr n → Pr n
-  L1 m1 m2 = ((m2 ⊕ ng ((m1 ⊕ m1) ⊗ m1)) ⊕ (m1 ⊗ m1))
-  LS : ∀ {n} → Pr n → Pr n → Pr n
-  LS m c = ((ng ((ng c ⊕ ng c) ⊗ m) ⊕ (ng c ⊗ ng c)) ⊕ ng ((m ⊕ c) ⊗ (m ⊕ c)))
-  RV : ∀ {n} → Pr n → Pr n → Pr n
-  RV m1 m2 = (m2 ⊕ ng (m1 ⊗ m1))
-  SQ : ∀ {n} → Pr n → Pr n → Pr n
-  SQ m c = ((c ⊗ m) ⊗ (c ⊗ m))
-  SQ′ : ∀ {n} → Pr n → Pr n → Pr n
-  SQ′ m c = ((c ⊗ c) ⊗ (m ⊗ m))
-  L1ᵃ : Pa → Pa → Pa
-  L1ᵃ m1 m2 = ((m2 ⊕ᵃ ngᵃ ((m1 ⊕ᵃ m1) ⊗ᵃ m1)) ⊕ᵃ (m1 ⊗ᵃ m1))
-  LSᵃ : Pa → Pa → Pa
-  LSᵃ m c = (ngᵃ ((ngᵃ c ⊕ᵃ ngᵃ c) ⊗ᵃ m) ⊕ᵃ (ngᵃ c ⊗ᵃ ngᵃ c)) ⊕ᵃ ngᵃ ((m ⊕ᵃ c) ⊗ᵃ (m ⊕ᵃ c))
-  RVᵃ : Pa → Pa → Pa
-  RVᵃ m1 m2 = (m2 ⊕ᵃ ngᵃ (m1 ⊗ᵃ m1))
-  SQᵃ : Pa → Pa → Pa
-  SQᵃ m c = ((c ⊗ᵃ m) ⊗ᵃ (c ⊗ᵃ m))
-  SQ′ᵃ : Pa → Pa → Pa
-  SQ′ᵃ m c = ((c ⊗ᵃ c) ⊗ᵃ (m ⊗ᵃ m))
-
-  R1-alg : ∀ a b c d → crossᵃ (L1ᵃ (a , b) (c , d)) (RVᵃ (a , b) (c , d))
-  R1-alg a b c d = solve 4 (λ a b c d → cross (L1 (a , b) (c , d)) (RV (a , b) (c , d))) refl a b c d
-
-  RS-alg : ∀ a b p n → crossᵃ (LSᵃ (a , b) (p , n)) (ngᵃ ((a , b) ⊗ᵃ (a , b)))
-  RS-alg a b p n = solve 4 (λ a b p n → cross (LS (a , b) (p , n)) (ng ((a , b) ⊗ (a , b)))) refl a b p n
-
-  SQ-alg : ∀ a b p n → crossᵃ (SQᵃ (a , b) (p , n)) (SQ′ᵃ (a , b) (p , n))
-  SQ-alg a b p n = solve 4 (λ a b p n → cross (SQ (a , b) (p , n)) (SQ′ (a , b) (p , n))) refl a b p n
+  open Ring commutativeSemiring using (Pa; _⊕ᵃ_; _⊗ᵃ_; ngᵃ; crossᵃ; sumsᵃ; cenA; sqA; sclA; sclA′;
+    cen-alg; cen-sums; scl-alg; scl-sums; R1-alg; RS-alg; SQ-alg; neg-mul-alg; mul-neg-alg; L1ᵃ; LSᵃ; RVᵃ; SQᵃ; SQ′ᵃ)
 
   fromCross : ∀ {x y : Sg} → pos x + neg y ≈ pos y + neg x → x ≃ y
   fromCross h = mk≃ 0# Is-0 (trans (+-identityʳ _) (trans h (sym (+-identityʳ _))))
 
   neg-mul : ∀ x y → (-S x) *S y ≃ -S (x *S y)
-  neg-mul x y = fromCross (solve 4 (λ a b c d → cross (ng (a , b) ⊗ (c , d)) (ng ((a , b) ⊗ (c , d)))) refl
-    (pos x) (neg x) (pos y) (neg y))
+  neg-mul x y = fromCross (neg-mul-alg (pos x) (neg x) (pos y) (neg y))
 
   mul-neg : ∀ x y → x *S (-S y) ≃ -S (x *S y)
-  mul-neg x y = fromCross (solve 4 (λ a b c d → cross ((a , b) ⊗ ng (c , d)) (ng ((a , b) ⊗ (c , d)))) refl
-    (pos x) (neg x) (pos y) (neg y))
+  mul-neg x y = fromCross (mul-neg-alg (pos x) (neg x) (pos y) (neg y))
 
   R-cen : ∀ m₁ m₂ → ((m₂ +S -S ((m₁ +S m₁) *S m₁)) +S m₁ *S m₁) ≃ m₂ +S -S (m₁ *S m₁)
   R-cen m₁ m₂ = fromCross (R1-alg (pos m₁) (neg m₁) (pos m₂) (neg m₂))
@@ -188,20 +88,65 @@ module SignedVarAlg (lem₁ : LEM₁) where
   bridge : ∀ c e → (-S (c +S c)) *S e ≃ -S (((1S +S 1S) *S c) *S e)
   bridge c e = ≃-trans (neg-mul (c +S c) e) (-S-cong (≃-sym (*S-congˡ e (two-c c))))
 
+  -- parts of tests and of signed constants as pairs; the operations on tests act on them as on `Pa` (all by `refl`)
+  ⟦_⟧ : ∀ {X : QBS S} → SgT X → ∣ X ∣ → Pa
+  ⟦ f ⟧ x = at⁺ f x , at⁻ f x
+
+  pr : Sg → Pa
+  pr c = pos c , neg c
+
+  addP : ∀ {X : QBS S} (f g : SgT X) x → ⟦ f +T g ⟧ x ≡ ⟦ f ⟧ x ⊕ᵃ ⟦ g ⟧ x
+  addP f g x = ≡.refl
+
+  mulP : ∀ {X : QBS S} (f g : SgT X) x → ⟦ f *T g ⟧ x ≡ ⟦ f ⟧ x ⊗ᵃ ⟦ g ⟧ x
+  mulP f g x = ≡.refl
+
+  sclT : ∀ {X : QBS S} (c : Sg) (f : SgT X) x → ⟦ scaleT c f ⟧ x ≡ pr c ⊗ᵃ ⟦ f ⟧ x
+  sclT c f x = ≡.refl
+
+  cstP : ∀ (X : QBS S) (c : Sg) (x : ∣ X ∣) → ⟦ constT {X} c ⟧ x ≡ pr c
+  cstP X c x = ≡.refl
+
+  prP : ∀ c d → pr (-S c) ≡ ngᵃ (pr c) × pr (c +S d) ≡ pr c ⊕ᵃ pr d × pr (c *S d) ≡ pr c ⊗ᵃ pr d
+  prP c d = ≡.refl , ≡.refl , ≡.refl
+
+  via-cross : ∀ {X : QBS S} {F G : SgT X} {P Q x} → ⟦ F ⟧ x ≡ P → ⟦ G ⟧ x ≡ Q → crossᵃ P Q →
+    at⁺ F x + at⁻ G x ≈ at⁺ G x + at⁻ F x
+  via-cross ≡.refl ≡.refl h = h
+
+  via-sums : ∀ {X : QBS S} {F G : SgT X} {P Q x} → ⟦ F ⟧ x ≡ P → ⟦ G ⟧ x ≡ Q → sumsᵃ P Q →
+    at⁺ F x + at⁻ F x ≈ at⁺ G x + at⁻ G x
+  via-sums ≡.refl ≡.refl h = h
+
   -- pointwise facts for the tests
   module _ {X : QBS S} (f : SgT X) (c : Sg) where
+    cen-l : ∀ x → ⟦ cen f c *T cen f c ⟧ x ≡ cenA (⟦ f ⟧ x) (pr c)
+    cen-l x = ≡.trans (mulP _ _ x) (≡.cong₂ _⊗ᵃ_ e e)
+      where e = ≡.trans (addP f (constT (-S c)) x) (≡.cong (⟦ f ⟧ x ⊕ᵃ_) (cstP X (-S c) x))
+
+    cen-r : ∀ x → ⟦ Sq f c ⟧ x ≡ sqA (⟦ f ⟧ x) (pr c)
+    cen-r x = ≡.trans (addP _ (constT (c *S c)) x) (≡.cong₂ _⊕ᵃ_ e (cstP X (c *S c) x))
+      where d = -S (c +S c)
+            e = ≡.trans (addP (f *T f) (scaleT d f) x) (≡.cong₂ _⊕ᵃ_ (mulP f f x) (sclT d f x))
+
+    scl-l : ∀ x → ⟦ scaleT c f *T scaleT c f ⟧ x ≡ sclA (⟦ f ⟧ x) (pr c)
+    scl-l x = ≡.trans (mulP _ _ x) (≡.cong₂ _⊗ᵃ_ (sclT c f x) (sclT c f x))
+
+    scl-r : ∀ x → ⟦ scaleT (c *S c) (f *T f) ⟧ x ≡ sclA′ (⟦ f ⟧ x) (pr c)
+    scl-r x = ≡.trans (sclT _ _ x) (≡.cong₂ _⊗ᵃ_ ≡.refl (mulP f f x))
+
     cen-eq : cen f c *T cen f c ≐ Sq f c
-    cen-eq x = cen-alg (at⁺ f x) (at⁻ f x) (pos c) (neg c)
+    cen-eq x = via-cross (cen-l x) (cen-r x) (cen-alg (at⁺ f x) (at⁻ f x) (pos c) (neg c))
 
     cen-bnd : ∀ x → at⁺ (cen f c *T cen f c) x + at⁻ (cen f c *T cen f c) x ≈ at⁺ (Sq f c) x + at⁻ (Sq f c) x
-    cen-bnd x = cen-sums (at⁺ f x) (at⁻ f x) (pos c) (neg c)
+    cen-bnd x = via-sums (cen-l x) (cen-r x) (cen-sums (at⁺ f x) (at⁻ f x) (pos c) (neg c))
 
     scl-eq : (scaleT c f *T scaleT c f) ≐ scaleT (c *S c) (f *T f)
-    scl-eq x = scl-alg (at⁺ f x) (at⁻ f x) (pos c) (neg c)
+    scl-eq x = via-cross (scl-l x) (scl-r x) (scl-alg (at⁺ f x) (at⁻ f x) (pos c) (neg c))
 
     scl-bnd : ∀ x → at⁺ (scaleT c f *T scaleT c f) x + at⁻ (scaleT c f *T scaleT c f) x
       ≈ at⁺ (scaleT (c *S c) (f *T f)) x + at⁻ (scaleT (c *S c) (f *T f)) x
-    scl-bnd x = scl-sums (at⁺ f x) (at⁻ f x) (pos c) (neg c)
+    scl-bnd x = via-sums (scl-l x) (scl-r x) (scl-sums (at⁺ f x) (at⁻ f x) (pos c) (neg c))
 
   -- integrability from a pointwise bound by the sum of the parts of an integrable test
   Int-via : ∀ {X : QBS S} (p : C.Pre (XW X)) (F G : SgT X) → Int p G →

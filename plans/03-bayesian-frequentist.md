@@ -1504,6 +1504,12 @@ log^±(xy) ≤ log^± x + log^± y, which give `KLInt-⊗`/`EntInt-⊗` by domin
 `∫-rect` and normalisation.  Timings (sequential, cold): InfoProductAux 6.7 s / 1.05 GB, InfoProduct 12.3 s / 1.22 GB.
 longcheck 35.
 
+`Continuous/SignedVarAlg` check-cost pass (2026-11-05, done): 82.1 s → 9.6 s (1.52 GB → 1.19 GB, my run), plus
+the new `Continuous/SignedVarRing` at 2.9 s / 0.45 GB.  The ring identities are solved over an arbitrary
+`CommutativeSemiring` (each solve 5–9 s → under 0.1 s), and the test operations are related to the ring terms
+on the parts by `refl` lemmas over atoms, so no `addX`/`mulH` unfolding.  Importers unchanged: SignedVar 13.3 s,
+GaussVarAux 28.3 s, GaussVarPt 12.1 s, GaussVar 11.3 s.
+
 **Risks.**
 - 38: integrability of (f − c)² from that of f and f² needs a domination or transport-of-`Int`-along-`≐` helper.
 - 39: (x ↦ x − μ) ∘ (x ↦ x + μ) ≐ id on RQ needs the case analysis of `RealShift` both ways; `idT ∘ shift ≐ idT + μ`
