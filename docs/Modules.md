@@ -68,7 +68,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.IIDLaw` | 127 | lem | The estimator theorems for iid families (plan 05, item 46b). |
-| `QBS.Inference.MultiSample` | 103 | lem | Samples of random vectors (plan 05, item 54). |
+| `QBS.Inference.MultiSample` | 118 | lem | Samples of random vectors (plan 05, item 54). |
+| `QBS.Inference.MultiSampleAlg` | 147 | lem | Observations of iid random vectors, transported along their law (plan 05, item 54; helper for `MultiSample`). |
+| `QBS.Inference.MultiSampleRing` | 94 |  | Ring identities for samples of random vectors (plan 05, item 54; helper for `MultiSample`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.PolyDominationOdd` | 109 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
