@@ -1,0 +1,122 @@
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05)
+
+Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
+theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
+covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 42).  Each phase is skeletoned first
+(holes, statements, headers), then filled by agents, two at a time, as in plan 03.
+
+## What exists
+
+- Measures: s-finite `C.Pre (XW X)` with `∫ᴹ` and `_≈ᴹ_` (equal integrals on every test; `Continuous/SFinite`);
+  probability `Pre X` of the continuous monad, embedded by `SFiniteIncl.ιPre`; push-forward `∫ᴹ-map`, `mapPre`,
+  `joinPre`, `∫ᴹ-join`.
+- Products, two factors: `Product.prodPre` (s-finite, Fubini both orders `∫-prod`/`∫-prod′`, `∫-rect`, `marg₁`/`marg₂`,
+  `prod-cong`); the probability product `ExpectationProduct._⊗ᵖ_` with `E-at-⊗`, `ExpectationIntProduct` (unbounded),
+  `SignedFubini.Ex-⊗`.  No lemma relates `ιPre (p ⊗ᵖ q)` to `prodPre (ιPre p) (ιPre q)`.
+- Kock's double strength `ψ : T A × T B ⇒ T (A × B)` in `Probability` (so the product of two kernels is a kernel).
+- Independence on the coin: `CoinIndep.fairCoin-indep` (evens/odds), `CoinCoords.coord` with **pairwise** independence
+  (`J-indep`, `E-indep`); `Sampler.iidExperiment` and `iid-moments` use only pairwise uncorrelatedness.
+- `Analysis/Estimator.Moments` asks only for equal means, equal second moments and pairwise uncorrelatedness.
+- Conditionally independent flips built by hand: `CoinUniformPriorN.Kn`, `margN` (Laplace's rule).
+- Real line: `RealScale.scaleRH`, `RealShift.shiftRH` (constants only).  No addition `RQ × RQ ⇒ RQ` as a morphism.
+- Signed layer: `SgT`, `Int`, `Ex`, `Ex∞`, `Int-dom`, `SignedVar` (variance, centring, shift, scale).
+- Nothing indexed by `Fin`/`Vec` yet.
+
+## Decisions (proposed)
+
+- **Setting.** Definitions are for s-finite measures and `∫ᴹ` (the general layer), with probability statements
+  through `ιPre`; the probability-monad constructions (coin, samplers, kernels) are bridged once (item 44).
+- **Random variables** on a probability space P on Ω are morphisms `Hom S Ω Y`; their **law** is the push-forward
+  (`mapPre`).  A family of n random variables is a tuple into a finite product.
+- **Finite products.** Heterogeneous, indexed by `Fin n`: `ΠQ n Xs` for `Xs : Fin n → QBS S`, defined by recursion on
+  n as nested `_×Q_` ending in `1Q` (the shape of `CoinUniformPriorN.Fl`), with projections `projᵢ` and tupling.  The
+  homogeneous Xⁿ is `ΠQ n (const X)`.  Measures `⊗ⁿ` by the same recursion over `prodPre`.  (Alternative: nested pairs
+  only, no `Fin`; simpler, but coordinates and permutations become awkward.)
+- **Independence** of a family is the strong form: the joint law is `≈ᴹ` the product of the marginal laws.  The
+  factorisation of expectations is a theorem.  The converse (factorisation on rectangles ⇒ product law) needs
+  uniqueness of measures from rectangles (π-λ), out of scope; constructions produce the strong form directly.
+  Pairwise independence is a corollary of mutual independence.
+- **IID** with law μ: the joint law is `≈ᴹ μ^{⊗n}`.  An iid sequence: every finite prefix is iid.
+- **Conditionally iid given a parameter**: a model `Θ ⇒ T (Xⁿ)` whose law at θ is `(K θ)^{⊗n}` for a kernel
+  `K : Θ ⇒ T X`; the kernel power `Kⁿ` is built from `ψ`.  General conditional independence X ⊥ Y | Z (given a
+  random variable, not a parameter) needs disintegration and is out of scope.
+- **Exchangeability**: invariance of the joint law under adjacent transpositions of coordinates (these generate all
+  permutations; the full permutation group is not needed for the theorems here).
+- **Vectors and matrices of values** are functions `Fin n → Sg`, `Fin m → Fin n → Sg`, with sums over `Fin` in a
+  model-independent algebra module (like `Analysis/Estimator`).
+- **Random vectors** are families of signed tests `Fin n → SgT Ω`; affine maps act on tests (`_+T_`, `scaleT`,
+  `constT`), so the moment calculus needs no arithmetic on RQ as morphisms.  Laws of AX + b on RQᵐ need addition on
+  RQ as a morphism (item 55, optional).
+- Avoid records inside parameterised modules (check cost, see `Inference/Sampler` header); Σ types or top level.
+
+## Phase A: independence and iid
+
+- 43 `Continuous/FinProd`: `ΠQ`, `projᵢ`, tupling and its laws; `⊗ⁿ` for s-finite measures; `∫-rectⁿ`
+  (∫ ∏ᵢ gᵢ(xᵢ) d⊗ⁿ ≈ ∏ᵢ ∫ gᵢ dμᵢ); marginals of `⊗ⁿ` (coordinate i has law μᵢ, for probability measures);
+  `⊗ⁿ-cong`.
+- 44 `Continuous/ProdBridge`: `ιPre (p ⊗ᵖ q) ≈ᴹ prodPre (ιPre p) (ιPre q)` and `ιPre (mapPre f p) ≈ᴹ` push-forward,
+  so the coin, sampler and kernel constructions feed the s-finite layer.
+- 45 `Continuous/Independence` (needs 43): `law`; `Indep₂ X Y`, `Indep n Xs` (mutual); factorisation
+  ∫ g(X) h(Y) ≈ ∫ g(X) · ∫ h(Y) and its signed form (`Ex-⊗`); functions of independent variables are independent;
+  mutual ⇒ pairwise; invariance under `≈ᴹ`; Var(X + Y) ≃ Var X + Var Y for independent X, Y.
+- 46 `Continuous/IID` (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
+  test f with E f² finite, the observations f ∘ Xᵢ satisfy `Estimator.Moments` (integrability of products by
+  2|xy| ≤ x² + y²), so the sample mean and sample variance are unbiased for every iid family, with unbounded tests.
+- 47 `Continuous/CoinCoordsJoint` (needs 43, 44): the first n coin coordinates are jointly independent:
+  r ↦ (coord 0 r, …, coord (n−1) r) pushes the fair coin to `fairCoin^{⊗n}`, by induction from `fairCoin-indep`;
+  corollary: the draws of `Sampler.iidExperiment` are iid in the sense of 46 (upgrading pairwise to mutual).
+- 48 `Inference/CondIID` (needs 46): kernel power `Kⁿ : Θ ⇒ T (Xⁿ)` from `ψ`; `CondIID`; the Bayesian joint
+  π ⋉ Kⁿ on Θ × Xⁿ and its marginal; `CoinUniformPriorN.Kn` as an instance (Kn ≈ Bernoulli(θ)^{⊗(n+1)}).
+- 49 `Continuous/Exchangeable` (needs 46, 48): `Exch`; iid ⇒ exchangeable (swap invariance of `prodPre`, from `∫-prod`
+  and `∫-prod′`); mixtures of exchangeable laws are exchangeable, so conditionally iid under a prior is exchangeable
+  (the easy half of de Finetti); `margN` as an instance.
+- 50 `Inference/WeakLaw` (needs 46): Markov's inequality c · P{f ≥ c} ≤ E f (the indicator of [c, ∞] is monotone,
+  so `MonoTest.monoH` makes it a test); Chebyshev; the weak law in division-free rate form,
+  n ε² · P{|Sₙ − nμ| ≥ nε} ≤ σ² (P ≤ σ²/(nε²)).  It needs only `Estimator.Moments`, so it also applies to the
+  existing frequentist layer and samplers.
+
+## Phase B: multidimensional
+
+- 51 `Analysis/SgLinAlg` (independent of phase A): vectors and matrices over a commutative ring (instantiated at `Sg`),
+  Σ over `Fin n`, matrix–vector and matrix–matrix products, transpose, quadratic forms; associativity,
+  distributivity, (AB)ᵀ = BᵀAᵀ, up to the ring's equality.
+- 52 `Continuous/RandomVector` (needs 45, 51): `Fin n → SgT Ω` with `Int₂` per coordinate; mean vector; covariance
+  matrix Cov(Xᵢ, Xⱼ) = E XᵢXⱼ − E Xᵢ E Xⱼ (products integrable by 2|xy| ≤ x² + y²); symmetry, Cov(Xᵢ, Xᵢ) = Var Xᵢ;
+  Var(Σ Xᵢ) ≃ Σᵢⱼ Cov(Xᵢ, Xⱼ); independent coordinates ⇒ diagonal covariance; the affine rule
+  mean(AX + b) ≃ A mean + b and Cov(AX + b) ≃ A Cov(X) Aᵀ.
+- 53 `Inference/GaussVector` (needs 43, 52): N(0, Iₙ) as `gaussR^{⊗n}` on RQⁿ with coordinates `idT ∘ projᵢ`; mean 0,
+  covariance I, E‖X‖² ≃ n; N(μ, AAᵀ) as the random vector AZ + μ, mean μ and covariance AAᵀ.
+- 54 `Inference/MultiSample` (needs 46, 52): iid random vectors; the sample mean vector is unbiased and the sample
+  covariance matrix (division-free, as in `Estimator`) is unbiased.
+- 55 `Continuous/RQArith` (optional enabler): addition RQ × RQ ⇒ RQ and signed scaling as morphisms (measurability on
+  the parts), so AX + b is a map RQⁿ ⇒ RQᵐ and the law of a Gaussian vector is a measure on RQᵐ; the push-forward
+  principle connects it with 52–53.
+
+## Order of agents
+
+| Round | Agent 1 | Agent 2 |
+|---|---|---|
+| 1 | 43 → 45 | 44, then 51 |
+| 2 | 46 → 50 | 47 |
+| 3 | 48 → 49 | 52 |
+| 4 | 53 | 54 (55 if wanted) |
+
+## Risks
+
+- 43: recursion on `Fin n` through `_×Q_` may make the types of `projᵢ` and `⊗ⁿ` slow to normalise; keep the
+  recursion in one place and state the laws once.
+- 44: `⊗ᵖ` (strength, probability monad) and `prodPre` (double strength, s-finite) are built differently; the bridge
+  goes through the integrals (`E-at-⊗`-style), not the definitions.
+- 45: the strong definition is only usable if constructions produce it: 47 (coin) and 48 (kernels) are the tests.
+- 47: `fairCoin-indep` is stated for the `I`/`Fun` integral of `Analysis`, so the push-forward statement needs the
+  bridge from `Fun` to `Meas` tests used by `CoinCoords`.
+- 49: swap invariance of `⊗ⁿ` at an inner position needs `prod-cong` and associativity of `prodPre`, which is not yet
+  stated (add to 43 if needed).
+- 52: covariance needs integrable signed tests on products; `Int-dom` with 2|xy| ≤ x² + y² avoids Cauchy–Schwarz.
+
+## Out of scope
+
+- Conditional independence given a random variable, conditional expectation, disintegration.
+- The strong law of large numbers and the central limit theorem (need almost-sure or weak convergence).
+- The hard half of de Finetti; uniqueness of product measures from rectangles (π-λ).
+- Densities and Jacobians in several dimensions, rotation invariance of N(0, I), the density of N(μ, Σ) (also needs π).

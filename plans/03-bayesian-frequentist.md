@@ -1327,6 +1327,8 @@ a difference is stated by cross-adding (`SConv`).
 
 ## Directions: multidimensional (proposed 2026-11-04; not started, not skeletoned)
 
+Superseded by `plans/05-independence-multidim.md` (2026-11-05), which adds independence and iid families first.
+
 Possible next batches, recorded for later; none is scheduled.  Statements below are sketches, not settled signatures.
 
 **On hand.** `Continuous/Product` (s-finite s ⊗ t, Fubini both orders, rectangles, marginals, `prod-cong`),
