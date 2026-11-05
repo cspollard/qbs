@@ -1472,20 +1472,31 @@ Fisher information waits for a more complete theory of derivatives (only `Signed
 - Variance as E[f²] − (E f)² in `Sg` for a probability `Pre`, with the centred form E[(f − E f)²] as a theorem.
 
 **Modules (numbering continues plan 03).**
-- 38 `Continuous/SignedVar`: `Int₂`, `Var`, `Var-irr`, `Var-cong`; the centred test `cen f c = f − c`, `Int-cen`,
+- [done] 38 `Continuous/SignedVar`: `Int₂`, `Var`, `Var-irr`, `Var-cong`; the centred test `cen f c = f − c`, `Int-cen`,
   `Ex-cen` (E[(f − c)²] ≃ E[f²] − 2c E f + c²), `Var-cen`; `Var-shift`, `Var-scale` with `Int₂-shift`, `Int₂-scale`.
-- 39 `Inference/GaussVar` (needs 38): `cvar : ∫ (x − μ)² dN(μ, s²) ≈ s²` and `cvar⁻` for N(−μ, s²) in [0, ∞]; signed
+- [done] 39 `Inference/GaussVar` (needs 38): `cvar : ∫ (x − μ)² dN(μ, s²) ≈ s²` and `cvar⁻` for N(−μ, s²) in [0, ∞]; signed
   `Ex-id ≃ μ`, `Var-gaussμ ≃ s²`, and `Ex-id⁻ ≃ −μ`, `Var-gaussμ⁻ ≃ s²`.
-- 40 `Continuous/Entropy`: `logPH`, `logNH`, `logT`, `nlogT`, `densPre`, `∫-dens`; `EntInt`, `Ent`; discrete case
+- [done] 40 `Continuous/Entropy`: `logPH`, `logNH`, `logT`, `nlogT`, `densPre`, `∫-dens`; `EntInt`, `Ent`; discrete case
   `Le1`, `EntInt-le1`, `ent` (∫ p log(1/p) dμ ∈ [0, ∞]), `Ent-le1`, `ent-const` (c log(1/c) · mass; uniform 1/n on n
   points gives log n), `ent-one`.
-- 41 `Continuous/KLDiv` (needs 40): `KLInt`, `KL`, `xlogN-le` (x log(1/x) ≤ 1), `KLInt-fin` (finite Q), `gibbs-pt`
+- [done] 41 `Continuous/KLDiv` (needs 40): `KLInt`, `KL`, `xlogN-le` (x log(1/x) ≤ 1), `KLInt-fin` (finite Q), `gibbs-pt`
   (x log x ≥ x − 1 on the parts), `KL-nonneg` (Gibbs' inequality, Q and p·Q probabilities), `KL-one`, `KL-cong`.
 - 42 `Continuous/InfoProduct` (needs 41): for normalised, pointwise strictly positive and finite densities,
   `KL-⊗` (KL(p₁ ⊗ p₂) ≃ KL(p₁) + KL(p₂)) and `Ent-⊗`, with `KLInt-⊗`, `EntInt-⊗`.
 
 **Order of agents.** Round 1, two agents: 38 → 39 and 40 → 41.  Round 2: 42.  Estimated sizes: 38 ≈ 200 lines,
 39 ≈ 200, 40 ≈ 150, 41 ≈ 250, 42 ≈ 200.
+
+**Outcome, round 1 (2026-11-05).** 38–41 done, statements unchanged.  38–39: helpers `Continuous/SignedSq`
+(`sq-cong`: f ≐ g gives f² ≐ g², by excluded middle on finiteness of the parts, since `≐` alone does not cancel ∞),
+`Continuous/SignedVarAlg` (the expansion `Sq`, `Int-via` by domination, signed-ring identities by the solver on the
+parts), `Inference/GaussVarAux` (push-forward of `Int`/`Ex`/`Var`), `Inference/GaussVarPt` (the shift case analysis,
+`cvar`); `Int` is not invariant under `≐`, so integrability goes by domination.  40–41: helper `Continuous/XLog`
+(x + x log⁻ x ≤ 1 for x ≤ 1, x ≤ x log⁺ x + 1 for 1 ≤ x via e^y ≤ 1 + y + y²); the 0 · ∞ risk did not materialise.
+Timings (sequential, cold `.agdai`): SignedSq 13.9 s / 1.26 GB, **SignedVarAlg 82.1 s / 1.52 GB** (degree-4 ring
+solves; `con` literals made them 150–215 s each), SignedVar 13.3 s / 1.40 GB, GaussVarAux 28.1 s / 1.72 GB,
+GaussVarPt 12.1 s / 1.74 GB, GaussVar 11.3 s / 1.57 GB, XLog 6.7 s / 1.03 GB, Entropy 7.9 s / 1.14 GB,
+KLDiv 8.3 s / 1.26 GB.  longcheck 35.
 
 **Risks.**
 - 38: integrability of (f − c)² from that of f and f² needs a domination or transport-of-`Int`-along-`≐` helper.

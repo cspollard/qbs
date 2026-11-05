@@ -57,7 +57,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussRealAbs` | 99 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
 | `QBS.Inference.GaussScale` | 132 | lem | Scaled symmetric distributions on the real line, and N(0, s²) (plan 03, "Tests and the real line"). |
 | `QBS.Inference.GaussShift` | 227 | lem | The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03, "Translation and products"). |
-| `QBS.Inference.GaussVar` | 85 | lem | The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities"). |
+| `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities"). |
+| `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03, "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
+| `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
@@ -315,10 +317,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |
 | `QBS.Continuous.SignedLog` | 151 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedSq` | 121 | lem | Squares respect `≐` (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedVar` | 86 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
+| `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
+| `QBS.Continuous.SignedVarAlg` | 211 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.Strong` | 188 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
