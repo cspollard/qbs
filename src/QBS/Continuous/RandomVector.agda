@@ -10,7 +10,8 @@
 --   * coordinates u ∘ Zᵢ of mutually independent Zᵢ are uncorrelated (`cov-indep`: the off-diagonal entries vanish);
 --   * the affine rule for AX + b (`affT`): mean(AX + b) ≃ A mean(X) + b (`mean-aff`) and Cov(AX + b) ≃ A Cov(X) Aᵀ
 --     (`cov-aff`), with `RV-aff`.
--- Route: `Int-mul` by `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g² and a b ≤ a² + b²);
+-- Route: `RV`, `Int-mul`, `meanV`, `covM`, `affT` are re-exported from `RandomVectorDefs`; `Int-mul` is
+-- `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g² and a b ≤ a² + b²);
 -- `cov-sym` by `comm-eq`; `cov-diag` by irrelevance of the integrability witness (`Ex-irr`); `Int₂-sumV`, `Var-sumV`,
 -- `RV-aff`, `mean-aff`, `cov-aff` are the primed twins in `RandomVectorAff` (expansion of E[(Σᵢ Aᵢ)(Σⱼ Bⱼ)] by
 -- `RandomVectorSum.ExBil`, shifts and scalings by `RandomVectorAlg.sh-eq`/`sc-eq`, the double-sum arithmetic in
@@ -38,6 +39,7 @@ open import QBS.Continuous.SignedVar using (module SignedVar)
 open import QBS.Continuous.SgMoments using (module SgMoments)
 open import QBS.Continuous.Independence using (module Independence)
 open import QBS.Continuous.RandomVectorAlg using (module RandomVectorAlg)
+open import QBS.Continuous.RandomVectorDefs using (module RandomVectorDefs)
 open import QBS.Continuous.RandomVectorAff using (module RandomVectorAff)
 
 module RandomVector (lem₁ : LEM₁) where
@@ -54,26 +56,14 @@ module RandomVector (lem₁ : LEM₁) where
   open Independence lem₁ using (Indep; Indep-pair; Int-indep; Ex-indep)
   open RandomVectorAlg lem₁ using (comm-eq)
   module RA = RandomVectorAff lem₁
+  open RandomVectorDefs lem₁ using () renaming (module Defs to RDefs)
 
   module _ {Ω : QBS S} (P : C.Pre Ω) where
 
     private
       E = ιPre {Ω} P
 
-    -- a random vector with finite second moments
-    RV : ∀ n → (Fin n → SgT Ω) → Set₁
-    RV n X = ∀ i → Int₂ {Ω} P (X i)
-
-    -- products of square-integrable tests are integrable
-    Int-mul : ∀ (f g : SgT Ω) → Int₂ {Ω} P f → Int₂ {Ω} P g → Int {Ω} E (f *T g)
-    Int-mul f g i j = RandomVectorAlg.Int-mul lem₁ {Ω} E f g (proj₂ i) (proj₂ j)
-
-    -- the mean vector and the covariance matrix
-    meanV : ∀ n X → RV n X → Vec n
-    meanV n X r i = Ex {Ω} E (X i) (proj₁ (r i))
-
-    covM : ∀ n X → RV n X → Mat n n
-    covM n X r i j = Ex {Ω} E (X i *T X j) (Int-mul (X i) (X j) (r i) (r j)) +S -S (meanV n X r i *S meanV n X r j)
+    open RDefs {Ω} P public using (RV; Int-mul; meanV; covM; affT)
 
     cov-sym : ∀ n X (r : RV n X) i j → covM n X r i j ≃ covM n X r j i
     cov-sym n X r i j = +S-cong (Ex-cong {Ω} E _ _ _ _ (comm-eq (X i) (X j))) (-S-cong (*S-comm _ _))
@@ -98,9 +88,6 @@ module RandomVector (lem₁ : LEM₁) where
             rj = proj₁ (r j)
 
     -- the affine image AX + b
-    affT : ∀ {m n} → Mat m n → Vec m → (Fin n → SgT Ω) → Fin m → SgT Ω
-    affT {m} {n} M b X k = sumT n (λ i → scaleT (M k i) (X i)) +T constT (b k)
-
     RV-aff : ∀ {m n} (M : Mat m n) b X → RV n X → RV m (affT M b X)
     RV-aff M b X r = RA.RV-aff′ {Ω} P M b X r
 
