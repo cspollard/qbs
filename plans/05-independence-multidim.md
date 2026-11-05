@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 done on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 done, round 2 skeletons on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -108,12 +108,24 @@ pointwise, `∫-prod′`).  51 `SgLinAlg`: induction on n with short equational 
 module alone, dependencies built): ProdBridge 7.4 s / 1.1 GB, SgLinAlg 0.8 s, FinProd 5.3 s, ProdMap 4.8 s,
 FinProdPair 5.3 s, IndepRing 2.6 s, IndepAlg 10.1 s / 1.1 GB, Independence 24.9 s / 1.6 GB.
 
+**Skeletons, round 2 (2026-11-05).**  `Estimator.Moments` needs a total ring of random variables, which the unbounded
+signed tests are not, so item 46 is split: `Continuous/SgMoments` (definitions only, no holes: `natS`, `sumT`, `sqsT`,
+`ssT` over `Fin n`, and the hypotheses `Moments P n F μ σ²` as a Σ type), 46a `Continuous/SgSample` (`Int-sum`,
+`Ex-sum`, `Int₂-sum`, `Var-sum` ≃ n σ², `Int-ss`, `Ex-ss` ≃ (n² − n) σ²), 46 `Continuous/IID` (`IID`, `IIDSeq`; holes
+`IID-law`, `IID-indep`, `IID-map`, `IID-moments`).  47 `Continuous/CoinCoordsJoint` (`coinPre`, `coin`, `coordH`,
+`drawH`; holes `coins-iid`, `coins-iidSeq`, `draws-iid`).  50 `Inference/WeakLaw` (`_≤ᵛ_`, the indicator `geW`/`geH`
+of [c, ∞]; holes `≤ᵛ-cong`, `geW` and its laws, `markov`, `markov-ge`, `chebyshev`, `weak-law`, `weak-law-rate`); it
+uses only `Moments`, so it covers every iid family through `IID-moments`.  Events are tests χ inside the event
+(cross-added pointwise bounds), which avoids absolute values of signed tests.  The iid corollaries (unbiased sample
+mean and variance, weak law for an iid family: `IID-moments` composed with `SgSample` and `WeakLaw`) are one-liners
+left to round 3, since round 2's two agents cannot import each other's modules while holes remain.
+
 ## Order of agents
 
 | Round | Agent 1 | Agent 2 |
 |---|---|---|
 | 1 | 43 → 45 | 44, then 51 |
-| 2 | 46 → 50 | 47 |
+| 2 | 46a → 50 | 46 → 47 |
 | 3 | 48 → 49 | 52 |
 | 4 | 53 | 54 (55 if wanted) |
 
