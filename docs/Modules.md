@@ -199,7 +199,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.SelfSimilar` | 148 |  | A self-similar distribution function is the identity. |
 | `QBS.Analysis.Series` | 450 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
 | `QBS.Analysis.SeriesSup` | 62 |  | Countable sums commute with suprema of increasing sequences (monotone convergence for series). |
-| `QBS.Analysis.SgLinAlg` | 102 |  | Vectors and matrices over a commutative ring (plan 05, item 51), for mean vectors and covariance matrices of random vectors; instantiated at the signed values (`Analysis/Signed.signedRing`). |
+| `QBS.Analysis.SgLinAlg` | 125 |  | Vectors and matrices over a commutative ring (plan 05, item 51), for mean vectors and covariance matrices of random vectors; instantiated at the signed values (`Analysis/Signed.signedRing`). |
 | `QBS.Analysis.Signed` | 243 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
 | `QBS.Analysis.SignedIntegral` | 186 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
 | `QBS.Analysis.SignedOmega` | 48 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
@@ -295,7 +295,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.MonusAlg` | 108 | lem | Algebra of rationally bounded lower reals and truncated subtraction (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
-| `QBS.Continuous.ProdBridge` | 46 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
+| `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
