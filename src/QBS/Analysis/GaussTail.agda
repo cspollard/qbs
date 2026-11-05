@@ -7,11 +7,10 @@
 module QBS.Analysis.GaussTail where
 
 import Level as L
-open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Data.Product.Base using (Σ; _,_)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Archimedean using (Arch)

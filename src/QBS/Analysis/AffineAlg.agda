@@ -11,7 +11,6 @@
 module QBS.Analysis.AffineAlg where
 
 import Level as L
-open import Data.Product.Base using (_,_)
 
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Signed using (SubSemiring)

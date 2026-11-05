@@ -6,16 +6,15 @@
 -- `w · g` as a countable sum over the pieces (with `∞ · g` on the piece 0).
 module QBS.Analysis.Pieces where
 
-open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; _×_; proj₁)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Unit.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Data.Rational.Unnormalised.Base using (_≤_; _<_; _+_; _≃_)
+open import Data.Rational.Unnormalised.Base using (_<_)
 import Relation.Binary.Definitions
 
 open import QBS.Analysis.RationalLemmas

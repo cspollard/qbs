@@ -9,11 +9,6 @@
 -- `E` of a constant is that constant.
 module QBS.Analysis.SignedIntegral where
 
-open import Level using (suc; zero)
-open import Data.Product.Base using (Σ; _,_)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
-open import Function.Base using (_$_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Source using (R₁)

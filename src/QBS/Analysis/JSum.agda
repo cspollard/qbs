@@ -5,12 +5,9 @@
 -- `∑ hp (n+1) = 1`.
 module QBS.Analysis.JSum where
 
-open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Source using (R₁)

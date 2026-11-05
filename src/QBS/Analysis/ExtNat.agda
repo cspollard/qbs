@@ -107,7 +107,7 @@ distribʳ ∞ ∞ z = refl
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Sum.Base using (inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality.Core using (subst)
 open import QBS.Classical using (LEM₀)
 

@@ -7,13 +7,12 @@ module QBS.Analysis.CoinIntegral where
 
 import Level as L
 import Data.Nat.Properties as ℕₚ
-open import Level using (Lift; lift; lower)
+open import Level using (Lift; lift)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
@@ -31,8 +30,8 @@ open import QBS.Analysis.Series
 import QBS.Analysis.SeriesSup as SeriesSup
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.LowerReals using (Cut; _⊑_; mk⊑; _≋_; zeroC; oneC; LowerRealsOmega; ⊗-mono)
-open import QBS.Analysis.LowerRealsArch using (arch-⊑; hpC; hpC-double; tp; tp-pos; tp-small; lowerRealsArch)
+open import QBS.Analysis.LowerReals using (Cut; _⊑_; mk⊑; ⊗-mono)
+open import QBS.Analysis.LowerRealsArch using (arch-⊑; hpC; hpC-double; tp; tp-pos; tp-small)
 open import QBS.Analysis.Archimedean
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinSimple
@@ -62,7 +61,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
   open OmegaSemiring A renaming (Carrier to ∣A∣; zero to zero-sr)
   open Series A
   open SetoidReasoning setoid
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:*_; _:=_; con)
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:=_)
   open Grid (lemOf lem₁) B
   open Cont (lemOf lem₁) B
   open BM.BorelMeasure B using (μ; μ-resp)

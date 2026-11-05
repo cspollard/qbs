@@ -15,10 +15,10 @@ import Level as L
 open import Level using (Level)
 open import Algebra.Bundles using (CommutativeSemiring)
 import Data.Nat.Base as ℕ
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Properties
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Relation.Binary.Bundles using (Poset)
 open import Relation.Binary.Structures using (IsPartialOrder)

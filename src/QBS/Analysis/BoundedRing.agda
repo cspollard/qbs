@@ -17,11 +17,8 @@ open import Algebra using (CommutativeRing; RawRing)
 open import Algebra.Morphism.Structures using (module RingMorphisms)
 import Algebra.Morphism.RingMonomorphism as RingMono
 import Algebra.Construct.Pointwise
-open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

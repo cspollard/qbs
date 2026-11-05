@@ -5,7 +5,7 @@
 module QBS.Analysis.SignedOmega where
 
 import Level as L
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _,_)
 

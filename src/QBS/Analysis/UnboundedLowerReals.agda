@@ -3,8 +3,6 @@
 -- Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts.
 module QBS.Analysis.UnboundedLowerReals where
 
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)

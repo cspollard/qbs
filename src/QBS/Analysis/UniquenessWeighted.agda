@@ -11,8 +11,8 @@
 --   * `uniqW`: unbounded g, by truncation and monotone convergence (`J-⨆`).
 module QBS.Analysis.UniquenessWeighted where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (Σ; proj₁; proj₂)
+open import Data.Nat.Base using (zero; suc)
+open import Data.Product.Base using (proj₁; proj₂)
 
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁) renaming (down to downR)

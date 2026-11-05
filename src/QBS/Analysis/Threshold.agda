@@ -5,9 +5,9 @@
 -- comparison with ½ is total, and ½ is not ≤ 0.
 module QBS.Analysis.Threshold where
 
-open import Level using (lift; lower)
+open import Level using (lift)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; _×_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 import Relation.Binary.PropositionalEquality.Core as ≡

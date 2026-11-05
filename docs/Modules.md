@@ -122,20 +122,20 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS.Analysis.AffineAlg` | 89 |  | Algebra for moments of pushforward (affine) families, generic over an `OmegaSemiring` (so the ring solver never sees concrete cuts). |
+| `QBS.Analysis.AffineAlg` | 88 |  | Algebra for moments of pushforward (affine) families, generic over an `OmegaSemiring` (so the ring solver never sees concrete cuts). |
 | `QBS.Analysis.Archimedean` | 40 |  | The extra structure of the extended non-negative reals that the construction of Lebesgue-type measures needs, beyond `OmegaSemiring`: a half, Archimedean closure, cancellation for the order, and tails of convergent se... |
-| `QBS.Analysis.BinaryExpansion` | 92 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
-| `QBS.Analysis.BorelMeasure` | 52 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
+| `QBS.Analysis.BinaryExpansion` | 90 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
+| `QBS.Analysis.BorelMeasure` | 51 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
 | `QBS.Analysis.BoundedCancel` | 63 |  | Cancellation of elements bounded by a natural number: `a ≤ n`, `a + x = a + y` give `x = y`. |
-| `QBS.Analysis.BoundedRing` | 171 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
+| `QBS.Analysis.BoundedRing` | 168 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
 | `QBS.Analysis.Cauchy` | 134 |  | The Cauchy product of series in an `OmegaSemiring`: for every `a b : ℕ → A`, `(∑ᶠ a) * (∑ᶠ b) ≈ ∑ᶠ n. |
-| `QBS.Analysis.Clopen` | 263 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
+| `QBS.Analysis.Clopen` | 262 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
 | `QBS.Analysis.ClopenMeasure` | 104 |  | The dyadic premeasure on clopen sets (finite trees), with values in an `OmegaSemiring` that has a half: μ0 (leaf true) = 1, μ0 (leaf false) = 0, μ0 (split a b) = ½ (μ0 a + μ0 b). |
 | `QBS.Analysis.CoinCont` | 141 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
-| `QBS.Analysis.CoinFacts` | 92 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
-| `QBS.Analysis.CoinGrid` | 160 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
+| `QBS.Analysis.CoinFacts` | 89 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
+| `QBS.Analysis.CoinGrid` | 159 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
 | `QBS.Analysis.CoinIntegral` | 446 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
-| `QBS.Analysis.CoinSets` | 16 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
+| `QBS.Analysis.CoinSets` | 12 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
 | `QBS.Analysis.CoinSimple` | 141 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
 | `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |

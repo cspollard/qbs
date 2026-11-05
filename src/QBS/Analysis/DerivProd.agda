@@ -14,7 +14,7 @@
 module QBS.Analysis.DerivProd where
 
 import Level as L
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Archimedean using (Arch)

@@ -5,7 +5,6 @@
 -- intersection is eventually empty.  Classical (`lem`); König's lemma by a choice of path.
 module QBS.Analysis.Clopen where
 
-open import Function.Base using (_∘_)
 open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_; T; if_then_else_)
 open import Data.Bool.Properties using (∨-identityʳ; ∧-identityʳ; ∧-zeroʳ; ∨-zeroʳ; ¬-not)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)

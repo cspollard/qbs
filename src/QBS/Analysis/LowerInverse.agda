@@ -8,7 +8,7 @@ module QBS.Analysis.LowerInverse where
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
 import Data.Rational.Unnormalised.Properties as P
 open import QBS.Analysis.RationalLemmas

@@ -7,13 +7,13 @@
 module QBS.Analysis.BoundedCancel where
 
 import Level as L
-open import Data.Nat.Base using (ℕ; zero; suc; z≤n; s≤s) renaming (_≤_ to _≤ₙ_)
+open import Data.Nat.Base using (zero; suc; z≤n; s≤s) renaming (_≤_ to _≤ₙ_)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 open import Data.Nat.Properties using (+-mono-≤; n≤1+n) renaming (≤-trans to ≤ₙ-trans)
-open import Data.Product.Base using (Σ; _,_)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.SignedOmega using (module Bounded)

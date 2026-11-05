@@ -7,15 +7,14 @@
 -- composition: no extension theorem is needed to build Dirac, push-forward or bind.)
 module QBS.Analysis.Measure where
 
-open import Level using (zero; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (zero; suc)
+open import Function.Base using (_∘_; const)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 import Level
 open import Data.Unit.Polymorphic.Base using (tt) renaming (⊤ to ⊤ᵖ)
 
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁; down; downℕ)
+open import QBS.Borel.Source using (R₁; down)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 

@@ -9,8 +9,7 @@
 module QBS.Analysis.DigitAlg where
 
 import Level as L
-open import Level using (lift; lower)
-open import Data.Bool.Base using (Bool; true; false)
+open import Level using (lift)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ

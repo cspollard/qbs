@@ -7,16 +7,12 @@
 -- `f − μ` and  Var f = E[(f − μ)²] = E[f²] − μ².
 module QBS.Analysis.Variance where
 
-open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 open import Algebra using (CommutativeSemiring; CommutativeRing)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.LowerReals
@@ -43,7 +39,6 @@ module Alg {c ℓ} (S : CommutativeSemiring c ℓ) where
 -- 12·(M − μ²) = 1 when 3M = 1 and 2μ = 1, in an abstract signed ring
 module Arith {c ℓ p} (R : CommutativeSemiring c ℓ) (F : SubSemiring R p) where
   open Signed R F
-  open import Algebra using (CommutativeRing)
   open import Algebra.Solver.Ring.NaturalCoefficients.Default (CommutativeRing.commutativeSemiring signedRing)
   open import Relation.Binary.Reasoning.Setoid Sgˢ
 

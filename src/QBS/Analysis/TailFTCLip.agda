@@ -14,7 +14,6 @@ module QBS.Analysis.TailFTCLip where
 
 import Level as L
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_×_; _,_)
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Archimedean using (Arch)

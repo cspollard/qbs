@@ -5,9 +5,9 @@
 module QBS.Analysis.LowerRealsArch where
 
 import Level as L
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Sum.Base using (inj₁; inj₂)
+open import Data.Empty using (⊥-elim)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
 

@@ -4,9 +4,8 @@
 --   expansion (b :: r) ≈ sel b ½ + ½ · expansion r.
 module QBS.Analysis.ExpansionCons where
 
-open import Level using (suc; zero; lift; lower)
-open import Data.Bool.Base using (Bool; true; false)
-open import Data.Nat.Base using (ℕ)
+open import Level using (suc; zero; lower)
+open import Data.Bool.Base using (true; false)
 import Data.Nat.Base as ℕ
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
