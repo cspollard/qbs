@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–2 done, round 3 skeletons on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–3 done on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -62,16 +62,16 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 46 `Continuous/IID` [done] (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
   test f with E f² finite, the observations f ∘ Xᵢ satisfy `Estimator.Moments` (integrability of products by
   2|xy| ≤ x² + y²), so the sample mean and sample variance are unbiased for every iid family, with unbounded tests.
-- 46b `Inference/IIDLaw` (needs 46, 46a, 47, 50): the estimator theorems for iid families (unbiased sample mean and
+- 46b `Inference/IIDLaw` [done] (needs 46, 46a, 47, 50): the estimator theorems for iid families (unbiased sample mean and
   variance, Var Sₙ ≃ n s, the weak law), and for the draws of a sampler at the coin coordinates.
 - 47 `Continuous/CoinCoordsJoint` [done] (needs 43, 44): the first n coin coordinates are jointly independent:
   r ↦ (coord 0 r, …, coord (n−1) r) pushes the fair coin to `fairCoin^{⊗n}`, by induction from `fairCoin-indep`;
   corollary: the draws of `Sampler.iidExperiment` are iid in the sense of 46 (upgrading pairwise to mutual).
-- 48 `Inference/CondIID` (needs 46): kernel power `Kⁿ : Θ ⇒ T (Xⁿ)` from `ψ`; `CondIID`; the Bayesian joint
+- 48 `Inference/CondIID` [done] (needs 46): kernel power `Kⁿ : Θ ⇒ T (Xⁿ)` from `ψ`; `CondIID`; the Bayesian joint
   π ⋉ Kⁿ on Θ × Xⁿ and its marginal; `CoinUniformPriorN.Kn` as an instance (Kn ≈ Bernoulli(θ)^{⊗(n+1)}).
-- 48a `Inference/CondIIDCoin` (needs 48, 49): `CoinUniformPriorN.Kn` moved to the s-finite measures and Boolⁿ⁺¹ is
+- 48a `Inference/CondIIDCoin` [done] (needs 48, 49): `CoinUniformPriorN.Kn` moved to the s-finite measures and Boolⁿ⁺¹ is
   conditionally iid (Kn ≈ Bernoulli(θ)^{⊗(n+1)}), and `margN` is the data marginal, hence exchangeable.
-- 49 `Continuous/Exchangeable` (needs 46, 48): `Exch`; iid ⇒ exchangeable (swap invariance of `prodPre`, from `∫-prod`
+- 49 `Continuous/Exchangeable` [done] (needs 46, 48): `Exch`; iid ⇒ exchangeable (swap invariance of `prodPre`, from `∫-prod`
   and `∫-prod′`); mixtures of exchangeable laws are exchangeable, so conditionally iid under a prior is exchangeable
   (the easy half of de Finetti); `margN` as an instance.
 - 50 `Inference/WeakLaw` [done] (needs 46): Markov's inequality c · P{f ≥ c} ≤ E f (the indicator of [c, ∞] is monotone,
@@ -84,7 +84,7 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 51 `Analysis/SgLinAlg` [done] (independent of phase A): vectors and matrices over a commutative ring (instantiated at `Sg`),
   Σ over `Fin n`, matrix–vector and matrix–matrix products, transpose, quadratic forms; associativity,
   distributivity, (AB)ᵀ = BᵀAᵀ, up to the ring's equality.
-- 52 `Continuous/RandomVector` (needs 45, 51): `Fin n → SgT Ω` with `Int₂` per coordinate; mean vector; covariance
+- 52 `Continuous/RandomVector` [done] (needs 45, 51): `Fin n → SgT Ω` with `Int₂` per coordinate; mean vector; covariance
   matrix Cov(Xᵢ, Xⱼ) = E XᵢXⱼ − E Xᵢ E Xⱼ (products integrable by 2|xy| ≤ x² + y²); symmetry, Cov(Xᵢ, Xᵢ) = Var Xᵢ;
   Var(Σ Xᵢ) ≃ Σᵢⱼ Cov(Xᵢ, Xⱼ); independent coordinates ⇒ diagonal covariance; the affine rule
   mean(AX + b) ≃ A mean + b and Cov(AX + b) ≃ A Cov(X) Aᵀ.
@@ -145,6 +145,22 @@ probability monad is moved there by `SFiniteIncl.ιH` in a separate instance mod
 `meanV`, `covM`, `affT`; holes `Int-mul`, `cov-sym`, `cov-diag`, `Int₂-sumV`, `Var-sumV`, `cov-indep`, `RV-aff`,
 `mean-aff`, `cov-aff`).  46b `Inference/IIDLaw` (the round 2 corollaries: `obs`, `devS`, `mom`; holes `iid-mean`,
 `iid-var`, `iid-ss`, `iid-weak-law`, `draw-mass`, `draws-mean`, `draws-weak-law`).
+
+**Outcome, round 3 (2026-11-05).** All holes filled, no statement changed.  48 `CondIID`: `ψ-at` is `refl` (`ψH`
+unfolds to `prodPre`); `∫-joint` needs only `∫ᴹ-join` and `∫ᴹ-map`; extra `margM-int`, `inner-snd`, `inner-fst`;
+helper `CondIIDConst` (∫ c ≈ c · ∫ 1).  49 `Exchangeable`: at k = 0, `ExchangeableSwap.swap3` (s ⊗ (t ⊗ r) pushed
+along (x, (y, z)) ↦ (y, (x, z)) is t ⊗ (s ⊗ r), for any s-finite s, t, r, avoiding associativity); `Exch-marg` via
+`proj-swap`.  48a `CondIIDCoin`: `Kn-iid` through integrals with helper `CondIIDCoinStep` (`nextK-ι`, one step of
+`nextK` under ιPre), not through `ψ-at`.  52 `RandomVector`: `Int-mul` by `Int-dom` with f² + g² (pointwise
+a b ≤ a² + b² by `MonusAlg.cut-total`); the sum and affine laws by the double-sum expansion `ExBil` and ring lemmas
+instead of induction; helpers `RandomVectorRing`, `RandomVectorAlg`, `RandomVectorSumRing`, `RandomVectorSum`,
+`RandomVectorAff` (the last repeats `RV`, `meanV`, `covM`, `affT` under primed names; a candidate for cleanup).
+`RandomVectorSumRing` failed from the command line after the merge (unannotated binders in `step`/`rhs-eq` left
+unsolved metas) and was fixed by annotating their types.  46b `IIDLaw`: as the header route.  Cold times (each module
+alone, dependencies built): CondIIDConst 4.5 s, CondIID 5.7 s, ExchangeableSwap 4.9 s, Exchangeable 8.1 s / 1.3 GB,
+CondIIDCoinStep 26.7 s / 1.3 GB, CondIIDCoin 9.1 s / 1.4 GB, RandomVectorRing 2.6 s, RandomVectorAlg 11.4 s / 1.3 GB,
+RandomVectorSumRing 2.7 s, RandomVectorSum 8.4 s, RandomVectorAff 10.6 s, RandomVector 9.2 s / 1.2 GB, IIDLaw
+10.3 s / 1.3 GB.
 
 ## Order of agents
 
