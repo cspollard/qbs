@@ -22,25 +22,31 @@
 -- style); `le₂-borel` is `le-borel` with the variable bound (same `all-enum` argument).  `mixRand` follows `RealShift.gRand`
 -- (flag `flg`, partition `flg-part`, pieces a ∸ b and b ∸ a from `monusP` and its swap).  The `idT` laws are case splits on the
 -- signs: `monus-add` (bounded subtrahend), `monus-zero`, `mix-le`, `mix-gt`, `add-*`; `idT-sumRH` by induction on n using
--- `idT-add`, `idT-linRH` from `idT-scaleS`, `idT-affRH` from the rows, `proj-tuple` and `SgMoments.sumT`.
---   Skeleton: holes first.
+-- `idT-add`, `idT-linRH` from `idT-scaleS`, `idT-affRH` from the rows, `proj-tuple` and `SgMoments.sumT`.  Since `≐` is not
+-- transitive at infinite points, the n-ary laws go through the stronger invariant `RQArithAlg.Inv` (cross equality, and
+-- bounded targets give bounded parts), which composes through sums (`InvP-add`, `sumInv`, `lin-gen`, `row-gen`).
 module QBS.Continuous.RQArith where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Level using (lift)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
-open import Data.Empty using (⊥)
+open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Fin.Base using (Fin)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Fin.Base using (Fin) renaming (zero to fzero; suc to fsuc)
+open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
 open import QBS.Colimits using (_+Q_; Piece; ev)
 open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
-open import QBS.Borel.Core using (Pred; Partition; Borel)
+open import QBS.Borel.Core using (Pred; Partition; Borel; resp; union₂; inter₂)
+open import QBS.Analysis.LevelSets using (module LevelSets)
+open import QBS.Analysis.LowerReals using (Cut; module Cut; _⊑_)
+open import Data.Rational.Unnormalised.Base using (_<_) renaming (_+_ to _+q_)
+open import QBS.Analysis.RationalLemmas using (ℚᵘ; 0ℚᵘ)
 open import QBS.Borel.Source using (idxₛ)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
@@ -49,6 +55,8 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SgLinAlg using (module SgLinAlg)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Continuous.Sample using (S)
+open Cut using (mem)
+open _⊑_ using (ap)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.FatouAux using (module FatouAux)
@@ -62,27 +70,31 @@ open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.SgMoments using (module SgMoments)
 open import QBS.Continuous.FinProd using (module FinProd)
 open import QBS.Continuous.RandomVector using (module RandomVector)
+open import QBS.Continuous.RQArithAlg using (module RQArithAlg)
 
 module RQArith (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _≤_; _+_; 0#; refl) renaming (Carrier to ∣A∣)
+  open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; refl; sym; trans; +-cong; +-comm; commutativeSemiring)
+    renaming (Carrier to ∣A∣)
   open Bounded A using (Sg; Bnd; _≃_)
   open Sg
   open SgLinAlg (Bounded.signedRing A) using (Vec; Mat)
   open Weights (lemOf lem₁) using (WQ; constW)
   open SFinite (lemOf lem₁) using (module C)
-  open FatouAux lem₁ using (addX)
+  open FatouAux lem₁ using (addX; imp-borel)
   open RealLine lem₁ using (RQ; inlH; inrH)
   open RealScale lem₁ using (scaleRH; reflRH)
   open RealShift lem₁ using (_≈ᴿ_; inl≈; inr≈; dec; pick; pick-le; pick-gt; flg; flg-part; pieces-ev)
   open Intervals (lemOf lem₁) using (Ge)
-  open Monus lem₁ using (monus; monus-cong)
+  open Monus lem₁ using (monus; monus-cong; BndQ)
+  open LevelSets (lemOf lem₁) using (borel-prop)
   open ProdMap (lemOf lem₁) using (swapQ)
   open RandomSource S using (Rˢ)
-  open Meas (lemOf lem₁) using (Meas)
-  open SignedTest lem₁ using (SgT; _≐_; _+T_; _∘T_; scaleT; constT; idT)
+  open Meas (lemOf lem₁) using (Meas; ex-enum; all-enum)
+  open SignedTest lem₁ using (SgT; at⁺; at⁻; _≐_; _+T_; _∘T_; scaleT; constT; idT)
   open SgMoments lem₁ using (sumT)
-  open FinProd lem₁ using (ΠQ; projQ; tupleQ)
+  open FinProd lem₁ using (ΠQ; projQ; tupleQ; proj-tuple)
+  open RQArithAlg lem₁ using (Inv; Inv-of; step-inv; monus-add*; not-le; z+; +z)
   open RandomVector lem₁ using (affT)
   open QBS
   open Hom
@@ -94,6 +106,10 @@ module RQArith (lem₁ : LEM₁) where
   ----------------------------------------------------------------------------
   -- maps out of a product with a coproduct factor
 
+  -- the pairing of two setoid maps out of Rˢ
+  prₛ : ∀ {A B : QBS S} → Func Rˢ (Carrier A) → Func Rˢ (Carrier B) → Func Rˢ (Carrier (_×Q_ S A B))
+  prₛ a b = record { to = λ r → a ⟨$⟩ r , b ⟨$⟩ r ; cong = λ e → Func.cong a e , Func.cong b e }
+
   module _ {X Y Z W : QBS S} (f : Hom S (_×Q_ S X Z) W) (g : Hom S (_×Q_ S Y Z) W) where
 
     copair×ᶠ : Func (Carrier (_×Q_ S (_+Q_ S X Y) Z)) (Carrier W)
@@ -102,9 +118,30 @@ module RQArith (lem₁ : LEM₁) where
       ; cong = λ { {inj₁ _ , _} {inj₁ _ , _} (⊎ʳ.inj₁ e , ez) → Func.cong (map f) (e , ez)
                  ; {inj₂ _ , _} {inj₂ _ , _} (⊎ʳ.inj₂ e , ez) → Func.cong (map g) (e , ez) } }
 
+    -- the pair (piece, β) pushed through f or g
+    pieceFn : Func Rˢ (Carrier Z) → Piece S X Y → Func Rˢ (Carrier W)
+    pieceFn β (inj₁ (a , _)) = map f ∘ₛ prₛ {X} {Z} a β
+    pieceFn β (inj₂ (b , _)) = map g ∘ₛ prₛ {Y} {Z} b β
+
+    pieceRand : ∀ {β} → Random Z β → ∀ cn → Random W (pieceFn β cn)
+    pieceRand {β} pβ (inj₁ (a , pa)) = map-random f {prₛ {X} {Z} a β}
+      (random-resp X (λ _ → Setoid.refl (Carrier X)) pa , random-resp Z (λ _ → Setoid.refl (Carrier Z)) pβ)
+    pieceRand {β} pβ (inj₂ (b , pb)) = map-random g {prₛ {Y} {Z} b β}
+      (random-resp Y (λ _ → Setoid.refl (Carrier Y)) pb , random-resp Z (λ _ → Setoid.refl (Carrier Z)) pβ)
+
+    pieceEq : ∀ cn β r (w : ∣ _×Q_ S (_+Q_ S X Y) Z ∣) → Setoid._≈_ (Carrier (_+Q_ S X Y)) (proj₁ w) (ev S X Y cn r) →
+      Setoid._≈_ (Carrier Z) (proj₂ w) (β ⟨$⟩ r) → Setoid._≈_ (Carrier W) (copair×ᶠ ⟨$⟩ w) (pieceFn β cn ⟨$⟩ r)
+    pieceEq (inj₁ _) β r (inj₁ _ , _) (⊎ʳ.inj₁ ex) ez = Func.cong (map f) (ex , ez)
+    pieceEq (inj₂ _) β r (inj₂ _ , _) (⊎ʳ.inj₂ ey) ez = Func.cong (map g) (ey , ez)
+
+    c×rand : ∀ {α} → Random (_+Q_ S X Y) (proj₁ₛ ∘ₛ α) → Random Z (proj₂ₛ ∘ₛ α) → Random W (copair×ᶠ ∘ₛ α)
+    c×rand {α} (i , ii , c , q) pB = random-resp W {glueₛ i (λ n → pieceFn (proj₂ₛ ∘ₛ α) (c n))} {copair×ᶠ ∘ₛ α}
+      (λ r → Setoid.sym (Carrier W) (pieceEq (c (i ⟨$⟩ r)) (proj₂ₛ ∘ₛ α) r (α ⟨$⟩ r) (q r) (Setoid.refl (Carrier Z))))
+      (glue-random W ii (λ n → pieceFn (proj₂ₛ ∘ₛ α) (c n)) (λ n → pieceRand pB (c n)))
+
     -- a random pair is glued on the partition of its first coordinate; each piece is random in X ×Q Z or Y ×Q Z
     copair×ˡ : Hom S (_×Q_ S (_+Q_ S X Y) Z) W
-    copair×ˡ = record { map = copair×ᶠ ; map-random = ? }
+    copair×ˡ = record { map = copair×ᶠ ; map-random = λ {α} (pA , pB) → c×rand {α} pA pB }
 
   copair×ˡ-inl : ∀ {X Y Z W : QBS S} (f : Hom S (_×Q_ S X Z) W) (g : Hom S (_×Q_ S Y Z) W) x z →
     Setoid._≈_ (Carrier W) (map (copair×ˡ f g) ⟨$⟩ (inj₁ x , z)) (map f ⟨$⟩ (x , z))
@@ -126,7 +163,16 @@ module RQArith (lem₁ : LEM₁) where
 
   -- measurability of a ∸ b, and of the set {b ≤ a}, along a random pair
   Meas-monus : ∀ {α β : Func Rˢ (Carrier WQ)} → Meas (α ⟨$⟩_) → Meas (β ⟨$⟩_) → Meas (λ r → monus (α ⟨$⟩ r) (β ⟨$⟩ r))
-  Meas-monus = ?
+  Meas-monus {α} {β} mα mβ q = resp (λ c → (λ x → x) , (λ x → x)) (union₂ (borel-prop (q < 0ℚᵘ)) (inter₂ bB (ex-enum P bP)))
+    where
+      bB : Borel (λ c → BndQ (β ⟨$⟩ lift c))
+      bB = ex-enum (λ M c → ∀ s → mem (β ⟨$⟩ lift c) s → s < M)
+        (λ M → all-enum (λ s c → mem (β ⟨$⟩ lift c) s → s < M) (λ s → imp-borel (mβ s) (borel-prop (s < M))))
+      P : ℚᵘ → Pred
+      P q′ c = (q < q′) × (∀ s → mem (β ⟨$⟩ lift c) s → mem (α ⟨$⟩ lift c) (q′ +q s))
+      bP : ∀ q′ → Borel (P q′)
+      bP q′ = inter₂ (borel-prop (q < q′)) (all-enum (λ s c → mem (β ⟨$⟩ lift c) s → mem (α ⟨$⟩ lift c) (q′ +q s))
+        (λ s → imp-borel (mβ s) (mα (q′ +q s))))
 
   monusP : Hom S (_×Q_ S WQ WQ) WQ
   monusP = record
@@ -135,13 +181,20 @@ module RQArith (lem₁ : LEM₁) where
 
   le₂-borel : ∀ {α β : Func Rˢ (Carrier WQ)} → Meas (α ⟨$⟩_) → Meas (β ⟨$⟩_) →
     Borel (λ c → Ge (β ⟨$⟩ lift c) (α ⟨$⟩ lift c))
-  le₂-borel = ?
+  le₂-borel {α} {β} mα mβ = all-enum (λ ρ c → mem (β ⟨$⟩ lift c) ρ → mem (α ⟨$⟩ lift c) ρ)
+    (λ ρ → imp-borel (mβ ρ) (mα ρ))
 
   ----------------------------------------------------------------------------
   -- (a, b) ↦ a − b on WQ ×Q WQ, glued as in `RealShift.gRand` with a varying shift
 
+  Ge-cong : ∀ {t t′ x x′} → t ≈ t′ → x ≈ x′ → Ge x t → Ge x′ t′
+  Ge-cong (tt , _) (_ , xx) g q m = ap tt q (g q (ap xx q m))
+
   pick-cong₂ : ∀ {t t′ x x′} → t ≈ t′ → x ≈ x′ → ∀ d e → pick t x d ≈ᴿ pick t′ x′ e
-  pick-cong₂ = ?
+  pick-cong₂ et ex (inj₁ _) (inj₁ _) = inl≈ (monus-cong et ex)
+  pick-cong₂ et ex (inj₁ a) (inj₂ n) = ⊥-elim (n (Ge-cong et ex a))
+  pick-cong₂ et ex (inj₂ n) (inj₁ a) = ⊥-elim (n (Ge-cong (sym et) (sym ex) a))
+  pick-cong₂ et ex (inj₂ _) (inj₂ _) = inr≈ (monus-cong ex et)
 
   mixF : Func (Carrier (_×Q_ S WQ WQ)) (Carrier RQ)
   mixF = record
@@ -229,27 +282,117 @@ module RQArith (lem₁ : LEM₁) where
   ----------------------------------------------------------------------------
   -- the laws against idT (x⁺ − x⁻)
 
+  -- the parts of idT at a point of RQ
+  idP : ∀ {u a} → u ≈ᴿ inj₁ a → (at⁺ idT u ≈ a) × (at⁻ idT u ≈ 0#)
+  idP {inj₁ _} (⊎ʳ.inj₁ e) = e , refl
+
+  idN : ∀ {u a} → u ≈ᴿ inj₂ a → (at⁺ idT u ≈ 0#) × (at⁻ idT u ≈ a)
+  idN {inj₂ _} (⊎ʳ.inj₂ e) = refl , e
+
+  zero-id : ∀ u → at⁺ idT u ≈ 0# ⊎ at⁻ idT u ≈ 0#
+  zero-id (inj₁ _) = inj₂ refl
+  zero-id (inj₂ _) = inj₁ refl
+
+  cong-id : ∀ {u u′} → u ≈ᴿ u′ → (at⁺ idT u ≈ at⁺ idT u′) × (at⁻ idT u ≈ at⁻ idT u′)
+  cong-id e = Func.cong (map (proj₁ idT)) e , Func.cong (map (proj₂ idT)) e
+
+  cong4 : ∀ {p p′ q q′ r r′ s s′} → p ≈ p′ → q ≈ q′ → r ≈ r′ → s ≈ s′ → p′ + q′ ≈ r′ + s′ → p + q ≈ r + s
+  cong4 a b c d e = trans (+-cong a b) (trans e (sym (+-cong c d)))
+
+  -- a mixed-sign sum p − n: idT of the result against (p, n)
+  core : ∀ p n (u : ∣ RQ ∣) → (n ≤ p → u ≈ᴿ inj₁ (monus p n)) → ((n ≤ p → ⊥) → u ≈ᴿ inj₂ (monus n p)) →
+    at⁺ idT u + n ≈ p + at⁻ idT u
+  core p n u l g with lem₁ (n ≤ p)
+  ... | inj₁ h = cong4 (proj₁ (idP (l h))) refl refl (proj₂ (idP (l h)))
+    (trans (+-comm _ _) (trans (monus-add* n p h) (sym (z+ p))))
+  ... | inj₂ nh = cong4 (proj₁ (idN (g nh))) refl refl (proj₂ (idN (g nh)))
+    (trans (+z n) (sym (monus-add* p n (not-le nh))))
+
+  idT-lr : ∀ p n → at⁺ idT (map addRH ⟨$⟩ (inj₁ p , inj₂ n)) + n ≈ p + at⁻ idT (map addRH ⟨$⟩ (inj₁ p , inj₂ n))
+  idT-lr p n = core p n _ (add-lr-le p n) (add-lr-gt p n)
+
+  idT-rl : ∀ a b → at⁺ idT (map addRH ⟨$⟩ (inj₂ a , inj₁ b)) + a ≈ b + at⁻ idT (map addRH ⟨$⟩ (inj₂ a , inj₁ b))
+  idT-rl a b = core b a _ (add-rl-le a b) (add-rl-gt a b)
+
   idT-add : _≐_ {_×Q_ S RQ RQ} (idT ∘T addRH) (_+T_ {_×Q_ S RQ RQ} (idT ∘T fstQ S) (idT ∘T sndQ S))
-  idT-add = ?
+  idT-add (inj₁ a , inj₁ b) = cong4 (proj₁ (idP (add-ll a b))) refl refl (proj₂ (idP (add-ll a b)))
+    (+-cong refl (+z 0#))
+  idT-add (inj₂ a , inj₂ b) = cong4 (proj₁ (idN (add-rr a b))) refl refl (proj₂ (idN (add-rr a b)))
+    (+-cong (sym (+z 0#)) refl)
+  idT-add (inj₁ a , inj₂ b) = trans (+-cong refl (+z b)) (trans (idT-lr a b) (+-cong (sym (z+ a)) refl))
+  idT-add (inj₂ a , inj₁ b) = trans (+-cong refl (z+ a)) (trans (idT-rl a b) (+-cong (sym (+z b)) refl))
+
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; con; _:*_; _:=_)
+
+  m0 : ∀ x → x * 0# ≈ 0#
+  m0 x = solve 1 (λ x → x :* con 0 := con 0) refl x
+
+  mz⁺ : ∀ c a → pos c * a + neg c * 0# ≈ pos c * a
+  mz⁺ c a = trans (+-cong refl (m0 _)) (z+ _)
+
+  mz⁻ : ∀ c a → pos c * 0# + neg c * a ≈ neg c * a
+  mz⁻ c a = trans (+-cong (m0 _) refl) (+z _)
 
   idT-scaleS : ∀ c → _≐_ {RQ} (idT ∘T scaleSRH c) (scaleT c idT)
-  idT-scaleS = ?
+  idT-scaleS c (inj₁ a) = trans (+-cong refl (mz⁻ c a)) (trans (idT-lr (pos c * a) (neg c * a)) (+-cong (sym (mz⁺ c a)) refl))
+  idT-scaleS c (inj₂ a) = trans (+-cong refl (mz⁺ c a)) (trans (idT-rl (pos c * a) (neg c * a)) (+-cong (sym (mz⁻ c a)) refl))
 
   idT-constRQ : ∀ {X : QBS S} c → _≐_ {X} (idT ∘T constRQ {X} c) (constT c)
-  idT-constRQ = ?
+  idT-constRQ c x = idT-lr (pos c) (neg c)
+
+  ----------------------------------------------------------------------------
+  -- the invariant at a point, through sums
+
+  InvP : ∣ RQ ∣ → ∣A∣ → ∣A∣ → Set₁
+  InvP u P N = Inv (at⁺ idT u) (at⁻ idT u) P N
+
+  InvP-of : ∀ u P N → at⁺ idT u + N ≈ P + at⁻ idT u → InvP u P N
+  InvP-of u P N e = Inv-of (zero-id u) e
+
+  InvP-resp : ∀ {u u′ P N} → u ≈ᴿ u′ → InvP u′ P N → InvP u P N
+  InvP-resp {u} {u′} {P} {N} e (c , _) = InvP-of u P N
+    (trans (+-cong (proj₁ (cong-id e)) refl) (trans c (+-cong refl (sym (proj₂ (cong-id e))))))
+
+  InvP-add : ∀ v u {a b P N} → InvP v a b → InvP u P N → InvP (map addRH ⟨$⟩ (v , u)) (a + P) (b + N)
+  InvP-add v u iv iu = step-inv (zero-id v) (zero-id u) (zero-id (map addRH ⟨$⟩ (v , u))) iv iu (idT-add (v , u))
+
+  sumInv : ∀ {Ω : QBS S} n (Y : Hom S Ω (RQⁿ n)) (F : Fin n → SgT Ω) →
+    (∀ i ω → InvP (map (projQ n (λ _ → RQ) i) ⟨$⟩ (map Y ⟨$⟩ ω)) (at⁺ (F i) ω) (at⁻ (F i) ω)) →
+    ∀ ω → InvP (map (sumRH n) ⟨$⟩ (map Y ⟨$⟩ ω)) (at⁺ (sumT n F) ω) (at⁻ (sumT n F) ω)
+  sumInv zero Y F h ω = InvP-of _ _ _ refl
+  sumInv (suc n) Y F h ω = InvP-add _ _ (h fzero ω)
+    (sumInv n (_∘H_ S (sndQ S) Y) (λ i → F (fsuc i)) (λ i → h (fsuc i)) ω)
 
   idT-sumRH : ∀ n → _≐_ {RQⁿ n} (idT ∘T sumRH n) (sumT n (λ i → idT ∘T projQ n (λ _ → RQ) i))
-  idT-sumRH = ?
+  idT-sumRH n x = proj₁ (sumInv n (idH S {RQⁿ n}) (λ i → idT ∘T projQ n (λ _ → RQ) i) (λ i ω → InvP-of _ _ _ refl) x)
+
+  lin-gen : ∀ {Ω : QBS S} n (a : Fin n → Sg) (Z : Hom S Ω (RQⁿ n)) (G : Fin n → SgT Ω) →
+    (∀ i ω → (at⁺ (G i) ω ≈ at⁺ (scaleT (a i) idT) (map (projQ n (λ _ → RQ) i) ⟨$⟩ (map Z ⟨$⟩ ω))) ×
+             (at⁻ (G i) ω ≈ at⁻ (scaleT (a i) idT) (map (projQ n (λ _ → RQ) i) ⟨$⟩ (map Z ⟨$⟩ ω)))) →
+    ∀ ω → InvP (map (linRH n a) ⟨$⟩ (map Z ⟨$⟩ ω)) (at⁺ (sumT n G) ω) (at⁻ (sumT n G) ω)
+  lin-gen n a Z G hy = sumInv n (_∘H_ S (tupleQ n (λ _ → RQ) (λ i → _∘H_ S (scaleSRH (a i)) (projQ n (λ _ → RQ) i))) Z) G
+    (λ i ω → InvP-resp (proj-tuple n (λ _ → RQ) (λ j → _∘H_ S (scaleSRH (a j)) (projQ n (λ _ → RQ) j)) i (map Z ⟨$⟩ ω))
+      (InvP-of _ _ _ (trans (+-cong refl (proj₂ (hy i ω))) (trans (idT-scaleS (a i) _) (+-cong (sym (proj₁ (hy i ω))) refl)))))
 
   idT-linRH : ∀ n a → _≐_ {RQⁿ n} (idT ∘T linRH n a) (sumT n (λ i → scaleT (a i) (idT ∘T projQ n (λ _ → RQ) i)))
-  idT-linRH = ?
+  idT-linRH n a x = proj₁ (lin-gen n a (idH S {RQⁿ n}) (λ i → scaleT (a i) (idT ∘T projQ n (λ _ → RQ) i))
+    (λ i ω → refl , refl) x)
+
+  row-gen : ∀ {Ω : QBS S} {m n} (M : Mat m n) b k (Z : Hom S Ω (RQⁿ n)) (G : Fin n → SgT Ω) →
+    (∀ i ω → (at⁺ (G i) ω ≈ at⁺ (scaleT (M k i) idT) (map (projQ n (λ _ → RQ) i) ⟨$⟩ (map Z ⟨$⟩ ω))) ×
+             (at⁻ (G i) ω ≈ at⁻ (scaleT (M k i) idT) (map (projQ n (λ _ → RQ) i) ⟨$⟩ (map Z ⟨$⟩ ω)))) →
+    ∀ ω → InvP (map (rowRH M b k) ⟨$⟩ (map Z ⟨$⟩ ω)) (at⁺ (_+T_ {Ω} (sumT n G) (constT (b k))) ω)
+      (at⁻ (_+T_ {Ω} (sumT n G) (constT (b k))) ω)
+  row-gen M b k Z G hy ω = InvP-add _ _ (lin-gen _ (M k) Z G hy ω) (InvP-of _ _ _ (idT-constRQ (b k) (map Z ⟨$⟩ ω)))
 
   idT-rowRH : ∀ {m n} (M : Mat m n) b k → _≐_ {RQⁿ n} (idT ∘T rowRH M b k)
     (_+T_ {RQⁿ n} (sumT n (λ i → scaleT (M k i) (idT ∘T projQ n (λ _ → RQ) i))) (constT (b k)))
-  idT-rowRH = ?
+  idT-rowRH M b k x = proj₁ (row-gen M b k (idH S {RQⁿ _}) (λ i → scaleT (M k i) (idT ∘T projQ _ (λ _ → RQ) i))
+    (λ i ω → refl , refl) x)
 
   -- the coordinates of A Z + b computed in RQᵐ are `RandomVector.affT` of the coordinates idT ∘ Zᵢ
   idT-affRH : ∀ {Ω : QBS S} (P : C.Pre Ω) {m n} (M : Mat m n) b (Z : Hom S Ω (RQⁿ n)) k →
     _≐_ {Ω} ((idT ∘T projQ m (λ _ → RQ) k) ∘T _∘H_ S (affRH M b) Z)
       (affT P M b (λ i → (idT ∘T projQ n (λ _ → RQ) i) ∘T Z) k)
-  idT-affRH = ?
+  idT-affRH P {m} M b Z k ω = proj₁ (InvP-resp (proj-tuple m (λ _ → RQ) (rowRH M b) k (map Z ⟨$⟩ ω))
+    (row-gen M b k Z (λ i → scaleT (M k i) ((idT ∘T projQ _ (λ _ → RQ) i) ∘T Z)) (λ i ω′ → refl , refl) ω))

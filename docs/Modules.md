@@ -321,7 +321,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
-| `QBS.Continuous.RQArith` | 256 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
+| `QBS.Continuous.RQArith` | 397 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
+| `QBS.Continuous.RQArithAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RQArith` (plan 05, item 55a), over [0, ∞]. |
 | `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |
 | `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
 | `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`). |
