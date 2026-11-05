@@ -20,7 +20,7 @@ open import Function.Base using (const)
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; subst)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; sym; subst)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
@@ -108,7 +108,7 @@ record NatPairing : Set where
     unpair-pair : ∀ n m → unpair (pair n m) ≡ (n , m)
 
   pairₛ : ℕ → Func ℕˢ ℕˢ
-  pairₛ n = record { to = pair n ; cong = ≡.cong (pair n) }
+  pairₛ n = ⇑ (pair n)
 
   -- the composite cover of j by the i n: r ↦ pair (j r) (i (j r) r)
   refineₛ : ∀ {a b} {A : Setoid a b} → Func A ℕˢ → (ℕ → Func A ℕˢ) → Func A ℕˢ
