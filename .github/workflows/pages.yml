@@ -44,7 +44,7 @@ jobs:
           } > ~/.agda/libraries
 
       - name: Typecheck and render html/ (Everything.html copied to index.html)
-        run: make htmlbuild
+        run: make html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: html

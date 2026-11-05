@@ -8,12 +8,12 @@
 #                      files with holes get --allow-unsolved-metas, their importers lose --safe).  Any other
 #                      error or a postulate still fails; files with holes are listed with their counts
 #                      (scripts/holes.py counts the `?` tokens, since Agda prints nothing for them).
-#   make htmlserve     generate build/Everything.agda (imports every module), the Agda HTML documentation in
-#                      html/ (from the progress overlay, so skeleton modules with holes are included), then
-#                      serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).  `make serve`
-#                      only serves.
-#   make html          the same without serving (used by .github/workflows/pages.yml, which publishes html/ to
-#                      GitHub Pages; html/index.html is a copy of Everything.html, listing every module).
+#   make html          generate build/Everything.agda (imports every module) and the Agda HTML documentation in
+#                      html/ (from the progress overlay, so skeleton modules with holes are included); html/index.html
+#                      is a copy of Everything.html, listing every module.  Does not serve.  Used by the Pages
+#                      workflow (workflows/pages.yml), which publishes html/.
+#   make htmlserve     `make html`, then serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).
+#   make serve         only serve the existing html/ (no build).
 #   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
 #                      known offenders are listed in scripts/longdecls.baseline, anything new fails.  Needs no Agda.
 #   make doccheck      check the docs against the code (scripts/doccheck.py): every module has a header comment,
@@ -43,7 +43,7 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: longcheck doccheck check progress html htmlbuild serve report clean all-interfaces profile profile-tree
+.PHONY: longcheck doccheck check progress html htmlserve serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
@@ -67,7 +67,7 @@ html:
 	@cp build/Everything.agda $(PROGDIR)/build/Everything.agda
 	@cd $(PROGDIR) && $(AGDA) -i build --html --html-dir=$(CURDIR)/html build/Everything.agda
 	@cp html/Everything.html html/index.html
-htmlserve: htmlbuild
+htmlserve: html
 	@$(MAKE) --no-print-directory serve
 serve:
 	@echo "serving html/ at http://$$(ipconfig getifaddr en0 2>/dev/null || hostname):$(PORT)/"
