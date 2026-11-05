@@ -1,8 +1,21 @@
 # Public interface
 
-The names a user imports, with the module they live in and one line of meaning. Types are shown where short; open the
-module for the rest. `scripts/doccheck.py` verifies that every module path below exists and every name still
-occurs in it. Conventions: `ℓ` universe level, `S` a `RandomSource`, `Hom S X Y` morphisms in `QBSCat S`.
+This page lists the names a user imports, grouped by module, with one line of meaning each. It is a map, not a
+tutorial: for a first read start with `Guide.md`, and for the module-by-module overview see `Modules.md` (generated).
+Open the module for full types.
+
+How to read an entry: `name` — meaning. A name in parentheses after the dash, such as `(module X lem₁)`, says which
+parameterised module it lives in; `lem₁ : LEM₁` is the excluded-middle hypothesis (see `Classical.md`). Conventions:
+`ℓ` is a universe level, `S` a `RandomSource`, `Hom S X Y` a morphism in `QBSCat S`. `scripts/doccheck.py` checks
+that every module path below exists and every name still occurs in it.
+
+Contents:
+- [Abstract layer](#abstract-layer): QBS, probes, the categorical structure, the probability and statistical interfaces.
+- [Discrete model](#discrete-model): the semiring-weighted model and its concrete instances.
+- [Continuous model](#continuous-model): the Borel source, lower reals, measures, integrals, expectations, distributions.
+- [Signed layer, Gaussians and information quantities](#signed-layer-gaussians-and-information-quantities): signed tests and expectations, N(μ, σ²), entropy and KL divergence.
+- [Bayesian and frequentist inference](#bayesian-and-frequentist-inference).
+- [Examples and generic calculations](#examples-and-generic-calculations).
 
 ## Abstract layer
 
@@ -255,6 +268,93 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `moment-N` — `E[uⁿ] = 1/(n+1)` for every n, stated as `# (n+1) * M n ≈ 1#` (`module UniformMomentN lem₁`; the algebra `AlgN` is over an abstract Archimedean ω-semiring: Pascal triangle `Z`, no binomial coefficients).
 - `beta-closed`, `beta-conj` — the Beta integral `Bt k m = ∫ uᵏ (1−u)ᵐ` (`module BetaIntegral lem₁`; `1−u` is the complement `v` of the binary expansion; `Bt-add : Bt k m ≈ Bt (k+1) m + Bt k (m+1)`), multiplied out: `fact (k+m+1) * Bt k m ≈ fact k * fact m` (`beta-closed m k`) and `# (k+m+2) * Bt (k+1) m ≈ # (k+1) * Bt k m` (`beta-conj m k`, the posterior mean (k+1)/(k+m+2)); the algebra `AlgB` is over an abstract Archimedean ω-semiring.
 - `variance` — `Var u = 1/12`, stated as `x12 (Var u) ≃ 1S` (twelve copies sum to one; `module UniformVariance lem₁`).
+
+## Signed layer, Gaussians and information quantities
+
+The newest part of the library (`plans/03-bayesian-frequentist.md`). A *signed test* is a function `f` written as two
+non-negative parts, `f⁺ − f⁻`, each with values in `[0, ∞]`. This lets us take expectations of functions that are not
+bounded, such as `x`, `x²` or `log x`. Every module below takes the parameter `lem₁ : LEM₁` (see `Classical.md`).
+
+### `QBS.Continuous.SignedTest`
+- `SgT` — `SgT X`: a signed test on `X`, a pair of tests `X ⇒ WQ` (`WQ` is `[0, ∞]`) with parts `posT`, `negT` and pointwise values `at⁺`, `at⁻`.
+- `_≐_`, `≐-refl`, `≐-sym`, `≐-trans` — equality of signed tests, `f⁺ + g⁻ ≈ g⁺ + f⁻` pointwise; transitive through a pointwise finite middle.
+- `_+T_`, `scaleT`, `_*T_`, `constT`, `fromW`, `_∘T_` — pointwise sum, scaling by a signed constant, product, constants, a non-negative test as a signed one, precomposition.
+- `idT`, `sqT` — `x⁺ − x⁻` and its square, on the real line.
+- `toW`, `toCut` — the identity bridge between tests into `CutQ` and into `WQ` (the same carrier and random elements).
+
+### `QBS.Continuous.SignedExpect`
+- `Int` — `Int p f`: both parts of `f` have finite integrals against `p`; `Int⁻` — only the negative part does.
+- `Ex` — `Ex p f i = ∫ f⁺ − ∫ f⁻`, a signed value; `Ex-irr` says it does not depend on the proof `i`.
+- `Ex-cong`, `Ex-+`, `Ex-neg`, `Ex-scale`, `Ex-const`, `Ex-mono` — respects `≐`, linearity, constants against a probability, monotonicity.
+- `Int-dom` — integrability by domination; `Int-+`, `Int-neg`, `Int-scale`, `Int-const` — closure properties.
+- `Ex∞`, `Ex∞-ι`, `Ex∞-+`, `Ex∞-mono` — the one-sided expectation in `(−∞, ∞]` when only `∫ f⁻` is finite; it agrees with `Ex` when both parts are finite.
+
+### `QBS.Continuous.SignedInf`
+- `Sg∞` — signed values in `(−∞, ∞]`: `p − n` with `n` finite and `p` any element of `[0, ∞]`; `_≃∞_` is equality, `_≤∞_` the order.
+- `_+∞_`, `scale∞`, `top∞`, `fromPos` — total addition (there is no `−∞`, so no `∞ − ∞`), scaling, `+∞`, a value of `[0, ∞]` as a signed one.
+- `ι∞`, `fin∞` — `Sg → Sg∞`, and back for values with finite positive part.
+- `≃∞-trans`, `≤∞-trans`, `≤∞-antisym`, `+∞-comm`, `+∞-assoc`, `+∞-mono` — laws (transitivity uses excluded middle on whether a part is `∞`).
+
+### `QBS.Continuous.SignedTransport`
+- `Ex-map`, `Int-map`, `Int-unmap` — the expectation against a pushforward `mapM h p` is the expectation of `f ∘ h`.
+- `Ex-scalePre`, `Int-scalePre` — against `c · p` (`c` finite) the expectation is `c` times the expectation.
+- `ofITest`, `Ex-ofITest`, `toITest`, `E-atᴵ-toITest` — the bridge to the probability-monad API: an integrable test `ITest P` gives a signed test with `E-atᴵ P t ≃ Ex …`, and back.
+
+### `QBS.Continuous.SignedLimits`
+- `SgConv` — `SgConv a l`: signed values `a n` converge to `l` (tolerance `½ᵏ`, cross-added); `SgConv-cong`, `SgConv-+`, `SgConv-neg`, `SgConv-scale` — its laws.
+- `dct-Ex` — dominated convergence for `Ex`.
+- `deriv-Ex` — differentiation under the integral along steps `½ⁿ`, stated without division.
+
+### `QBS.Continuous.SignedFubini`
+- `innerT`, `Int-inner`, `Ex-fubini` — Fubini for signed tests: `Ex (s ⊗ t) f ≃ Ex t (innerT s f)` for `f` integrable against the product.
+- `_⊗T_`, `Int-⊗`, `Ex-⊗` — the product `f(x) g(y)` of signed tests and independence: `Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f · Ex t g`.
+
+### `QBS.Continuous.SignedLog`
+- `logP`, `logN` — the parts of the logarithm of a lower real, `log⁺ x = log (x ⊔ 1)` and `log⁻ x = log (1 / (x ⊓ 1))`, both in `[0, ∞]`.
+- `logP-ge`, `logP-le`, `logN-le`, `logN-ge` — `e^{logP x} ≈ x` for `1 ≤ x < ∞`, `logP x ≈ 0` for `x ≤ 1`, and the same for `logN`.
+- `logS`, `log-mul`, `log-one`, `log-exp` — `log x` as a signed value for `0 < x < ∞`; `log (x y) ≃ log x + log y`.
+- `log∞`, `nlog∞` — `log x` for `x > 0` and `−log x` for `x < ∞` as values in `(−∞, ∞]`.
+- `Meas-logP`, `Meas-logN` — the parts are measurable, so they can serve as test parts.
+
+### `QBS.Continuous.SignedVar`
+- `Var` — `Var P f i = E[f²] − (E f)²` as a signed value, for `f` with `f` and `f²` integrable (`Int₂`).
+- `cen`, `Ex-cen`, `Var-cen` — the centred test `f − c`; `E[(f − c)²] ≃ E[f²] − 2c E f + c²`; with `c = E f` this is the variance.
+- `Var-shift`, `Var-scale`, `Var-cong` — `Var (f + c) ≃ Var f`, `Var (c f) ≃ c² Var f`, respects `≐`.
+
+### Gaussians: `QBS.Inference.GaussScale`, `QBS.Inference.GaussShift`, `QBS.Inference.GaussVar`
+The standard Gaussian `gaussR` is in `QBS.Inference.GaussReal` (above); no value for `π` is ever used. Below, `s l ≈ 1` and `μ` is finite.
+- `gaussσ`, `push-sym`, `second` — N(0, s²) as the pushforward of `gaussR` along `x ↦ s x`; `second : ∫ x² dN(0, s²) ≈ s²` (`GaussScale`).
+- `gaussμ`, `gaussμ⁻`, `∫-gaussμ`, `mean`, `mean⁻` — N(±μ, s²) by translation, and its mean without subtraction: `E[X⁺] ≈ μ + E[X⁻]` (`GaussShift`).
+- `cvar`, `cvar⁻` — the centred second moment `∫ (x − μ)² dN(μ, s²) ≈ s²` (`GaussVar`).
+- `Ex-id`, `Var-gaussμ`, `Ex-id⁻`, `Var-gaussμ⁻` — the signed mean `E X ≃ ±μ` and variance `Var X ≃ s²` of the identity test under N(±μ, s²) (`GaussVar`).
+
+### Information quantities: `QBS.Continuous.Entropy`, `QBS.Continuous.KLDiv`, `QBS.Continuous.InfoProduct`
+For a base measure `μ` and a density `p : X ⇒ WQ`, the measure `p · μ` is `densPre μ p`.
+- `logT`, `nlogT`, `densPre`, `∫-dens` — the signed tests `log p` and `−log p`, and the measure with density `p` (`Entropy`).
+- `EntInt`, `Ent` — `Ent μ p i = E_{p·μ}[−log p] ∈ (−∞, ∞]`, defined when `∫ p log⁺ p dμ` is finite (`Entropy`).
+- `Ent-le1`, `ent`, `ent-const` — for densities at most 1 (counting measure) the entropy is `∫ p log⁻ p dμ`; a constant density `c` gives `c log (1/c)` times the mass (`Entropy`).
+- `KLInt`, `KL`, `KLInt-fin` — `KL Q p i = ∫ p log p dQ ∈ (−∞, ∞]`, defined when `∫ p log⁻ p dQ` is finite, which holds whenever `Q` has finite mass (`KLDiv`).
+- `KL-nonneg` — Gibbs' inequality: `KL ≥ 0` when `Q` and `p · Q` are probability measures (`KLDiv`).
+- `KL-one`, `KL-cong` — the density 1 has divergence 0; equal densities have equal divergence (`KLDiv`).
+- `KL-⊗`, `Ent-⊗`, `KLInt-⊗`, `EntInt-⊗` — KL divergence and entropy add over independent products of normalised, positive, finite densities (`InfoProduct`).
+
+## Bayesian and frequentist inference
+
+### `QBS.Inference.Bayesian`
+Generic in a `NormalizableSemiring`; there is no division, so normalisation goes through an inverse of the evidence.
+- `sequential`, `evidence-sequential`, `posterior-seq` — observing `x₁` then `x₂` is observing both, with the product likelihood.
+- `predictive-chain` — the chain rule for the evidence and the posterior predictive.
+- `likSeq`, `likSeq-counts`, `posterior-exchangeable` — the Bernoulli model: the likelihood of a sequence depends only on the counts of successes and failures.
+- `evidence-total`, `evidence-total-prob` — the total evidence over a discrete set of parameters.
+
+### `QBS.Inference.CoinBias`
+- `heads`, `twoHeaded`, `fair`, `evidence-heads`, `mass-twoHeaded`, `mass-fair` — is the coin fair or two-headed? One head gives evidence ¾ and posterior odds 2 : 1.
+
+### `QBS.Inference.Frequentist`, `QBS.Inference.UniformExperiment`
+Probabilities are over the data, for a fixed parameter.
+- `eval`, `bias`, `variance`, `mse`, `Unbiased`, `Moments` — a statistic is a ring term in the observations (`var`, `nat`, `_+ₜ_`, `_*ₜ_`), so sample mean and variance are statistics; `bias` and the rest are computed in the ring of bounded random variables (`Frequentist`).
+- `sample-mean-unbiased`, `sample-variance-unbiased` — the estimator theorems for any experiment with the right moments.
+- `uniformExp` — the instance: independent draws uniform on `[a, a + c]`; `Sₙ / n` is unbiased for `a + c/2` (`UniformExperiment`).
 
 ## Examples and generic calculations
 

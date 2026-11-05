@@ -1,7 +1,10 @@
 # Literature for a constructive version
 
-What exists that we could build on to remove the classical assumptions listed in `Docs/Classical.md`.
-PDFs are in `lit/` (index in `lit/README.md`).
+**Why this file exists.** The library is classical: it takes excluded middle as a module parameter
+(`docs/Classical.md` says where and why). This note collects the literature that could let us remove it, says
+what each source gives us, and ends with possible routes and next steps. It is a reading guide, not a plan: no
+constructive port has been started. PDFs are in `lit/` (index in `lit/README.md`). That folder is local and
+ignored by git, so it is not in a fresh clone.
 
 **Reading status.** Only Vickers, *A monad of valuation locales*, was read in full. Everything else is
 characterised from abstracts and search summaries, and the notes below say so where it matters. Treat
@@ -13,7 +16,8 @@ those entries as leads to check, not as verified claims about the papers' conten
   locales** (open sets, Scott-continuous, values in the *lower reals*) with the **lower integral**.
   Vickers proves, constructively (geometric logic, no choice), a Riesz theorem, a **commutative strong
   monad** of valuations, and **Fubini**. These are the same results our `Continuous/` layer proves
-  classically.
+  classically. (Our newer signed layer, `Continuous/Signed*`, adds differences `f⁺ − f⁻` of such integrals; it is
+  built on the same lower integral and uses `lem₁` only for finiteness decisions, `Classical.md` §3.9.)
 * Our `Analysis/` layer already has the same shape: lower cuts of ℚ, Daniell functionals, sums and sups
   of increasing sequences. The theory we would port to is therefore close to what we have. What changes
   is what we take as *points* and which parts we drop (σ-algebras, Carathéodory, Dynkin).
@@ -68,7 +72,8 @@ Most relevant single paper. For any locale `X`:
 `Strong`. Its monad is what we call `Continuous`/`SFinite`, and its Fubini replaces our `Tensor`
 (which goes through π–λ and uniqueness). Our `OmegaSemiring` already works with lower reals but also
 asks for `complement` and `cancel`; Vickers avoids both by proving the cancellation lemma only in the
-restricted form it needs.
+restricted form it needs. Our signed values (`Analysis/Signed`) are the same device seen from the other side: a
+difference `p − n` of lower reals with a finite `n`, equal when equal after adding a finite witness.
 
 ### Vickers, *A localic theory of lower and upper integrals* (2008)
 Defines valuation locales and covaluation locales, shows Riemann and Choquet integrals can be computed
@@ -180,8 +185,8 @@ would be research.
 
 ## 6. Suggested next steps
 
-1. Read Coquand–Spitters *Integrals and valuations* §§1–4, and Vickers §§3–7 against our
-   `Analysis/Measure`, `Tensor`, `Param` (the second is already read, the first is in `lit/`).
+1. Read Coquand–Spitters *Integrals and valuations* §§1–4 (in `lit/`), and map Vickers §§3–7 (already read)
+   onto our `Analysis/Measure`, `Tensor`, `Param`.
 2. Decide the design question in route A(a): what is a "random element" when the sample space is a
    locale. Check Simpson's *Probability sheaves* and the locale-of-randoms paper for guidance.
 3. Prototype a small module for a valuation on the Cantor frame of clopens and its lower integral to see
