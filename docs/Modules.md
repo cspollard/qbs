@@ -264,7 +264,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer"). |
-| `QBS.Continuous.InfoProduct` | 74 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
+| `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
+| `QBS.Continuous.InfoProductAux` | 55 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
 | `QBS.Continuous.LebPlane` | 106 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
