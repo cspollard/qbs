@@ -3,25 +3,21 @@
 -- Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`).
 module QBS.Colimits where
 
-open import Level using (Level; suc; Lift; lift)
-open import Function.Base using (id; _∘_; const)
+open import Function.Base using (id; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
-open import Data.Nat.Base using (ℕ)
+open import Data.Empty.Polymorphic using (⊥)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.Construct.Closure.Equivalence using (EqClosure)
 import Relation.Binary.Construct.Closure.Equivalence as EqC
-open import Relation.Binary.Construct.Closure.Symmetric using (SymClosure; fwd; bwd)
+open import Relation.Binary.Construct.Closure.Symmetric using (fwd)
 open import Relation.Binary.Core using (Rel)
-open import Relation.Binary.PropositionalEquality.Core using (subst; sym)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
-open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (ε; _◅_)
 
-open import Categories.Category.Core using (Category)
 open import Categories.Category.Cocartesian using (Cocartesian)
 open import Categories.Category.Cocomplete.Finitely using (FinitelyCocomplete)
 open import Categories.Object.Initial using (Initial)

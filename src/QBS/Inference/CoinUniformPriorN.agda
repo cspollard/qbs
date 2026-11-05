@@ -17,9 +17,8 @@
 module QBS.Inference.CoinUniformPriorN where
 
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_,_; proj₁; proj₂; Σ)
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Level using (lift; lower)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

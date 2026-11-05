@@ -18,7 +18,6 @@ open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary using (yes; no; Dec)
 open import Relation.Nullary.Decidable using (isYes)
-open import Function.Base using (_∘_)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong)
 
 open import QBS.Borel.Core

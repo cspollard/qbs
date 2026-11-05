@@ -20,7 +20,7 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₀)
-open import QBS.Borel.Core using (Borel; ⋂; compl; inter₂; resp)
+open import QBS.Borel.Core using (Borel; ⋂; compl; inter₂)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.LowerReals using (module Cut; _⊑_)

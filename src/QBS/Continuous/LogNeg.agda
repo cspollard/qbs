@@ -9,11 +9,10 @@
 --   * `UD` : x · e^{logN x} ≈ e^{logP x} for x positive and bounded (the two cases x ≤ 1 and 1 ≤ x, `tot1`).
 module QBS.Continuous.LogNeg where
 
-open import Level using (lift)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
+open import Data.Empty using (⊥-elim)
+open import Data.Rational.Unnormalised.Base using (_*_; _<_; _≤_)
 
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
@@ -26,7 +25,7 @@ open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Continuous.LogCore using (module LogCore)
-open import QBS.Continuous.LogRecip using (recC; recC-anti; recC-cong; module LogRecip)
+open import QBS.Continuous.LogRecip using (recC; recC-anti; module LogRecip)
 open import QBS.Classical using (LEM₀)
 
 PosQ′ : Cut → Set

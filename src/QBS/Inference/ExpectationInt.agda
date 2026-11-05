@@ -15,7 +15,7 @@
 module QBS.Inference.ExpectationInt where
 
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (_,_; proj₁)
+open import Data.Product.Base using (_,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 
 open import QBS.Core

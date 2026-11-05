@@ -5,9 +5,7 @@
 -- complement and countable disjoint unions contains every Borel set.  Classical: it uses `lem`.
 module QBS.Borel.PiLambda where
 
-open import Level using (Level)
-open import Function.Base using (id; _∘_; const)
-open import Data.Bool.Base using (Bool; true; false)
+open import Data.Bool.Base using (Bool)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕₚ

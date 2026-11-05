@@ -3,10 +3,7 @@
 -- Bayes' rule for the discrete model, generic in the normalisable semiring.  posterior = prior reweighted by a likelihood, normalised by the evidence.
 module QBS.Example.Bayes where
 
-open import Level using (Level; Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (Σ; _,_)
-open import Relation.Binary.Bundles using (Setoid)
 
 open import QBS.Core
 open import QBS.Model.DiscreteSource using (discreteSource)

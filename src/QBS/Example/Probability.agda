@@ -13,7 +13,6 @@ module QBS.Example.Probability where
 
 import Level as L
 open import Data.Bool.Base using (Bool; true; false; _∧_)
-open import Data.Empty.Polymorphic using (⊥)
 import Data.Empty as E
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Function.Base using (case_of_)
@@ -21,7 +20,6 @@ open import Function.Base using (case_of_)
 open import QBS.Model.Semiring
 open import QBS.Model.WeightClasses using (probClass)
 open import QBS.Model.AdditiveSemiring
-open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Example.Program

@@ -9,8 +9,7 @@
 -- and c with `BoundedCancel.cancel-bnd`); `∫-swap` from `∫-leb2` and `∫-leb2′` (the inner integrals agree pointwise).
 module QBS.Continuous.LebPlane where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_,_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

@@ -3,17 +3,14 @@
 -- Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`).
 module QBS.Limits where
 
-open import Level using (Level; suc; _⊔_; Lift; lift)
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.Structures using (IsEquivalence)
 import Relation.Binary.Construct.On as On
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality.Core using (refl)
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
 open import Categories.Category.Core using (Category)

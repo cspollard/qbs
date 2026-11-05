@@ -13,7 +13,7 @@
 -- finite middle is `trans-core`: add c + d (finite, `InfAlg.cancel-bnd`) to both sides.
 module QBS.Continuous.SignedTest where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 
 open import QBS.Core

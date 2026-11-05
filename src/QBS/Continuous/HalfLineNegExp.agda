@@ -10,8 +10,7 @@
 -- The value `∫₀¹ e^{−u} du = 1 − e^{−1}` is not computed here.
 module QBS.Continuous.HalfLineNegExp where
 
-open import Level using (lift; lower)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (_,_; proj₁; proj₂)

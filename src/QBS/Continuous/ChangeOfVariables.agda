@@ -16,7 +16,7 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

@@ -4,47 +4,35 @@
 
 module QBS.Continuous.SFiniteIncl where
 
-open import Level using (lift; lower)
+open import Level using (lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Sum.Base using (_⊎_)
-open import Relation.Binary.Bundles using (Setoid)
+open import Data.Product.Base using (_,_)
+open import Data.Unit.Polymorphic.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ; !Q)
+open import QBS.Limits using (_×Q_; 1Q; pairQ; !Q)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘)
-open import QBS.Borel.Source using (R₁; cantorSource; down)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
+open import QBS.Borel.Core using (Measurable)
+open import QBS.Borel.Source using (R₁)
+open import QBS.Borel.Merge using (measurable-merge₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.LowerReals using (Cut)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Continuous.Sample
-open import QBS.Continuous.Monad using (module Continuous)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteMonad using (module SFiniteMonad)
 open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
 open import QBS.Continuous.Strong using (module Strength)
 open import Categories.Monad.Morphism using (Monad⇒-id)
-open import QBS.Analysis.JFubini using (module JFubini)
-open import Categories.Functor using (Endofunctor; Functor)
 open import Categories.Functor using () renaming (id to idF)
-open import Categories.Functor using (_∘F_)
-open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.Monad using (Monad)
 open import QBS.Classical using (LEM₀)
 
 module SFiniteIncl (lem : LEM₀) where

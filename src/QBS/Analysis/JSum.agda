@@ -13,7 +13,6 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
-open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)

@@ -6,7 +6,6 @@
 -- do not also load agda-categories' `Setoids`.
 module QBS.Category.Forget where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import Categories.Category.Instance.Setoids using (Setoids)

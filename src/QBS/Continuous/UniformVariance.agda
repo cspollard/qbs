@@ -5,11 +5,7 @@
 -- (`UniformMoment`), so that twelve copies of `Var f` add up to one: Var = 1/12.
 module QBS.Continuous.UniformVariance where
 
-open import Level using (lift; lower)
-open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Analysis.Omega
@@ -20,7 +16,6 @@ open import QBS.Analysis.Signed
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.Variance using (module Variance; module Arith)
-open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)

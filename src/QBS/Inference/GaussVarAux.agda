@@ -10,7 +10,7 @@
 -- Route: `SFiniteIncl.ι-nat` and `SFinite.∫ᴹ-map` as in `GaussShift.∫-gaussμ`; everything else is pointwise.
 module QBS.Inference.GaussVarAux where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 

@@ -8,7 +8,6 @@
 -- (`LebesgueInterval.leb-unique`).  This generalises the dyadic `Continuous/HalfLineScale`.
 module QBS.Continuous.LebesgueScale where
 
-open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

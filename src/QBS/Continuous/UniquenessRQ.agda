@@ -12,7 +12,7 @@
 -- or the sum of tests by `copair`).
 module QBS.Continuous.UniquenessRQ where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Sum.Base using (inj₁; inj₂)
 
 open import QBS.Core

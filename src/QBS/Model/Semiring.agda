@@ -7,7 +7,7 @@
 -- arbitrary one, so the discrete model does not depend on a construction of ℝ.
 module QBS.Model.Semiring where
 
-open import Level using (Level; suc; _⊔_)
+open import Level using (Level; suc)
 open import Function.Base using (_∘_)
 open import Function.Bundles using (Inverse; _↔_)
 open import Algebra.Bundles using (CommutativeSemiring)

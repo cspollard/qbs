@@ -6,9 +6,8 @@
 -- mixtures is the mixture of the suprema (`DyadicAlg.⨆-mix`).
 module QBS.Continuous.FirstBitInf where
 
-open import Data.Bool.Base using (Bool; true; false)
+open import Data.Bool.Base using (true; false)
 
-open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

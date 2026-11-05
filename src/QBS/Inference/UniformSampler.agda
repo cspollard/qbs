@@ -7,15 +7,12 @@
 -- `Sampler.iid-moments`; they are the statements of `Continuous/UniformSample` for the same estimators.
 module QBS.Inference.UniformSampler where
 
-open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ)
 open import QBS.Classical using (LEM₁)
-open import Data.Unit.Base using (tt)
 
 open import QBS.Core
-open import QBS.Limits using (1Q; _×Q_)
+open import QBS.Limits using (1Q)
 import QBS.Probes as Probes
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
@@ -29,7 +26,6 @@ open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Analysis.Archimedean using (module Arch)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Variance using (module Variance)
-open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.FairCoin
 open import QBS.Continuous.SignedTests using (module SignedTests)

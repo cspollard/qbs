@@ -12,14 +12,14 @@
 module QBS.Continuous.SupTest where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
+open import Data.Nat.Base using (ℕ; suc) renaming (_+_ to _+ℕ_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₀)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
 open import Level using (lift)
 open import Data.Rational.Unnormalised.Base using (_<_)
 open import QBS.Borel.Core using (⋂; inter₂)

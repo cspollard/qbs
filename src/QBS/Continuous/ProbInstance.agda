@@ -3,15 +3,11 @@
 -- The continuous probability monad over Cantor space is a model of `ProbabilityInterface`.
 module QBS.Continuous.ProbInstance where
 
-open import Level using (Lift; lift; lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (_×-function_)
 import Function.Construct.Identity as Id
-open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 

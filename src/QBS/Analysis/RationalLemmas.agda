@@ -10,8 +10,7 @@ import Data.Nat.Properties as ℕ
 open import Data.Integer.Base as ℤ using (+_; -[1+_])
 import Data.Integer.Properties as ℤ
 open import Data.Rational.Unnormalised.Base public using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; ½)
-open import Data.Rational.Unnormalised.Base using
-  (mkℚᵘ; _+_; _*_; -_; 1/_; _<_; _≤_; _≃_; *≡*; *≤*; *<*; ↥_; ↧_; ↧ₙ_; Positive; NonNegative; positive; nonNegative)
+open import Data.Rational.Unnormalised.Base using (mkℚᵘ; _+_; _*_; -_; 1/_; _<_; _≤_; _≃_; *≡*; *≤*; Positive; NonNegative; positive; nonNegative)
 import Data.Rational.Unnormalised.Properties as P
 open import Data.Product.Base using (Σ; _,_; _×_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)

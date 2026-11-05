@@ -6,24 +6,20 @@
 module QBS.Continuous.Sample where
 
 import Level as L
-open import Level using (Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Bool.Base using (Bool; true; false; if_then_else_)
 open import Data.Nat.Base using (ℕ; zero; _+_)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥)
+open import Data.Sum.Base using (inj₁; inj₂)
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q)
+open import QBS.Limits using (_×Q_)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source

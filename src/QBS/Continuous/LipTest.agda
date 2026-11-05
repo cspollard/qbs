@@ -11,8 +11,8 @@
 -- Borel by `Intervals.ge-borel`.  Then q ∈ F x iff (−∞, ρ) ≤ F x for some ρ > q.
 module QBS.Continuous.LipTest where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; suc)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Nat.Base using (suc)
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 
 open import QBS.Core

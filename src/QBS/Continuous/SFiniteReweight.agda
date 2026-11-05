@@ -19,7 +19,6 @@ open import QBS.Analysis.Measure
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Continuous.Sample
-open import QBS.Continuous.Monad using (module Continuous)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Classical using (LEM₀)

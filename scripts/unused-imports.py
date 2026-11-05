@@ -16,6 +16,7 @@ Usage:
 
 import argparse
 import glob
+import html as html_lib
 import os
 import re
 import sys
@@ -54,84 +55,64 @@ def check_module_html(html_path):
     if '<pre class="Agda">' not in html:
         return None
     pre_content = html.split('<pre class="Agda">')[1].split('</pre>')[0]
-    lines = pre_content.split("\n")
 
-    # In Agda's HTML, each source line is roughly one HTML line within <pre class="Agda">
-    # First, let's identify which hrefs are used in the body.
-    # An import statement occurs in lines containing `class="Keyword">import</a>` or
-    # opening module statements before declarations.
-    # We collect (line_idx, sym_name, target_href, import_stmt) for each using symbol.
-
+    # Find all using (...) spans in non-public `import` statements
+    # Match using\s*</a>\s*<a[^>]*class="Symbol">\(</a>(.*?)<a[^>]*class="Symbol">[^<]*\).*?</a>
+    using_spans = []  # list of (start_pos, end_pos)
     using_entries = []  # (line_no, sym_name, target_href, mod_imported)
-    body_hrefs = set()
-    body_syms = set()
 
-    in_import = False
-    current_import_is_public = False
-    current_mod_imported = ""
-
-    for line_idx, line in enumerate(lines, 1):
-        # A module import statement MUST contain the `import` keyword.
-        # Lines with just `open M` inside the file body are module/record openings,
-        # which are part of the file's usage (not imports).
-        is_import_line = 'class="Keyword">import</a>' in line
-        has_public_kw = 'class="Keyword">public</a>' in line
-
-        if has_public_kw and is_import_line:
-            current_import_is_public = True
-        elif is_import_line:
-            current_import_is_public = False
-
-        # Extract imported module name if present
-        mod_match = re.search(r'href="([^"]+\.html)"[^>]*class="Module">([^<]+)</a>', line)
-        if mod_match and is_import_line:
-            current_mod_imported = mod_match.group(2)
-
-        # Hrefs inside using (...) of an import line are import anchors.
-        # All other hrefs (including in `open M ...`) are body hrefs.
-        if is_import_line and not current_import_is_public:
-            if 'class="Keyword">using</a>' in line:
-                using_part = line.split('class="Keyword">using</a>')[1]
-                for m in re.finditer(r'href="([^"]+)"[^>]*>([^<]+)</a>', using_part):
-                    target_href, sym_name = m.group(1), m.group(2)
-                    if not target_href.endswith(".html"):
-                        using_entries.append((line_idx, sym_name, target_href, current_mod_imported))
-        else:
-            for m in re.finditer(r'href="([^"]+)"[^>]*>([^<]+)</a>', line):
-                body_hrefs.add(m.group(1))
-                body_syms.add(m.group(2))
-
-    # Also handle multiline `using (...)`
-    # Match using\s*</a>\s*<a[^>]*class="Symbol">\(</a>(.*?)<a[^>]*class="Symbol">\)</a> across newlines
     for m in re.finditer(
-        r'class="Keyword">using</a>\s*<a[^>]*class="Symbol">\(</a>(.*?)<a[^>]*class="Symbol">\)</a>',
-        html,
+        r'class="Keyword">using</a>\s*<a[^>]*class="Symbol">\(</a>(.*?)<a[^>]*class="Symbol">[^<]*\).*?</a>',
+        pre_content,
         re.DOTALL,
     ):
-        using_content = m.group(1)
-        # Ensure this is an `import` statement, not a local `open Foo using (...)`
-        prefix = html[max(0, m.start() - 300) : m.start()]
+        start_pos = m.start()
+        end_pos = m.end()
+        # Look back up to 300 chars to check if this is an import statement and not public
+        prefix = pre_content[max(0, start_pos - 300) : start_pos]
         if 'class="Keyword">import</a>' not in prefix:
             continue
         if 'class="Keyword">public</a>' in prefix:
             continue
 
-        # Estimate line number from offset
-        line_no = html[: m.start()].count("\n") + 1
+        line_no = pre_content[:start_pos].count("\n") + 1
+        using_spans.append((start_pos, end_pos))
+
+        using_content = m.group(1)
         for sym_m in re.finditer(r'href="([^"]+)"[^>]*>([^<]+)</a>', using_content):
-            target_href, sym_name = sym_m.group(1), sym_m.group(2)
+            target_href = sym_m.group(1)
+            sym_name = html_lib.unescape(sym_m.group(2))
             if not target_href.endswith(".html"):
-                # Avoid duplicate registration if already handled single-line
-                if not any(e[1] == sym_name and e[2] == target_href for e in using_entries):
-                    using_entries.append((line_no, sym_name, target_href, ""))
+                using_entries.append((line_no, sym_name, target_href, ""))
+
+    def in_any_using_span(pos):
+        for s, e in using_spans:
+            if s <= pos < e:
+                return True
+        return False
+
+    body_hrefs = set()
+    body_syms = set()
+
+    for m in re.finditer(r'<a\s+[^>]*href="([^"]+)"[^>]*>([^<]+)</a>', pre_content):
+        if not in_any_using_span(m.start()):
+            body_hrefs.add(m.group(1))
+            body_syms.add(html_lib.unescape(m.group(2)))
+
+    for m in re.finditer(r'<span[^>]*class="([^"]+)"[^>]*>([^<]+)</span>', pre_content):
+        if not in_any_using_span(m.start()):
+            body_syms.add(html_lib.unescape(m.group(2)))
 
     # Find unused symbols
     # A symbol is used if:
     #   1. Its exact target_href appears in body_hrefs
-    #   2. OR a body token starts with `sym_name.` (qualified projection / module access)
+    #   2. OR a body token exactly matches sym_name (handles builtin re-exports e.g. `[]`, `_∷_`, `refl`)
+    #   3. OR a body token starts with `sym_name.` (qualified projection / module access)
     line_groups = {}
     for line_no, sym_name, target_href, mod in using_entries:
         if target_href in body_hrefs:
+            continue
+        if sym_name in body_syms:
             continue
         # Check qualified usage, e.g. `OmegaSemiring.Increasing` or `CommutativeSemiring.semiring`
         prefix = f"{sym_name}."
@@ -152,44 +133,70 @@ def apply_fixes(agda_path, results):
     with open(agda_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    unused_by_line = {res["line"]: set(res["unused"]) for res in results}
-    lines = content.splitlines(keepends=True)
+    # Find using (...) spans across newlines
+    replacements = []  # (start, end, replacement_str)
 
-    modified = False
-    new_lines = []
+    for m in re.finditer(r"using\s*\((.*?)\)", content, re.DOTALL):
+        s, e = m.start(), m.end()
+        start_line = content[:s].count("\n") + 1
+        end_line = content[:e].count("\n") + 1
 
-    for idx, line in enumerate(lines, 1):
-        if idx in unused_by_line:
-            unused = unused_by_line[idx]
-            m = re.search(r"using\s*\((.*?)\)", line)
-            if m:
-                inside = m.group(1)
-                items = [item.strip() for item in inside.split(";") if item.strip()]
-                remaining = [item for item in items if item not in unused]
-                if len(remaining) < len(items):
-                    modified = True
-                    if not remaining:
-                        if "renaming" in line:
-                            line = re.sub(r"\s*using\s*\(.*?\)", "", line)
-                            new_lines.append(line)
-                        else:
-                            # drop line completely
-                            pass
-                    else:
-                        new_using = "using (" + "; ".join(remaining) + ")"
-                        new_line = line[: m.start()] + new_using + line[m.end() :]
-                        new_lines.append(new_line)
+        # Collect unused symbols relevant to this span
+        unused = set()
+        for r in results:
+            if start_line - 1 <= r["line"] <= end_line + 1:
+                unused.update(r["unused"])
+        if not unused:
+            continue
+
+        inside = m.group(1)
+        items = [it.strip() for it in inside.split(";") if it.strip()]
+
+        def is_unused(item):
+            it = item.strip()
+            if it in unused:
+                return True
+            if it.startswith("module "):
+                return it[7:].strip() in unused
+            return False
+
+        remaining = [it for it in items if not is_unused(it)]
+        if len(remaining) < len(items):
+            line_start = content.rfind("\n", 0, s) + 1
+            line_end = content.find("\n", e)
+            if line_end == -1:
+                line_end = len(content)
+            stmt = content[line_start:line_end]
+
+            if not remaining:
+                if "renaming" in stmt:
+                    replacements.append((s, e, "using ()"))
                 else:
-                    new_lines.append(line)
+                    stripped = stmt.strip()
+                    if re.fullmatch(r"(open\s+)?import\s+[\w\.\-]+(\s+using\s*\(.*?\))?", stripped, re.DOTALL):
+                        # drop statement / line completely
+                        next_nl = content.find("\n", e)
+                        if next_nl != -1:
+                            replacements.append((line_start, next_nl + 1, ""))
+                        else:
+                            replacements.append((line_start, len(content), ""))
+                    else:
+                        replacements.append((s, e, ""))
             else:
-                new_lines.append(line)
-        else:
-            new_lines.append(line)
+                new_inside = "; ".join(remaining)
+                replacements.append((s, e, f"using ({new_inside})"))
 
-    if modified:
-        with open(agda_path, "w", encoding="utf-8") as f:
-            f.writelines(new_lines)
-    return modified
+    if not replacements:
+        return False
+
+    # Apply in reverse order to preserve offsets
+    replacements.sort(key=lambda x: x[0], reverse=True)
+    for s, e, r in replacements:
+        content = content[:s] + r + content[e:]
+
+    with open(agda_path, "w", encoding="utf-8") as f:
+        f.write(content)
+    return True
 
 
 def main():

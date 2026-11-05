@@ -3,12 +3,11 @@
 -- The discrete measure monad is a model of `StatisticalInterface`.
 module QBS.Model.StatInstance where
 
-open import Level using (Level; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
@@ -24,7 +23,6 @@ open import Categories.Monad.Morphism using (Monad⇒-id)
 open import Categories.Monad using (Monad)
 import Categories.Monad.Strong as CMS
 import Categories.Category.CartesianClosed.Canonical as Canonical
-open import Categories.Functor using (Functor)
 import Categories.Category.Cocartesian as Cocartesian
 open import QBS.Colimits using (cocartesian; _+Q_; Piece; ev)
 open import Categories.NaturalTransformation using (NaturalTransformation)
@@ -33,7 +31,7 @@ open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; !Q)
 open import QBS.Exponential using (cartesianClosed)
-open import QBS.Probes using (ℛQ; probe; unprobe)
+open import QBS.Probes using (ℛQ; probe)
 open import QBS.Probability
 open import QBS.Statistical
 open import QBS.Model.Pairing

@@ -13,7 +13,6 @@ module QBS.Continuous.LebesgueIntervalAlg where
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Properties as ℕ
-open import Data.Empty using (⊥)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.PropositionalEquality.Core as ≡
 

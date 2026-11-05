@@ -4,7 +4,7 @@
 module QBS.Category where
 
 open import Level using (suc)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (Func)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import Categories.Category.Core using (Category)

@@ -11,7 +11,7 @@
 module QBS.Continuous.TailFTCHalfLine where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 open import Data.Product.Base using (Σ)
 
 open import QBS.Core

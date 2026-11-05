@@ -5,16 +5,10 @@
 -- Dirac masses.
 module QBS.Model.Sums where
 
-open import Level using (Level; suc; _⊔_; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
-open import Function.Bundles using (Inverse; _↔_; mk↔ₛ′)
-open import Data.Empty.Polymorphic using (⊥)
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Nat.Properties using (_≟_)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Function.Bundles using (_↔_; mk↔ₛ′)
+open import Data.Unit.Polymorphic.Base using (⊤)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (Dec; yes; no)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning

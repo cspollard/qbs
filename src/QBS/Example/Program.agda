@@ -14,11 +14,9 @@ module QBS.Example.Program where
 import Level as L
 open import Level using (lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Bool.Base using (Bool; true; false; not; _∧_; _∨_; if_then_else_)
+open import Data.Bool.Base using (Bool; true; false; not; _∧_; if_then_else_)
 open import Data.Nat.Base using (ℕ; _≡ᵇ_)
-open import Data.Empty.Polymorphic using (⊥)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
@@ -26,7 +24,7 @@ open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Core
-open import QBS.Model.DiscreteSource using (discreteSource; module DS)
+open import QBS.Model.DiscreteSource using (module DS)
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
 open import QBS.Model.WeightClasses using (probClass)

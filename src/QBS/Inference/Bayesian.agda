@@ -13,12 +13,10 @@
 module QBS.Inference.Bayesian where
 
 import Algebra.Properties.Semiring.Exp as Exp
-open import Level using (Level)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Bool.Base using (Bool; true; false; if_then_else_)
+open import Data.Bool.Base using (Bool; true; false)
 open import Data.List.Base using (List; []; _∷_)
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (Σ; _,_)
+open import Data.Nat.Base using (ℕ; suc)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
@@ -26,9 +24,9 @@ open import QBS.Core
 open import QBS.Model.DiscreteSource using (discreteSource)
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
-open import QBS.Model.WeightClasses using (allClass; probClass)
+open import QBS.Model.WeightClasses using (allClass)
 open import QBS.Model.Monad
-open import QBS.Example.Bayes using (posteriorU; evidence; _·_; posterior; bayes; bayes-numerator)
+open import QBS.Example.Bayes using (posteriorU; evidence; _·_; bayes-numerator)
 
 module Bayesian {ℓ} (N : NormalizableSemiring ℓ) where
   A = NormalizableSemiring.complete N

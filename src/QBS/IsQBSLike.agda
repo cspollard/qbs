@@ -3,7 +3,7 @@
 -- `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`.
 module QBS.IsQBSLike where
 
-open import Level using (Level; suc; _⊔_)
+open import Level using (suc; _⊔_)
 open import Data.Nat.Base using (ℕ)
 
 open import Categories.Category.Core using (Category)

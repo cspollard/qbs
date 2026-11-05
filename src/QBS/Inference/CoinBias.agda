@@ -8,10 +8,8 @@ module QBS.Inference.CoinBias where
 
 import Level as L
 import Data.Empty as E
-open import Data.Empty.Polymorphic using (⊥)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Function.Base using (case_of_)
-open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Unit.Polymorphic.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -23,7 +21,7 @@ open import QBS.Model.AdditiveSemiring using (additiveNormalizable)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Example.Program using (module Programs)
-open import QBS.Example.Bayes using (posteriorU; evidence; _·_; bayes-numerator)
+open import QBS.Example.Bayes using (posteriorU; evidence; bayes-numerator)
 open import QBS.Classical using (LEM)
 
 module CoinBias {ℓ} (N : NormalizableSemiring ℓ) (half : NormalizableSemiring.Carrier N)

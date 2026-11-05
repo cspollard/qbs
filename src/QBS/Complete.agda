@@ -5,22 +5,21 @@
 -- `AllProductsOf`/`AllCoproductsOf`; `≡` on `I` in `ΣEq` is then the equality of the indexing type itself.
 module QBS.Complete where
 
-open import Level using (Level; suc; _⊔_; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (Lift; lift; lower)
+open import Function.Base using (const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_)
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; subst)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; subst)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
-open import Categories.Category.Core using (Category)
 open import Categories.Category.Complete using (Complete)
 open import Categories.Category.Cocomplete using (Cocomplete)
 open import Categories.Category.Complete.Properties.Construction using (AllProducts×Equalizer⇒Complete)
 open import Categories.Category.Cocomplete.Properties.Construction using (AllCoproducts×Coequalizer⇒Cocomplete)
-open import Categories.Object.Product.Indexed using (IndexedProductOf; AllProductsOf)
-open import Categories.Object.Coproduct.Indexed using (IndexedCoproductOf; AllCoproductsOf)
+open import Categories.Object.Product.Indexed using (IndexedProductOf)
+open import Categories.Object.Coproduct.Indexed using (IndexedCoproductOf)
 
 open import QBS.Core
 open import QBS.Category

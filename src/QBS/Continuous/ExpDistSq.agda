@@ -5,7 +5,7 @@
 -- Together with the mean `∫-expDist-id ≈ 1#` this gives `Var X = E[X²] − (E X)² = 1` (see `Inference/ExpDistVar`).
 module QBS.Continuous.ExpDistSq where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

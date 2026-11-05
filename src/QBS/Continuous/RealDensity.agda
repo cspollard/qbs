@@ -9,8 +9,7 @@
 --     the pulled-back integral of a non-negative part `g : RQ ⇒ WQ` (`toR g : RQ ⇒ CutQ`).
 module QBS.Continuous.RealDensity where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (proj₁)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

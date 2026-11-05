@@ -21,7 +21,7 @@ open import Data.Sum.Base using (inj₁; inj₂)
 open import Data.Rational.Unnormalised.Base using (_<_; _*_)
 
 open import QBS.Classical using (LEM₁)
-open import QBS.Analysis.RationalLemmas using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; 0<1; 0<½; ½; ≤-refl; ≤-<-trans; <-trans; *-pos)
+open import QBS.Analysis.RationalLemmas using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; 0<½; ½; ≤-refl; ≤-<-trans; <-trans; *-pos)
 open import QBS.Analysis.RationalLemmas using (*-mono-<-posʳ; *-mono-<-pos)
 open import QBS.Analysis.LowerReals using (Cut; _⊑_; _≋_; _⊗_; oneC; zeroC; ⊑-refl; ⊑-trans; ⊕-inl)
 open Cut using (mem)
@@ -37,7 +37,6 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Signed using (SubSemiring)
 open import QBS.Continuous.MonusAlg using (module MonusAlg)
 open import QBS.Continuous.LogCore using (module LogCore; bnd-pos)
-open import QBS.Continuous.LogRecip using (recC)
 open import QBS.Continuous.LogNeg using (module LogNeg; ½<1)
 
 module SignedLog (lem₁ : LEM₁) where

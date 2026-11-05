@@ -5,10 +5,10 @@
 -- contains `m`.
 module QBS.Continuous.LebesgueDyadicNat where
 
-open import Data.Nat.Base using (ℕ; zero; suc; NonZero; ≢-nonZero; _+_; _*_; _^_; _≤_; _<_)
+open import Data.Nat.Base using (ℕ; suc; NonZero; _+_; _*_; _^_; _≤_; _<_)
 open import Data.Nat.Properties
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
-open import Data.Nat.DivMod using (_/_; _%_; m≡m%n+[m/n]*n; m%n<n)
+open import Data.Nat.DivMod using (_/_; m≡m%n+[m/n]*n; m%n<n)
 open import Data.Nat.Solver using (module +-*-Solver)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)

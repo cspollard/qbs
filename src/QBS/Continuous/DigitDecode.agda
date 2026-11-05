@@ -16,11 +16,10 @@ import Data.Nat.Base as ℕ
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (inj₁; inj₂)
+open import Data.Sum.Base using (inj₁)
 import Data.Sum.Base as Sum
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (tt)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; subst)
+open import Data.Empty using (⊥)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; subst)
 
 open import QBS.Classical using (LEM₀)
 open import QBS.Borel.Core using (Cantor; gen)
@@ -28,7 +27,7 @@ open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Cells using (Ones; dropC)
 open import QBS.Borel.Lead using (Pre; module Lead)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
-open import QBS.Analysis.LowerReals using (_⊑_; mk⊑; ⊑-refl; unionC)
+open import QBS.Analysis.LowerReals using (_⊑_; mk⊑; ⊑-refl)
 open _⊑_ using (ap)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Meas using (module Meas)

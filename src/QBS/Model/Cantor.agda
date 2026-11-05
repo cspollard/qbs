@@ -3,7 +3,7 @@
 -- Reindexing sums over R = ℕ by pairs, through the Cantor pairing.
 module QBS.Model.Cantor where
 
-open import Level using (Level; Lift; lift; lower)
+open import Level using (Lift; lift; lower)
 open import Function.Bundles using (_↔_; mk↔ₛ′)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)

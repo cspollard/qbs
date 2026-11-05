@@ -13,10 +13,10 @@
 --   * `∫ᴹ-leb-xNegExp : ∫ᴹ lebPre xNegExpH ≈ 1#`.
 module QBS.Continuous.HalfLineMean where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (proj₁; proj₂)
 open import Data.Bool.Base using (true; false)
 
 open import QBS.Core

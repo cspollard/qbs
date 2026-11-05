@@ -4,16 +4,10 @@
 -- theorem: sampling two independent measures in either order gives the same result.
 module QBS.Continuous.Strong where
 
-open import Level using (Lift; lift; lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
-open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
@@ -22,11 +16,10 @@ open import Categories.Category.Core using (Category)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; pairQ; fstQ; sndQ)
+open import QBS.Limits using (_×Q_; pairQ)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; measurable-merge₂; Cyl-rect; Cyl-rect-flip)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
@@ -94,7 +87,6 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
       (∀ r → h r ≈ h′ r) → I μ h fh ≈ I μ h′ fh′
     Ir μ e = I-cong μ e _ _
 
-  open import Categories.Category.Product using (Product; _⁂_)
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
   import Categories.Category.Cartesian.Monoidal as CM
@@ -127,7 +119,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
   strongMonad : StrongMonad V
   strongMonad = record { M = TM ; strength = strength }
 
-  open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
+  open import Categories.Monad.Commutative using (Commutative)
   import Categories.Category.Cartesian.SymmetricMonoidal as CSM
   open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 

@@ -11,14 +11,12 @@
 --     `Inference/ExpRateDist` for the density `λ e^{−λx}` (`l = 1/c`), here for the pushforward.
 module QBS.Inference.ExpPushforward where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.CoinIntegral using (lemOf)
-open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Exp using (module Exp)

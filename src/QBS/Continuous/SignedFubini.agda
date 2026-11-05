@@ -10,7 +10,6 @@
 -- on the four products of parts and `FatouAux.∫ᴹ-addX`.
 module QBS.Continuous.SignedFubini where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core

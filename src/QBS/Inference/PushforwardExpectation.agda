@@ -10,7 +10,7 @@
 --     `E-atᴵ-const : E-atᴵ p (constI p a) ≃ a`.
 module QBS.Inference.PushforwardExpectation where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

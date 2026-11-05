@@ -7,7 +7,7 @@ module QBS.Continuous.LebesgueScaleAlg where
 
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base as ℕ using ()
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Core
 open import QBS.Analysis.LowerReals using (mk⊑; _⊑_)

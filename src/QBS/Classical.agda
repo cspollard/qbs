@@ -4,7 +4,7 @@
 -- parameter; `docs/Classical.md` lists which modules do and why.
 module QBS.Classical where
 
-open import Level using (Level; zero; suc)
+open import Level using (suc)
 open import Data.Empty using (⊥)
 open import Data.Empty.Polymorphic using () renaming (⊥ to ⊥′)
 open import Data.Sum.Base using (_⊎_)

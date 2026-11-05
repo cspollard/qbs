@@ -6,24 +6,18 @@
 module QBS.Continuous.SubProb where
 
 import Level as L
-open import Function.Base using (const)
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Empty using (⊥)
-open import Data.Nat.Base using (ℕ; suc)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Product.Base using (proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (tt)
-open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; !Q)
+open import QBS.Limits using (1Q; !Q)
 open import QBS.Borel.Source
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Analysis.Cone using (module Cone)
 open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Continuous.Sample

@@ -11,26 +11,22 @@
 
 module QBS.Continuous.SFiniteDecomp where
 
-open import Level using (lift; lower)
+open import Level using (lift)
 import Level as L
-open import Function.Base using (id; _∘_; const)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Base using (const)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
 open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_)
-open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ; !Q)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘)
-open import QBS.Borel.Source using (R₁; cantorSource; down)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
+open import QBS.Borel.Core using (Measurable)
+open import QBS.Borel.Source using (R₁; down)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
@@ -40,34 +36,22 @@ open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Continuous.Sample
-open import QBS.Continuous.Monad using (module Continuous)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteMonad using (module SFiniteMonad)
 open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
 open import QBS.Continuous.SFiniteSum using (module SFiniteSum)
 open import QBS.Continuous.SFiniteIncl using (module SFiniteIncl)
-open import QBS.Continuous.SFiniteCommute using (module SFiniteCommute)
-open import QBS.Continuous.ProbInstance using (module ContinuousProb)
-open import QBS.Statistical using (StatisticalInterface)
 import Categories.Category.Cocartesian as Cocartesian
-open import QBS.Colimits using (cocartesian; _+Q_; Piece; ev)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.JSum using (module JSum)
 import Data.Nat.Base as ℕ
-open import QBS.Continuous.Strong using (module Strength)
-open import Categories.Monad.Morphism using (Monad⇒-id)
-open import QBS.Analysis.JFubini using (module JFubini)
-open import Categories.Functor using (Endofunctor; Functor)
 open import Categories.Functor using () renaming (id to idF)
-open import Categories.Functor using (_∘F_)
-open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.Monad using (Monad)
 open import QBS.Analysis.Density using (module Density)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 import QBS.Analysis.RationalLemmas as RL
 import Data.Rational.Unnormalised.Base as ℚ
-open import QBS.Analysis.LowerReals using (oneC; zeroC; infC; _⊑_; mk⊑; ⊗-mono; ⊑-refl; ⊑-trans)
+open import QBS.Analysis.LowerReals using (infC; _⊑_; mk⊑; ⊗-mono; ⊑-refl; ⊑-trans)
 open import QBS.Analysis.LowerRealsArch using (qC)
 open RL using (nat-nonneg; nat-mono)
 open import QBS.Analysis.LowerInverse using (invC; inv-mul-⊑; module InvClassical)

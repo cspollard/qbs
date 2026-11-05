@@ -3,13 +3,7 @@
 -- `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. statistical) monad as a hypothesis.
 module QBS.Instance where
 
-open import Level using (Level; suc)
-open import Function.Base using (id; _∘_; const)
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.Bundles using (Setoid)
 
-open import Categories.Category.Core using (Category)
 import Categories.Category.Cocartesian as Cocartesian
 
 open import QBS.Core

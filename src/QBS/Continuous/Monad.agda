@@ -6,35 +6,29 @@
 -- given by a *joint* probe ℛ × ℛ ⇒ X and a measurable kernel.
 module QBS.Continuous.Monad where
 
-open import Level using (Lift; lift; lower)
+open import Level using (lift; lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
+open import Function.Base using (const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Bool.Base using (false)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₁)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ; _×-function_)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
 import Function.Construct.Identity as Id
-open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 import Function.Construct.Composition as Comp
 
-open import Categories.Category.Core using (Category)
-open import Categories.Functor using (Functor; Endofunctor)
 open import Categories.Functor using () renaming (id to idF)
-open import Categories.Functor using (_∘F_)
-open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 
 open import QBS.Core
 open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q)
+open import QBS.Limits using (_×Q_)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source

@@ -10,7 +10,7 @@
 -- `χ[m/2ⁿ, (m+1)/2ⁿ)` (`LebesgueScale.∫-scale` at c = 2ⁿ, `LebesgueScaleAlg.χIv-scale`).
 module QBS.Continuous.FTCDyadic where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc; _^_)
 import Data.Nat.Properties as ℕ
 open import Data.Product.Base using (_,_; proj₂)

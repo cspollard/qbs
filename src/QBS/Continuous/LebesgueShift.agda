@@ -8,7 +8,6 @@
 -- (`LebesgueInterval.leb-unique`).  Integer t is `HalfLine.shiftPre`.
 module QBS.Continuous.LebesgueShift where
 
-open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Sum.Base using ([_,_]′)
 open import Data.Product.Base using (_,_; proj₁; proj₂)

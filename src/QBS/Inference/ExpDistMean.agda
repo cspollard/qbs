@@ -7,8 +7,7 @@
 -- `E-atᴵ-idI : E-atᴵ expDist idI ≃ 1`, so the general laws (`E-atᴵ-map`, `E-respᴵ`, linearity) apply to the exponential.
 module QBS.Inference.ExpDistMean where
 
-open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

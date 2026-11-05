@@ -10,7 +10,7 @@ module QBS.Inference.BernHalf where
 
 open import Data.Bool.Base as Bool using ()
 open import Data.Empty using (⊥)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Function.Bundles using (_⟨$⟩_)
 open import Level using (lower)

@@ -12,8 +12,7 @@ module QBS.Analysis.Signed where
 
 open import Level using (Level; _⊔_)
 open import Algebra.Bundles using (CommutativeSemiring; CommutativeRing)
-open import Algebra.Structures using
-    (IsCommutativeRing; IsRing; IsAbelianGroup; IsGroup; IsMonoid; IsMagma; IsCommutativeMonoid; IsSemigroup)
+open import Algebra.Structures using (IsCommutativeRing)
 open import Function.Base using (_$_)
 open import Data.Product.Base using (_,_)
 open import Relation.Binary.Bundles using (Setoid)

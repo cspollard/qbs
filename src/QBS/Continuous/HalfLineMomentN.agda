@@ -9,10 +9,10 @@
 -- exponential facts `y + w y ≤ 1 ≤ y + w` derived from `1 + w ≤ eʷ ≤ 1 + w + w²`), moved to the dyadic pieces of [0,1].
 module QBS.Continuous.HalfLineMomentN where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

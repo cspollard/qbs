@@ -11,7 +11,7 @@
 -- integral of a constant c is c times the mass 1).
 module QBS.Continuous.Dominated where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
 open import Data.Nat.Properties using () renaming (+-suc to +ℕ-suc; +-comm to +ℕ-comm; +-identityʳ to +ℕ-identityʳ)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
@@ -25,7 +25,7 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.LowerReals using (Cut; unionC; _⊑_; ⊑-refl; ⊑-trans; _≋_; union-ub; union-lub)
-open import QBS.Analysis.LowerRealsInf using (liminfC; limsupC; interC; inter-lb; inter-glb; liminf-limsup)
+open import QBS.Analysis.LowerRealsInf using (liminfC; limsupC; inter-lb; inter-glb; liminf-limsup)
 open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.Meas using (module Meas)

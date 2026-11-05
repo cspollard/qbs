@@ -11,15 +11,14 @@
 -- The coordinate test is the identity of `WQ`; no subtraction or division is needed.
 module QBS.Continuous.HalfLine where
 
-open import Level using (lift; lower)
+open import Level using (lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
 open import QBS.Borel.Source using (R₁)
-open import QBS.Limits using (_×Q_)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

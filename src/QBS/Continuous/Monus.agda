@@ -8,17 +8,16 @@
 -- the two lower cuts), so `monus x t = diffC t (x ⊔ t)`, or any other construction with the stated properties.
 module QBS.Continuous.Monus where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_)
 import Data.Rational.Unnormalised.Properties as P
 open import Data.Rational.Unnormalised.Solver using (module +-*-Solver)
 open +-*-Solver using (solve; _:+_; :-_; _:=_)
 open import QBS.Analysis.RationalLemmas
-  using (ℚᵘ; 0ℚᵘ; ≃-refl; ≃-sym; <-irrefl; ≤-<-trans; <-≤; ≤-≃; ≃-<ʳ; dense; add-sub; nat; nat-suc*; arch; lt-add;
+  using (ℚᵘ; 0ℚᵘ; ≃-refl; ≃-sym; <-irrefl; ≤-<-trans; ≤-≃; ≃-<ʳ; dense; add-sub; nat; nat-suc*; arch; lt-add;
          neg-or-nonneg; +-mono-<-≤; ≤-refl)
 open import QBS.Analysis.LowerReals using (Cut; mk⊑; _⊑_; ⊑-refl)
 open Cut using (mem; down; open′; neg)
@@ -26,7 +25,6 @@ open _⊑_ using (ap)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
-open import QBS.Analysis.Half using (module Half)
 open import QBS.Continuous.LebesgueShiftCut using (module LebesgueShiftCut)
 open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 

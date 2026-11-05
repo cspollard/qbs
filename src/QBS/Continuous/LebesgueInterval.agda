@@ -10,7 +10,6 @@
 --     scaling, translation and change of variables: compute interval masses only.
 module QBS.Continuous.LebesgueInterval where
 
-open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -28,7 +27,6 @@ open import QBS.Analysis.Half using (module Half)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.DigitAlg using (module AlgDigit)
 open import QBS.Continuous.LebesgueDyadicAlg using (module LebesgueDyadicAlg)
-open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.HalfLine using (module HalfLine)

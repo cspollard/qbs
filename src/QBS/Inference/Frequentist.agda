@@ -13,10 +13,7 @@
 module QBS.Inference.Frequentist where
 
 open import Algebra using (CommutativeRing)
-open import Data.Empty using (⊥)
-open import Data.Nat.Base using (ℕ; zero; suc; _<_)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Nat.Base using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; cong; cong₂; subst)
 
 open import QBS.Analysis.Lebesgue using (module Lebesgue)

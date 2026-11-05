@@ -12,7 +12,7 @@
 module QBS.Continuous.LebesgueDyadic where
 
 open import Level using (lower)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc; _*_; _^_) renaming (_≤_ to _≤ℕ_; _<_ to _<ℕ_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Empty using (⊥)
@@ -38,7 +38,6 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Half using (module Half)
-open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)

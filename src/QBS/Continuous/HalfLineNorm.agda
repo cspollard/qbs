@@ -10,14 +10,13 @@ module QBS.Continuous.HalfLineNorm where
 
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.Series using (module Series)
-open import QBS.Analysis.ExpLower using (expC; 1+≤expC)
+open import QBS.Analysis.ExpLower using (1+≤expC)
 open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.GeometricNorm using (module GeometricNorm)

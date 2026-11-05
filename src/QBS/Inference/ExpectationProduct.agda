@@ -14,7 +14,7 @@ module QBS.Inference.ExpectationProduct where
 
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 

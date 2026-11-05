@@ -5,9 +5,8 @@
 -- with `Forget`.  This is the sense in which QBS are sheaves on the site of measurable maps.
 module QBS.Category.Measurable where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_,_; proj₁)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Data.Product.Base using (_,_)
+open import Data.Unit.Polymorphic.Base using (⊤)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
@@ -16,7 +15,7 @@ open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.SubCategory using (SubCat; SubCategory)
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Construction.SubCategory using (Sub)
-open import Categories.Functor.Properties using (Faithful; Full; FullyFaithful)
+open import Categories.Functor.Properties using (Faithful; Full)
 
 open import QBS.Core
 open import QBS.Category

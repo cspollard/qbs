@@ -14,7 +14,6 @@ open import QBS.Borel.Core
 open import QBS.Borel.Merge using (Cyl-borel)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
-open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators using (module Indicators)

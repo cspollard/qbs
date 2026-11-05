@@ -11,16 +11,14 @@
 module QBS.Continuous.UniformCDF where
 
 import Level as L
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 open import Data.Bool.Base using (true; false)
-open import Data.Product.Base using (_,_; proj₁; proj₂; _×_)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Level using (lift; lower)
 open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core using (Hom)
 open Hom using ()
-open import QBS.Borel.Core using (Pred; _≐_)
+open import QBS.Borel.Core using (Pred)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Analysis.Clopen using (cons)
@@ -28,9 +26,9 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.Indicators using (module Indicators)
-open import QBS.Analysis.LowerReals using (LowerRealsOmega; _⊑_; mk⊑; zeroC; oneC)
+open import QBS.Analysis.LowerReals using (LowerRealsOmega; _⊑_)
 open _⊑_
-open import QBS.Analysis.LowerRealsArch using (lowerRealsArch; halfC)
+open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Analysis.ExpansionCons using (module ExpansionCons)

@@ -20,7 +20,7 @@
 module QBS.Inference.CoinBayesRisk where
 
 open import Algebra using (CommutativeRing; IsCommutativeRing)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₂)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Core

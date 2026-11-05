@@ -14,8 +14,8 @@
 module QBS.Inference.BernoulliCompare where
 
 open import Data.Bool.Base using (Bool; true; false)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Data.Product.Base using (_,_; proj₁)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Unit.Base using (tt)
 open import Data.Sum.Base using (inj₁; inj₂)
 import Level as L

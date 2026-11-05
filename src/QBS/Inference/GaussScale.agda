@@ -12,7 +12,7 @@
 -- (`LebesgueScale.∫-scale`, as in `ScaleDensity.push-dens`).  `second`: x² ∘ (s ·) = s² x² and `GaussReal.sqint`.
 module QBS.Inference.GaussScale where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

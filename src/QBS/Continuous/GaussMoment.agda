@@ -10,7 +10,7 @@
 --   * `even-moment n : ∫ x²ⁿ e^{−x²/2} ≈ (2n−1)‼ · Z`, with `dfac n = (2n−1)‼` (`dfac 0 = 1`, `dfac (n+1) = (2n+1) dfac n`).
 module QBS.Continuous.GaussMoment where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ

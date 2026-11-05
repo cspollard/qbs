@@ -6,9 +6,8 @@
 -- recover `Inference/DensityExpectation.E-atᴵ-idD` and `E-atᴵ-sqD` (mean 1, second moment 2).
 module QBS.Inference.ExpMomentN where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_,_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -17,7 +16,6 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.Signed using (SubSemiring)
 open import QBS.Analysis.SignedOmega using (module Bounded)
-open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)

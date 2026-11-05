@@ -9,7 +9,7 @@
 -- after unscaling by `P s · ½ˢ = 1` (`AlgL.unscale`).
 module QBS.Continuous.TailFTCLipJ where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ)
 
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

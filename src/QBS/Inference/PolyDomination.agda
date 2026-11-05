@@ -13,7 +13,7 @@
 --     and `sqI-dom` re-derives `HalfNormal.WithInverse.sqI` from `x² ≤ 1 + x²`.
 module QBS.Inference.PolyDomination where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (proj₁; proj₂)
 import Level as L

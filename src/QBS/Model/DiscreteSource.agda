@@ -6,11 +6,9 @@
 -- probability.  It is the first concrete model for the abstract interfaces.
 module QBS.Model.DiscreteSource where
 
-open import Level using (Level; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (Level; Lift)
 open import Data.Nat.Base using (ℕ)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 

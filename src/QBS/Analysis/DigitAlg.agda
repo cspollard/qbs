@@ -36,7 +36,7 @@ module AlgDigit (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrier
   open Half A half hh using (hp)
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
-    using (solve; _:+_; _:*_; _:=_; con)
+    using (solve; _:*_; _:=_)
 
   tl : Cantor → Cantor
   tl c n = c (ℕ.suc n)

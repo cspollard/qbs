@@ -8,8 +8,7 @@
 --   `covF : ∫ g(Φ x) k(x) dx ≈ ∫ g`   and   `covF-inv : ∫ h(Ψ y) dy ≈ ∫ h k`   for every test g, h.
 module QBS.Continuous.ChangeOfVariablesFn where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Product.Base using (proj₁; proj₂)
 
 open import QBS.Core

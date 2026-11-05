@@ -28,7 +28,7 @@ module Exp {ℓ} (A : OmegaSemiring ℓ) where
   module C = Cauchy A
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
-    using (solve; _:+_; _:*_; _:=_; con)
+    using (solve; _:+_; _:*_; _:=_)
 
   -- powers and natural numbers
   pw : ∣A∣ → ℕ → ∣A∣

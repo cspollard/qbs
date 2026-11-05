@@ -5,32 +5,20 @@
 -- on finite cylinders.  Classical: one parameter `lem₁ : P ⊎ ¬P` for propositions in Set₁.
 module QBS.Continuous.FairCoin where
 
-open import Data.Empty using (⊥)
-open import Level using (lift)
-open import Data.Sum.Base using (_⊎_)
 
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Empty using (⊥-elim)
-open import Data.Unit.Base using (tt)
+open import Data.Product.Base using (proj₁)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Data.Sum.Base using (inj₁; inj₂)
 
 open import QBS.Borel.Core
-open import QBS.Borel.PiLambda using (Cyl; ⊥ᵖ)
+open import QBS.Borel.PiLambda using (Cyl)
 open import QBS.Borel.Merge using (Cyl-borel)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Analysis.Omega
-open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Indicators using (module Indicators)
-open import QBS.Analysis.CoinCont using (module Cont)
 open import QBS.Analysis.CoinSets using (module CoinSets)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.ClopenMeasure using (module Premeasure)
 open import QBS.Analysis.Measure
-open import QBS.Analysis.LevelSets using (module LevelSets)
-open import QBS.Analysis.CoinSimple using (module Simple)
 open import QBS.Analysis.CoinIntegral
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.BorelMeasure

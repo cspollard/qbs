@@ -7,14 +7,12 @@
 module QBS.Continuous.CoinCoords where
 
 import Level as L
-open import Level using (lift; lower)
+open import Level using (lower)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 open import Data.Nat.Base using (ℕ; zero; suc; _<_; s≤s)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 
-open import QBS.Borel.Core using (Cantor; Measurable)
+open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁) renaming (down to downR)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Meas using (module Meas)
@@ -25,7 +23,7 @@ open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.Variance using (module Variance)
 open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Analysis.Signed using (SubSemiring)
-open import QBS.Continuous.Sample using (evens; odds; evensR; oddsR; mergeR; measurable-evens; measurable-odds; merge-evens; merge-odds)
+open import QBS.Continuous.Sample using (evensR; oddsR; mergeR; measurable-evens; measurable-odds; merge-evens; merge-odds)
 open import QBS.Analysis.JFubini using (module JFubini)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tensor using (module Tensor)

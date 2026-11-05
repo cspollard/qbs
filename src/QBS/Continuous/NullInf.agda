@@ -12,7 +12,7 @@
 module QBS.Continuous.NullInf where
 
 open import Level using (lift)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat.Base using (ℕ; zero; suc; _^_) renaming (_+_ to _+ℕ_)
 import Data.Nat.Properties as ℕP
@@ -31,7 +31,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.LowerReals using (Cut; module Cut; unionC; _⊑_; mk⊑; module _⊑_; ⊑-trans; union-ub; union-lub)
 open import QBS.Analysis.LowerRealsMin using (_⊓_)
 open import QBS.Analysis.LowerRealsNear using (BndQ)
-open import QBS.Analysis.RationalLemmas using (ℚᵘ; ≃-refl; <-irrefl; <-≤-trans; ≤-or->; nat-bound) renaming (nat to natℚ)
+open import QBS.Analysis.RationalLemmas using (≃-refl; <-irrefl; <-≤-trans; ≤-or->; nat-bound) renaming (nat to natℚ)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)

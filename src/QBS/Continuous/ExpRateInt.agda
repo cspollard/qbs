@@ -9,8 +9,8 @@
 -- tail of `HalfLineMomentFact`).  Result: `∫ᴹ lebPre (negExpRH l) ≈ c`, hence `λ ∫ e^{−λx} ≈ 1`.
 module QBS.Continuous.ExpRateInt where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 

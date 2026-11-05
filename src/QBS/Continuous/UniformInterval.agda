@@ -10,9 +10,7 @@
 module QBS.Continuous.UniformInterval where
 
 open import Algebra using (CommutativeRing)
-open import Data.Empty using (⊥)
 open import Data.Nat.Base using (ℕ)
-open import Data.Sum.Base using (_⊎_)
 import Level as L
 import Algebra.Solver.Ring.NaturalCoefficients.Default as Solver
 

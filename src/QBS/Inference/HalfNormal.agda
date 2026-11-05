@@ -10,7 +10,7 @@
 -- The parts of the integrable test are `x²` and `0` (as in `Inference/DensityExpectation`).
 module QBS.Inference.HalfNormal where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (proj₁; proj₂)
 
 open import QBS.Core

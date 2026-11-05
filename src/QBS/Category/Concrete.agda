@@ -12,24 +12,23 @@
 --      Disc preserves colimits, and Disc and Codisc are faithful.
 module QBS.Category.Concrete where
 
-open import Level using (Level; suc)
+open import Level using (suc)
 open import Function.Bundles using (Func; _⟨$⟩_)
 import Function.Construct.Identity as Id
-open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂; uncurry)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Equivalence using (StrongEquivalence; WeakInverse)
+open import Categories.Category.Equivalence using (StrongEquivalence)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.SubCategory using (SubCat; SubCategory)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Construction.SubCategory using (Sub)
 open import Categories.Functor.Limits using (Continuous; Cocontinuous)
 open import Categories.Functor.Properties using (Faithful)
-open import Categories.Adjoint using (_⊣_; Adjoint)
+open import Categories.Adjoint using (_⊣_)
 open import Categories.Adjoint.Properties using (rapl′; lapc′)
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)

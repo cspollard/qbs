@@ -5,13 +5,10 @@
 module QBS.Borel.Category where
 
 open import Level using (zero; suc)
-open import Data.Nat.Base using (ℕ)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Complete using (Complete)
 open import Categories.Category.Cocomplete using (Cocomplete)
-open import Categories.Category.Complete.Finitely using (FinitelyComplete)
-open import Categories.Category.Cocomplete.Finitely using (FinitelyCocomplete)
 import Categories.Category.CartesianClosed.Canonical as Canonical
 
 open import QBS.Category using (QBSCat)

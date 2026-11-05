@@ -12,7 +12,6 @@ module QBS.Continuous.LogRat where
 
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
 open import Data.Rational.Unnormalised.Solver using (module +-*-Solver)
 open +-*-Solver using (solve; _:+_; _:*_; :-_; _:=_; con)
@@ -21,7 +20,7 @@ open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
 open Cut
 open _⊑_
-open import QBS.Analysis.LowerRealsArch using (qC; qC-cong; qC-add)
+open import QBS.Analysis.LowerRealsArch using (qC; qC-add)
 open import QBS.Analysis.ExpLower
 open import QBS.Classical using (LEM₀)
 

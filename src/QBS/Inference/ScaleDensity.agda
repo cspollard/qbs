@@ -10,7 +10,7 @@
 module QBS.Inference.ScaleDensity where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

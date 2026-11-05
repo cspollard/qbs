@@ -4,10 +4,10 @@
 -- walks the diagonals one step at a time.
 module QBS.Model.Pairing where
 
-open import Data.Nat.Base using (ℕ; zero; suc; _+_; _∸_; _≤_; z≤n; s≤s)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _∸_; _≤_; s≤s)
 open import Data.Nat.Properties using (+-comm; +-suc; +-identityʳ; n∸n≡0; m+n∸n≡m; ≤-refl; ≤-trans; n≤1+n; m≤n+m)
-open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong)
+open import Data.Product.Base using (_×_; _,_)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; trans; cong)
 
 -- triangular numbers
 tri : ℕ → ℕ

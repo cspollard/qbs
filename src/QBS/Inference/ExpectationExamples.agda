@@ -17,10 +17,9 @@ module QBS.Inference.ExpectationExamples where
 
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Level using (lift; lower)
+open import Level using (lower)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 

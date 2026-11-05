@@ -10,7 +10,7 @@
 -- `bnd-rat` for the rational bound of a bounded value.
 module QBS.Continuous.InfAlg where
 
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat.Base using (suc)
@@ -24,7 +24,7 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.LowerReals using (Cut; module Cut; _⊑_; mk⊑; module _⊑_; infC)
 open import QBS.Analysis.ExpLower using (natE≋)
-open import QBS.Analysis.RationalLemmas using (≃-sym; ≃-<ʳ; lt-add; 0<1; nat-suc; nat-bound; <-≤-trans; ≤-<-trans; <-trans; <-irrefl; ≃-refl)
+open import QBS.Analysis.RationalLemmas using (≃-sym; ≃-<ʳ; lt-add; 0<1; nat-suc; nat-bound; ≤-<-trans; <-irrefl; ≃-refl)
   renaming (nat to natℚ)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
