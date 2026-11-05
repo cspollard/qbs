@@ -323,7 +323,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
-| `QBS.Continuous.SignedVarAlg` | 211 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
+| `QBS.Continuous.SignedVarAlg` | 156 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
+| `QBS.Continuous.SignedVarRing` | 112 |  | Ring identities on parts of signed values over an abstract commutative semiring (plan 03, "Information quantities"; helper for `SignedVarAlg`). |
 | `QBS.Continuous.Strong` | 188 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
