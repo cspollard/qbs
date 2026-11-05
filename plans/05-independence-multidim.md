@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–3 done on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–4 done on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -88,9 +88,9 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
   matrix Cov(Xᵢ, Xⱼ) = E XᵢXⱼ − E Xᵢ E Xⱼ (products integrable by 2|xy| ≤ x² + y²); symmetry, Cov(Xᵢ, Xᵢ) = Var Xᵢ;
   Var(Σ Xᵢ) ≃ Σᵢⱼ Cov(Xᵢ, Xⱼ); independent coordinates ⇒ diagonal covariance; the affine rule
   mean(AX + b) ≃ A mean + b and Cov(AX + b) ≃ A Cov(X) Aᵀ.
-- 53 `Inference/GaussVector` (needs 43, 52): N(0, Iₙ) as `gaussR^{⊗n}` on RQⁿ with coordinates `idT ∘ projᵢ`; mean 0,
+- 53 `Inference/GaussVector` [done] (needs 43, 52): N(0, Iₙ) as `gaussR^{⊗n}` on RQⁿ with coordinates `idT ∘ projᵢ`; mean 0,
   covariance I, E‖X‖² ≃ n; N(μ, AAᵀ) as the random vector AZ + μ, mean μ and covariance AAᵀ.
-- 54 `Inference/MultiSample` (needs 46, 52): iid random vectors; the sample mean vector is unbiased and the sample
+- 54 `Inference/MultiSample` [done] (needs 46, 52): iid random vectors; the sample mean vector is unbiased and the sample
   covariance matrix (division-free, as in `Estimator`) is unbiased.
 - 55 `Continuous/RQArith` (optional enabler): addition RQ × RQ ⇒ RQ and signed scaling as morphisms (measurability on
   the parts), so AX + b is a map RQⁿ ⇒ RQᵐ and the law of a Gaussian vector is a measure on RQᵐ; the push-forward
@@ -172,6 +172,16 @@ for any iid N(0, 1) family (`gauss-mean`, `gauss-cov` ≈ I, `gauss-norm2` ≃ n
 and the canonical `Nⁿ n = γ^{⊗n}` on RQⁿ (`std-iid` defined; holes `std-mean`, `std-cov`, `std-norm2`).  54
 `Inference/MultiSample` (`obsV`, `sumV`, `crossT`, `ssM`, `cross-diag` by `refl`; holes `RV-obs`, `mean-obs`,
 `cov-obs`, `RV-sum`, `mean-sum` (n · mean), `cov-sum` (n · Cov), `Int-ssM`, `ss-unbiased` ((n² − n) Cov)).
+
+**Outcome, round 4 (2026-11-05).** All holes filled, no statement changed.  53a `FinProdProb`: `tuple-proj` from
+`tuple-∘` (the tuple of the projections of any g is g; plain induction fails since the tail of `projQ (suc n)` is not
+`projQ n` on the tail), extra `tlp`.  53 `GaussVector`: extra `mom`, `var-ent`, `cov-ent`, `γ-var`; `γ-es` through
+`γ-var : Var ≃ 1` and `second-moment` (a direct `+S-cong` on `Var-gaussμ` exhausted the 3 GB heap); helper
+`GaussVectorAlg` (ring-parametric: entries of `idM`, `*M-idM`, `*Mv-0`, `*Mv-cong`, `*M-cong`, variance ↔ second
+moment).  54 `MultiSample`: as the header route; helpers `MultiSampleRing` (ring identities) and `MultiSampleAlg`
+(transport along the law of each observation, double-sum and cross-product expectations).  Cold times (each module
+alone, dependencies built): FinProdProb 8.4 s / 1.2 GB, GaussVectorAlg 0.7 s, GaussVector 29.4 s / 2.0 GB (the
+heaviest module of plan 05), MultiSampleRing 3.0 s, MultiSampleAlg 15.1 s / 1.5 GB, MultiSample 9.8 s / 1.2 GB.
 
 ## Order of agents
 
