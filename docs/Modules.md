@@ -327,7 +327,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
 | `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`). |
 | `QBS.Continuous.RandomVectorDefs` | 64 | lem | Definitions for random vectors (plan 05, item 52; shared by `RandomVector` and `RandomVectorAff`). |
-| `QBS.Continuous.RandomVectorLaw` | 90 | lem | Random vectors and their laws (plan 05, item 55a; enabler for `Inference/GaussVectorLaw`). |
+| `QBS.Continuous.RandomVectorLaw` | 104 | lem | Random vectors and their laws (plan 05, item 55a; enabler for `Inference/GaussVectorLaw`). |
+| `QBS.Continuous.RandomVectorLawAux` | 51 | lem | Push-forward of expectations along a map into any space (plan 05, item 55b; helper for `RandomVectorLaw`). |
 | `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (plan 05, item 52; helper for `RandomVectorAlg`). |
 | `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (plan 05, item 52; helper for `RandomVector`). |
 | `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (plan 05, item 52; helper for `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
@@ -360,6 +361,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |
 | `QBS.Continuous.SignedLog` | 151 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedMul` | 226 | lem | Products respect `≐` (plan 05, item 55b; helper for `RandomVectorLaw`; the twin of `SignedSq`). |
 | `QBS.Continuous.SignedSq` | 121 | lem | Squares respect `≐` (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
@@ -378,6 +380,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.TailFTCLip` | 223 | lem | The tail-form fundamental theorem of calculus with Lipschitz errors and integration by parts, on the unit interval (part 2: the measure side; the algebra is `Analysis/TailFTCLip`). |
 | `QBS.Continuous.TailFTCLipHalf` | 92 | lem | Integration by parts on the half-line, from the unit-interval identities (`Continuous/TailFTCLipJ`). |
 | `QBS.Continuous.TailFTCLipJ` | 137 | lem | The Lipschitz tail-form fundamental theorem (`Continuous/TailFTCLip`) for integrands of any size, in the unbounded integral `J`. |
+| `QBS.Continuous.TopMulPos` | 48 | lem | ∞ times a nonzero value is ∞ in [0, ∞] (plan 05, item 55b; helper for `SignedMul`). |
 | `QBS.Continuous.Uniform` | 58 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 194 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 116 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
