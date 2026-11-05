@@ -147,4 +147,7 @@ left to round 3, since round 2's two agents cannot import each other's modules w
 - Conditional independence given a random variable, conditional expectation, disintegration.
 - The strong law of large numbers and the central limit theorem (need almost-sure or weak convergence).
 - The hard half of de Finetti; uniqueness of product measures from rectangles (π-λ).
+
+Further directions (consistency and the bias–variance decomposition, higher-order examples and de Finetti, a
+computable fragment, correctness of inference algorithms) are collected in `plans/06-future-directions.md`.
 - Densities and Jacobians in several dimensions, rotation invariance of N(0, I), the density of N(μ, Σ) (also needs π).
