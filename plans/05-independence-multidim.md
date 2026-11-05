@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 skeletons on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -91,6 +91,13 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 55 `Continuous/RQArith` (optional enabler): addition RQ × RQ ⇒ RQ and signed scaling as morphisms (measurability on
   the parts), so AX + b is a map RQⁿ ⇒ RQᵐ and the law of a Gaussian vector is a measure on RQᵐ; the push-forward
   principle connects it with 52–53.
+
+**Skeletons, round 1 (2026-11-05).** 43 `Continuous/FinProd` (definitions `ΠQ`, `projQ`, `tupleQ`, `prodT`, `∏ⁿ`,
+`prodⁿ`; holes `proj-tuple`, `∫-rectⁿ`, `margⁿ`, `prodⁿ-cong`), 44 `Continuous/ProdBridge` (`ι-map`, `ι-mass`, `ι-⊗`),
+45 `Continuous/Independence` (on a probability `C.Pre Ω` through `ιPre`: `law`, `Indep₂`, `Indep`; holes
+`Indep₂-sym`, `Indep₂-map`, `Indep-pair`, `∫-indep`, `Int-indep`, `Ex-indep`, `Int₂-indep`, `Var-indep`),
+51 `Analysis/SgLinAlg` (over any `CommutativeRing`: `Vec`, `Mat`, `Σ`, `_·_`, `_*Mv_`, `_*M_`, `_ᵀ`, `idM`, `quad`;
+holes for the Σ lemmas and matrix laws).
 
 ## Order of agents
 
