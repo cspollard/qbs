@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only).
--- By the split `x ≤ 1` or `1 ≤ x` (`Analysis/CutSplit.split1`), `xᵏ ≤ 1 + x^{2k}` pointwise (`pw≤1+sq`), hence
+-- By the split `x ≤ 1` or `1 ≤ x` (`Analysis/CutSplit.split1`), `xᵏ ≤ 1 + x^{2k}` pointwise (`pw≤1+ev`), hence
 -- `1 + xᵏ ≤ 2 (1 + x^{2k})` and a growth bound `g ≤ c (1 + xᵏ)` becomes `g ≤ 2c (1 + x^{ev k})`.
 --   * `hnIk g⁺ g⁻ k c cB dom⁺ dom⁻ : ITest halfNormal` for `g± x ≤ c · (1 + xᵏ)` with `k` arbitrary and `c` finite;
 --   * validation: `xI : ITest halfNormal` for the first moment `x ↦ x` (degree 1, odd).

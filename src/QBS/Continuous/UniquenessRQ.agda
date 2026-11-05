@@ -8,7 +8,8 @@
 --   * `lebR-unique`: a measure whose halves have the interval masses of Lebesgue measure and no mass at ±∞ is `lebR`
 --     (through `LebesgueInterval.leb-unique` on each half, `restrL-lebR`, `restrR-lebR`).
 -- Route for `∫-split`: f ≈ [f∘inl , 0] + [0 , f∘inr] pointwise on each summand (`copair` computes on `inl`, `inr`), and
--- `∫ᴹ` is additive in the test (`SFinite.∫ᴹ-series` with the sequence f₁, f₂, 0, 0, …, or the sum of tests by `copair`).
+-- `∫ᴹ` is additive in the test (`SFiniteStatBridge.∫ᴹ-series` with the sequence f₁, f₂, 0, 0, …,
+-- or the sum of tests by `copair`).
 module QBS.Continuous.UniquenessRQ where
 
 open import Function.Bundles using (Func; _⟨$⟩_)

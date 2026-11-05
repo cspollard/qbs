@@ -122,7 +122,7 @@ gap {q} {q′} {s₀} {s} {ε} 0≤q q<q′ q′<1 0<s₀ 0<ε h4 hs = 0<s , com
     m3 = twice-≤ (≤-trans h4 (≤-trans (*-mono-≤-nn (<-≤ 0<δ) s₀≤ss) (≤-≃ (*-distribˡ-+ δ s s))))
 
 -- `q ≤ r s` from `r ρ ≃ q′` and `q ρ ≤ q′ s`.  A standalone lemma: the `with` on `≤-or->` used to sit in the
--- local context of `InvClassical.inv-prop` and took 14 s there.
+-- local context of `InvClassical.assemble` and took 14 s there.
 le-of-scaled : ∀ {q r s ρ q′} → 0ℚᵘ < ρ → r * ρ ≃ q′ → q * ρ ≤ q′ * s → q ≤ r * s
 le-of-scaled {q} {r} {s} {ρ} {q′} 0<ρ rρ qρ≤q′s with ≤-or-> q (r * s)
 ... | inj₁ le = le

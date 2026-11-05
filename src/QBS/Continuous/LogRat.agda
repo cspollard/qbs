@@ -5,7 +5,7 @@
 --   * `E p = expC (rc p)`, with `E-add : E (p + η) ≋ E p ⊗ E η`, `E-mono`, the lower bound `E-lo` (every t < 1 + p is in
 --     E p) and the upper bound `E-hi` (every t ∈ E p is below 1 + (p + p²) for p ≤ 1);
 --   * `Le p s` says e^p ≤ s (all elements of E p are below s), and `E-prod` bounds the elements of E (p + η) when
---     `Le p s` and η is small: they are below s · (1 + (η + η²)), with the converse `E-prod-lo`;
+--     `Le p s` and η is small: they are below s · (1 + (η + η²));
 --   * `small-ε`: for 0 < s < s′ some ε with m = 3ε ≤ 1 and s (1 + (m + m²)) < s′.
 -- Route: `ExpLower.expC` on the rational cuts, `LowerRealsArch.qC-add`, `ExpLower.qC-mul` for the sums and products.
 module QBS.Continuous.LogRat where

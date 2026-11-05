@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Variance of a signed random variable (skeleton: holes first).
+-- Variance of a signed random variable.
 --
 -- `Bdd f`: both parts of `f` are pointwise bounded by a natural number.  For such `f` the product `f · g` is again a
 -- signed integrable function for every signed integrable `g`.  With the mean `μ = E f` the centred variable is

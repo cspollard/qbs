@@ -3,7 +3,7 @@
 -- The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the
 -- reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two
 -- rational cuts (`qC-mul`) and `natE (n+1) ≋ qC (n+1)`, which give `1/(n+1) · (n+1) = 1`.
--- Export: `expC lem : Cut → Cut` with `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `expC-add`, and
+-- Export: `expC lem : Cut → Cut` with `expC-zero`, `expC-mono`, `expC-cong`, `1+≤expC`, `Add.exp-add`, and
 -- the bound `expC-bound : x ⊑ natE N → ∀ s ∈ expC x, s < 3ᴺ` (`pow3 N`), from `exp x ≤ 3ᴺ` for `x ≤ N`.
 module QBS.Analysis.ExpLower where
 
