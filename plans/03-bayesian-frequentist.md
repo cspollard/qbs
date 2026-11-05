@@ -1456,7 +1456,7 @@ E_P[log dP/dQ] in (−∞, ∞] with no finiteness hypothesis (via 32a, 37), dis
 with +∞ allowed, covariance matrices and the affine rule (multidimensional directions), signed Fubini.
 
 
-## Information quantities (planned 2026-11-04; skeletons on branch `info`, then agents)
+## Information quantities (planned 2026-11-04; done 2026-11-05 on branch `info`)
 
 Definitions of KL divergence, entropy and variance on top of the signed layer, with their first general properties.
 Fisher information waits for a more complete theory of derivatives (only `SignedLimits.deriv-Ex` along h = ½ⁿ exists).
@@ -1481,7 +1481,7 @@ Fisher information waits for a more complete theory of derivatives (only `Signed
   points gives log n), `ent-one`.
 - [done] 41 `Continuous/KLDiv` (needs 40): `KLInt`, `KL`, `xlogN-le` (x log(1/x) ≤ 1), `KLInt-fin` (finite Q), `gibbs-pt`
   (x log x ≥ x − 1 on the parts), `KL-nonneg` (Gibbs' inequality, Q and p·Q probabilities), `KL-one`, `KL-cong`.
-- 42 `Continuous/InfoProduct` (needs 41): for normalised, pointwise strictly positive and finite densities,
+- [done] 42 `Continuous/InfoProduct` (needs 41): for normalised, pointwise strictly positive and finite densities,
   `KL-⊗` (KL(p₁ ⊗ p₂) ≃ KL(p₁) + KL(p₂)) and `Ent-⊗`, with `KLInt-⊗`, `EntInt-⊗`.
 
 **Order of agents.** Round 1, two agents: 38 → 39 and 40 → 41.  Round 2: 42.  Estimated sizes: 38 ≈ 200 lines,
@@ -1497,6 +1497,12 @@ Timings (sequential, cold `.agdai`): SignedSq 13.9 s / 1.26 GB, **SignedVarAlg 8
 solves; `con` literals made them 150–215 s each), SignedVar 13.3 s / 1.40 GB, GaussVarAux 28.1 s / 1.72 GB,
 GaussVarPt 12.1 s / 1.74 GB, GaussVar 11.3 s / 1.57 GB, XLog 6.7 s / 1.03 GB, Entropy 7.9 s / 1.14 GB,
 KLDiv 8.3 s / 1.26 GB.  longcheck 35.
+
+**Outcome, round 2 (2026-11-05).** 42 done, statements unchanged.  Helper `Continuous/InfoProductAux`: `log-mul` on
+the parts (log⁺(xy) + (log⁻x + log⁻y) ≈ (log⁺x + log⁺y) + log⁻(xy)) and the subadditivity bounds
+log^±(xy) ≤ log^± x + log^± y, which give `KLInt-⊗`/`EntInt-⊗` by domination; the sums reduce to the factors by
+`∫-rect` and normalisation.  Timings (sequential, cold): InfoProductAux 6.7 s / 1.05 GB, InfoProduct 12.3 s / 1.22 GB.
+longcheck 35.
 
 **Risks.**
 - 38: integrability of (f − c)² from that of f and f² needs a domination or transport-of-`Int`-along-`≐` helper.
