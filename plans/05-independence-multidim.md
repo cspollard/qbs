@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 skeletons on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 done on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -51,12 +51,12 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 
 ## Phase A: independence and iid
 
-- 43 `Continuous/FinProd`: `ΠQ`, `projᵢ`, tupling and its laws; `⊗ⁿ` for s-finite measures; `∫-rectⁿ`
+- 43 `Continuous/FinProd` [done]: `ΠQ`, `projᵢ`, tupling and its laws; `⊗ⁿ` for s-finite measures; `∫-rectⁿ`
   (∫ ∏ᵢ gᵢ(xᵢ) d⊗ⁿ ≈ ∏ᵢ ∫ gᵢ dμᵢ); marginals of `⊗ⁿ` (coordinate i has law μᵢ, for probability measures);
   `⊗ⁿ-cong`.
-- 44 `Continuous/ProdBridge`: `ιPre (p ⊗ᵖ q) ≈ᴹ prodPre (ιPre p) (ιPre q)` and `ιPre (mapPre f p) ≈ᴹ` push-forward,
+- 44 `Continuous/ProdBridge` [done]: `ιPre (p ⊗ᵖ q) ≈ᴹ prodPre (ιPre p) (ιPre q)` and `ιPre (mapPre f p) ≈ᴹ` push-forward,
   so the coin, sampler and kernel constructions feed the s-finite layer.
-- 45 `Continuous/Independence` (needs 43): `law`; `Indep₂ X Y`, `Indep n Xs` (mutual); factorisation
+- 45 `Continuous/Independence` [done] (needs 43): `law`; `Indep₂ X Y`, `Indep n Xs` (mutual); factorisation
   ∫ g(X) h(Y) ≈ ∫ g(X) · ∫ h(Y) and its signed form (`Ex-⊗`); functions of independent variables are independent;
   mutual ⇒ pairwise; invariance under `≈ᴹ`; Var(X + Y) ≃ Var X + Var Y for independent X, Y.
 - 46 `Continuous/IID` (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
@@ -77,7 +77,7 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 
 ## Phase B: multidimensional
 
-- 51 `Analysis/SgLinAlg` (independent of phase A): vectors and matrices over a commutative ring (instantiated at `Sg`),
+- 51 `Analysis/SgLinAlg` [done] (independent of phase A): vectors and matrices over a commutative ring (instantiated at `Sg`),
   Σ over `Fin n`, matrix–vector and matrix–matrix products, transpose, quadratic forms; associativity,
   distributivity, (AB)ᵀ = BᵀAᵀ, up to the ring's equality.
 - 52 `Continuous/RandomVector` (needs 45, 51): `Fin n → SgT Ω` with `Int₂` per coordinate; mean vector; covariance
@@ -98,6 +98,15 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 `Indep₂-sym`, `Indep₂-map`, `Indep-pair`, `∫-indep`, `Int-indep`, `Ex-indep`, `Int₂-indep`, `Var-indep`),
 51 `Analysis/SgLinAlg` (over any `CommutativeRing`: `Vec`, `Mat`, `Σ`, `_·_`, `_*Mv_`, `_*M_`, `_ᵀ`, `idM`, `quad`;
 holes for the Σ lemmas and matrix laws).
+
+**Outcome, round 1 (2026-11-05).** All holes filled, no statement changed.  44 `ProdBridge`: `ι-map` is `ι-nat`,
+`ι-mass` is `prob-mass`, `ι-⊗` integrates both sides to the same iterated integral (`ι-mult`, `∫ᴹ-join`, `ι-strong`
+pointwise, `∫-prod′`).  51 `SgLinAlg`: induction on n with short equational steps (no ring solver); extra `Σ-scaleʳ`.
+43 `FinProd` adds `mass-prodⁿ`, `fst-law`, `snd-law`; 45 `Independence` goes through new helpers `ProdMap` (`mapM-comp`,
+`_×H_`, `swapM`), `FinProdPair` (`pairⁿ`, the two-coordinate marginal of `prodⁿ`), `IndepRing`, `IndepAlg`
+((f+g)² ≐ (f²+fg)+(fg+g²) and the variance identity).  `Independence` does not use `ProdBridge`.  Cold times (each
+module alone, dependencies built): ProdBridge 7.4 s / 1.1 GB, SgLinAlg 0.8 s, FinProd 5.3 s, ProdMap 4.8 s,
+FinProdPair 5.3 s, IndepRing 2.6 s, IndepAlg 10.1 s / 1.1 GB, Independence 24.9 s / 1.6 GB.
 
 ## Order of agents
 
