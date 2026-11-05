@@ -57,6 +57,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussRealAbs` | 99 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
 | `QBS.Inference.GaussScale` | 132 | lem | Scaled symmetric distributions on the real line, and N(0, s²) (plan 03, "Tests and the real line"). |
 | `QBS.Inference.GaussShift` | 227 | lem | The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03, "Translation and products"). |
+| `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities"). |
+| `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03, "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
+| `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
@@ -231,6 +234,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
+| `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
@@ -260,7 +264,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer"). |
+| `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
+| `QBS.Continuous.InfoProductAux` | 55 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
 | `QBS.Continuous.LebPlane` | 106 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
 | `QBS.Continuous.LebesgueDyadic` | 219 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueDyadicAlg` | 237 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
@@ -311,9 +318,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |
 | `QBS.Continuous.SignedLog` | 151 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedSq` | 121 | lem | Squares respect `≐` (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedTests` | 87 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |
+| `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
+| `QBS.Continuous.SignedVarAlg` | 211 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.Strong` | 188 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 69 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 73 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
@@ -338,6 +348,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`). |
 | `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
+| `QBS.Continuous.XLog` | 107 | lem | The pointwise inequalities behind Gibbs' inequality (plan 03, "Information quantities", helper for `KLDiv`). |
 
 ## Examples
 
