@@ -246,7 +246,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FairCoin` | 56 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.Fatou` | 278 | lem | Downward monotone convergence and Fatou's lemma in both directions, for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.FatouAux` | 88 | lem | Auxiliary tests and lemmas for downward monotone convergence (`Continuous/Fatou`, plan 03). |
-| `QBS.Continuous.FinProd` | 85 | lem | Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43). |
+| `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43). |
+| `QBS.Continuous.FinProdPair` | 102 | lem | Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`). |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 62 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
@@ -265,7 +266,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
-| `QBS.Continuous.Independence` | 102 | lem | Independence of random variables (plan 05, item 45). |
+| `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (plan 05, helper for `Independence`). |
+| `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (plan 05, helper for `IndepAlg`). |
+| `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (plan 05, item 45). |
 | `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer"). |
 | `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
 | `QBS.Continuous.InfoProductAux` | 55 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
@@ -296,6 +299,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 46 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
+| `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
