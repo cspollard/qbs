@@ -35,8 +35,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinPosterior` | 224 | lem | The posterior as an actual distribution: Bayes' rule by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 215 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
-| `QBS.Inference.CondIID` | 109 | lem | Conditionally iid observations given a parameter (plan 05, item 48). |
-| `QBS.Inference.CondIIDCoin` | 78 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05, items 48–49). |
+| `QBS.Inference.CondIID` | 138 | lem | Conditionally iid observations given a parameter (plan 05, item 48). |
+| `QBS.Inference.CondIIDCoin` | 145 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05, items 48–49). |
+| `QBS.Inference.CondIIDCoinStep` | 73 | lem | One step of the coin kernel through the inclusion into s-finite measures (plan 05, item 48a helper). |
+| `QBS.Inference.CondIIDConst` | 39 | lem | A constant test integrates to the constant times the mass (plan 05, item 48 helper): `∫-constW`: ∫ c dq ≈ c · ∫ 1 dq, for an s-finite measure q (compare `SFiniteSum.∫ᴹ-scale`). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
@@ -243,7 +245,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
-| `QBS.Continuous.Exchangeable` | 85 | lem | Exchangeable laws (plan 05, item 49). |
+| `QBS.Continuous.Exchangeable` | 120 | lem | Exchangeable laws (plan 05, item 49). |
+| `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
