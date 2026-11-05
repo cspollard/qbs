@@ -17,7 +17,7 @@
 --                    ℕ∞, additive [0,∞]); the instance is generic in the semiring and has no hypotheses on the monads.
 --   Continuous model R = Cantor space 2^ℕ; measures are Daniell functionals on the measurable functions, built up
 --                    from the Borel σ-algebra; it has the fair coin, the uniform distribution and the s-finite monad.
---                    It assumes excluded middle and function extensionality as module parameters (`docs/Classical.md`).
+--                    It assumes excluded middle (`lem`, `lem₁`) as module parameters (`docs/Classical.md`).
 --   Inference        Bayesian and frequentist statistics, stated over the abstract interface or the discrete model.
 --   Examples         programs in `do`-notation, Bayes' rule, conditioning.
 --

@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line").  Skeleton: holes
--- first.  With `shiftH t` the map x ↦ x + t, for every test h,
+-- Translation of Lebesgue measure on [0,∞) by every finite cut (plan 03, "Uniqueness on the half-line").
+-- With `shiftH t` the map x ↦ x + t, for every test h,
 --   `∫-shift : ∫ h(x + t) dx + ∫_{[0,t)} h dx ≈ ∫ h dx`.
 -- Route: `shiftedLeb t`, the measure h ↦ ∫ h(x + t) dx + ∫_{[0,t)} h dx, gives [a,b) the mass b − a (`shifted-Iv`: the
 -- first part is λ([a,b) ∩ [t,∞)) translated, the second λ([a,b) ∩ [0,t))), and nothing to ∞, so it is Lebesgue measure

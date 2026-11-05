@@ -1,8 +1,13 @@
 # Where the development is non-constructive
 
-A survey of the classical assumptions in `src/QBS`, taken from the source (greps for `lem`, `lem₁`,
-`lemOf`, `Dec`, `invertible?`, plus reading the modules that use them). Paths are relative to
-`src/QBS/`.
+This page says where the library uses excluded middle (`lem`: every proposition is true or false), why, and
+which parts need none. It is a survey of `src/QBS`, taken from the source (greps for `lem`, `lem₁`, `lemOf`,
+`Dec`, `invertible?`, plus reading the modules that use them). Paths are relative to `src/QBS/`.
+
+In short: the abstract layer, the discrete model and the Borel sets need no classical hypothesis. The lower
+reals, the fair coin, the Lebesgue integral and everything built on them (the signed layer, the Gaussians, the
+information quantities) take `lem` or `lem₁` as a module parameter. The machine-readable list is the `hyp`
+column of `Modules.md`. §1 explains the mechanism, §3 lists the real uses, §4 which could be avoided.
 
 ## 1. How classical logic enters
 
@@ -13,15 +18,20 @@ instantiated inside Agda itself.
 
 | Parameter | Statement | Where |
 |---|---|---|
-| `lem : LEM₀` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 70 modules, mostly `Analysis/`, `Borel/PiLambda`, `Borel/Lead`, `Continuous/*` |
-| `lem₁ : LEM₁` | the same at `Set₁` | 13 modules (`Analysis/CutSum`, `CoinIntegral`, `Functional`, `Riesz`, `Model/AdditiveSemiring`, `Continuous/FairCoin`, `Uniform*`, `CoinIndep`, `FirstBit`, `SubModel`, `Example/Probability`) |
-| `lemOf` | `lem₁ ⇒ lem` (by `Lift`) | `Analysis/CoinIntegral` |
+| `lem : LEM₀` | `∀ (P : Set) → P ⊎ (P → ⊥)` | about 90 modules: most of `Analysis/` that is not pure algebra, `Borel/PiLambda`, `Borel/Lead`, the older half of `Continuous/*` |
+| `lem₁ : LEM₁` | the same at `Set₁` | 144 modules: almost all of `Inference/` (44 of 45) and most of `Continuous/` (92 of 133), plus `Analysis/{CutSum, CoinIntegral, Functional, Riesz}`, `Model/AdditiveSemiring`, `Example/{Probability, Recipes}`. See below |
+| `lemOf` | `lem₁ ⇒ lem` (by `Lift`) | `Analysis/CoinIntegral`; used by every `lem₁` module to open the `lem` modules |
 | `NormalizableSemiring.invertible?` | a decision `(Σ n, m·n ≈ 1) ⊎ ¬(…)` as a record field | `Model/Semiring.agda:47` (`InvDec`, :37), consumed in `Model/StatInstance.agda` |
 | `dec` argument to `Mask` | a decision procedure for a Borel set | `Analysis/Fun.agda` (`module Mask`) |
 
 Not assumed anywhere: the axiom of choice (countable or dependent), propositional extensionality,
 UIP, Markov's principle, or a resizing axiom. Resizing is derived from `lem₁` (§3.6) and UIP at `Set₁`
 is derived from `lem₁` (§3.7).
+
+Why so many modules take `lem₁`: the Lebesgue integral and the probability monad on top of it
+(`Continuous/Monad`, `SFinite*`) are built from `Analysis/CoinIntegral`, which needs `lem₁` (§3.6). A module
+that integrates, or that uses a result about integrals, therefore takes `lem₁ : LEM₁` and passes `lemOf lem₁`
+to the older modules that want a plain `lem`. Taking the parameter does not mean the module calls it (§1, second point).
 
 The statements are named once, in `QBS/Classical.agda`: `LEM₀` and `LEM₁` as above, and `LEM ℓ` for `Set ℓ` with
 refutation into `⊥` at level `ℓ` (`Model/*Semiring`, `Model/*Model`).  They are aliases, so nothing changes in the logic.
@@ -40,7 +50,7 @@ Two points about the form of `lem`:
 
 ## 2. The part with no classical hypotheses
 
-Of 140 modules, about 50 do not mention `lem`:
+Of 322 modules, about 90 do not mention `lem` at all:
 
 * the abstract layer: `Core`, `Category`, `Limits`, `Colimits`, `Complete`, `Exponential`, `Probes`,
   `Probability`, `Statistical`, `StatisticalLemmas`, `IsQBSLike`, `IsStatisticalQBSLike`, `Instance`;
@@ -48,7 +58,8 @@ Of 140 modules, about 50 do not mention `lem`:
   WeightClasses, Cantor, Pairing, DiscreteSource, Discrete}`;
 * `Borel/{Core, Source, Category, Measure, Merge, Cons}` (the Borel σ-algebra is inductive and closed
   under logical equivalence, so it needs no excluded middle);
-* `Analysis/{Omega, Series, SeriesSup, Measure, Fun, Unbounded, Archimedean, ClopenMeasure, …}`;
+* `Analysis/{Omega, Series, SeriesSup, Measure, Unbounded, Archimedean, ClopenMeasure, Signed, SignedOmega, Estimator, Deriv*, …}`
+  (the algebra of `[0,∞]` over an abstract `OmegaSemiring`, signed values, and the certificate calculus for the tail FTC);
 * `Example/{Bayes, Conditioning, HardConditioning}`.
 
 "No classical parameter" is weaker than "constructively fine". These modules take their hypotheses as
@@ -149,6 +160,24 @@ from a raw function its congruence is proved there: Borel sets and measurable ma
 points (`Borel/Core.borel-≗`, `Borel/Source.idxₛ`); `Analysis/Fun.Fun-resp` and `Continuous/Monad.Wit-cong`
 use `lem`.
 
+### 3.9 The signed layer, Gaussians and information quantities
+
+These areas (`Continuous/Signed*`, `Continuous/{Entropy, KLDiv, InfoProduct, Log*, XLog}`, `Inference/Gauss*`,
+`Inference/{Frequentist, UniformExperiment}`; see `Interface.md`) all take `lem₁` and add few new uses of it.
+Most of the work is algebra over an abstract ω-semiring, which needs nothing. The direct uses are of three kinds.
+
+* **Is a value finite or infinite?** `Continuous/SignedInf` (`≃∞-trans`, `≤∞-trans`) and `SignedSq`
+  (`sq-alg`, `sum-top`) split on `Bnd x` by `lem₁`. A value in `[0, ∞]` that is not bounded is `∞`, and
+  the laws of `(−∞, ∞]` are proved by cases on that. `Continuous/MonusAlg.cut-total` compares any two lower reals
+  (a rational in one but not the other), which truncated subtraction and Gibbs' inequality (`XLog`, `KLDiv`) use.
+* **The logarithm.** `Continuous/LogCore` (with `LogRat`, `LogRecip`, `LogNeg`) proves `e^{log⁺ x} ≈ x` using
+  near-suprema (`LowerRealsNear.near-sup-bnd`, §3.1) and decisions on membership of rationals. `SignedLog`,
+  `Entropy`, `KLDiv` and `InfoProduct` inherit this.
+* **Everything else is inherited.** The Gaussian modules (`GaussScale`, `GaussShift`, `GaussVar*`), the variance
+  (`SignedVar`) and the frequentist layer pass `lem₁` on to the integral and the exponential. `Inference/Bayesian`
+  takes only a `NormalizableSemiring` (so `invertible?`, §3.5; `CoinBias` takes `lem₁` only in its `Additive` instance),
+  and `Continuous/SignedVarRing` takes no hypothesis.
+
 ## 4. Which uses are inherent and which are artifacts
 
 ### 4.1 Inherent to the mathematics (constructively false or equivalent to a non-constructive principle)
@@ -166,6 +195,8 @@ use `lem`.
 * **Fan theorem / WKL.** Compactness of Cantor space is independent of BISH. It is a valid axiom in
   Brouwer's intuitionism and in classical mathematics, but not provable constructively.
 * **`ℕ∞` suprema and `Boolean`-valued sums.** These need LPO (`Sups.sup-exists`, `BoolSemiring` `∃`).
+* **Totality of `+∞`-valued comparison.** `(−∞, ∞]` has no total order or transitive `≤∞` without deciding whether a
+  part is `∞` (`SignedInf`); `log` of a lower real needs near-suprema (`LogCore`).
 
 ### 4.2 Presentation artifacts (likely avoidable)
 
@@ -194,6 +225,7 @@ lem (Set), lem₁ (Set₁)
   └─ CutSum (resizing, UIP at Set₁)           → AdditiveSemiring, ViterbiSemiring
   └─ CoinIntegral / CoinGrid / CoinSimple     → Functional → Riesz
   └─ SFiniteNorm / SFiniteDecomp (invDec)     → SFiniteStat (`normalize`, `scaled-laws`)
+  └─ SignedInf (is a part ∞?), LogCore (logs) → SignedExpect → Gauss*, Entropy, KLDiv, Frequentist
 ```
 
 The abstract layer (`Probability`, `Statistical`, `IsQBSLike`, `Instance`) and the discrete model are
@@ -206,8 +238,8 @@ instantiates them.
    Borel-set case splits, though `Mask`, restriction and complements still need decisions.
 2. **Resizing.** Isolate the `Set₁ → Set` step (§3.6) and the `uip` step (§3.7) behind a named
    assumption, so that `lem₁` is no longer required for their sake.
-4. **Normalisation.** Replace the total `invertible?` field with a partial `normalize`, or an
+3. **Normalisation.** Replace the total `invertible?` field with a partial `normalize`, or an
    interface that takes a proof of `0 < mass < ∞`. Any `normalize` into `Prob X + 1` stays classical.
-5. **Compactness and `complement`/`cancel`.** Leave these as explicit hypotheses (a `FanTheorem`
+4. **Compactness and `complement`/`cancel`.** Leave these as explicit hypotheses (a `FanTheorem`
    record, and `Located` on cuts) rather than a blanket `lem`. This documents the real dependency without
    removing it.
