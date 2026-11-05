@@ -10,7 +10,6 @@
 -- (`draws-mean`, `draws-weak-law`).
 -- Route: `SgSample.Ex-sum`, `Var-sum`, `Ex-ss` and `WeakLaw.weak-law-rate` applied to `mom`; `draw-mass` from
 -- `SFinite.∫ᴹ-map` and `ProdBridge.ι-mass`.
---   Skeleton: holes first.
 module QBS.Inference.IIDLaw where
 
 open import Data.Nat.Base using (ℕ; suc)
@@ -37,23 +36,25 @@ open import QBS.Continuous.IID using (module IID)
 open import QBS.Continuous.CoinCoordsJoint using (module CoinCoordsJoint)
 open import QBS.Inference.Sampler using (module Sampler)
 open import QBS.Inference.WeakLaw using (module WeakLaw)
+open import QBS.Continuous.ProdBridge using (module ProdBridge)
 
 module IIDLaw (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 1#)
+  open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 1#; refl; trans)
   open Bounded A using (Sg; _≃_; _+S_; _*S_; -S_; nat)
   open Weights (lemOf lem₁) using (WQ; constW)
-  open SFinite (lemOf lem₁) using (XW; ∫ᴹ; mapM; module C)
+  open SFinite (lemOf lem₁) using (XW; ∫ᴹ; ∫ᴹ-map; ∫ᴹ-cong; mapM; module C)
   open SFiniteIncl (lemOf lem₁) using (ιPre)
   open SignedTest lem₁ using (SgT; _∘T_; _*T_; at⁺; at⁻)
   open SignedExpect lem₁ using (Int; Ex)
   open SignedVar lem₁ using (Var)
   open SgMoments lem₁ using (natS; sumT; ssT; Moments)
-  open SgSample lem₁ using (Int-sum; Int₂-sum; Int-ss)
+  open SgSample lem₁ using (Int-sum; Int₂-sum; Int-ss; Ex-sum; Var-sum; Ex-ss)
+  open ProdBridge lem₁ using (ι-mass)
   open IID lem₁ using (IID; IID-moments)
   open CoinCoordsJoint lem₁ using (ℛ; coinPre; coin; coordH; drawH; draws-iid)
   open Sampler lem₁ using () renaming (Sampler to SamplerQ)
-  open WeakLaw lem₁ using (_≤ᵛ_; dev)
+  open WeakLaw lem₁ using (_≤ᵛ_; dev; weak-law-rate)
   open QBS
   open Hom
 
@@ -79,26 +80,27 @@ module IIDLaw (lem₁ : LEM₁) where
     -- the sample mean and the sample variance are unbiased
     iid-mean : ∀ n Xs (d : IID P μ n Xs) →
       Ex {Ω} E (sumT n (obs f n Xs)) (Int-sum P n (obs f n Xs) (λ k → proj₁ (proj₁ (mom n Xs d) k))) ≃ natS n *S m
-    iid-mean = ?
+    iid-mean n Xs d = Ex-sum P n (obs f n Xs) m s (mom n Xs d)
 
     iid-var : ∀ n Xs (d : IID P μ n Xs) →
       Var {Ω} P (sumT n (obs f n Xs)) (Int₂-sum P n (obs f n Xs) m s (mom n Xs d)) ≃ natS n *S s
-    iid-var = ?
+    iid-var n Xs d = Var-sum P n (obs f n Xs) m s (mom n Xs d)
 
     iid-ss : ∀ n Xs (d : IID P μ n Xs) →
       Ex {Ω} E (ssT n (obs f n Xs)) (Int-ss P n (obs f n Xs) m s (mom n Xs d)) ≃ (natS n *S natS n +S -S natS n) *S s
-    iid-ss = ?
+    iid-ss n Xs d = Ex-ss P n (obs f n Xs) m s (mom n Xs d)
 
     -- the weak law, n ε² P{(Sₙ − n m)² ≥ (n ε)²} ≤ s
     iid-weak-law : ∀ k Xs → IID P μ (suc k) Xs → ∀ (χ : Hom S Ω WQ) e →
       (∀ ω → ((nat (suc k) * e) * (nat (suc k) * e)) * (map χ ⟨$⟩ ω)
         + at⁻ (devS P f m (suc k) Xs) ω ≤ at⁺ (devS P f m (suc k) Xs) ω) →
       (nat (suc k) * (e * e)) * ∫ᴹ {Ω} E χ ≤ᵛ s
-    iid-weak-law = ?
+    iid-weak-law k Xs d χ e hyp = weak-law-rate P k (obs f (suc k) Xs) m s (mom (suc k) Xs d) χ e hyp
 
   -- the draws of a sampler
   draw-mass : ∀ {Θ X : QBS S} (σ : SamplerQ Θ X) θ → ∫ᴹ {X} (mapM {ℛ} {X} (drawH σ θ) coin) (constW {X} 1#) ≈ 1#
-  draw-mass = ?
+  draw-mass {Θ} {X} σ θ = trans (∫ᴹ-map {ℛ} {X} (drawH σ θ) coin (constW {X} 1#))
+    (trans (∫ᴹ-cong {ℛ} coin {_∘H_ S (constW {X} 1#) (drawH σ θ)} {constW {ℛ} 1#} (λ _ → refl)) (ι-mass {ℛ} coinPre))
 
   module _ {Θ X : QBS S} (σ : SamplerQ Θ X) (θ : ∣ Θ ∣) (f : SgT X) (m s : Sg)
     (i : Int {X} (mapM {ℛ} {X} (drawH σ θ) coin) f) (j : Int {X} (mapM {ℛ} {X} (drawH σ θ) coin) (f *T f))
@@ -114,10 +116,11 @@ module IIDLaw (lem₁ : LEM₁) where
 
     draws-mean : ∀ n →
       Ex {ℛ} coin (sumT n (obs f n (Ds n))) (Int-sum coinPre n (obs f n (Ds n)) (λ k → proj₁ (proj₁ (M n) k))) ≃ natS n *S m
-    draws-mean = ?
+    draws-mean n = iid-mean coinPre μ (draw-mass σ θ) f m s i j em es n (Ds n) (draws-iid σ θ n)
 
     draws-weak-law : ∀ k (χ : Hom S ℛ WQ) e →
       (∀ r → ((nat (suc k) * e) * (nat (suc k) * e)) * (map χ ⟨$⟩ r)
         + at⁻ (devS coinPre f m (suc k) (Ds (suc k))) r ≤ at⁺ (devS coinPre f m (suc k) (Ds (suc k))) r) →
       (nat (suc k) * (e * e)) * ∫ᴹ {ℛ} coin χ ≤ᵛ s
-    draws-weak-law = ?
+    draws-weak-law k χ e hyp = iid-weak-law coinPre μ (draw-mass σ θ) f m s i j em es k (Ds (suc k))
+      (draws-iid σ θ (suc k)) χ e hyp

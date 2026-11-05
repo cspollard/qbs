@@ -10,14 +10,14 @@
 --   * coordinates u ∘ Zᵢ of mutually independent Zᵢ are uncorrelated (`cov-indep`: the off-diagonal entries vanish);
 --   * the affine rule for AX + b (`affT`): mean(AX + b) ≃ A mean(X) + b (`mean-aff`) and Cov(AX + b) ≃ A Cov(X) Aᵀ
 --     (`cov-aff`), with `RV-aff`.
--- Route: `Int-mul` by `SignedExpect.Int-dom` with the dominating test f² + g² (pointwise 2 (f⁺ + f⁻)(g⁺ + g⁻) ≤ …,
--- or (f + g)² and (f − g)² as in `IndepAlg`); `cov-diag` by irrelevance of the integrability witness (`Ex-cong`);
--- `Var-sumV` by induction on n with the pointwise identities of `IndepAlg`/`SgSampleAlg` and `SgLinAlg.Σ-+`;
--- `cov-indep` from `Independence.Indep-pair` and `Ex-indep`; `mean-aff` from `Ex-+`, `Ex-scale`, `Ex-const` and
--- `SgMoments.sumT` against `SgLinAlg.Σ`; `cov-aff` expands both sides into double sums (`Σ-scale`, `Σ-swap`).
---   Skeleton: holes first.
+-- Route: `Int-mul` by `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g² and a b ≤ a² + b²);
+-- `cov-sym` by `comm-eq`; `cov-diag` by irrelevance of the integrability witness (`Ex-irr`); `Int₂-sumV`, `Var-sumV`,
+-- `RV-aff`, `mean-aff`, `cov-aff` are the primed twins in `RandomVectorAff` (expansion of E[(Σᵢ Aᵢ)(Σⱼ Bⱼ)] by
+-- `RandomVectorSum.ExBil`, shifts and scalings by `RandomVectorAlg.sh-eq`/`sc-eq`, the double-sum arithmetic in
+-- `RandomVectorSumRing`); `cov-indep` from `Independence.Indep-pair`, `Ex-indep` and x − x ≃ 0.
 module QBS.Continuous.RandomVector where
 
+open import Algebra using (CommutativeRing)
 open import Data.Nat.Base using (ℕ)
 open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (proj₁; proj₂)
@@ -37,18 +37,23 @@ open import QBS.Continuous.SignedExpect using (module SignedExpect)
 open import QBS.Continuous.SignedVar using (module SignedVar)
 open import QBS.Continuous.SgMoments using (module SgMoments)
 open import QBS.Continuous.Independence using (module Independence)
+open import QBS.Continuous.RandomVectorAlg using (module RandomVectorAlg)
+open import QBS.Continuous.RandomVectorAff using (module RandomVectorAff)
 
 module RandomVector (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
-  open Bounded A using (Sg; _≃_; _+S_; _*S_; -S_; 0S; signedRing)
+  open Bounded A using (Sg; _≃_; _+S_; _*S_; -S_; 0S; signedRing; ≃-refl; ≃-trans; +S-cong; -S-cong; *S-comm)
+  module SR = CommutativeRing signedRing
   open SgLinAlg signedRing using (Vec; Mat; Σ; _≈V_; _≈M_; _+V_; _*Mv_; _*M_; _ᵀ)
   open SFinite (lemOf lem₁) using (module C)
   open SFiniteIncl (lemOf lem₁) using (ιPre)
   open SignedTest lem₁ using (SgT; _+T_; _*T_; _∘T_; scaleT; constT)
-  open SignedExpect lem₁ using (Int; Ex)
+  open SignedExpect lem₁ using (Int; Ex; Ex-irr; Ex-cong)
   open SignedVar lem₁ using (Int₂; Var)
   open SgMoments lem₁ using (sumT)
-  open Independence lem₁ using (Indep)
+  open Independence lem₁ using (Indep; Indep-pair; Int-indep; Ex-indep)
+  open RandomVectorAlg lem₁ using (comm-eq)
+  module RA = RandomVectorAff lem₁
 
   module _ {Ω : QBS S} (P : C.Pre Ω) where
 
@@ -61,7 +66,7 @@ module RandomVector (lem₁ : LEM₁) where
 
     -- products of square-integrable tests are integrable
     Int-mul : ∀ (f g : SgT Ω) → Int₂ {Ω} P f → Int₂ {Ω} P g → Int {Ω} E (f *T g)
-    Int-mul = ?
+    Int-mul f g i j = RandomVectorAlg.Int-mul lem₁ {Ω} E f g (proj₂ i) (proj₂ j)
 
     -- the mean vector and the covariance matrix
     meanV : ∀ n X → RV n X → Vec n
@@ -71,32 +76,36 @@ module RandomVector (lem₁ : LEM₁) where
     covM n X r i j = Ex {Ω} E (X i *T X j) (Int-mul (X i) (X j) (r i) (r j)) +S -S (meanV n X r i *S meanV n X r j)
 
     cov-sym : ∀ n X (r : RV n X) i j → covM n X r i j ≃ covM n X r j i
-    cov-sym = ?
+    cov-sym n X r i j = +S-cong (Ex-cong {Ω} E _ _ _ _ (comm-eq (X i) (X j))) (-S-cong (*S-comm _ _))
 
     cov-diag : ∀ n X (r : RV n X) i → covM n X r i i ≃ Var {Ω} P (X i) (r i)
-    cov-diag = ?
+    cov-diag n X r i = +S-cong (Ex-irr {Ω} E (X i *T X i) _ _) ≃-refl
 
     -- the variance of the sum is the sum of the covariances
     Int₂-sumV : ∀ n X → RV n X → Int₂ {Ω} P (sumT n X)
-    Int₂-sumV = ?
+    Int₂-sumV n X r = RA.Int₂-sumV′ {Ω} P n X r
 
     Var-sumV : ∀ n X (r : RV n X) → Var {Ω} P (sumT n X) (Int₂-sumV n X r) ≃ Σ n (λ i → Σ n (λ j → covM n X r i j))
-    Var-sumV = ?
+    Var-sumV n X r = RA.Var-sumV′ {Ω} P n X r
 
     -- independent coordinates are uncorrelated
     cov-indep : ∀ n Ys (Zs : ∀ i → Hom S Ω (Ys i)) (u : ∀ i → SgT (Ys i)) → Indep P n Ys Zs →
       (r : RV n (λ i → u i ∘T Zs i)) → ∀ i j → i ≢ j → covM n (λ k → u k ∘T Zs k) r i j ≃ 0S
-    cov-indep = ?
+    cov-indep n Ys Zs u d r i j ne = ≃-trans (+S-cong (≃-trans (Ex-irr {Ω} E _ _ (Int-indep {Ω} P (Zs i) (Zs j) dij
+      (u i) (u j) ri rj)) (Ex-indep {Ω} P (Zs i) (Zs j) dij (u i) (u j) ri rj)) ≃-refl) (SR.-‿inverseʳ _)
+      where dij = Indep-pair {Ω} P n Ys Zs d i j ne
+            ri = proj₁ (r i)
+            rj = proj₁ (r j)
 
     -- the affine image AX + b
     affT : ∀ {m n} → Mat m n → Vec m → (Fin n → SgT Ω) → Fin m → SgT Ω
     affT {m} {n} M b X k = sumT n (λ i → scaleT (M k i) (X i)) +T constT (b k)
 
     RV-aff : ∀ {m n} (M : Mat m n) b X → RV n X → RV m (affT M b X)
-    RV-aff = ?
+    RV-aff M b X r = RA.RV-aff′ {Ω} P M b X r
 
     mean-aff : ∀ {m n} (M : Mat m n) b X (r : RV n X) → meanV m (affT M b X) (RV-aff M b X r) ≈V (M *Mv meanV n X r) +V b
-    mean-aff = ?
+    mean-aff M b X r = RA.mean-aff′ {Ω} P M b X r
 
     cov-aff : ∀ {m n} (M : Mat m n) b X (r : RV n X) → covM m (affT M b X) (RV-aff M b X r) ≈M (M *M covM n X r) *M (M ᵀ)
-    cov-aff = ?
+    cov-aff M b X r = RA.cov-aff′ {Ω} P M b X r
