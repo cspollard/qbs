@@ -61,14 +61,14 @@ module RSum {c ℓ} (R : CommutativeRing c ℓ) where
   expand = SolveR.solve 4 (λ A B c d → (A :+ c) :* (B :+ d) := A :* B :+ (d :* A :+ (c :* B :+ c :* d))) R.refl
 
   -- row q of the covariance product
-  step : ∀ n (Mk Ml : Fin n → R.Carrier) (a : Fin n → Fin n → R.Carrier) m q →
+  step : ∀ n (Mk Ml : Fin n → R.Carrier) (a : Fin n → Fin n → R.Carrier) (m : Fin n → R.Carrier) (q : Fin n) →
     Σ n (λ p → (Mk q R.* (a q p R.+ R.- (m q R.* m p))) R.* Ml p) R.≈
       Σ n (λ p → (Mk q R.* Ml p) R.* a q p) R.+ R.- ((Mk q R.* m q) R.* Σ n (λ j → Ml j R.* m j))
   step n Mk Ml a m q = R.trans (Σ-cong n (λ p → elem (Mk q) (Ml p) (a q p) (m q) (m p)))
     (row n (λ p → (Mk q R.* Ml p) R.* a q p) (Mk q R.* m q) (λ p → Ml p R.* m p))
 
   -- Σₚ (Σ_q Mₖ_q (a_qp − m_q m_p)) Mₗₚ = X − Aₖ Aₗ
-  rhs-eq : ∀ n (Mk Ml : Fin n → R.Carrier) (a : Fin n → Fin n → R.Carrier) m →
+  rhs-eq : ∀ n (Mk Ml : Fin n → R.Carrier) (a : Fin n → Fin n → R.Carrier) (m : Fin n → R.Carrier) →
     Σ n (λ p → Σ n (λ q → Mk q R.* (a q p R.+ R.- (m q R.* m p))) R.* Ml p) R.≈
       Σ n (λ i → Σ n (λ j → (Mk i R.* Ml j) R.* a i j)) R.+ R.- (Σ n (λ i → Mk i R.* m i) R.* Σ n (λ j → Ml j R.* m j))
   rhs-eq n Mk Ml a m = R.trans (Σ-cong n (λ p → Σ-scaleʳ n (Ml p) (λ q → Mk q R.* (a q p R.+ R.- (m q R.* m p)))))
