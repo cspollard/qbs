@@ -232,7 +232,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
-| `QBS.Continuous.Entropy` | 92 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
+| `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
@@ -264,7 +264,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer"). |
 | `QBS.Continuous.InfoProduct` | 74 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
-| `QBS.Continuous.KLDiv` | 75 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
+| `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
 | `QBS.Continuous.LebPlane` | 106 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
 | `QBS.Continuous.LebesgueDyadic` | 219 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.LebesgueDyadicAlg` | 237 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
@@ -343,6 +343,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`). |
 | `QBS.Continuous.Weights` | 61 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
+| `QBS.Continuous.XLog` | 107 | lem | The pointwise inequalities behind Gibbs' inequality (plan 03, "Information quantities", helper for `KLDiv`). |
 
 ## Examples
 
