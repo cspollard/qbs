@@ -9,7 +9,7 @@
 --   * `fstI`, `sndI`: the coordinates as integrable tests on `expPair` (`Inference/ExpDistPair`), obtained from `idI` by
 --     the marginal law (`transportI`) and `precompI`, with `E-fstI : E-atᴵ expPair fstI ≃ 1` and `E-sndI` likewise;
 --   * `sumSqI : ITest expPair`, the pointwise statistic `(x , y) ↦ (x + y)²` built from addition and multiplication of
---     cuts, whose parts are pointwise those of `XYsq` (`pos-pw`, `neg-pw`); hence
+--     cuts, whose parts are pointwise those of `XYsq` (`pos-z`, `neg-z`); hence
 --     `E-atᴵ-sumSqI : E[(X + Y)²] ≃ 6`, and
 --     `var-sum : E[(X + Y)²] − (E[X + Y])² ≃ 2`, in the form of `ExpDistVar.var-expDist`.
 module QBS.Inference.ProductMarginals where

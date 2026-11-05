@@ -6,7 +6,7 @@
 -- k heads and m tails under a uniform prior).
 --
 -- Here 1−u is the complement `v` of the binary expansion `u` (`Fun.complF`), so that u + v = 1 pointwise and
---   uᵏ vᵐ = uᵏ⁺¹ vᵐ + uᵏ vᵐ⁺¹,   i.e.   B(k,m) = B(k+1,m) + B(k,m+1)    (`beta-add`);
+--   uᵏ vᵐ = uᵏ⁺¹ vᵐ + uᵏ vᵐ⁺¹,   i.e.   B(k,m) = B(k+1,m) + B(k,m+1)    (`Bt-add`);
 -- the base case B(k,0) is the k-th moment (`Continuous/UniformMomentN`).  The algebra `AlgB` is over an abstract
 -- Archimedean ω-semiring; the two cancellations (of bounded terms) are `BoundedCancel.cancel-bnd`.
 module QBS.Continuous.BetaIntegral where

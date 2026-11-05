@@ -8,7 +8,7 @@
 --   * `Rate`: for `s` a bound `s ≤ 2^σ` and `λ ≤ 1`, the scaled data `h = s H(λx)`, `k = s K(λx)`, `G = s c H(λx)` (with `H`
 --     the rate-1 function `xʲ⁺¹ e^{−x}` and `K = (j+1) xʲ e^{−x}`) satisfy the Lipschitz bounds and the certificate with
 --     one constant `2^W`, from the rate-1 data at the point `λx` and width `λw` (`rs`: multiply by `s c` and use `cλ = 1`);
---     `hR≈`, `kR≈` identify them with `xʲ⁺¹ e^{−λx}` and `c (j+1) xʲ e^{−λx}` for `s = cʲ⁺¹`;
+--     `hq≈`, `kq≈` identify them with `xʲ⁺¹ e^{−λx}` and `c (j+1) xʲ e^{−λx}` for `s = cʲ⁺¹`;
 --   * `Tl`: the tail `κ xⁱ e^{−λN}`, at `N = ν N′` for a far-out `N′`, from the rate-1 tail of `Analysis/ExpTail`.
 module QBS.Analysis.ExpRate where
 

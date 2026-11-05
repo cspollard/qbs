@@ -3,7 +3,7 @@
 -- The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`).  For cuts t ⊑ b with t
 -- bounded by a rational, `diffC t b` is the cut of q such that q′ + s ∈ b for some q′ > q and all s ∈ t, and
 --   * `diff-sum`: `t ⊕ diffC t b ≋ b`;
---   * `diff-iff`: `diffC t b ⊑ x` iff `b ⊑ x ⊕ t`, for every x (also x = ∞), without cancellation;
+--   * `diff-⇐`: `b ⊑ x ⊕ t` gives `diffC t b ⊑ x`, for every x (also x = ∞), without cancellation;
 --   * `top-sub`: if x ⊕ t contains every rational then so does x.
 module QBS.Continuous.LebesgueShiftCut where
 

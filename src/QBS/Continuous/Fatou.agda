@@ -9,7 +9,7 @@
 --   1. `∫ᴹ-inf-fin`: the case h 0 ≤ N pointwise.  Pointwise h 0 ≈ h n + (h 0 ∸ h n) (`Monus.monus-add`, h n x ≤ N is
 --      bounded); the differences increase, so `SupTest.∫ᴹ-sup` gives ∫ h 0 ≈ ∫ ⋂ h + ⋃ₙ ∫ (h 0 ∸ h n), and
 --      ∫ h 0 ≈ ∫ h n + ∫ (h 0 ∸ h n); cancel the finite ∫ h 0 terms (`BoundedCancel.cancel-bnd`).
---   2. `minH N f = f ⊓ N` (`LowerRealsMin._⊓_`); `min-split`: f ≈ (f ⊓ N) + (f ∸ N) pointwise, so ∫ h n ≤
+--   2. `minH N f = f ⊓ N` (`LowerRealsMin._⊓_`); `min-split-⊑` (`LowerRealsNear`): f = (f ⊓ N) + (f ∸ N) pointwise, so ∫ h n ≤
 --      ∫ (h n ⊓ N) + ∫ (h 0 ∸ N).
 --   3. `tail-small`: ∫ (f ∸ N) gets below every ½ᵏ for finite ∫ f (∫ (f ⊓ N) increases to ∫ f by `∫ᴹ-sup` and
 --      `LowerRealsMin.min-sup`; a finite lower real is approached from below, by excluded middle).
