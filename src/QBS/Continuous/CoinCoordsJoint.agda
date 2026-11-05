@@ -12,13 +12,33 @@
 -- `CoinIndep.fairCoin-indep` makes the law of (evens, odds) the product coin ⊗ coin (`Product.prodPre`, through
 -- `ProdBridge`/`SFiniteIncl` and the `J`/`Fun` integral of the coin, as in `CoinCoords.J-split`), and
 -- `CoinCoords.J-evens`/`J-odds` give the marginals.  `draws-iid` is `IID.IID-map` of `coins-iid`.
---   Skeleton: holes first.
 module QBS.Continuous.CoinCoordsJoint where
 
-open import Data.Fin.Base using (toℕ)
-open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin; toℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; zero; suc)
 
 open import QBS.Core
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Data.Product.Base using (_,_)
+open import QBS.Limits using (_×Q_; 1Q)
+open import QBS.Analysis.Omega using (module OmegaSemiring)
+open import QBS.Analysis.Lebesgue using (module Lebesgue)
+open import QBS.Analysis.Meas using (module Meas)
+open import QBS.Continuous.Sample using (evensR; oddsR; measurable-odds; merge-evens; merge-odds)
+open import QBS.Continuous.SignedTransport using (module SignedTransport)
+open import QBS.Continuous.Product using (module Product)
+open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
+open import QBS.Continuous.Weights using (module Weights)
+open import QBS.Continuous.ProdMap using (module ProdMap)
+open import QBS.Continuous.FinProd using (module FinProd)
+open import QBS.Continuous.ProdBridge using (module ProdBridge)
+open import Relation.Binary.Bundles using (Setoid)
+open import Data.Unit.Polymorphic.Base using (tt)
+open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
+open import QBS.Analysis.Tensor using (module Tensor)
+open import QBS.Analysis.JFubini using (module JFubini)
+open import QBS.Analysis.JParam using (module JParam)
+open import QBS.Continuous.CoinIndep using (module CoinIndep)
 open import QBS.Classical using (LEM₁)
 open import QBS.Limits using (pairQ)
 open import QBS.BoolQ using (module BoolOn)
@@ -34,12 +54,28 @@ open import QBS.Continuous.IID using (module IID)
 open import QBS.Inference.Sampler using (module Sampler)
 
 module CoinCoordsJoint (lem₁ : LEM₁) where
-  open SFinite (lemOf lem₁) using (XW; mapM; module C)
+  open Lebesgue (lemOf lem₁) using (A; J; J-cong; J-irrel)
+  open OmegaSemiring A using (_≈_; refl; sym; trans)
+  open SFinite (lemOf lem₁) using (XW; mapM; ∫ᴹ; ∫ᴹ-map; ∫ᴹ-cong; ∫ᴹ-η; _≈ᴹ_; module C)
+  open SignedTransport lem₁ using (∫ι)
+  open Meas (lemOf lem₁) using (Meas; Meas-ext)
+  open SFiniteStrong (lemOf lem₁) using (fixH)
+  open Tensor A (lemOf lem₁) using (tensor₁)
+  open JFubini (lemOf lem₁) using (J-tensor₁)
+  open JParam (lemOf lem₁) using (J-agree)
+  open CoinIndep lem₁ using (fairCoin-indep)
+  open Product (lemOf lem₁) using (prodPre; ∫-prod′; intR; intR-pt; prod-cong; cmul)
+  open OmegaSemiring A using (1#; *-cong; *-identityʳ)
+  open SFiniteReweight (lemOf lem₁) using (mulH)
+  open Weights (lemOf lem₁) using (constW)
+  open ProdMap (lemOf lem₁) using (mapM-comp; mapM-cong; mapM-ext; _×H_; map-prod)
+  open FinProd lem₁ using (ΠQ; tupleQ; prodⁿ)
+  open ProdBridge lem₁ using (ι-mass)
   open SFiniteIncl (lemOf lem₁) using (ιPre)
   open FairCoin lem₁ using (fairCoin)
   open Daniell lem₁ using (L-one)
   open CoinCoords lem₁ using (coord; measurable-coord)
-  open IID lem₁ using (IID; IIDSeq)
+  open IID lem₁ using (IID; IIDSeq; IID-map)
   open BoolOn S using (constQ)
   open Sampler lem₁ using () renaming (Sampler to SamplerQ)
   open QBS
@@ -59,12 +95,78 @@ module CoinCoordsJoint (lem₁ : LEM₁) where
   coordH : ℕ → Hom S ℛ ℛ
   coordH i = Probes.probe S {ℛ} {measₛ (coord i) (measurable-coord i)} (measurable-coord i)
 
+  oddsH : Hom S ℛ ℛ
+  oddsH = Probes.probe S {ℛ} {measₛ oddsR measurable-odds} measurable-odds
+
+  -- r ↦ (evens r, odds r)
+  pairEO : Hom S ℛ (_×Q_ S ℛ ℛ)
+  pairEO = pairQ S {ℛ} {ℛ} {ℛ} (coordH 0) oddsH
+
+  -- the integral of the coin of a test is the J-integral of its values
+  ∫coin : ∀ g → ∫ᴹ {ℛ} coin g ≈ J fairCoin (λ r → map g ⟨$⟩ r) (map-random g (Probes.unprobe S (idH S {ℛ})))
+  ∫coin g = ∫ι coinPre g
+
+  -- the left side of `split`: the law of (evens, odds), as an iterated J-integral
+  split-lhs : ∀ h → ∫ᴹ {_×Q_ S ℛ ℛ} (mapM {ℛ} {_×Q_ S ℛ ℛ} pairEO coin) h ≈
+    J fairCoin (λ r → map h ⟨$⟩ (evensR r , oddsR r)) (map-random (_∘H_ S h pairEO) (Probes.unprobe S (idH S {ℛ})))
+  split-lhs h = trans (∫ᴹ-map {ℛ} {_×Q_ S ℛ ℛ} pairEO coin h) (∫coin (_∘H_ S h pairEO))
+
+  -- the right side of `split`, as an iterated J-integral
+  intR-J : ∀ h r → map (intR {ℛ} {ℛ} coin h) ⟨$⟩ r ≈
+    J fairCoin (λ s → map h ⟨$⟩ (r , s)) (map-random (fixH {ℛ} {ℛ} r h) (Probes.unprobe S (idH S {ℛ})))
+  intR-J h r = trans (intR-pt {ℛ} {ℛ} coin h r) (∫coin (fixH {ℛ} {ℛ} r h))
+
+  rhsM : ∀ h → Meas (λ r → J fairCoin (λ s → map h ⟨$⟩ (r , s)) (map-random (fixH {ℛ} {ℛ} r h) (Probes.unprobe S (idH S {ℛ}))))
+  rhsM h = Meas-ext {λ r → map (intR {ℛ} {ℛ} coin h) ⟨$⟩ (map (idH S {ℛ}) ⟨$⟩ r)} (intR-J h)
+    (map-random (intR {ℛ} {ℛ} coin h) {map (idH S {ℛ})} (Probes.unprobe S (idH S {ℛ})))
+
+  split-rhs : ∀ h → ∫ᴹ {_×Q_ S ℛ ℛ} (prodPre {ℛ} {ℛ} coin coin) h ≈
+    J fairCoin (λ r → J fairCoin (λ s → map h ⟨$⟩ (r , s)) (map-random (fixH {ℛ} {ℛ} r h) (Probes.unprobe S (idH S {ℛ})))) (rhsM h)
+  split-rhs h = trans (∫-prod′ {ℛ} {ℛ} coin coin h) (trans (∫coin (intR {ℛ} {ℛ} coin h))
+    (J-cong fairCoin (map-random (intR {ℛ} {ℛ} coin h) (Probes.unprobe S (idH S {ℛ}))) (rhsM h) (intR-J h)))
+
+  split : _≈ᴹ_ {_×Q_ S ℛ ℛ} (mapM {ℛ} {_×Q_ S ℛ ℛ} pairEO coin) (prodPre {ℛ} {ℛ} coin coin)
+  split h = trans (split-lhs h) (trans (sym (J-agree (tensor₁ fairCoin fairCoin) fairCoin _ (λ F → fairCoin-indep F)))
+    (trans (J-tensor₁ fairCoin fairCoin _) (trans (J-cong fairCoin _ _ (λ r → J-cong fairCoin _ _
+      (λ s → Func.cong (map h) (merge-evens r s , merge-odds r s)))) (sym (split-rhs h)))))
+
+  -- the first n coordinates as a tuple
+  T : ∀ n → Hom S ℛ (ΠQ n (λ _ → ℛ))
+  T n = tupleQ n (λ _ → ℛ) (λ i → coordH (toℕ i))
+
+  -- tuples of pointwise equal coordinates are equal
+  tuple-ext : ∀ n {Z Z′ X : QBS S} (F : Fin n → Hom S Z X) (G : Fin n → Hom S Z′ X) z z′ →
+    (∀ j → Setoid._≈_ (Carrier X) (map (F j) ⟨$⟩ z) (map (G j) ⟨$⟩ z′)) →
+    Setoid._≈_ (Carrier (ΠQ n (λ _ → X))) (map (tupleQ n (λ _ → X) F) ⟨$⟩ z) (map (tupleQ n (λ _ → X) G) ⟨$⟩ z′)
+  tuple-ext zero F G z z′ e = Setoid.refl (Carrier (ΠQ zero (λ _ → ℛ)))
+  tuple-ext (suc n) F G z z′ e = e zero , tuple-ext n (λ j → F (suc j)) (λ j → G (suc j)) z z′ (λ j → e (suc j))
+
+  -- the pushforward along the identity is the identity
+  mapM-id : ∀ {X : QBS S} (p : C.Pre (XW X)) → _≈ᴹ_ {X} (mapM {X} {X} (idH S {X}) p) p
+  mapM-id {X} p h = trans (∫ᴹ-map {X} {X} (idH S {X}) p h) (∫ᴹ-cong {X} p {_∘H_ S h (idH S {X})} {h} (λ _ → refl))
+
+  -- one more coordinate: (evens, odds) splits the coin, then the tail is the first n coordinates of the odd half
+  coins-step : ∀ n → IID coinPre coin n (λ i → coordH (toℕ i)) → IID coinPre coin (suc n) (λ i → coordH (toℕ i))
+  coins-step n ih h = trans
+    (mapM-ext {ℛ} {ΠQ (suc n) (λ _ → ℛ)} (T (suc n)) (_∘H_ S (_×H_ {ℛ} {ℛ} {ℛ} {ΠQ n (λ _ → ℛ)} (idH S {ℛ}) (T n)) pairEO) coin
+      (λ ω → Setoid.refl (Carrier ℛ) , tuple-ext n (λ j → coordH (suc (toℕ j))) (λ j → coordH (toℕ j)) ω (oddsR ω)
+        (λ j → Setoid.refl (Carrier ℛ))) h)
+    (trans (sym (mapM-comp {ℛ} {_×Q_ S ℛ ℛ} pairEO (_×H_ {ℛ} {ℛ} {ℛ} {ΠQ n (λ _ → ℛ)} (idH S {ℛ}) (T n)) coin h))
+      (trans (mapM-cong {_×Q_ S ℛ ℛ} (_×H_ {ℛ} {ℛ} {ℛ} {ΠQ n (λ _ → ℛ)} (idH S {ℛ}) (T n)) split h)
+        (trans (map-prod {ℛ} {ℛ} {ℛ} {ΠQ n (λ _ → ℛ)} (idH S {ℛ}) (T n) coin coin h)
+          (prod-cong {ℛ} {ΠQ n (λ _ → ℛ)} (mapM-id {ℛ} coin) ih h))))
+
   -- the coordinates are iid
   coins-iid : ∀ n → IID coinPre coin n (λ i → coordH (toℕ i))
-  coins-iid = ?
+  coins-iid zero h = trans (∫ᴹ-map {ℛ} {1Q S} (T 0) coin h)
+    (trans (∫ᴹ-cong {ℛ} coin {_∘H_ S h (T 0)} {mulH {ℛ} (constW {ℛ} c) (constW {ℛ} 1#)} (λ ω → sym (*-identityʳ _)))
+      (trans (cmul {ℛ} coin c (constW {ℛ} 1#)) (trans (*-cong refl (ι-mass {ℛ} coinPre))
+        (trans (*-identityʳ _) (sym (∫ᴹ-η {1Q S} tt h))))))
+    where c = map h ⟨$⟩ tt
+  coins-iid (suc n) = coins-step n (coins-iid n)
 
   coins-iidSeq : IIDSeq coinPre coin coordH
-  coins-iidSeq = ?
+  coins-iidSeq = coins-iid
 
   -- the draws of a sampler at θ
   drawH : ∀ {Θ X : QBS S} → SamplerQ Θ X → ∣ Θ ∣ → Hom S ℛ X
@@ -72,4 +174,4 @@ module CoinCoordsJoint (lem₁ : LEM₁) where
 
   draws-iid : ∀ {Θ X : QBS S} (s : SamplerQ Θ X) θ n →
     IID coinPre (mapM {ℛ} {X} (drawH s θ) coin) n (λ i → _∘H_ S (drawH s θ) (coordH (toℕ i)))
-  draws-iid = ?
+  draws-iid {Θ} {X} s θ n = IID-map {ℛ} coinPre {ℛ} {X} coin n (λ i → coordH (toℕ i)) (drawH s θ) (coins-iid n)
