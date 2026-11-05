@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–4 done on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–5 done on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -92,7 +92,7 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
   covariance I, E‖X‖² ≃ n; N(μ, AAᵀ) as the random vector AZ + μ, mean μ and covariance AAᵀ.
 - 54 `Inference/MultiSample` [done] (needs 46, 52): iid random vectors; the sample mean vector is unbiased and the sample
   covariance matrix (division-free, as in `Estimator`) is unbiased.
-- 55 `Continuous/RQArith` (optional enabler): addition RQ × RQ ⇒ RQ and signed scaling as morphisms (measurability on
+- 55 `Continuous/RQArith` [done] (optional enabler): addition RQ × RQ ⇒ RQ and signed scaling as morphisms (measurability on
   the parts), so AX + b is a map RQⁿ ⇒ RQᵐ and the law of a Gaussian vector is a measure on RQᵐ; the push-forward
   principle connects it with 52–53.
 
@@ -195,6 +195,20 @@ anything); it now needs one part of each Y i zero at each point (pull-backs of `
 witnesses; `mul-cong` (products respect ≐) was added for `cov-≐`, checked by brute force over {0, 1, 2, 3, ∞}.  55
 `Inference/GaussVectorLaw` (`coordT`, `affLaw`, `Nᴬ M b`, the law of A Z + b for Z ∼ N(0, Iₙ), `Nᴬ-mass` defined;
 holes `affLaw-RV`, `affLaw-mean`, `affLaw-cov`, `Nᴬ-RV`, `Nᴬ-mean` ≈ b, `Nᴬ-cov` ≈ A Aᵀ).
+
+**Outcome, round 5 (2026-11-05).** All holes filled, no statement changed.  55b `RandomVectorLaw`: as the header
+route except `mul-cong` (Continuous/SignedMul), whose infinite cases cannot use `top-mul` alone since a zero factor
+kills ∞ (∞ · 0 = 0): both sides are ∞ · s plus a remainder and excluded middle on s ≈ 0 decides (`TopMulPos.top-pos`,
+∞ · y ≈ ∞ for y ≉ 0); helpers `TopMulPos`, `SignedMul`, `RandomVectorLawAux` (`GaussVarAux.∫-map` for any Ω, Y).
+55a `RQArith`: `Meas-monus` needs a Borel guard `BndQ (β r)` since β may be ∞; the n-ary `idT` laws go through an
+invariant `RQArithAlg.Inv` (cross equality plus "bounded totals force bounded parts", closed under addition by a
+nine-case split) instead of chaining ≐; helper `RQArithAlg`.  The fill agent developed `GaussVectorLaw` against an
+uncommitted postulated stub of `RandomVectorLaw` until that was merged, then rebased onto it.  55 `GaussVectorLaw`:
+`Nᴬ-*` repeat the chain at P = Nⁿ n through abstract `mean-chain`, `cov-chain` and end in `gaussV-mean`/`gaussV-cov`,
+since every use of `std-cov` (or `affLaw-cov` at Z = idH) exhausted the 3 GB heap comparing `covM` terms.  Cold times
+(each module alone, dependencies built): TopMulPos 3.0 s, SignedMul 13.6 s / 1.3 GB, RandomVectorLawAux 8.0 s /
+1.2 GB, RandomVectorLaw 12.9 s / 1.4 GB, RQArithAlg 7.3 s / 1.1 GB, RQArith 12.8 s / 1.5 GB, GaussVectorLaw 15.1 s /
+1.7 GB.
 
 ## Order of agents
 
