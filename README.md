@@ -42,7 +42,7 @@ Compile times and what is slow: [docs/Architecture.md](docs/Architecture.md), "C
 
 ## The areas
 
-Files live under `src/QBS/`. Each layer uses only the ones above it in this list.
+Files live under `src/QBS/`. Roughly, each area builds on those above it in this list.
 
 | Area | Where | What |
 |---|---|---|

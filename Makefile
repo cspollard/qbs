@@ -11,7 +11,7 @@
 #   make html          generate build/Everything.agda (imports every module) and the Agda HTML documentation in
 #                      html/ (from the progress overlay, so skeleton modules with holes are included); html/index.html
 #                      is a copy of Everything.html, listing every module.  Does not serve.  Used by the Pages
-#                      workflow (workflows/pages.yml), which publishes html/.
+#                      workflow (.github/workflows/pages.yml), which publishes html/.
 #   make htmlserve     `make html`, then serve html/ with python's http.server on 0.0.0.0:$(PORT) (default 8081).
 #   make serve         only serve the existing html/ (no build).
 #   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
