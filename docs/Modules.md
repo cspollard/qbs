@@ -224,7 +224,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
 | `QBS.Continuous.ChangeOfVariablesFn` | 72 | lem | Change of variables from functions alone (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.CoinCoords` | 199 | lem | Independent coordinates of the fair coin. |
-| `QBS.Continuous.CoinCoordsJoint` | 76 | lem | The coin coordinates are iid (plan 05, item 47). |
+| `QBS.Continuous.CoinCoordsJoint` | 178 | lem | The coin coordinates are iid (plan 05, item 47). |
 | `QBS.Continuous.CoinIndep` | 127 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ConvEps` | 203 | lem | Convergence with explicit tolerances, and convergence of differences (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
@@ -268,7 +268,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
-| `QBS.Continuous.IID` | 76 | lem | Independent and identically distributed families (plan 05, item 46). |
+| `QBS.Continuous.IID` | 166 | lem | Independent and identically distributed families (plan 05, item 46). |
 | `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (plan 05, helper for `Independence`). |
 | `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (plan 05, helper for `IndepAlg`). |
 | `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (plan 05, item 45). |
