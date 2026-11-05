@@ -154,13 +154,24 @@ along (x, (y, z)) ↦ (y, (x, z)) is t ⊗ (s ⊗ r), for any s-finite s, t, r, 
 `nextK` under ιPre), not through `ψ-at`.  52 `RandomVector`: `Int-mul` by `Int-dom` with f² + g² (pointwise
 a b ≤ a² + b² by `MonusAlg.cut-total`); the sum and affine laws by the double-sum expansion `ExBil` and ring lemmas
 instead of induction; helpers `RandomVectorRing`, `RandomVectorAlg`, `RandomVectorSumRing`, `RandomVectorSum`,
-`RandomVectorAff` (the last repeats `RV`, `meanV`, `covM`, `affT` under primed names; a candidate for cleanup).
+`RandomVectorAff` (it first repeated `RV`, `meanV`, `covM`, `affT` under primed names; tidied after the round into a shared
+`RandomVectorDefs`, re-exported by `RandomVector`).
 `RandomVectorSumRing` failed from the command line after the merge (unannotated binders in `step`/`rhs-eq` left
 unsolved metas) and was fixed by annotating their types.  46b `IIDLaw`: as the header route.  Cold times (each module
 alone, dependencies built): CondIIDConst 4.5 s, CondIID 5.7 s, ExchangeableSwap 4.9 s, Exchangeable 8.1 s / 1.3 GB,
 CondIIDCoinStep 26.7 s / 1.3 GB, CondIIDCoin 9.1 s / 1.4 GB, RandomVectorRing 2.6 s, RandomVectorAlg 11.4 s / 1.3 GB,
 RandomVectorSumRing 2.7 s, RandomVectorSum 8.4 s, RandomVectorAff 10.6 s, RandomVector 9.2 s / 1.2 GB, IIDLaw
 10.3 s / 1.3 GB.
+
+**Skeletons, round 4 (2026-11-05).**  53a `Continuous/FinProdProb` (enabler: `prodPⁿ`, the n-fold product of
+probability measures by `⊗ᵖ`; holes `ι-prodⁿ`, `tuple-proj`, `proj-iid`: the projections of p^{⊗n} are iid with law
+p).  53 `Inference/GaussVector`, general first: for iid Zs with law μ and a test f with mean m and variance v, holes
+`RV-iid`, `mean-iid` (m, …, m), `cov-iid` (v I), `norm2-iid` (n (v + m²)), `aff-mean`, `aff-cov`; then the standard
+normal `γ = gaussμ` at s = 1, μ = 0 (`γ-mass`, `γ-i`, `γ-j` defined; holes `γ-em`, `γ-es`), the Gaussian instances
+for any iid N(0, 1) family (`gauss-mean`, `gauss-cov` ≈ I, `gauss-norm2` ≃ n, `gaussV-mean` ≈ b, `gaussV-cov` ≈ A Aᵀ)
+and the canonical `Nⁿ n = γ^{⊗n}` on RQⁿ (`std-iid` defined; holes `std-mean`, `std-cov`, `std-norm2`).  54
+`Inference/MultiSample` (`obsV`, `sumV`, `crossT`, `ssM`, `cross-diag` by `refl`; holes `RV-obs`, `mean-obs`,
+`cov-obs`, `RV-sum`, `mean-sum` (n · mean), `cov-sum` (n · Cov), `Int-ssM`, `ss-unbiased` ((n² − n) Cov)).
 
 ## Order of agents
 
@@ -169,7 +180,7 @@ RandomVectorSumRing 2.7 s, RandomVectorSum 8.4 s, RandomVectorAff 10.6 s, Random
 | 1 | 43 → 45 | 44, then 51 |
 | 2 | 46a → 50 | 46 → 47 |
 | 3 | 48 → 49 → 48a | 52, then 46b |
-| 4 | 53 | 54 (55 if wanted) |
+| 4 | 53a → 53 | 54 (55 if wanted) |
 
 ## Risks
 
