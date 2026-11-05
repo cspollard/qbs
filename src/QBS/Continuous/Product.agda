@@ -11,7 +11,7 @@
 -- and `∫ᴹ-scale` twice; the marginals from `∫ᴹ-map` and `∫-rect` with h = 1; `prod-cong` from `∫-prod` and `∫-prod′`.
 module QBS.Continuous.Product where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_,_)
 
 open import QBS.Core

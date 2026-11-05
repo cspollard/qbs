@@ -3,19 +3,16 @@
 -- The discrete probability monad is a model of `ProbabilityInterface`.
 module QBS.Model.ProbInstance where
 
-open import Level using (Level; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
-open import Function.Bundles using (Func; Inverse; _⟨$⟩_)
+open import Level using (Lift; lift; lower)
+open import Function.Bundles using (Inverse; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import Categories.Category.Core using (Category)
-open import Categories.Monad.Commutative using (CommutativeMonad)
 
 open import QBS.Core
 open import QBS.Category

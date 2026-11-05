@@ -8,8 +8,7 @@
 --     member it would be `≤ 0`, hence `1 = ½ + ½ ≤ 0`, impossible (`zero≉one`).
 module QBS.Continuous.GaussInverse where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 
@@ -31,9 +30,7 @@ import QBS.Analysis.RationalLemmas as RL
 import QBS.Analysis.LowerInverse as LI
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.CoinIndep using (module CoinIndep)
-open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteNorm using (module SFiniteNorm)
-open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.GaussHalfLine using (module GaussHalfLine)
 open import QBS.Continuous.GaussFinite using (module GaussFinite)

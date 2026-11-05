@@ -4,12 +4,10 @@
 -- shifting, and Tonelli (swapping iterated sums; summing along the Cantor enumeration of ℕ × ℕ).
 module QBS.Analysis.Series where
 
-open import Level using (Level)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Relation.Nullary using (Dec; yes; no)
 import Relation.Binary.PropositionalEquality.Core as ≡

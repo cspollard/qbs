@@ -3,12 +3,11 @@
 -- Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q.
 module QBS.Model.Strong where
 
-open import Level using (Level; suc; _⊔_; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Unit.Polymorphic.Base using (tt)
+open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; <_,_>ₛ)
 open import Relation.Binary.Bundles using (Setoid)
@@ -17,7 +16,6 @@ open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 import Function.Construct.Composition as Comp
 
-open import Categories.Category.Core using (Category)
 
 open import QBS.Core
 open import QBS.Category
@@ -79,11 +77,9 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
       B : ∀ (β : R → ∣ _×Q_ S X (TQ Y) ∣) → Wit (λ r → proj₂ (β r)) → ℕ × ℕ → ∣ _×Q_ S X Y ∣
       B β w u = proj₁ (β (lift (proj₁ u))) , wα w (lift (proj₂ u))
 
-  open import Categories.Category.Product using (Product; _⁂_)
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
-  open import Categories.NaturalTransformation using (NaturalTransformation)
-  open import QBS.Category.Cartesian S using (cartesian; V; braided)
+  open import QBS.Category.Cartesian S using (V; braided)
 
   strength : Strength V TM
   strength = record

@@ -7,7 +7,6 @@
 -- on one side the other part of xy vanishes (`logP-le`, `logN-ge`) and the identity bounds the remaining one.
 module QBS.Continuous.InfoProductAux where
 
-open import Data.Product.Base using (_,_)
 open import Data.Sum.Base using (inj₁; inj₂)
 open import Function.Base using (case_of_)
 
@@ -17,7 +16,6 @@ open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.LowerRealsNear using (BndQ)
 open import QBS.Analysis.LowerReals using (oneC)
-open import QBS.Analysis.Signed using (SubSemiring)
 open import QBS.Continuous.SignedLog using (module SignedLog)
 open import QBS.Continuous.MonusAlg using (module MonusAlg)
 

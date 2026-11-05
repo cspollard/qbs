@@ -12,8 +12,8 @@
 -- the pulled-back `J` of `ExpectationInt.toSF` (`∫ι`, by `J-cong` and `*-identityˡ`; `J-irrel` for the `Meas` proofs).
 module QBS.Continuous.SignedTransport where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_×_; _,_)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Product.Base using (_,_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

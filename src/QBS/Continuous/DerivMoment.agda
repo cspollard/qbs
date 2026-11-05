@@ -10,9 +10,9 @@
 -- The recursion and the base case are unchanged, and the old modules stay as checks (the two results are the same statement).
 module QBS.Continuous.DerivMoment where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Nat.Base using (zero; suc)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -20,7 +20,6 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.NegExp using (module NegExp)
-open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
 open import QBS.Analysis.Deriv using (module AlgD)
 open import QBS.Analysis.DerivExp using (module AlgDE)

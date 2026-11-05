@@ -41,8 +41,6 @@ open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Analysis.ExpansionCons using (module ExpansionCons)
 open import QBS.Analysis.Threshold using (module Threshold)
-open import QBS.Continuous.Sample using (S)
-open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.Intervals using (module Intervals)
 
 module LebesgueDyadicAlg (lem : LEM₀) where

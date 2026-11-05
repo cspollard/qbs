@@ -5,11 +5,8 @@
 -- By monotone convergence it reduces to the bounded truncations, where it is the definition of bind.
 module QBS.Analysis.Tonelli where
 
-open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

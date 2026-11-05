@@ -7,8 +7,6 @@ module QBS.Example.Recipes where
 
 import Level as L
 open import Data.Bool.Base using (Bool; true; false; _∧_)
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 
 open import QBS.Model.Semiring
 import QBS.Model.WeightClasses as WC      -- qualified: `Analysis.Measure` also exports `probClass`
@@ -38,9 +36,8 @@ module Bernoulli {ℓ} (A : CompleteSemiring ℓ) (half : CompleteSemiring.Carri
   flip-mean = trans (∫-flip isTrue) (trans (+-cong (*-identityʳ half) (zeroʳ half)) (+-identityʳ half))
 
 -- (2) Continuous: `uniform : Pre AQ` and the integral `∫ : Pre X → Hom S X AQ → ∣A∣` (values in the unit interval).
-open import QBS.Core using (idH)
 open import QBS.Continuous.Uniform using (module Uniform)
-open import QBS.Continuous.Sample using (S; module UnitInterval)
+open import QBS.Continuous.Sample using (module UnitInterval)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)

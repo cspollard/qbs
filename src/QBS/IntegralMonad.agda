@@ -12,11 +12,10 @@
 module QBS.IntegralMonad where
 
 open import Level using (Level; suc; _⊔_)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_,_)
 open import Relation.Binary.Bundles using (Setoid)
 
-open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Endofunctor)
 open import Categories.Functor using () renaming (id to idF)
 open import Categories.Functor using (_∘F_)

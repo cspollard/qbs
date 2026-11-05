@@ -7,12 +7,10 @@
 -- correspondence; see `Analysis/Riesz.agda`.
 module QBS.Analysis.Functional where
 
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty using (⊥-elim)
 open import Level using (lift)
-open import Data.Sum.Base using (_⊎_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (_,_)
-open import Data.Unit.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Core

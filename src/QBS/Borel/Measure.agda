@@ -8,12 +8,11 @@
 module QBS.Borel.Measure where
 
 import Level as L
-open import Level using (Level; suc; _⊔_; Lift; lift; lower)
+open import Level using (suc; _⊔_; Lift; lower)
 open import Data.Unit.Base using (tt)
-open import Function.Base using (id; _∘_; const)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+open import Data.Product.Base using (_,_)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Model.Semiring

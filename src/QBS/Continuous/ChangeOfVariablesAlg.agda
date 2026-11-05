@@ -8,7 +8,7 @@
 module QBS.Continuous.ChangeOfVariablesAlg where
 
 open import Function.Bundles using (_⟨$⟩_)
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum.Base using ([_,_]′)
 open import Data.Product.Base using (_,_; proj₁; proj₂)

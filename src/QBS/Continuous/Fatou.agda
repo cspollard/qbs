@@ -22,7 +22,7 @@ module QBS.Continuous.Fatou where
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc) renaming (_+_ to _+ℕ_; _≤_ to _≤ℕ_)
 open import Data.Nat.Properties using (n≤1+n) renaming (+-suc to +ℕ-suc)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (subst) renaming (sym to ≡sym)
 import QBS.Analysis.RationalLemmas as Q
 
@@ -32,8 +32,7 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.SignedOmega using (module Bounded)
-open import QBS.Analysis.LowerReals using (Cut; module Cut; unionC; _⊑_; mk⊑; module _⊑_; _≋_; ⊑-refl; ⊑-trans; ≋-refl; ⊕-mono;
-  ⊕-union; ⊕-comm; ⊕-assoc; ⊕-comm⊑; union-ub; union-lub; _⊕_)
+open import QBS.Analysis.LowerReals using (Cut; module Cut; unionC; _⊑_; mk⊑; module _⊑_; _≋_; ⊑-refl; ⊑-trans; ⊕-mono; ⊕-union; ⊕-assoc; ⊕-comm⊑; union-ub; union-lub)
 open import QBS.Analysis.LowerRealsMin using (_⊓_)
 open import QBS.Analysis.LowerRealsInf using (interC; liminfC; limsupC; inter-lb; inter-glb; inter-mono; union-mono)
 open import QBS.Analysis.LowerRealsNear using (BndQ; module Near)

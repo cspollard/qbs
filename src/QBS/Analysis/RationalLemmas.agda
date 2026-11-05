@@ -7,18 +7,15 @@ module QBS.Analysis.RationalLemmas where
 
 open import Data.Nat.Base as ℕ using (ℕ; zero; suc)
 import Data.Nat.Properties as ℕ
-open import Data.Integer.Base as ℤ using (ℤ; +_; +0; +[1+_]; -[1+_])
+open import Data.Integer.Base as ℤ using (+_; -[1+_])
 import Data.Integer.Properties as ℤ
 open import Data.Rational.Unnormalised.Base public using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; ½)
-open import Data.Rational.Unnormalised.Base using
-  (mkℚᵘ; _+_; _*_; -_; 1/_; _<_; _≤_; _≃_; *≡*; *≤*; *<*; ↥_; ↧_; ↧ₙ_; Positive; NonNegative; positive; nonNegative)
+open import Data.Rational.Unnormalised.Base using (mkℚᵘ; _+_; _*_; -_; 1/_; _<_; _≤_; _≃_; *≡*; *≤*; Positive; NonNegative; positive; nonNegative)
 import Data.Rational.Unnormalised.Properties as P
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; _×_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Relation.Nullary.Negation using (¬_)
-open import Relation.Binary.PropositionalEquality.Core as ≡ using (_≡_; refl; cong; subst)
+open import Relation.Binary.PropositionalEquality.Core as ≡ using (refl; cong; subst)
 
 infix 4 _≤ᵘ_ _<ᵘ_ _≃ᵘ_
 _≤ᵘ_ _<ᵘ_ _≃ᵘ_ : ℚᵘ → ℚᵘ → Set

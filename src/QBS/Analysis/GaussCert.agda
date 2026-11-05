@@ -15,7 +15,7 @@
 module QBS.Analysis.GaussCert where
 
 import Level as L
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)

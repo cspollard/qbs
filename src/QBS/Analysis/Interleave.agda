@@ -11,7 +11,6 @@ import Data.Bool.Properties as B
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; trans)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import QBS.Borel.Core using (Cantor)
 open import QBS.Borel.Merge using (mergeC)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Clopen

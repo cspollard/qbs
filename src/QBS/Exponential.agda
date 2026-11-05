@@ -3,15 +3,13 @@
 -- Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`.
 module QBS.Exponential where
 
-open import Level using (Level; suc)
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 import Function.Construct.Identity as Id
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality.Core using (refl)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Core using (Category)

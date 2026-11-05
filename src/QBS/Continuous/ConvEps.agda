@@ -12,7 +12,7 @@
 -- `sconv-pair` with ½ᵏ⁺¹ + ½ᵏ⁺¹ ≈ ½ᵏ (`Half`).
 module QBS.Continuous.ConvEps where
 
-open import Data.Nat.Base using (ℕ; zero; suc; _≤_) renaming (_+_ to _+ℕ_)
+open import Data.Nat.Base using (ℕ; suc; _≤_) renaming (_+_ to _+ℕ_)
 import Data.Nat.Properties as ℕP
 open import Data.Nat.Base using (_∸_)
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
@@ -29,12 +29,11 @@ open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
-open import QBS.Analysis.LowerReals using (Cut; module Cut; unionC; _⊑_; mk⊑; module _⊑_;
-  ⊑-refl; ⊑-trans; ⊕-mono; union-ub; union-lub; _⊕_)
+open import QBS.Analysis.LowerReals using (Cut; module Cut; unionC; _⊑_; mk⊑; module _⊑_; ⊑-refl; ⊑-trans; ⊕-mono; union-ub; union-lub)
 open import QBS.Analysis.LowerRealsInf using (interC; liminfC; limsupC; inter-lb; liminf-limsup)
-open import QBS.Analysis.LowerRealsNear using (BndQ; module Near)
+open import QBS.Analysis.LowerRealsNear using (module Near)
 open import QBS.Analysis.LowerRealsArch using (tp; tp-pos; tp-lt)
-open import QBS.Analysis.RationalLemmas using (dense; ≤-or->; ≃-refl; <-irrefl; <-≤-trans; ≤-<-trans; <-≤; ≤-trans)
+open import QBS.Analysis.RationalLemmas using (dense; ≤-or->; ≃-refl; <-irrefl; <-≤-trans; <-≤; ≤-trans)
 open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 open import QBS.Continuous.Fatou using (module Fatou)
 open import QBS.Analysis.SignedOmega using (module Bounded)

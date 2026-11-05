@@ -5,14 +5,13 @@
 -- Def. 11 any uncountable standard Borel space serves as the sample space).
 module QBS.Borel.Source where
 
-open import Level using (Level; zero; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (zero; suc; Lift; lift; lower)
 open import Data.Nat.Base using (ℕ)
 open import Data.Unit.Base using (tt)
 open import Data.Nat.Properties using (_≟_)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; cong₂; subst)
+open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
+open import Relation.Nullary using (yes; no)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; cong₂)
 open import Relation.Binary.Bundles using (Setoid)
 open import Function.Bundles using (Func; _⟨$⟩_)
 

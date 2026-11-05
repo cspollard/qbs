@@ -11,13 +11,11 @@
 -- `ifQ a b` is measurable into any `Z`.
 module QBS.BoolQ where
 
-open import Level using (Level)
 open import Data.Bool.Base using (Bool; true; false)
-open import Data.Product.Base using (_,_)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Sum.Base using (inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
-open import Data.Unit.Polymorphic using (⊤; tt)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Data.Unit.Polymorphic using (tt)
+open import Function.Bundles using (_⟨$⟩_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 

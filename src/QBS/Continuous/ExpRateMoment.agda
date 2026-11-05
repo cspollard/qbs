@@ -10,10 +10,10 @@
 -- Any positive rational (a+1)/(b+1) is `Rat`: l = (a+1) · (1/(b+1)), c = (b+1) · (1/(a+1)) with the reciprocals of `Analysis/ExpLower`.
 module QBS.Continuous.ExpRateMoment where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (proj₁; proj₂)
 import Data.Nat.Properties as ℕ
 
 open import QBS.Core
@@ -22,7 +22,7 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Exp using (module Exp)
-open import QBS.Analysis.ExpLower using (expC; 1+≤expC; expC≤quad; qinvC; inv-ok)
+open import QBS.Analysis.ExpLower using (qinvC; inv-ok)
 open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.TailFTC using (module AlgT)

@@ -10,8 +10,7 @@
 -- so every identity is one `solve` of the natural-coefficient ring solver (cross-added form, witness 0).
 module QBS.Continuous.SignedVarAlg where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_×_; _,_)
 import Relation.Binary.PropositionalEquality as ≡
 open ≡ using (_≡_)
 open import QBS.Continuous.SignedVarRing using (module Ring)

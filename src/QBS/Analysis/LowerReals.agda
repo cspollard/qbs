@@ -8,9 +8,9 @@ module QBS.Analysis.LowerReals where
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Unit.Base using (⊤; tt)
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty using (⊥-elim)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
+open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_)
 open import QBS.Analysis.RationalLemmas
 
 record Cut : Set₁ where
@@ -408,7 +408,6 @@ LowerRealsOmega lem = record
           { isPreorder = record { isEquivalence = ≋-isEquivalence ; reflexive = proj₁ ; trans = ⊑-trans }
           ; antisym = _,_ }
       ; 0-least = 0-least
-      ; ≤-+ʳ = λ {a} {b} → ⊕-inl a b
       ; +-mono = ⊕-mono
       ; *-mono = λ c → ⊗-mono ⊑-refl
       ; complement = λ {c} h → complC c h , complement-ok c h

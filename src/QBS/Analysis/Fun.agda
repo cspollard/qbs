@@ -6,8 +6,8 @@
 -- membership in a Borel set is needed.
 module QBS.Analysis.Fun where
 
-open import Level using (zero; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (zero; suc; lift; lower)
+open import Function.Base using (_∘_; const)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties
@@ -17,8 +17,8 @@ open import Relation.Nullary using (yes; no)
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 open import Data.Nat.Base using () renaming (suc to suc′)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Unit.Base using (tt)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 import Data.Sum.Base
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 

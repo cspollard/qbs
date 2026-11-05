@@ -11,12 +11,12 @@
 module QBS.Analysis.Regular where
 
 import Level as L
-open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_)
+open import Data.Bool.Base using (Bool; true; false; not)
 open import Data.Bool.Properties using (¬-not)
-open import Data.Nat.Base using (ℕ; zero; suc; _⊔_; _<_)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕₚ
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -42,7 +42,7 @@ module Regularity {A : OmegaSemiring (L.suc L.zero)} (R : Arch A)
   open Series A
   open Opens R lem
   open SetoidReasoning setoid
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:*_; _:=_; con)
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:=_)
 
   -- the clopen set of a tree, as a predicate
   Pt : Cl → Pred

@@ -6,22 +6,20 @@
 -- C₁ × C₂ with respect to merge, and sections of Borel sets are Borel.
 module QBS.Borel.Merge where
 
-open import Function.Base using (id; _∘_; const)
-open import Data.Bool.Base using (Bool; true; false; if_then_else_)
+open import Data.Bool.Base using (Bool)
 open import Data.Bool.Properties using (_≟_)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-suc)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
+open import Data.Unit.Base using (tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (yes; no)
 open import Relation.Nullary.Decidable using (toSum)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
 open import QBS.Borel.Core
-open import QBS.Borel.PiLambda using (Cyl; cylTop; cylAnd; cylResp; ∁; ⊤ᵖ; ⊥ᵖ)
+open import QBS.Borel.PiLambda using (Cyl; cylTop; cylAnd; cylResp; ⊤ᵖ)
 
 -- as `Codata.Guarded.Stream.interleave`: the tail of `mergeC a b` is `mergeC b (tail a)`
 mergeC : Cantor → Cantor → Cantor

@@ -7,10 +7,10 @@
 --   * `top-sub`: if x ⊕ t contains every rational then so does x.
 module QBS.Continuous.LebesgueShiftCut where
 
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (inj₁; inj₂; [_,_]′)
+open import Data.Product.Base using (Σ; _,_; _×_)
+open import Data.Sum.Base using ([_,_]′)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Rational.Unnormalised.Base using (_+_; _<_; _≤_; _≃_; -_)
+open import Data.Rational.Unnormalised.Base using (_+_; _<_; -_)
 
 open import QBS.Classical using (LEM₀)
 open import QBS.Analysis.RationalLemmas

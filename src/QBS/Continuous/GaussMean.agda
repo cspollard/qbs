@@ -10,10 +10,10 @@
 -- (`TailFTCLipHalf.Glue` assumes `G 0 = 0`, which fails for G = φ, so the sums are handled directly.)
 module QBS.Continuous.GaussMean where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

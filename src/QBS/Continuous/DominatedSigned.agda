@@ -13,7 +13,7 @@
 -- the claim up to ∫pn n, ∫qn n ≤ ½ᵏ; `ConvEps.sconv-shift` is not needed.
 module QBS.Continuous.DominatedSigned where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ) renaming (_+_ to _+ℕ_; _≤_ to _≤ℕ_)
 import Data.Nat.Properties as ℕP
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)

@@ -10,7 +10,7 @@
 module QBS.Continuous.LebesgueShiftAlg where
 
 open import Function.Bundles using (_⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
@@ -23,13 +23,11 @@ open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.LowerReals using (Cut; mk⊑; _⊑_; ⊕-comm⊑; ⊑-refl; ⊕-mono; ⊑-trans)
 open Cut using (mem; down)
 open _⊑_ using (ap)
-open import QBS.Analysis.LowerRealsArch using (qC)
 open import QBS.Analysis.ExpLower using (natE≋)
 import QBS.Analysis.RationalLemmas as RL
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.Exp using (module Exp)
-open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)

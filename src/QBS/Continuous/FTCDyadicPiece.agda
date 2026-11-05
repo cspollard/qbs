@@ -10,7 +10,7 @@ module QBS.Continuous.FTCDyadicPiece where
 
 open import Level using (lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; suc) renaming (_<_ to _<ℕ_)
+open import Data.Nat.Base using () renaming (_<_ to _<ℕ_)
 open import Data.Nat.Properties using (<-cmp)
 open import Data.Bool.Base using (true)
 open import Data.Empty using (⊥; ⊥-elim)

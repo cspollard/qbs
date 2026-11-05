@@ -4,7 +4,6 @@
 module QBS.Borel.Cons where
 
 open import Level using (lift; lower)
-open import Function.Base using (const)
 open import Data.Bool.Base using (Bool)
 open import Data.Nat.Base using (zero; suc)
 

@@ -43,7 +43,7 @@ FILES   := $(sort $(shell find $(SRC) -name '*.agda'))
 MODULES := $(FILES:$(SRC)/%.agda=%)
 LOGS    := $(FILES:$(SRC)/%.agda=$(LOGDIR)/%.log)
 
-.PHONY: longcheck doccheck check progress html htmlserve serve report clean all-interfaces profile profile-tree
+.PHONY: longcheck doccheck import-check check progress html htmlserve serve report clean all-interfaces profile profile-tree
 .DELETE_ON_ERROR:
 
 # `check` is strict.  `progress` prepares the overlay and runs the same report inside it.
@@ -52,6 +52,9 @@ longcheck:
 
 doccheck:
 	@python3 scripts/doccheck.py
+
+import-check:
+	@python3 scripts/unused-imports.py --check
 check:
 	@$(MAKE) --no-print-directory report MODE=strict
 progress:

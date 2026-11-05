@@ -15,7 +15,7 @@ module QBS.Continuous.LogCore where
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_; _≃_)
+open import Data.Rational.Unnormalised.Base using (_+_; _*_; -_; _<_; _≤_)
 
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
@@ -23,11 +23,10 @@ open Cut
 open _⊑_
 open import QBS.Analysis.LowerRealsNear using (BndQ; module Near)
 open import Level using (lift)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 open import QBS.Analysis.ExpLower
 open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Exp using (module Exp)
-open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Borel.Core using (inter₂; union₂)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.LevelSets using (module LevelSets)

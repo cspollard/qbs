@@ -9,7 +9,7 @@
 -- (`E-atᴵ-sqD`), with the same integrals as `Inference/ExpDistMean` and `ExpDistVar` (`idD-integral`, `sqD-integral`).
 module QBS.Inference.DensityExpectation where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

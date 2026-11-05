@@ -9,7 +9,6 @@ module QBS.Analysis.Half where
 open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Algebra.Bundles using (CommutativeSemiring)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Analysis.Omega
@@ -20,7 +19,7 @@ module Half (A : OmegaSemiring (suc zero)) (half : OmegaSemiring.Carrier A)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Series A
   open SetoidReasoning setoid
-  open import Algebra.Properties.Semiring.Exp (CommutativeSemiring.semiring commutativeSemiring) using (_^_)
+  open import Algebra.Properties.Semiring.Exp semiring using (_^_)
 
   -- 1, ½, ¼, …
   hp : ℕ → ∣A∣

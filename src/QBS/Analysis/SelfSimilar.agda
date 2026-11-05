@@ -12,7 +12,6 @@ module QBS.Analysis.SelfSimilar where
 
 open import Level using (suc; zero)
 open import Function.Base using (case_of_)
-open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)

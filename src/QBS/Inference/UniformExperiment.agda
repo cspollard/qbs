@@ -6,10 +6,7 @@
 -- apply: `Sₙ / n` is unbiased for the mean `a + c · ½`, and `(n Qₙ − Sₙ²) / (n² − n)` for the variance `c² σ²` (σ² = 1/12).
 module QBS.Inference.UniformExperiment where
 
-open import Data.Empty using (⊥)
-open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_×_; _,_)
-open import Data.Sum.Base using (_⊎_)
 import Level as L
 
 open import QBS.Analysis.CoinIntegral using (lemOf)

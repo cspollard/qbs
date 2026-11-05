@@ -22,7 +22,7 @@ open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; _×_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
@@ -46,7 +46,6 @@ open import QBS.Borel.Core using (Pred; Partition; resp; compl; ⊥-borel; Borel
 open import QBS.Borel.Source using (idxₛ)
 open import QBS.Continuous.LipTestAlg using (module LipAlg)
 open import QBS.Continuous.LebesgueShift using (module LebesgueShift)
-open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 open import QBS.Continuous.RealShiftNull using (module RealShiftNull)
 open import QBS.Continuous.RealShiftRefl using (module RealShiftRefl)
 open import QBS.Analysis.Meas using (module Meas)

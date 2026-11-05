@@ -4,10 +4,7 @@
 -- parametric measurability of `r ↦ J (g r) (s ↦ φ (merge r s))` for a kernel `g`.
 module QBS.Analysis.JParam where
 
-open import Level using (suc; zero; lift; lower)
-open import Data.Nat.Base using (ℕ)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
+open import Level using (lower)
 
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁) renaming (down to downR)

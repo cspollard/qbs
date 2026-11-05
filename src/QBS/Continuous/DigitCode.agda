@@ -15,8 +15,8 @@
 module QBS.Continuous.DigitCode where
 
 open import Level using (lift; lower)
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_; _^_)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Nat.Base using (ℕ; _+_; _*_; _^_)
 open import Data.List.Base using (length)
 open import Data.Product.Base using (proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)

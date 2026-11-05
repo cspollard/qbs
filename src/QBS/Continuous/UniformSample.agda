@@ -11,11 +11,9 @@
 module QBS.Continuous.UniformSample where
 
 open import Algebra using (CommutativeRing)
-open import Data.Empty using (⊥)
-open import Data.Nat.Base using (ℕ; zero; suc; _<_)
+open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_; proj₁)
 import Level as L
-open import Data.Sum.Base using (_⊎_)
 
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Estimator using (module Estimator)

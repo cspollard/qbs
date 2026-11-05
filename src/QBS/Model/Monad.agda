@@ -10,12 +10,11 @@
 -- which needs no grouping of points into classes (and so no quotients).
 module QBS.Model.Monad where
 
-open import Level using (Level; suc; _⊔_; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (suc; Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Data.Product.Base using (_×_; proj₁; proj₂)
+open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Function.Construct.Composition as Comp
 import Relation.Binary.PropositionalEquality.Core as ≡

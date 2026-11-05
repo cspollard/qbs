@@ -12,15 +12,13 @@
 module QBS.Analysis.Omega where
 
 import Level as L
-open import Level using (Level; _⊔_)
-open import Function.Base using (_∘_)
+open import Level using (Level)
 open import Algebra.Bundles using (CommutativeSemiring)
 import Data.Nat.Base as ℕ
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Properties
-import Data.Sum.Base
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Relation.Binary.Bundles using (Poset)
 open import Relation.Binary.Structures using (IsPartialOrder)
@@ -36,7 +34,6 @@ record OrderedSemiring (ℓ : Level) : Set (L.suc ℓ) where
     _≤_ : Carrier → Carrier → Set ℓ
     isPartialOrder : IsPartialOrder _≈_ _≤_
     0-least : ∀ {a} → 0# ≤ a
-    ≤-+ʳ : ∀ {a b} → a ≤ a + b
     +-mono : ∀ {a b c d} → a ≤ b → c ≤ d → a + c ≤ b + d
     *-mono : ∀ c {a b} → a ≤ b → c * a ≤ c * b
     -- subtraction below 1: every c ≤ 1 has a complement
@@ -49,8 +46,25 @@ record OrderedSemiring (ℓ : Level) : Set (L.suc ℓ) where
     using (≤-resp-≈)
     renaming (reflexive to ≤-reflexive; trans to ≤-trans; antisym to ≤-antisym; refl to ≤-refl)
 
+  ≤-+ʳ : ∀ {a b} → a ≤ a + b
+  ≤-+ʳ {a} = ≤-trans (≤-reflexive (sym (+-identityʳ a))) (+-mono ≤-refl 0-least)
+
+  ≤-resp : ∀ {a a′ b b′} → a ≈ a′ → b ≈ b′ → a ≤ b → a′ ≤ b′
+  ≤-resp ea eb p = ≤-trans (≤-reflexive (sym ea)) (≤-trans p (≤-reflexive eb))
+
   Increasing : (ℕ → Carrier) → Set ℓ
   Increasing c = ∀ n → c n ≤ c (suc n)
+
+  +-inc : ∀ a {c} → Increasing c → Increasing (λ n → a + c n)
+  +-inc a inc n = +-mono ≤-refl (inc n)
+
+  *-inc : ∀ a {c} → Increasing c → Increasing (λ n → a * c n)
+  *-inc a inc n = *-mono a (inc n)
+
+  -- increasing sequences are monotone
+  inc-mono : ∀ c → Increasing c → ∀ {n m} → n ℕ.≤′ m → c n ≤ c m
+  inc-mono c inc ℕ.≤′-refl = ≤-refl
+  inc-mono c inc (ℕ.≤′-step h) = ≤-trans (inc-mono c inc h) (inc _)
 
 -- an ordered semiring with suprema of increasing sequences, along which `+` and `*` are continuous
 record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
@@ -72,11 +86,17 @@ record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
 
   open SetoidReasoning setoid
 
-  ----------------------------------------------------------------------------
-  -- the order
+  cancelʳ : ∀ {a x y} → a ≤ 1# → x + a ≈ y + a → x ≈ y
+  cancelʳ a≤1 eq = cancel a≤1 (trans (+-comm _ _) (trans eq (+-comm _ _)))
 
-  ≤-resp : ∀ {a a′ b b′} → a ≈ a′ → b ≈ b′ → a ≤ b → a′ ≤ b′
-  ≤-resp ea eb p = ≤-trans (≤-reflexive (sym ea)) (≤-trans p (≤-reflexive eb))
+  -- upper bound direction of continuity is always derivable from monotonicity and suprema
+  +-⨆-≤ : ∀ a c (inc : Increasing c) (inc′ : Increasing (λ n → a + c n)) →
+    ⨆ (λ n → a + c n) inc′ ≤ a + ⨆ c inc
+  +-⨆-≤ a c inc inc′ = ⨆-lub (λ n → a + c n) inc′ (λ n → +-mono ≤-refl (⨆-ub c inc n))
+
+  *-⨆-≤ : ∀ a c (inc : Increasing c) (inc′ : Increasing (λ n → a * c n)) →
+    ⨆ (λ n → a * c n) inc′ ≤ a * ⨆ c inc
+  *-⨆-≤ a c inc inc′ = ⨆-lub (λ n → a * c n) inc′ (λ n → *-mono a (⨆-ub c inc n))
 
   ----------------------------------------------------------------------------
   -- suprema
@@ -86,11 +106,6 @@ record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
   ⨆-cong {c} {c′} inc inc′ e = ≤-antisym
     (⨆-lub c inc (λ n → ≤-trans (≤-reflexive (e n)) (⨆-ub c′ inc′ n)))
     (⨆-lub c′ inc′ (λ n → ≤-trans (≤-reflexive (sym (e n))) (⨆-ub c inc n)))
-
-  -- increasing sequences are monotone
-  inc-mono : ∀ c → Increasing c → ∀ {n m} → n ℕ.≤′ m → c n ≤ c m
-  inc-mono c inc ℕ.≤′-refl = ≤-refl
-  inc-mono c inc (ℕ.≤′-step h) = ≤-trans (inc-mono c inc h) (inc _)
 
   -- an eventually constant increasing sequence has that constant as supremum
   ⨆-const-from : ∀ c (inc : Increasing c) (N : ℕ) {v} →
@@ -110,4 +125,4 @@ record OmegaSemiring (ℓ : Level) : Set (L.suc ℓ) where
       ... | inj₂ h = ≤-reflexive (e n h)
 
   ⨆-const : ∀ v (inc : Increasing (λ _ → v)) → ⨆ (λ _ → v) inc ≈ v
-  ⨆-const v inc = ⨆-const-from (λ _ → v) inc 0 (λ _ _ → refl)
+  ⨆-const v inc = ≤-antisym (⨆-lub (λ _ → v) inc (λ _ → ≤-refl)) (⨆-ub (λ _ → v) inc 0)

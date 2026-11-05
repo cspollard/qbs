@@ -7,20 +7,17 @@
 -- measure of a tree is the average of the measures of its two children).
 module QBS.Continuous.FirstBit where
 
-open import Level using (lift; lower)
+open import Level using (lower)
 open import Function.Base using (const)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (tt)
+open import Data.Empty using (⊥)
 open import Data.Bool.Base using (Bool; true; false)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁; down)
 open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Borel.PiLambda using (Cyl; cylTop; cylAnd; cylResp)
 open import QBS.Borel.Merge using (Cyl-borel)
@@ -30,7 +27,7 @@ open import QBS.Analysis.Measure
 open import QBS.Analysis.Mixture using (module Mixture)
 open import QBS.Analysis.Uniqueness using (module Uniqueness)
 open import QBS.Analysis.Indicators using (module Indicators)
-open import QBS.Analysis.Clopen using (Cl; leaf; split; eval; eval-ext; cons; tl)
+open import QBS.Analysis.Clopen using (split; eval; eval-ext; cons; tl)
 open import QBS.Analysis.ClopenMeasure using (module Premeasure)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)

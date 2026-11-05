@@ -6,7 +6,7 @@
 -- conditioning) with no further proofs.
 module QBS.Model.SubProb where
 
-open import Level using (Level; Lift; lift; lower)
+open import Level using (Lift)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning

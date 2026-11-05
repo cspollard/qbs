@@ -5,7 +5,6 @@
 module QBS.Analysis.Mixture where
 
 open import Level using (suc; zero)
-open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 

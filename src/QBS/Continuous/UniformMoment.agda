@@ -6,10 +6,7 @@
 -- statement is `m + m + m ≈ 1`).
 module QBS.Continuous.UniformMoment where
 
-open import Level using (lift; lower)
 open import Data.Bool.Base using (true; false)
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Algebra using (CommutativeSemiring)
 
@@ -19,8 +16,6 @@ open import QBS.Borel.Cons using (consR; measurable-cons)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.Mixture using (module Mixture)
-open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)

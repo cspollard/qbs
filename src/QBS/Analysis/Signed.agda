@@ -12,12 +12,10 @@ module QBS.Analysis.Signed where
 
 open import Level using (Level; _⊔_)
 open import Algebra.Bundles using (CommutativeSemiring; CommutativeRing)
-open import Algebra.Structures using
-    (IsCommutativeRing; IsRing; IsAbelianGroup; IsGroup; IsMonoid; IsMagma; IsCommutativeMonoid; IsSemigroup)
+open import Algebra.Structures using (IsCommutativeRing)
 open import Function.Base using (_$_)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.Structures using (IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 -- a subsemiring: the "finite" elements

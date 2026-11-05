@@ -13,7 +13,7 @@
 -- dₙ = scaleT 2ⁿ (f n +T -T f₀), then `Ex-scale`, `Ex-+`, `Ex-neg` and `SgConv-cong`.
 module QBS.Continuous.SignedLimits where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; suc; _^_) renaming (_+_ to _+ℕ_)
 import Data.Nat.Properties as ℕP
 open import Data.Product.Base using (_,_; proj₁; proj₂)

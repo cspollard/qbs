@@ -3,13 +3,6 @@
 -- The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X.
 module QBS.Probes where
 
-open import Level using (Level; suc)
-open import Function.Base using (id; _∘_; const)
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Relation.Binary.Bundles using (Setoid)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
-open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
 open import QBS.Core
 open import QBS.Category

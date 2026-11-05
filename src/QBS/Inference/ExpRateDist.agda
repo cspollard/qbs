@@ -12,7 +12,6 @@
 -- a and b (`DistRat`); in particular every positive integer a+1 = (a+1)/1 is covered (`DistRat a 0`).
 module QBS.Inference.ExpRateDist where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (_,_; proj₁; proj₂)

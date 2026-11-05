@@ -6,15 +6,12 @@
 -- interleaving of clopen trees is the product of their measures (`Analysis/Interleave.agda`).
 module QBS.Continuous.CoinIndep where
 
-open import Data.Empty using (⊥)
 open import Data.Bool.Base using (Bool; true; false; _∧_)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.PiLambda using (Cyl)
 open import QBS.Borel.Merge using (Cyl-borel; Cyl-rect; mergeC)
 open import QBS.Analysis.Omega
@@ -23,7 +20,7 @@ open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Analysis.Uniqueness using (module Uniqueness)
 open import QBS.Analysis.Tensor using (module Tensor)
-open import QBS.Analysis.Clopen using (Cl; eval; eval-ext)
+open import QBS.Analysis.Clopen using (eval; eval-ext)
 open import QBS.Analysis.ClopenMeasure using (module Premeasure)
 open import QBS.Analysis.OpenMeasure using (and-intro; and-elim)
 open import QBS.Analysis.CoinSets using (module CoinSets)

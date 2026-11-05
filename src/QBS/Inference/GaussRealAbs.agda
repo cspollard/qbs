@@ -9,7 +9,6 @@
 --   * `Z2-abs : (Z + Z) · (n′ (1 + 1)) ≈ 1 + 1`.
 module QBS.Inference.GaussRealAbs where
 
-open import Data.Product.Base using (proj₁; proj₂)
 open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core

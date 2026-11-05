@@ -5,19 +5,13 @@
 -- structure of multiplication.
 module QBS.Continuous.Weights where
 
-open import Level using (lift; lower)
 import Level as L
-open import Function.Base using (const)
-open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Empty using (⊥)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
 
 open import QBS.Core
 open import QBS.Limits using (_×Q_; 1Q)
-open import QBS.Borel.Source using (cantorSource)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.Meas using (module Meas)

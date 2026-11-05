@@ -6,7 +6,7 @@
 -- A hypothesis of the abstract layer, supplied by the discrete and continuous models.
 module QBS.Probability where
 
-open import Level using (Level; suc; _⊔_)
+open import Level using (suc; _⊔_)
 open import Data.Product.Base using (Σ; _,_)
 
 open import Categories.Category.Core using (Category)

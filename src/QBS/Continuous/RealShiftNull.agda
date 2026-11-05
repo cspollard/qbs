@@ -11,8 +11,8 @@
 module QBS.Continuous.RealShiftNull where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (inj₁; inj₂; [_,_]′)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Sum.Base using ([_,_]′)
 open import Data.Empty using (⊥; ⊥-elim)
 
 open import QBS.Core

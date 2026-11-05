@@ -11,10 +11,10 @@
 -- to the dyadic pieces of [0,1] exactly as in `HalfLineMomentN`.
 module QBS.Continuous.GaussHalfLine where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (inj₁; inj₂)
 
 open import QBS.Core
@@ -33,7 +33,7 @@ open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Analysis.CutSplit using (split1)
 open import QBS.Analysis.TailFTC using (module AlgT)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
-open import QBS.Analysis.GaussExp using (bd; cst; module AlgGE)
+open import QBS.Analysis.GaussExp using (bd; module AlgGE)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.HalfLine using (module HalfLine)

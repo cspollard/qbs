@@ -9,18 +9,11 @@
 module QBS.Analysis.Riesz where
 
 import Level as L
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Product.Base using (_,_)
-open import Data.Unit.Base using (tt)
-open import Function.Base using (const)
-open import Data.Nat.Base using (ℕ; zero; suc)
 
 open import QBS.Borel.Core
 open import QBS.Borel.Merge using (Cyl-borel)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
-open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Indicators using (module Indicators)

@@ -5,8 +5,6 @@
 module QBS.Model.ViterbiModel where
 
 import Level as L
-open import Data.Empty.Polymorphic using (⊥)
-open import Data.Sum.Base using (_⊎_)
 
 open import QBS.Category using (QBSCat)
 open import QBS.IsStatisticalQBSLike using (IsStatisticalQBSLike)

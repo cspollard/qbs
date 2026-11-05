@@ -4,25 +4,21 @@
 
 module QBS.Continuous.SFiniteCommute where
 
-open import Level using (lift; lower)
+open import Level using (lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
-open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
+open import QBS.Limits using (_×Q_; pairQ)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘)
-open import QBS.Borel.Source using (R₁; cantorSource; down)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; measurable-merge₂; Cyl-rect)
+open import QBS.Borel.Core using (Measurable)
+open import QBS.Borel.Source using (R₁)
+open import QBS.Borel.Merge using (measurable-merge₁; measurable-merge₂)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
@@ -32,15 +28,13 @@ open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Continuous.Sample
-open import QBS.Continuous.Monad using (module Continuous)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteMonad using (module SFiniteMonad)
 open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
 open import QBS.Analysis.JFubini using (module JFubini)
-open import Categories.Functor using (Endofunctor; Functor)
+open import Categories.Functor using (Functor)
 open import Categories.Functor using () renaming (id to idF)
-open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 open import QBS.Classical using (LEM₀)
@@ -68,8 +62,8 @@ module SFiniteCommute (lem : LEM₀) where
 
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
-  open import QBS.Category.Cartesian S using (cartesian; braided)
-  open import Categories.Monad.Commutative using (Commutative; CommutativeMonad)
+  open import QBS.Category.Cartesian S using (braided)
+  open import Categories.Monad.Commutative using (Commutative)
 
   private
     module SP = Categories.Monad.Strong.Properties

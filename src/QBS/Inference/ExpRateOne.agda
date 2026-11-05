@@ -5,14 +5,12 @@
 --     `∫ lebPre (e^{−x} f)` (`DensityDist.∫-dens`, `ExpDist.∫-expDist`); the densities `1 · e^{−1·x}` and `e^{−x}` agree pointwise.
 module QBS.Inference.ExpRateOne where
 
-open import Data.Nat.Base using (zero; suc)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Exp using (module Exp)
-open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)

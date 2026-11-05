@@ -7,8 +7,7 @@
 module QBS.Analysis.Restrict where
 
 open import Level using (zero; suc; lower)
-open import Function.Base using (const)
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty using (⊥)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Product.Base using (_×_; _,_)
 

@@ -8,7 +8,7 @@
 -- which is Borel as {x | inf U ≤ x} minus the union of the {q ∈ x} for rationals q ∉ inf U.
 module QBS.Continuous.MonoTest where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

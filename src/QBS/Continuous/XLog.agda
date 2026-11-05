@@ -9,15 +9,15 @@
 -- x ≤ x y; if x is unbounded then 1 ≤ log⁺ x, since every e^1 element is below 3 (`LogRat.E-hi`).
 module QBS.Continuous.XLog where
 
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_; _×_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Function.Base using (case_of_)
 open import Data.Rational.Unnormalised.Base using (_<_; _≤_; _+_; _*_)
 
 open import QBS.Classical using (LEM₁)
-open import QBS.Analysis.RationalLemmas using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; 0<1; ≤-refl; ≤-<-trans; pos-or-nonpos; <-≤-trans; ≤-or->)
-open import QBS.Analysis.LowerReals using (Cut; _⊑_; _≋_; oneC; zeroC; mk⊑)
+open import QBS.Analysis.RationalLemmas using (ℚᵘ; 1ℚᵘ; 0<1; ≤-refl; pos-or-nonpos; <-≤-trans; ≤-or->)
+open import QBS.Analysis.LowerReals using (Cut; _⊑_; oneC; zeroC; mk⊑)
 open Cut using (mem; open′)
 open _⊑_ using (ap)
 open import QBS.Analysis.CoinIntegral using (lemOf)

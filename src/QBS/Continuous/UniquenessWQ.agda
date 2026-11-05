@@ -11,7 +11,7 @@
 module QBS.Continuous.UniquenessWQ where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Nat.Base using (ℕ; _+_; _*_; _^_)
+open import Data.Nat.Base using (_+_; _*_; _^_)
 open import Data.List.Base using (length; [])
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Base using (tt)

@@ -15,7 +15,7 @@
 module QBS.Inference.Sampler where
 
 open import Algebra.Bundles using (CommutativeRing)
-open import Data.Nat.Base using (ℕ; _<_)
+open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
 import Function.Construct.Identity as Id

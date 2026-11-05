@@ -9,16 +9,12 @@
 --   * `pullback g α pm`: the signed random variable `g ∘ α` on a probability space, for a random element `α`.
 module QBS.Continuous.SignedTests where
 
-open import Data.Empty using (⊥)
-open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_)
+open import Data.Product.Base using (_,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 
 open import QBS.Core
-open import QBS.Borel.Source using (R₁; cantorSource)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Measure using (module Integration)

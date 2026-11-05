@@ -8,25 +8,23 @@
 -- the weaker equality; unbounded integrals are `J` of `Analysis/Lebesgue`, and `join` is Tonelli.
 module QBS.Continuous.SFinite where
 
-open import Level using (lift; lower)
+open import Level using (lower)
 import Level as L
-open import Function.Base using (id; _∘_; const)
+open import Function.Base using (const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Empty using (⊥)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ; <_,_>ₛ)
-open import Data.Sum.Base using (_⊎_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
+open import QBS.Limits using (_×Q_; fstQ; sndQ; pairQ)
 import QBS.Probes as Probes
-open import QBS.Borel.Core using (Measurable; measurable-∘)
-open import QBS.Borel.Source using (R₁; cantorSource)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; Cyl-rect)
+open import QBS.Borel.Core using (Measurable)
+open import QBS.Borel.Source using (R₁)
+open import QBS.Borel.Merge using (measurable-merge₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure

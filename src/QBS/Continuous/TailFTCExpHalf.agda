@@ -5,7 +5,7 @@
 -- (from `e^{−1} + e^{−1} ≤ 1` and `e^{−(n+1)} = e^{−n} e^{−1}`).
 module QBS.Continuous.TailFTCExpHalf where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 
 open import QBS.Classical using (LEM₁)

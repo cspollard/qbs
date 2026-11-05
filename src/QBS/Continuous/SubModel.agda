@@ -5,22 +5,18 @@
 module QBS.Continuous.SubModel where
 
 import Level as L
-open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
 
 open import QBS.Core using (QBS; Hom)
 open Hom using ()
-open import QBS.Borel.Source using (cantorSource)
 open import QBS.Limits using (1Q)
-open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Core using (_∘H_)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
-open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
+open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.BinaryExpansion
 open import QBS.Continuous.Sample using (module UnitInterval; S)

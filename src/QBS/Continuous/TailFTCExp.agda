@@ -7,13 +7,12 @@
 module QBS.Continuous.TailFTCExp where
 
 import Level as L
-open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
-open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
+open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.MeasFun using (module MeasFun)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.ExpLower using (expC; 1+≤expC; expC≤quad)

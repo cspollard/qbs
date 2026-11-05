@@ -12,7 +12,7 @@
 -- Instances: `Model/StatInstance` (discrete), `Continuous/SFiniteStat`.
 module QBS.Statistical where
 
-open import Level using (Level; suc; _⊔_)
+open import Level using (suc; _⊔_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_)
 

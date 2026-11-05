@@ -4,19 +4,15 @@
 -- function (uniqueness of measures, via the π–λ theorem).
 module QBS.Analysis.Uniqueness where
 
-open import Level using (zero; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
+open import Level using (zero; suc; lower)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁; down; downℕ)
+open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda
 open import QBS.Borel.Merge using (Cyl-borel)

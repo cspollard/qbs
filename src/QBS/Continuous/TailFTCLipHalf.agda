@@ -10,7 +10,7 @@
 -- bounded by their value at a far-out N where G is small.
 module QBS.Continuous.TailFTCLipHalf where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ

@@ -6,11 +6,9 @@
 module QBS.Analysis.JFubini where
 
 open import Level using (lower)
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Merge using (mergeC; measurable-merge₁; measurable-merge₂; Cyl-rect; Cyl-rect-flip)
+open import QBS.Borel.Merge using (mergeC; measurable-merge₁; measurable-merge₂; Cyl-rect-flip)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.Param using (module Param)
 open import QBS.Analysis.Meas using (module Meas)

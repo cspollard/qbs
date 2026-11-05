@@ -6,14 +6,13 @@
 module QBS.Analysis.CoinGrid where
 
 import Level as L
-open import Level using (lift; lower)
+open import Level using (lift)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕₚ
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)

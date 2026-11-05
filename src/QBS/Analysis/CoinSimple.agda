@@ -8,20 +8,19 @@ module QBS.Analysis.CoinSimple where
 import Level as L
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
+open import Data.Sum.Base using (inj₁; inj₂)
+open import Data.Empty using (⊥-elim)
+open import Data.Unit.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open ≡ using (_≡_)
 
 open import QBS.Borel.Core
 open import QBS.Borel.Measure using (Disjoint)
-open import QBS.Borel.PiLambda using (_∩ᵖ_; ∁; ⊤ᵖ; ⊥ᵖ)
+open import QBS.Borel.PiLambda using (⊤ᵖ; ⊥ᵖ)
 open import QBS.Model.Pairing
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
-open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.BorelMeasure
 open import QBS.Analysis.CoinFacts
 open import QBS.Classical using (LEM₀)

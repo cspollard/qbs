@@ -6,13 +6,11 @@
 module QBS.Analysis.BinaryExpansion where
 
 import Level as L
-open import Level using (lift; lower)
+open import Level using (lower)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (tt)
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 

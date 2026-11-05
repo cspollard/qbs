@@ -17,13 +17,12 @@
 -- ½·1 + ½·½; here the prior sum becomes the integral ∫ θ dθ against the uniform distribution, via the tower law.
 module QBS.Inference.CoinUniformPrior where
 
-open import Data.Bool.Base using (Bool; true; false)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_; proj₁; proj₂; Σ; _×_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Level using (lift; lower)
+open import Level using (lift)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core

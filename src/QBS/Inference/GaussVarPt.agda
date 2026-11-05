@@ -48,7 +48,7 @@ module GaussVarPt (lem₁ : LEM₁) where
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; 1#; refl; sym; trans; +-cong; *-cong; +-comm; +-identityˡ;
     +-identityʳ; zeroˡ;
     ≤-trans; ≤-reflexive; ≤-+ʳ; ≤-antisym; commutativeSemiring) renaming (Carrier to ∣A∣)
-  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:*_; _:=_; con)
+  open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring using (solve; _:+_; _:=_; con)
   open Bounded A using (Bnd; Sg; _≃_; mk≃; finite; 0S; ι; -S_)
   open SubSemiring finite using (Is-0; Is-*)
   open AlgAff A using (var-core)

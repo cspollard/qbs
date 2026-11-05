@@ -6,18 +6,17 @@
 module QBS.Analysis.OpenMeasure where
 
 import Level as L
-open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_)
+open import Data.Bool.Base using (true; false; not; _∨_; _∧_)
 open import Data.Nat.Base using (ℕ; zero; suc; _⊔_; _<_)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕₚ
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥; ⊥-elim)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import QBS.Borel.Core using (Cantor; Pred)
+open import QBS.Borel.Core using (Cantor)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
 open import QBS.Analysis.Archimedean

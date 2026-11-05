@@ -7,17 +7,17 @@
 module QBS.Model.ViterbiSemiring where
 
 import Level as L
-open import Function.Base using (_∘_; case_of_)
-open import Function.Bundles using (Inverse; _↔_)
+open import Function.Base using (case_of_)
+open import Function.Bundles using (Inverse)
 open import Algebra.Bundles using (CommutativeSemiring)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Empty.Polymorphic using (⊥)
 import Data.Empty as E
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Unit.Polymorphic.Base using (tt)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong; subst)
-open import Data.Rational.Unnormalised.Base using (_≃_; _<_)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; subst)
+open import Data.Rational.Unnormalised.Base using (_<_)
 
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals

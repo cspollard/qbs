@@ -11,8 +11,8 @@
 -- `Product.cmul`; `Ex-const` from `Dominated.prob-mass`; `Int-dom` and `Ex-mono` from `SupTest.∫ᴹ-monoX`.
 module QBS.Continuous.SignedExpect where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+open import Function.Bundles using (_⟨$⟩_)
+open import Data.Product.Base using (_×_; _,_; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

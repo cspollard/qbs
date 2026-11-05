@@ -9,7 +9,6 @@
 module QBS.Continuous.RealScale where
 
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Function.Bundles using (Func; _⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

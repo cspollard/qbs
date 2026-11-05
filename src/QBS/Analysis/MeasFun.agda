@@ -12,7 +12,6 @@ import Data.Nat.Properties as ℕ
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 open import Data.Rational.Unnormalised.Base using (_<_; _≤_)

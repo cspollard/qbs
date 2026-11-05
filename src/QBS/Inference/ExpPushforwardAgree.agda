@@ -8,7 +8,7 @@
 --     `y ↦ e^{−y} f(y/2)`.
 module QBS.Inference.ExpPushforwardAgree where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (Func)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

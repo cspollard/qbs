@@ -13,11 +13,10 @@
 -- `Analysis/BoundedRing` instantiates `R` with bounded signed functions on a probability space.
 module QBS.Analysis.Estimator where
 
-open import Level using (Level; _⊔_)
+open import Level using (_⊔_)
 open import Algebra.Bundles using (CommutativeRing)
-open import Data.Nat.Base using (ℕ; zero; suc; _<_; _≤_; z≤n; s≤s)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_; _≤_)
 open import Data.Nat.Properties using (<⇒≤; ≤-refl)
-open import Data.Product.Base using (_,_)
 import Algebra.Properties.Ring
 import Algebra.Solver.Ring.NaturalCoefficients.Default as Solver
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning

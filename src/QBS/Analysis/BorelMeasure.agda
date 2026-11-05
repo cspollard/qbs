@@ -8,7 +8,6 @@ module QBS.Analysis.BorelMeasure where
 import Level as L
 open import Data.Nat.Base using (ℕ)
 open import Data.Empty using (⊥)
-open import Data.Sum.Base using (_⊎_)
 open import Data.Product.Base using (_,_)
 open import Data.Bool.Base using (false)
 

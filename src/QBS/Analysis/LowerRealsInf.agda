@@ -9,7 +9,7 @@
 -- n-th lower term with the m-th upper term through the common index n + m.
 module QBS.Analysis.LowerRealsInf where
 
-open import Data.Nat.Base using (ℕ; zero; suc) renaming (_+_ to _+ℕ_)
+open import Data.Nat.Base using (ℕ) renaming (_+_ to _+ℕ_)
 open import Data.Nat.Properties using () renaming (+-comm to +ℕ-comm)
 open import Data.Product.Base using (Σ; _,_; _×_)
 open import Relation.Binary.PropositionalEquality using (subst)

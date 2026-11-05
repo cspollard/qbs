@@ -11,7 +11,7 @@
 --   * `≃-≈ : a ≈ c → b ≈ d → (a − b) ≃ (c − d)`, to read off values.
 module QBS.Inference.SymExpectation where
 
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

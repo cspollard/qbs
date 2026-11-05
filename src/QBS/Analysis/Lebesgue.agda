@@ -7,11 +7,8 @@
 -- [0,∞], and monotone-convergent.
 module QBS.Analysis.Lebesgue where
 
-open import Level using (suc; zero; lift; lower)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

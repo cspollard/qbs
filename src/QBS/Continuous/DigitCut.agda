@@ -6,21 +6,20 @@
 --   * `nat-big`: every rational lies in some `natE k` (the natural numbers are cofinal).
 module QBS.Continuous.DigitCut where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (inj₁; inj₂)
 import Data.Sum.Base as Sum
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Rational.Unnormalised.Base using (_+_; _*_; _<_; _≤_)
+open import Data.Rational.Unnormalised.Base using (_+_; _*_; _<_)
 
 open import QBS.Classical using (LEM₀)
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
 open Cut using (mem; down)
 open _⊑_ using (ap)
-open import QBS.Analysis.LowerRealsArch using (qC; hpC; hpC≈; tp; tp-pos)
+open import QBS.Analysis.LowerRealsArch using (qC; hpC≈; tp; tp-pos)
 open import QBS.Analysis.ExpLower using (natE≋; qC-mul; 0<nat)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Exp using (module Exp)

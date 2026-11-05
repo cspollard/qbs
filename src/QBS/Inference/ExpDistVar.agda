@@ -10,8 +10,7 @@
 -- exponential, so the difference is stated directly as a signed value (`Sg`).
 module QBS.Inference.ExpDistVar where
 
-open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

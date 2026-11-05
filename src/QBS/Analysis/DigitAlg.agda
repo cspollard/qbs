@@ -9,8 +9,7 @@
 module QBS.Analysis.DigitAlg where
 
 import Level as L
-open import Level using (lift; lower)
-open import Data.Bool.Base using (Bool; true; false)
+open import Level using (lift)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
@@ -37,7 +36,7 @@ module AlgDigit (A : OmegaSemiring (L.suc L.zero)) (half : OmegaSemiring.Carrier
   open Half A half hh using (hp)
   open SetoidReasoning setoid
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
-    using (solve; _:+_; _:*_; _:=_; con)
+    using (solve; _:*_; _:=_)
 
   tl : Cantor → Cantor
   tl c n = c (ℕ.suc n)

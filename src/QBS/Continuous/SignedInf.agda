@@ -13,7 +13,7 @@
 -- the cross-added equalities hold with witness 0.  The ∞ facts are in `InfAlg`; `≤∞-antisym` adds the two witnesses.
 module QBS.Continuous.SignedInf where
 
-open import Data.Product.Base using (Σ; _×_; _,_)
+open import Data.Product.Base using (Σ; _,_)
 open import Data.Empty using (⊥)
 open import Data.Sum.Base using (inj₁; inj₂)
 open import Function.Base using (case_of_)

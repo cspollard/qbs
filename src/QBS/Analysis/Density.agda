@@ -5,12 +5,9 @@
 -- measure when this is an equality.  Its integral of an unbounded function is again `d · J m (v · φ)`.
 module QBS.Analysis.Density where
 
-open import Level using (suc; zero)
 open import Function.Base using (const)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

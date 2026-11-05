@@ -8,7 +8,7 @@ module QBS.Analysis.Archimedean where
 open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
+open import Data.Product.Base using (Σ)
 
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Half using (module Half)

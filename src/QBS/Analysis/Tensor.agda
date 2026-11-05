@@ -5,17 +5,12 @@
 -- agree on the finite cylinders (rectangles), so uniqueness of measures finishes the proof.
 module QBS.Analysis.Tensor where
 
-open import Level using (zero; suc; Lift; lift; lower)
-open import Function.Base using (id; _∘_; const)
-open import Data.Nat.Base using (ℕ)
-open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Unit.Base using (⊤; tt)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Level using (zero; suc; lower)
+open import Function.Base using (_∘_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
-open import QBS.Borel.Source using (R₁; down; downℕ)
+open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.PiLambda using (Cyl)
 open import QBS.Borel.Merge
 open import QBS.Analysis.Omega

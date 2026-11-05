@@ -10,17 +10,16 @@
 -- equivalence (there is no propositional extensionality).
 module QBS.Borel.Core where
 
-open import Level using (Level)
 open import Function.Base using (id; _∘_; const)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Bool.Properties using (_≟_)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty using (⊥)
 open import Data.Unit.Base using (⊤; tt)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; cong; subst)
+open import Relation.Nullary using (yes; no)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl; sym; trans; subst)
 
 Cantor : Set
 Cantor = ℕ → Bool

@@ -5,7 +5,6 @@
 -- is a statistical QBS-like category, with *no remaining hypotheses* on the monads.
 module QBS.Model.Discrete where
 
-open import Level using (Level)
 
 open import QBS.Core
 open import QBS.Category

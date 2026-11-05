@@ -5,16 +5,12 @@
 module QBS.Analysis.ClopenMeasure where
 
 open import Level using (suc; zero)
-open import Data.Bool.Base using (Bool; true; false; not; _∨_; _∧_)
+open import Data.Bool.Base using (true; false)
 open import Data.Bool.Properties using (¬-not)
-open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Empty using (⊥; ⊥-elim)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
-open import QBS.Borel.Core using (Cantor)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Clopen
 open import QBS.Analysis.Archimedean

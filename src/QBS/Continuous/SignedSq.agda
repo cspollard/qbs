@@ -9,7 +9,6 @@
 module QBS.Continuous.SignedSq where
 
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
-open import Data.Empty using (⊥-elim)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

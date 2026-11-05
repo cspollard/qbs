@@ -12,8 +12,8 @@ module QBS.Borel.Cells where
 
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Bool.Properties using (_≟_)
-open import Data.Nat.Base using (ℕ; zero; suc; _+_; _<_; _≤_; s≤s; z≤n)
-open import Data.Nat.Properties using (<-cmp; +-suc; +-identityʳ; m≤n⇒∃[o]m+o≡n; m≤m+n; m≤n+m; ≤-trans; <-≤-trans; ≤-<-trans)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _<_; s≤s)
+open import Data.Nat.Properties using (<-cmp; +-suc; +-identityʳ; m≤n⇒∃[o]m+o≡n; m≤m+n; m≤n+m; <-≤-trans; ≤-<-trans)
 open import Data.List.Base using (List; []; _∷_; _++_; map; length; replicate)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.List.Membership.Propositional.Properties using (∈-++⁺ˡ; ∈-++⁺ʳ; ∈-map⁺)

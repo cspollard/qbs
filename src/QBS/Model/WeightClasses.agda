@@ -3,7 +3,7 @@
 -- The two weight classes: probability measures (total mass 1) and all measures.
 module QBS.Model.WeightClasses where
 
-open import Level using (Level; suc; Lift; lift; lower)
+open import Level using (Lift)
 open import Data.Nat.Base using (ℕ)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning

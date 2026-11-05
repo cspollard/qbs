@@ -107,7 +107,7 @@ distribʳ ∞ ∞ z = refl
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Sum.Base using (inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality.Core using (subst)
 open import QBS.Classical using (LEM₀)
 
@@ -324,7 +324,6 @@ module Instance (ℓ : Level) (lem : LEM₀) where
                 ; trans = λ p q → lift (⊑-trans (lower p) (lower q)) }
             ; antisym = λ p q → lc (⊑-antisym (lower p) (lower q)) }
         ; 0-least = lift 0-⊑
-        ; ≤-+ʳ = λ {a} {b} → lift (x⊑x+y (lower a) (lower b))
         ; +-mono = λ p q → lift (+-mono′ (lower p) (lower q))
         ; *-mono = λ c p → lift (*-mono⊑ (lower c) (lower p))
         ; complement = λ {c} h → let (d , e) = ⊑⇒≤ (lower h) in lift d , lc e

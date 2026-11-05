@@ -5,18 +5,14 @@
 -- `∑ hp (n+1) = 1`.
 module QBS.Analysis.JSum where
 
-open import Level using (suc; zero)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
 import Data.Nat.Properties as ℕ
-open import Data.Sum.Base using (_⊎_)
-open import Data.Empty using (⊥)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.Measure using (module Integration)
-open import QBS.Analysis.Fun using (module Measurable)
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
