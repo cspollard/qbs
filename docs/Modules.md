@@ -71,7 +71,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 61 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 97 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
-| `QBS.Inference.WeakLaw` | 119 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05, item 50). |
+| `QBS.Inference.WeakLaw` | 155 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05, item 50). |
+| `QBS.Inference.WeakLawAlg` | 69 | lem | Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05, item 50). |
+| `QBS.Inference.WeakLawCheb` | 69 | lem | The core of Chebyshev's inequality about any centre c ≃ E g (plan 05, item 50; helper for `Inference/WeakLaw`). |
 | `QBS.Instance` | 51 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IntegralMonad` | 223 |  | A monad on quasi-Borel spaces presented by its integral. |
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
@@ -299,6 +301,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.MonoTestAlg` | 117 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
 | `QBS.Continuous.Monus` | 125 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x (plan 03, "Translation and products"). |
 | `QBS.Continuous.MonusAlg` | 108 | lem | Algebra of rationally bounded lower reals and truncated subtraction (plan 03, "Signed dominated convergence"). |
+| `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (plan 05, item 50; helper for `Inference/WeakLaw`). |
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ProbInstance` | 134 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
@@ -324,7 +327,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteSum` | 263 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 150 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
 | `QBS.Continuous.SgMoments` | 63 | lem | Finite samples of signed tests and their moment hypotheses (plan 05, items 46 and 50). |
-| `QBS.Continuous.SgSample` | 65 | lem | Unbiased estimators from moment hypotheses, for unbounded signed tests (plan 05, item 46). |
+| `QBS.Continuous.SgSample` | 135 | lem | Unbiased estimators from moment hypotheses, for unbounded signed tests (plan 05, item 46). |
+| `QBS.Continuous.SgSampleAlg` | 53 | lem | Pointwise identities for sums of products of signed tests (plan 05, item 46; helper for `SgSample`). |
+| `QBS.Continuous.SgSampleRing` | 93 |  | Ring identities for the unbiased estimators of signed tests (plan 05, item 46; helper for `SgSampleAlg`, `SgSample`). |
 | `QBS.Continuous.SignedExpect` | 159 | lem | Expectations of signed tests against any s-finite measure (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedFubini` | 107 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
 | `QBS.Continuous.SignedInf` | 214 | lem | Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04). |
