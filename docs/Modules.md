@@ -66,7 +66,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
 | `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors (plan 05, item 53). |
 | `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (plan 05, item 53; helper for `GaussVector`). |
-| `QBS.Inference.GaussVectorLaw` | 100 | lem | The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55). |
+| `QBS.Inference.GaussVectorLaw` | 161 | lem | The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.IIDLaw` | 127 | lem | The estimator theorems for iid families (plan 05, item 46b). |
@@ -321,7 +321,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
-| `QBS.Continuous.RQArith` | 397 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
+| `QBS.Continuous.RQArith` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
 | `QBS.Continuous.RQArithAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RQArith` (plan 05, item 55a), over [0, ∞]. |
 | `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |
 | `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
