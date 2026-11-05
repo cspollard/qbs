@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–2 done on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–2 done, round 3 skeletons on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -62,11 +62,15 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 46 `Continuous/IID` [done] (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
   test f with E f² finite, the observations f ∘ Xᵢ satisfy `Estimator.Moments` (integrability of products by
   2|xy| ≤ x² + y²), so the sample mean and sample variance are unbiased for every iid family, with unbounded tests.
+- 46b `Inference/IIDLaw` (needs 46, 46a, 47, 50): the estimator theorems for iid families (unbiased sample mean and
+  variance, Var Sₙ ≃ n s, the weak law), and for the draws of a sampler at the coin coordinates.
 - 47 `Continuous/CoinCoordsJoint` [done] (needs 43, 44): the first n coin coordinates are jointly independent:
   r ↦ (coord 0 r, …, coord (n−1) r) pushes the fair coin to `fairCoin^{⊗n}`, by induction from `fairCoin-indep`;
   corollary: the draws of `Sampler.iidExperiment` are iid in the sense of 46 (upgrading pairwise to mutual).
 - 48 `Inference/CondIID` (needs 46): kernel power `Kⁿ : Θ ⇒ T (Xⁿ)` from `ψ`; `CondIID`; the Bayesian joint
   π ⋉ Kⁿ on Θ × Xⁿ and its marginal; `CoinUniformPriorN.Kn` as an instance (Kn ≈ Bernoulli(θ)^{⊗(n+1)}).
+- 48a `Inference/CondIIDCoin` (needs 48, 49): `CoinUniformPriorN.Kn` moved to the s-finite measures and Boolⁿ⁺¹ is
+  conditionally iid (Kn ≈ Bernoulli(θ)^{⊗(n+1)}), and `margN` is the data marginal, hence exchangeable.
 - 49 `Continuous/Exchangeable` (needs 46, 48): `Exch`; iid ⇒ exchangeable (swap invariance of `prodPre`, from `∫-prod`
   and `∫-prod′`); mixtures of exchangeable laws are exchangeable, so conditionally iid under a prior is exchangeable
   (the easy half of de Finetti); `margN` as an instance.
@@ -131,13 +135,24 @@ it at c = nμ; helpers `NatCancel` (cancel n+1 on lower reals, via `ExpLower.qin
 SgSampleAlg 9.1 s / 1.2 GB, NatCancel 5.6 s, SgSample 23.9 s / 1.6 GB, IID 11.4 s / 1.3 GB, CoinCoordsJoint 8.4 s /
 1.2 GB, WeakLawAlg 8.7 s, WeakLawCheb 10.0 s, WeakLaw 17.7 s / 1.4 GB.
 
+**Skeletons, round 3 (2026-11-05).**  48 `Inference/CondIID` (definitions `ψH`, the double strength as a morphism
+`joinT ∘ T τ ∘ σ`; `kpow`; `CondIID`; `jointM`, `margM`, `inner`; holes `ψ-at`, `kpow-iid`, `CondIID-≈`, `∫-joint`,
+`joint-snd`, `joint-fst`, `marg-coord`).  Kernels are s-finite (`SFinite.TQ`); the hand-built coin kernel of the
+probability monad is moved there by `SFiniteIncl.ιH` in a separate instance module, 48a `Inference/CondIIDCoin`
+(`flat`, `coinK`, `KnS`; holes `Kn-iid`, `margN-marg`, `margN-exch`), placed after 49 since it uses `Exch`.
+49 `Continuous/Exchangeable` (`swapQ` for adjacent coordinates, `Exch`, `ExchRV`; holes `Exch-≈`, `Exch-marg`,
+`prodⁿ-exch` for any s-finite μ, `Exch-mix`, `condIID-exch`, `IID-exch`).  52 `Continuous/RandomVector` (`RV`,
+`meanV`, `covM`, `affT`; holes `Int-mul`, `cov-sym`, `cov-diag`, `Int₂-sumV`, `Var-sumV`, `cov-indep`, `RV-aff`,
+`mean-aff`, `cov-aff`).  46b `Inference/IIDLaw` (the round 2 corollaries: `obs`, `devS`, `mom`; holes `iid-mean`,
+`iid-var`, `iid-ss`, `iid-weak-law`, `draw-mass`, `draws-mean`, `draws-weak-law`).
+
 ## Order of agents
 
 | Round | Agent 1 | Agent 2 |
 |---|---|---|
 | 1 | 43 → 45 | 44, then 51 |
 | 2 | 46a → 50 | 46 → 47 |
-| 3 | 48 → 49 | 52 |
+| 3 | 48 → 49 → 48a | 52, then 46b |
 | 4 | 53 | 54 (55 if wanted) |
 
 ## Risks

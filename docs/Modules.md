@@ -35,6 +35,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinPosterior` | 224 | lem | The posterior as an actual distribution: Bayes' rule by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 226 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 215 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
+| `QBS.Inference.CondIID` | 109 | lem | Conditionally iid observations given a parameter (plan 05, item 48). |
+| `QBS.Inference.CondIIDCoin` | 78 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05, items 48–49). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 76 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
@@ -62,6 +64,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
+| `QBS.Inference.IIDLaw` | 124 | lem | The estimator theorems for iid families (plan 05, item 46b). |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.PolyDominationOdd` | 109 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
@@ -240,6 +243,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
+| `QBS.Continuous.Exchangeable` | 85 | lem | Exchangeable laws (plan 05, item 49). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
@@ -307,6 +311,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
+| `QBS.Continuous.RandomVector` | 103 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |
 | `QBS.Continuous.RealDensity` | 89 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 23 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
