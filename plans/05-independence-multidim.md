@@ -1,4 +1,4 @@
-# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; round 1 done, round 2 skeletons on branch `indep`)
+# Plan 05: independence, iid families, and multidimensional probability (proposed 2026-11-05; rounds 1–2 done on branch `indep`)
 
 Goal: general definitions of independence, iid and conditionally iid families and exchangeability, with the
 theorems that make them usable (factorisation, estimator moments, a weak law of large numbers); then random vectors,
@@ -59,10 +59,10 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 45 `Continuous/Independence` [done] (needs 43): `law`; `Indep₂ X Y`, `Indep n Xs` (mutual); factorisation
   ∫ g(X) h(Y) ≈ ∫ g(X) · ∫ h(Y) and its signed form (`Ex-⊗`); functions of independent variables are independent;
   mutual ⇒ pairwise; invariance under `≈ᴹ`; Var(X + Y) ≃ Var X + Var Y for independent X, Y.
-- 46 `Continuous/IID` (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
+- 46 `Continuous/IID` [done] (needs 45): `IID μ n Xs`; iid ⇒ identically distributed and mutually independent; for a signed
   test f with E f² finite, the observations f ∘ Xᵢ satisfy `Estimator.Moments` (integrability of products by
   2|xy| ≤ x² + y²), so the sample mean and sample variance are unbiased for every iid family, with unbounded tests.
-- 47 `Continuous/CoinCoordsJoint` (needs 43, 44): the first n coin coordinates are jointly independent:
+- 47 `Continuous/CoinCoordsJoint` [done] (needs 43, 44): the first n coin coordinates are jointly independent:
   r ↦ (coord 0 r, …, coord (n−1) r) pushes the fair coin to `fairCoin^{⊗n}`, by induction from `fairCoin-indep`;
   corollary: the draws of `Sampler.iidExperiment` are iid in the sense of 46 (upgrading pairwise to mutual).
 - 48 `Inference/CondIID` (needs 46): kernel power `Kⁿ : Θ ⇒ T (Xⁿ)` from `ψ`; `CondIID`; the Bayesian joint
@@ -70,7 +70,7 @@ covariance matrices and Gaussian vectors.  Item numbers continue plan 03 (last: 
 - 49 `Continuous/Exchangeable` (needs 46, 48): `Exch`; iid ⇒ exchangeable (swap invariance of `prodPre`, from `∫-prod`
   and `∫-prod′`); mixtures of exchangeable laws are exchangeable, so conditionally iid under a prior is exchangeable
   (the easy half of de Finetti); `margN` as an instance.
-- 50 `Inference/WeakLaw` (needs 46): Markov's inequality c · P{f ≥ c} ≤ E f (the indicator of [c, ∞] is monotone,
+- 50 `Inference/WeakLaw` [done] (needs 46): Markov's inequality c · P{f ≥ c} ≤ E f (the indicator of [c, ∞] is monotone,
   so `MonoTest.monoH` makes it a test); Chebyshev; the weak law in division-free rate form,
   n ε² · P{|Sₙ − nμ| ≥ nε} ≤ σ² (P ≤ σ²/(nε²)).  It needs only `Estimator.Moments`, so it also applies to the
   existing frequentist layer and samplers.
@@ -119,6 +119,17 @@ uses only `Moments`, so it covers every iid family through `IID-moments`.  Event
 (cross-added pointwise bounds), which avoids absolute values of signed tests.  The iid corollaries (unbiased sample
 mean and variance, weak law for an iid family: `IID-moments` composed with `SgSample` and `WeakLaw`) are one-liners
 left to round 3, since round 2's two agents cannot import each other's modules while holes remain.
+
+**Outcome, round 2 (2026-11-05).** All holes filled, no statement changed.  46a `SgSample`: induction on n with a
+general `Ex-sumG`, `crossS` (E[h Σⱼ Gⱼ] ≃ n m) and `sqCons` ((f + g)² from f², f g, g²); helpers `SgSampleRing`
+(signed-ring identities `plus1`, `var-step`, `var-final`) and `SgSampleAlg` (pointwise distribution over `sumT`).
+46 `IID`: internal helpers only (`fⁿ`, `tuple-fⁿ`, `mapM-prodⁿ`, `Int-≈`/`Ex-≈`).  47 `CoinCoordsJoint`: splits the
+coin into evens and odds (`fairCoin-indep`, `merge-evens`/`odds`) and inducts with `coins-step`.  50 `WeakLaw`:
+`geW-0` needs no LEM (LEM only in `markov-ge`); `chebyshev` is `chebyshev-at` at c = E g and `weak-law` instantiates
+it at c = nμ; helpers `NatCancel` (cancel n+1 on lower reals, via `ExpLower.qinvC`), `WeakLawAlg` (`rate-alg`),
+`WeakLawCheb` (`Ex-dev`, `chebyshev-at`).  Cold times (each module alone, dependencies built): SgSampleRing 2.8 s,
+SgSampleAlg 9.1 s / 1.2 GB, NatCancel 5.6 s, SgSample 23.9 s / 1.6 GB, IID 11.4 s / 1.3 GB, CoinCoordsJoint 8.4 s /
+1.2 GB, WeakLawAlg 8.7 s, WeakLawCheb 10.0 s, WeakLaw 17.7 s / 1.4 GB.
 
 ## Order of agents
 
