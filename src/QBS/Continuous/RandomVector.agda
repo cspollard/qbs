@@ -11,7 +11,7 @@
 --   * the affine rule for AX + b (`affT`): mean(AX + b) ≃ A mean(X) + b (`mean-aff`) and Cov(AX + b) ≃ A Cov(X) Aᵀ
 --     (`cov-aff`), with `RV-aff`.
 -- Route: `RV`, `Int-mul`, `meanV`, `covM`, `affT` are re-exported from `RandomVectorDefs`; `Int-mul` is
--- `RandomVectorAlg.Int-mul` by `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g² and a b ≤ a² + b²);
+-- `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g² and a b ≤ a² + b²);
 -- `cov-sym` by `comm-eq`; `cov-diag` by irrelevance of the integrability witness (`Ex-irr`); `Int₂-sumV`, `Var-sumV`,
 -- `RV-aff`, `mean-aff`, `cov-aff` are the primed twins in `RandomVectorAff` (expansion of E[(Σᵢ Aᵢ)(Σⱼ Bⱼ)] by
 -- `RandomVectorSum.ExBil`, shifts and scalings by `RandomVectorAlg.sh-eq`/`sc-eq`, the double-sum arithmetic in

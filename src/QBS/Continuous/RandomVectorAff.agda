@@ -112,7 +112,8 @@ module RandomVectorAff (lem₁ : LEM₁) where
 
     -- E (S_k S_l) as a double sum
     ExSS : ∀ {m n} (M : Mat m n) X (r : RV n X) k l →
-      Ex {Ω} E (sumT n (λ i → scaleT (M k i) (X i)) *T sumT n (λ i → scaleT (M l i) (X i))) (Int-mul _ _ (iSum M X r k) (iSum M X r l))
+      Ex {Ω} E (sumT n (λ i → scaleT (M k i) (X i)) *T sumT n (λ i → scaleT (M l i) (X i)))
+        (Int-mul _ _ (iSum M X r k) (iSum M X r l))
         ≃ Σ n (λ i → Σ n (λ j → (M k i *S M l j) *S Ex {Ω} E (X i *T X j) (Int-mul _ _ (r i) (r j))))
     ExSS {n = n} M X r k l = ≃-trans (Ex-irr {Ω} E _ _ (proj₁ eb)) (≃-trans (proj₂ eb)
       (Σ-cong n (λ i → Σ-cong n (λ j → scEx (M k i) (M l j) (X i) (X j) (Int-mul _ _ (r i) (r j)) (iAB i j)))))
