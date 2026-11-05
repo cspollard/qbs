@@ -408,7 +408,6 @@ LowerRealsOmega lem = record
           { isPreorder = record { isEquivalence = ≋-isEquivalence ; reflexive = proj₁ ; trans = ⊑-trans }
           ; antisym = _,_ }
       ; 0-least = 0-least
-      ; ≤-+ʳ = λ {a} {b} → ⊕-inl a b
       ; +-mono = ⊕-mono
       ; *-mono = λ c → ⊗-mono ⊑-refl
       ; complement = λ {c} h → complC c h , complement-ok c h
