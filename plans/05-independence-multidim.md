@@ -183,6 +183,19 @@ moment).  54 `MultiSample`: as the header route; helpers `MultiSampleRing` (ring
 alone, dependencies built): FinProdProb 8.4 s / 1.2 GB, GaussVectorAlg 0.7 s, GaussVector 29.4 s / 2.0 GB (the
 heaviest module of plan 05), MultiSampleRing 3.0 s, MultiSampleAlg 15.1 s / 1.5 GB, MultiSample 9.8 s / 1.2 GB.
 
+**Skeletons, round 5 (2026-11-05).**  Written by an agent, reviewed and corrected.  55a `Continuous/RQArith` (the real
+line's arithmetic as morphisms: `copair×ˡ`/`copair×ʳ`, `addW`, `monusP`, `mixH`, `addRH`, `scaleSRH`, `sumRH`, `linRH`,
+`rowRH`, `affRH`; holes `map-random` of `copair×ˡ`, `Meas-monus`, `le₂-borel`, `pick-cong₂`, and the `idT` laws
+`idT-add`, `idT-scaleS`, `idT-constRQ`, `idT-sumRH`, `idT-linRH`, `idT-rowRH`, `idT-affRH`; all true at infinite
+points, since ≐ is absorbing there, but ≐ is not transitive then, so the laws are pointwise case splits rather than
+chains).  55b `Continuous/RandomVectorLaw` (split from 55 so that it can be filled in parallel with 55a; holes
+`mul-cong`, `RV-≐`, `mean-≐`, `cov-≐`, `Int-law`, `Ex-law`, `RV-law`, `mean-law`, `cov-law`).  Correction at review:
+the agent's `RV-≐ : RV P n X → RV P n Y` from X ≐ Y was false, since ≐ does not transfer integrability ((∞, ∞) ≐
+anything); it now needs one part of each Y i zero at each point (pull-backs of `idT`), and `mean-≐`, `cov-≐` take both
+witnesses; `mul-cong` (products respect ≐) was added for `cov-≐`, checked by brute force over {0, 1, 2, 3, ∞}.  55
+`Inference/GaussVectorLaw` (`coordT`, `affLaw`, `Nᴬ M b`, the law of A Z + b for Z ∼ N(0, Iₙ), `Nᴬ-mass` defined;
+holes `affLaw-RV`, `affLaw-mean`, `affLaw-cov`, `Nᴬ-RV`, `Nᴬ-mean` ≈ b, `Nᴬ-cov` ≈ A Aᵀ).
+
 ## Order of agents
 
 | Round | Agent 1 | Agent 2 |
@@ -191,6 +204,7 @@ heaviest module of plan 05), MultiSampleRing 3.0 s, MultiSampleAlg 15.1 s / 1.5 
 | 2 | 46a → 50 | 46 → 47 |
 | 3 | 48 → 49 → 48a | 52, then 46b |
 | 4 | 53a → 53 | 54 (55 if wanted) |
+| 5 | 55a → 55 | 55b |
 
 ## Risks
 

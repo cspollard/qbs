@@ -66,7 +66,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
 | `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors (plan 05, item 53). |
 | `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (plan 05, item 53; helper for `GaussVector`). |
-| `QBS.Inference.GaussVectorLaw` | 149 | lem | The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55). |
+| `QBS.Inference.GaussVectorLaw` | 100 | lem | The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.IIDLaw` | 127 | lem | The estimator theorems for iid families (plan 05, item 46b). |
@@ -326,6 +326,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
 | `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`). |
 | `QBS.Continuous.RandomVectorDefs` | 64 | lem | Definitions for random vectors (plan 05, item 52; shared by `RandomVector` and `RandomVectorAff`). |
+| `QBS.Continuous.RandomVectorLaw` | 90 | lem | Random vectors and their laws (plan 05, item 55a; enabler for `Inference/GaussVectorLaw`). |
 | `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (plan 05, item 52; helper for `RandomVectorAlg`). |
 | `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (plan 05, item 52; helper for `RandomVector`). |
 | `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (plan 05, item 52; helper for `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
