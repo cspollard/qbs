@@ -64,7 +64,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities"). |
 | `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03, "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
 | `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
-| `QBS.Inference.GaussVector` | 172 | lem | Gaussian vectors (plan 05, item 53). |
+| `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors (plan 05, item 53). |
+| `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (plan 05, item 53; helper for `GaussVector`). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.IIDLaw` | 127 | lem | The estimator theorems for iid families (plan 05, item 46b). |
@@ -261,7 +262,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FatouAux` | 88 | lem | Auxiliary tests and lemmas for downward monotone convergence (`Continuous/Fatou`, plan 03). |
 | `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43). |
 | `QBS.Continuous.FinProdPair` | 102 | lem | Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`). |
-| `QBS.Continuous.FinProdProb` | 60 | lem | Finite products of probability measures (plan 05, item 53a; enabler for `Inference/GaussVector`). |
+| `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (plan 05, item 53a; enabler for `Inference/GaussVector`). |
 | `QBS.Continuous.FirstBit` | 156 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 62 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
