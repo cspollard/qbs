@@ -58,7 +58,10 @@ Newest first within each group.
 
 The pathologies that once made single modules take 10 to 70 minutes are fixed, and the lessons are the durable part of this section. The numbers are from 2026-10-25 to 2026-10-30 (117 modules); the library now has over 300.
 
-**Library-wide flag.** `qbs.agda-lib` has `flags: --lossy-unification` (sound; unification of `f a₁…aₙ =?= f b₁…bₙ` tries the arguments first). It took `SFiniteStrong` from 193 s to 5 s, `JSum` 140 s → 4 s, and made `SFiniteStat` check. One fallout: `SFiniteStrong.strength-assoc` needed an explicit implicit argument.
+**Library-wide flag.** `qbs.agda-lib` has `flags: --lossy-unification` (sound; unification of `f a₁…aₙ =?= f b₁…bₙ` tries the arguments first). It took `SFiniteStrong` from 193 s to 5 s, `JSum` 140 s → 4 s, and made `SFiniteStat` check. One fallout: `SFiniteStrong.strength-assoc` needed an explicit implicit argument.  The library now depends on it:
+on 2026-11-06, a cold check without the flag stopped at the third module, `QBS.Limits`, with unsolved constraints
+(metas that only the arguments-first rule solves); with it, the 68 modules under `SFiniteStat` and `JSum` check
+cold in 55 s.
 
 **Lessons** (each cost minutes to hours once):
 - *Mixed spellings of one argument.* Records such as `OmegaSemiring`, `Measure`, `QBS` are huge. Comparing two spellings of one term (`DaniellB.lem lem₁ B` vs `lemOf lem₁`, `QBSCat (discreteSource ℓ)` vs a module alias `S`, `Functor.F₀ TF X` vs `TQ X`) makes Agda unfold both (70 min → 4 s in `Riesz`). Use one canonical name per argument, `INLINE` aliases, and `abstract` for witnesses and expensive definitions (`SFinite.TQ` randomness fields, `J`, `mapM`, `joinPre`).

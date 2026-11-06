@@ -8,7 +8,10 @@ the public names and [Modules.md](Modules.md) has one line per module.  The last
 
 - **Safe and honest.**  Every file is `{-# OPTIONS --safe --without-K #-}` with no postulates.  Classical principles
   are explicit module parameters (`lem`, `lem₁`), used only where needed; [Classical.md](Classical.md) says where
-  and why.  A statement that needs a hypothesis takes it as an argument.
+  and why.  A statement that needs a hypothesis takes it as an argument.  The library also sets
+  `--lossy-unification` in `qbs.agda-lib`, its only flag.  It is sound (unification of `f a₁…aₙ =?= f b₁…bₙ` tries
+  the arguments first) and required: without it `QBS.Limits` already fails with unsolved constraints, and it made the
+  slowest modules 5–50 times faster ([TODO.md](../TODO.md), "Compile time").
 - **General theorems.**  State the general result, not the instance you need today: any probability measure rather
   than the uniform one, any iid family rather than coin draws, any commutative ring rather than `Sg`.  Instances
   come afterwards as corollaries.  When a general statement is out of reach, say so in the plan, with the reason,
@@ -200,8 +203,8 @@ These rules come from what has gone wrong in practice.  They apply in addition t
   statements.
 
 **Never**
-- Add a postulate, change the `OPTIONS` line, or use `--allow-unsolved-metas`, `--lossy-unification` and the like in
-  committed code.
+- Add a postulate, change the `OPTIONS` line or the `flags:` of `qbs.agda-lib`, or add options such as
+  `--allow-unsolved-metas` in committed code.
 - Change a statement or a non-hole definition to make a proof go through.  If a statement is false or unprovable,
   stop and report it with a counterexample or a reason.
 - Edit modules outside your task, or ones another agent is working on.  Put helpers in new modules with headers and
