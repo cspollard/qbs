@@ -64,7 +64,7 @@ has holes, its header carries the line `--   Skeleton: holes first.`, removed wh
 - **Lines and declarations.**  At most 130 columns.  A declaration (signature and body) is at most 18 lines and 1000
   characters: the defaults of `scripts/longdecls.py`, run by `make longcheck`.  `scripts/longdecls.baseline` lists the
   known exceptions; a new one fails the check.  Split long proofs into named lemmas: one per case of an induction, one
-  per witness step, an algebra lemma for each identity (Architecture.md, "Compile time").
+  per witness step, an algebra lemma for each identity (see "Long proofs" below).
 - **Imports.**  Import exactly what you use, with `using`, from the stdlib `.Base` modules where they exist.  Standard
   library imports come first, then `QBS.*`.  `make import-check` finds unused imports (it reads the HTML from
   `make html`).
@@ -84,8 +84,64 @@ has holes, its header carries the line `--   Skeleton: holes first.`, removed wh
   - Don't use `with` on large goals or on cut terms; it has hung Agda for minutes.  Use a helper lemma instead.
   - Make heavy definitions `abstract` when their unfolding is never needed (as `J`, `mapM`, `joinPre`).
   - Prefer short equational steps; use the ring solver only over an abstract ring.
-  - No `rewrite` (`make doccheck` rejects it; [plans/04-equality.md](../plans/04-equality.md)): use `cong`, `subst` or
+  - No `rewrite` (`make doccheck` rejects it; [plans/04-equality.md](../plans/04-equality.md)): it is `with` plus a
+    `refl` match, so it is never needed.  Use `cong`/`cong₂`, `subst` with a one-line motive, a reasoning chain, or
     `with … in eq`.
+
+### Chains of equalities and inequalities
+
+A proof that is more than two steps of `trans` is written as a reasoning chain, with every intermediate term shown
+and each step justified by one named lemma.  Nested `trans (trans … ) (…)` hides the terms, is hard to read, and
+breaks badly when a statement changes.  The chain shows the reader the calculation, and Agda checks each term.
+
+- **Setoids** (most of the library: lower reals, signed values, integrals, `_≈ᴹ_`): `Relation.Binary.Reasoning.Setoid`,
+  opened at the module's setoid (`open SetoidReasoning setoid`, or `Aˢ` for the abstract semiring of `Lebesgue`).
+- **Orders**: `Relation.Binary.Reasoning.PartialOrder`, which mixes `≤⟨ ⟩` and `≈⟨ ⟩` steps (start with `begin` for
+  ≤, `begin-equality` for ≈).  Use this rather than `≤-trans` chains.
+- **Morphisms in a category** (the abstract layer: `Statistical`, `Probability`): `HomReasoning` of the category with
+  `Categories.Morphism.Reasoning` (`MR`): `refl⟩∘⟨ … ⟩`, `pullˡ`, `pushʳ`, `extendʳ`, `cancelˡ`, `assoc`/`sym-assoc`
+  instead of composing congruence and associativity proofs by hand.  Search `agda-categories` before writing a
+  categorical lemma: most rearrangements of compositions are already there.
+- **`_≡_`**: `≡-Reasoning`, or `cong` for one step.
+
+For example, a calculation in an ordered semiring, with one solver step:
+
+```agda
+-- from: src/QBS/Analysis/GeometricNorm.agda
+  E-hp i = begin-equality
+    two i * (hp i * hp i)  ≈⟨ solve 2 (λ t h → t :* (h :* h) := (h :* t) :* h) refl (two i) (hp i) ⟩
+    (hp i * two i) * hp i  ≈⟨ *-cong (hp-two i) refl ⟩
+    1# * hp i              ≈⟨ *-identityˡ _ ⟩
+    hp i ∎
+```
+
+and naturality of a monad's multiplication, in the categorical syntax:
+
+```agda
+-- from: src/QBS/Statistical.agda
+  scale-nat {X} {Y} f a t = begin
+    M.F.F₁ f ∘ M.μ.η X ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ extendʳ (M.μ.sym-commute f) ⟩
+    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
+    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f ∘ t) ∘ score ∘ a  ∎
+```
+
+Align the `≈⟨` columns when the terms are short.  A chain is still a declaration under the 18-line limit: when it
+grows longer, it has a natural middle term; prove each half as a lemma.  Intermediate terms are elaborated, so on the
+concrete cuts write them over abstract variables (in an `XAlg` or `XRing` module) rather than as large unfolded
+expressions.
+
+### Long proofs
+
+A long proof is a sign of a missing lemma.  Split it:
+
+- by case, one lemma per case of an induction;
+- by step: in a chain, each step whose justification is more than a line or two becomes a lemma;
+- by kind: algebra (ring identities, rearrangements) goes in an `XRing`/`XAlg` module stated over abstract variables,
+  while the main module keeps the analysis (integrals, limits, witnesses).
+
+Name the lemmas for what they say (`mean-chain`, `cov-chain`, `tuple-proj`), not `aux1`, `aux2`, and give them
+signatures.  When a proof needs a large term in several places, give it a name (and make it `abstract` if its
+unfolding is never needed) rather than repeating it.
 
 ## Checking
 
@@ -166,6 +222,7 @@ These rules come from what has gone wrong in practice.  They apply in addition t
 **Common Agda pitfalls here**
 - Unannotated binders in `where` clauses and lambdas leave unsolved metas.
 - `with` on cut terms hangs; use a helper.  `rewrite` is not allowed at all.
+- Write chains as `begin … ∎` (setoid, order or `HomReasoning` syntax), not nested `trans`; split chains over 18 lines.
 - Give `{Ω}`, `{X}` and the implicit arguments of `Bnd`/`BndQ` explicitly; write `mk⊑` explicitly.
 - Parenthesise applications in sums: `(map f ⟨$⟩ x) + …`.
 - Comparing large concrete terms (for example two covariance matrices) can exhaust a 3 GB heap; go through abstract
