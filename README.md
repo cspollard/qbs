@@ -31,7 +31,7 @@ The library file is `qbs.agda-lib` (sources in `src/`, modules named `QBS.*`).
 |---|---|
 | `make check` | Typecheck every module. Strict: no Agda output, no holes, no postulates. Slow on a cold build. |
 | `make doccheck` | Check the docs against the code: header comments, the module index, code excerpts, listed names. Needs no Agda. |
-| `make longcheck` | Flag declarations that are too long (over 25 lines, 1500 characters or 160 columns). Needs no Agda. |
+| `make longcheck` | Flag declarations that are too long (over 18 lines, 1000 characters or 130 columns). Needs no Agda. |
 | `make progress` | Like `check`, but unsolved holes are allowed. For work in progress. |
 | `make html` | Build the Agda HTML documentation in `html/`, with `html/index.html` listing every module. |
 | `make htmlserve` | `make html`, then serve `html/` on port 8081 (`PORT=...` to change). |
@@ -126,6 +126,7 @@ Information quantities:
 | [docs/Guide.md](docs/Guide.md) | task-oriented tour: which model to use, write a program, condition, continuous integrals, signed expectations, Gaussians, information quantities |
 | [docs/Interface.md](docs/Interface.md) | the public names, by module, with one-line meanings |
 | [docs/Architecture.md](docs/Architecture.md) | layers, dependencies, hypotheses, compile time, where to add things |
+| [docs/Contributing.md](docs/Contributing.md) | code philosophy and style, checking, plans; a section for LLM agents |
 | [docs/Modules.md](docs/Modules.md) | one line for each module (generated) |
 | [docs/History.md](docs/History.md) | how the library was built, layer by layer, with the performance pitfalls found |
 | [docs/Classical.md](docs/Classical.md), [docs/ConstructiveLit.md](docs/ConstructiveLit.md) | where `lem` is used; literature for a constructive version |
