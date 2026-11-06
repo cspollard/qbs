@@ -107,25 +107,44 @@ out of reach (see the last section).
 
 ## Phase A: exponential families
 
-- 56 `Analysis/ExpFamAlg` (constructive, any commutative ring): sums of statistic vectors over `Fin N`;
+- 56 `Analysis/ExpFamAlg` [done] (constructive, any commutative ring): sums of statistic vectors over `Fin N`;
   ⟨η, Σᵢ Tᵢ⟩ = Σᵢ ⟨η, Tᵢ⟩; the log-partition of N draws, N · A; the conjugate update (χ, ν) ↦ (χ + Σᵢ Tᵢ, ν + N)
   and its sequential composition (updating on xs then on ys is updating on both).
-- 57 `Inference/ExpFamily` (needs 56, `Inference/Bayesian`; discrete): the multiplicative family; product-likelihood
+- 57 `Inference/ExpFamily` [done] (needs 56, `Inference/Bayesian`; discrete): the multiplicative family; product-likelihood
   factorisation through Σ T (generalising `likSeq-counts`); the natural conjugate prior ∝ ∏ⱼ θⱼ^{χⱼ} c(θ)^ν and the
   posterior update χ + Σᵢ T(xᵢ), ν + N (via `sequential`); Bayesian sufficiency of (Σᵢ T(xᵢ), N); Bernoulli as an
   instance, recovering `likSeq-counts`.
-- 58 `Continuous/ExpWeight` (enabler; lem₁): the weight e^{s} of a signed value and of a signed test as a morphism
+- 58 `Continuous/ExpWeight` [done] (enabler; lem₁): the weight e^{s} of a signed value and of a signed test as a morphism
   into WQ; e^{s + t} ≈ e^{s} e^{t}, e^{0} ≈ 1, congruence under ≃ and ≐, positivity and boundedness for bounded s,
   log(e^{s}) ≃ s (`SignedLog.log-exp`).
-- 59 `Continuous/ExpFamily` (needs 58, 43, 46): the family on X for a base measure h, statistic T : Fin k → SgT X and
+- 59 `Continuous/ExpFamily` [done] (needs 58, 43, 46): the family on X for a base measure h, statistic T : Fin k → SgT X and
   natural parameter η : Vec k; Z(η), the normalised probability P_η (by a normaliser), A(η); `product-expFam`: the law of
   N iid draws from P_η is the family on Xᴺ with statistic Σᵢ T ∘ projᵢ, base hᴺ and partition Z(η)ᴺ (so log-partition
   N · A) (`∫-rectⁿ`, `IID`); instances Exp(λ) (T = x, h Lebesgue on the half-line) and the Gaussian with known
   variance (T = x, h ∝ e^{−x²/2}), agreeing with `ExpDist` and `GaussReal`.
-- 60 `Continuous/ExpFamilyPost` (needs 59, `CondIID`): conjugate updating on a continuous parameter space Θ: for
+- 60 `Continuous/ExpFamilyPost` [done] (needs 59, `CondIID`): conjugate updating on a continuous parameter space Θ: for
   η : Θ ⇒ RQᵏ and A : Θ ⇒ RQ as morphisms, the conjugate prior with density ∝ e^{⟨η(θ), χ⟩ − ν A(θ)} against a base on
   Θ, and the posterior after X_N (the Bayesian joint of `CondIID` reweighted by the likelihood, normalised) is the
   conjugate prior at χ + Σᵢ T(xᵢ), ν + N; Bayesian sufficiency of (Σᵢ T(xᵢ), N).
+
+**Outcome, round 1 (2026-11-06).**  All filled; the first fills of 57, 59 and 60 (branch `expfam-phase-a`) were redone
+on review, since 60 assumed its key identities as hypotheses (and took 2226 s), 57 stopped at unnormalised posteriors,
+and 59 had no N-draw results.  56 and 58 as planned, cleaned up.  57: `posterior-update-norm` and
+`posterior-sufficient-norm` for the normalised posteriors (any inverses of the evidences; the constant ∏ᵢ h(xᵢ)
+cancels, via `posterior-prop`), and `BernoulliInstance`.  59: `dotT` linear up to `≈T` (both parts pointwise equal,
+transitive at ∞); `weight-sumTⁿ`, `partition-sumTⁿ`, `product-norm`, `product-expFam`, `IID-expFam`,
+`logPartition-sumTⁿ`; Exp(1), `ExpRate` (Exp(λ) for a rate with a reciprocal), and `gaussFam` with its η = 0 member
+agreeing with `RealDensity.Sym`.  60: Θ in the natural parameter space as module hypotheses (`finη`, `finA`: the
+tests are finite), every test evaluated at θ to a signed value (`ExpWeight.atSg`) so the algebra is one ring identity
+(`ExpFamilyPostAlg.expo-update`); `posterior-update`, `posterior-sufficient` (from equal Σᵢ Tᵢ), the data form
+(`likData`, `posterior-data`) and normalised versions (`norm-cong`).  New helpers: `Continuous/ExpFamilyAlg`,
+`ExpFamilyAux` (`_≈T_`, `expWT-+T`, `logS-∏ⁿ`), `ProdReweight` (`reweight-cong`, `prod-reweight`, `prod-scale`),
+`FinTest` (`FinT` closures, shared by 59 and 60), `ExpFamilyPostAlg`, `ExpFamilyPostAux` (`atSg-*`, `≐-atSg`,
+`reweight-reweight`, `prodW`, `norm-cong`).  Cold times (each module alone, dependencies built): ExpFamAlg 2.7 s,
+ExpWeightAlg 2.3 s, ExpWeight 8.3 s / 1.2 GB, FinTest 7.2 s / 1.1 GB, ProdReweight 5.1 s, ExpFamilyAlg 2.4 s,
+ExpFamilyAux 9.9 s / 1.4 GB, ExpFamily 14.0 s / 1.5 GB, ExpFamilyPostAlg 2.7 s, ExpFamilyPostAux 9.6 s / 1.5 GB,
+ExpFamilyPost 11.3 s / 1.4 GB, Inference/ExpFamily 5.4 s.  Not done (see "Out of reach"): the Gaussian at η ≠ 0,
+Exp(λ) for an arbitrary real rate, the N-draw results without `FinT`, and the link from 60 to `CondIID`.
 
 ## Phase B: information geometry
 
@@ -179,6 +198,18 @@ out of reach (see the last section).
 65a is part (a) and the cardinality reduction (needs 57 or 60, and 63); 65b is part (b) (needs 64).
 
 ## Out of reach (kept, with the reason)
+
+- **The Gaussian family at η ≠ 0** (item 59; a later `ExpFamilyGauss`).  Z(η) needs completing the square,
+  ∫ e^{ηx − x²/2} dx = e^{η²/2} √(2π), i.e. translation invariance of Lebesgue measure on the real line under the
+  weights, which `RealDensity` has only for the reflection x ↦ −x.
+- **Exp(λ) for an arbitrary real rate** (item 59).  `ExpRate` takes λ with reciprocal data (`ExpRateInt.Int`); a
+  general positive real needs a constructive reciprocal on lower reals with its integral identity.
+- **The N-draw results without finite statistics** (item 59).  e^{a + b} ≈ e^{a} e^{b} fails when a negative part is
+  ∞ (∞ · 0 = 0 in the weights), so `weight-sumTⁿ` and its consequences assume `FinT`.
+- **The posterior of 60 as a conditional of the `CondIID` joint.**  60 proves the density form of Bayes' rule (the
+  prior reweighted by the likelihood).  Identifying it with the conditional of the Bayesian joint needs the family as a
+  kernel Θ ⇒ T X (η, A as morphisms of Θ and a normaliser as a function of θ) and a disintegration theorem, which the
+  library does not have.
 
 - **Sufficiency in the general sense, and the step "sufficient at N = 2 ⇒ pair equation".**  The paper derives
   g(y₁) + g(y₂) = h̃(y₁ + y₂) from sufficiency of the mean pool at N = 2 and minimality of t*.  The frequentist
