@@ -44,6 +44,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistMean` | 75 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 89 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
+| `QBS.Inference.ExpFamily` | 231 |  | Multiplicative exponential families in the discrete model (plan ExpFam, item 57; generalising `Bayesian.Bernoulli`). |
 | `QBS.Inference.ExpMomentN` | 79 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
 | `QBS.Inference.ExpPushforward` | 155 | lem | The exponential distribution with scale `c` as a pushforward of Exp(1), with no new integral (item B of `plans/03`). |
 | `QBS.Inference.ExpPushforwardAgree` | 97 | lem | Validation of the dyadic scaling (`Continuous/HalfLineScale`): the pushforward Exp(c = ½) of `Inference/ExpPushforward` and the density distribution of `2 e^{−2x}` have the same integral for every non-negative test `f... |
