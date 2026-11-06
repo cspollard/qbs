@@ -257,7 +257,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
-| `QBS.Continuous.ExpFamily` | 156 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
+| `QBS.Continuous.ExpFamily` | 446 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
+| `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`), over an abstract commutative semiring. |
+| `QBS.Continuous.ExpFamilyAux` | 169 | lem | Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for `Continuous/ExpFamily`). |
 | `QBS.Continuous.ExpFamilyPost` | 131 | lem | Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A). |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
@@ -326,6 +328,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ProbInstance` | 130 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
+| `QBS.Continuous.ProdReweight` | 111 | lem | Densities and scalings of product measures (plan 07, item 59; helper for `Continuous/ExpFamilyAux`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
 | `QBS.Continuous.RQArith` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
 | `QBS.Continuous.RQArithAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RQArith` (plan 05, item 55a), over [0, ∞]. |
