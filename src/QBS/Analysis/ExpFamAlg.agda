@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Commutative ring algebra for exponential families (plan ExpFam, item 56).  Model-independent algebra over any
+-- Commutative ring algebra for exponential families (plan 07, item 56).  Model-independent algebra over any
 -- commutative ring (instantiated at `Signed.signedRing` for continuous families and with natural powers):
 --   * `_++F_`: concatenation of families indexed by `Fin m` and `Fin n`;
 --   * `Σ-concat`: finite sum over a concatenated family splits into the sum of the two parts;
@@ -23,7 +23,7 @@ open import Data.List.Base using (List; []; _∷_; _++_; length)
 import Data.Nat.Base as Nat
 open Nat using (ℕ; zero; suc)
 import Data.Nat.Properties as NatProp
-open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_×_; _,_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
@@ -36,7 +36,7 @@ _++F_ : ∀ {ℓ : Level} {m n : ℕ} {X : Set ℓ} → (Fin m → X) → (Fin n
 (_++F_ {ℓ} {suc m} {n} {X} f g) (suc i) = (_++F_ {ℓ} {m} {n} {X} (λ j → f (suc j)) g) i
 
 module ExpFamAlg {c ℓ} (R : CommutativeRing c ℓ) where
-  open CommutativeRing R using (Carrier; _≈_; _+_; _*_; 0#; 1#; +-cong; +-assoc; +-identityˡ; sym; trans; refl; setoid)
+  open CommutativeRing R using (Carrier; _≈_; _+_; _*_; +-cong; +-assoc; +-identityˡ; sym; trans; refl; setoid)
   open SgLinAlg R using (Vec; _≈V_; _+V_; _·_; Σ; Σ-cong; Σ-scale; Σ-swap)
   open import Relation.Binary.Reasoning.Setoid setoid
 
@@ -108,35 +108,13 @@ module ExpFamAlg {c ℓ} (R : CommutativeRing c ℓ) where
 module ExpFamNat where
   open Nat using (_+_)
   open import Data.Nat.Properties using (+-assoc)
-
-  length-++ : ∀ {X : Set} (xs ys : List X) → length (xs ++ ys) ≡ length xs + length ys
-  length-++ [] ys = ≡.refl
-  length-++ (x ∷ xs) ys = ≡.cong suc (length-++ xs ys)
+  open import Data.List.Properties using (length-++)
 
   Vecℕ : ℕ → Set
   Vecℕ k = Fin k → ℕ
 
   _+Vℕ_ : ∀ {k} → Vecℕ k → Vecℕ k → Vecℕ k
   (x +Vℕ y) j = x j + y j
-
-  Σℕ : ∀ n → (Fin n → ℕ) → ℕ
-  Σℕ zero f = 0
-  Σℕ (suc n) f = f zero + Σℕ n (λ i → f (suc i))
-
-  sumVℕ : ∀ {N k} → (Fin N → Vecℕ k) → Vecℕ k
-  sumVℕ {N} T j = Σℕ N (λ i → T i j)
-
-  Σℕ-concat : ∀ m n (f : Fin m → ℕ) (g : Fin n → ℕ) →
-    Σℕ (m + n) (f ++F g) ≡ Σℕ m f + Σℕ n g
-  Σℕ-concat zero n f g = ≡.refl
-  Σℕ-concat (suc m) n f g = ≡.trans (≡.cong (f zero +_) (Σℕ-concat m n (λ j → f (suc j)) g))
-    (≡.sym (+-assoc (f zero) _ _))
-
-  sumVℕ-concat : ∀ {m n k} (T₁ : Fin m → Vecℕ k) (T₂ : Fin n → Vecℕ k) →
-    ∀ j → sumVℕ (T₁ ++F T₂) j ≡ sumVℕ T₁ j + sumVℕ T₂ j
-  sumVℕ-concat {zero} T₁ T₂ j = ≡.refl
-  sumVℕ-concat {suc m} T₁ T₂ j = ≡.trans (≡.cong (T₁ zero j +_) (sumVℕ-concat (λ l → T₁ (suc l)) T₂ j))
-    (≡.sym (+-assoc (T₁ zero j) _ _))
 
   sumList : ∀ {k} {X : Set} → (X → Vecℕ k) → List X → Vecℕ k
   sumList T [] j = 0
@@ -168,4 +146,4 @@ module ExpFamNat where
 
       hν : (ν + length xs) + length ys ≡ ν + length (xs ++ ys)
       hν = ≡.trans (+-assoc ν (length xs) (length ys))
-        (≡.cong (ν +_) (≡.sym (length-++ xs ys)))
+        (≡.cong (ν +_) (≡.sym (length-++ xs)))

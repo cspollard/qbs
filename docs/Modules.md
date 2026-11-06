@@ -44,7 +44,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.ExpDistMean` | 75 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 89 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
-| `QBS.Inference.ExpFamily` | 231 |  | Multiplicative exponential families in the discrete model (plan ExpFam, item 57; generalising `Bayesian.Bernoulli`). |
+| `QBS.Inference.ExpFamily` | 381 |  | Multiplicative exponential families in the discrete model (plan 07, item 57; generalising `Bayesian.Bernoulli`). |
 | `QBS.Inference.ExpMomentN` | 79 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
 | `QBS.Inference.ExpPushforward` | 155 | lem | The exponential distribution with scale `c` as a pushforward of Exp(1), with no new integral (item B of `plans/03`). |
 | `QBS.Inference.ExpPushforwardAgree` | 97 | lem | Validation of the dyadic scaling (`Continuous/HalfLineScale`): the pushforward Exp(c = ½) of `Inference/ExpPushforward` and the density distribution of `2 e^{−2x}` have the same integral for every non-negative test `f... |
@@ -165,7 +165,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.Estimator` | 276 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
-| `QBS.Analysis.ExpFamAlg` | 172 |  | Commutative ring algebra for exponential families (plan ExpFam, item 56). |
+| `QBS.Analysis.ExpFamAlg` | 150 |  | Commutative ring algebra for exponential families (plan 07, item 56). |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
 | `QBS.Analysis.ExpRate` | 413 |  | The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1 certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`. |
 | `QBS.Analysis.ExpRateExt` | 269 |  | From small widths to all widths: the extension step that removes the restriction `λ ≤ 1` of the exponential with a rate. |
@@ -257,14 +257,16 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
-| `QBS.Continuous.ExpFamily` | 446 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
+| `QBS.Continuous.ExpFamily` | 456 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
 | `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`), over an abstract commutative semiring. |
 | `QBS.Continuous.ExpFamilyAux` | 169 | lem | Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for `Continuous/ExpFamily`). |
-| `QBS.Continuous.ExpFamilyPost` | 131 | lem | Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A). |
+| `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A). |
+| `QBS.Continuous.ExpFamilyPostAlg` | 74 |  | Ring algebra of conjugate exponents (plan 07, item 60; helper for `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a... |
+| `QBS.Continuous.ExpFamilyPostAux` | 177 | lem | Finite signed tests, their values, and reweighting (plan 07, item 60; helper for `Continuous/ExpFamilyPost`). |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
-| `QBS.Continuous.ExpWeight` | 227 | lem | Exponential weights of signed values and signed tests (plan 07, item 58; enabler for `Continuous/ExpFamily`). |
-| `QBS.Continuous.ExpWeightAlg` | 65 |  | Multiplicative cancellation and rearrangement identities for exponential weights (plan 07, item 58; helper for `Continuous/ExpWeight`), over an abstract commutative monoid. |
+| `QBS.Continuous.ExpWeight` | 230 | lem | Exponential weights of signed values and signed tests (plan 07, item 58; enabler for `Continuous/ExpFamily`). |
+| `QBS.Continuous.ExpWeightAlg` | 79 |  | Multiplicative cancellation and rearrangement identities for exponential weights (plan 07, item 58; helper for `Continuous/ExpWeight`), over an abstract commutative monoid. |
 | `QBS.Continuous.ExtNatModel` | 23 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FTCDyadic` | 140 | lem | The fundamental theorem of calculus on every dyadic interval, from `Deriv` data (plan 03, "Change of variables"). |
 | `QBS.Continuous.FTCDyadicPiece` | 126 | lem | The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`, plan 03, "Change of variables"). |

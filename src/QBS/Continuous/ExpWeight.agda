@@ -5,32 +5,30 @@
 --   * `expWT f : Hom S X WQ` for a signed test `f : SgT X`;
 --   * `expW-cong` (under `≃`) and `expWT-cong` (under `≐`);
 --   * `expW-pos` and `expW-bnd` for bounded `s`;
---   * `log-expW : logS (expW s) ≃ s`.
+--   * `log-expW : logS (expW s) ≃ s`, from the log equation `log-expW-eq`.
 -- Route: multiplicativity from `ExpLower.Add.exp-add` and `HalfLineNegExp.negExp-add`; congruence by
--- multiplying by `expC (neg s) · expC (neg t) · expC k` and canceling via `negExp-expC-nat`;
--- log inversion from `SignedLog.log-mul` and `SignedLog.log-exp`.
+-- multiplying by `expC (neg s) · expC (neg t) · expC k` and cancelling via `negExp-expC-nat` (`ExpWeightAlg`);
+-- log inversion from `LogNeg.UD` and the injectivity `LogNeg.exp-inj`, with `ExpWeightAlg.ud-step`.
 module QBS.Continuous.ExpWeight where
 
 open import Algebra.Bundles using (CommutativeSemiring)
-open import Function.Bundles using (_⟨$⟩_; Func)
 open import Algebra.Properties.CommutativeSemigroup using (interchange)
-open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
-open import Data.Rational.Unnormalised.Base using (_<_) renaming (_*_ to _*ℚ_; _+_ to _+ℚ_)
-open import Data.Rational.Unnormalised.Solver using (module +-*-Solver)
-open +-*-Solver using () renaming (solve to solveℚ; _:+_ to _:+ℚ_; _:*_ to _:*ℚ_; _:=_ to _:=ℚ_)
 open import Data.Nat.Base using (ℕ)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Rational.Unnormalised.Base using (_<_) renaming (_*_ to _*ℚ_; _+_ to _+ℚ_)
+open import Function.Bundles using (Func)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
-open import QBS.Analysis.RationalLemmas using (0ℚᵘ; 1ℚᵘ; 0<1; 0<½; ½; <-trans; ≤-<-trans; <-≤-trans;
-  *-pos; inv; *-mono-<-pos; ≃-<ʳ; ≃-<ˡ; lt-add) renaming (≃-refl to ≃ℚ-refl; ≃-sym to ≃ℚ-sym; *-identityˡ to *ℚ-identityˡ)
+open import QBS.Analysis.RationalLemmas using (1ℚᵘ; 0<1; 0<½; ½; <-trans; *-pos; inv; *-mono-<-pos; ≃-<ʳ; lt-add)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
-open import QBS.Analysis.LowerReals using (Cut; _⊑_; _≋_; oneC; zeroC; ⊑-refl; ⊑-trans; ⊕-inl; mk⊑)
+open import QBS.Analysis.LowerReals using (Cut; _⊑_; oneC; ⊑-trans; ⊕-inl)
 open _⊑_ using (ap)
 open import QBS.Analysis.Exp using (module Exp)
-open import QBS.Analysis.ExpLower using (expC; expC-zero; expC-cong; expC-bound; pow3; 0<pow3; 1+≤expC; P-id; pos-inv; module Add)
+open import QBS.Analysis.ExpLower using (expC; expC-zero; expC-cong; expC-bound; pow3; 0<pow3; 1+≤expC; P-id; pos-inv;
+  module Add)
 open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Signed using (SubSemiring)
@@ -43,32 +41,29 @@ open import QBS.Continuous.SignedLog using (module SignedLog)
 open import QBS.Continuous.LogNeg using (½<1; module LogNeg)
 open import QBS.Continuous.HalfLineNegExp using (module HalfLineNegExp)
 open import QBS.Continuous.LebesgueDyadicAlg using (module LebesgueDyadicAlg)
-open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 open import QBS.Continuous.MonusAlg using (module MonusAlg)
-open import QBS.Continuous.ExpWeightAlg using (module ExpWeightRing)
+open import QBS.Continuous.ExpWeightAlg using (module ExpWeightAlg)
 
 module ExpWeight (lem₁ : LEM₁) where
   private
     lem = lemOf lem₁
     A = Lebesgue.A lem
-  open OmegaSemiring A using (_≈_; _*_; _+_; _≤_; 1#; 0#; refl; sym; trans; *-cong; *-identityˡ; *-identityʳ; +-cong;
-                              *-assoc; *-comm; commutativeSemiring; ≤-trans; ≤-reflexive; ≤-refl; *-commutativeSemigroup;
-                              +-identityʳ; +-identityˡ) renaming (Carrier to ∣A∣)
-  open Bounded A using (Sg; _≃_; _+S_; 0S; -S_; Bnd; finite; ι; +S-cong; +S-assoc; +S-identityˡ; +S-comm; +S-inverseʳ;
-                        mk≃; ≃-refl; ≃-sym; ≃-trans)
+  open OmegaSemiring A using (_≈_; _*_; _+_; _≤_; 1#; 0#; refl; sym; trans; *-cong; *-identityˡ; +-cong; *-comm;
+                              commutativeSemiring; ≤-trans; ≤-reflexive; *-commutativeSemigroup; +-identityʳ)
+  open Bounded A using (Sg; _≃_; _+S_; 0S; Bnd; finite; mk≃)
   open SubSemiring finite using (Is-0)
   open Sg
   open NegExp lem using (negExp; negExp-zero; negExp-anti; Meas-negExp; Meas-expC; negExp-expC-nat; negExp≤1)
   open Meas lem using (Meas-⊗)
   open Weights lem using (WQ)
   open SignedTest lem₁ using (SgT; at⁺; at⁻; FinT; _≐_; posT; negT)
-  open SignedLog lem₁ using (PosQ; BndQ-mul; PosQ-mul; PosQ-one; BndQ-one; logS; logP; logN; logP-cong; logN-cong; log-mul; log-one; log-exp)
+  open SignedLog lem₁ using (PosQ; BndQ-mul; PosQ-mul; logS; logP; logN)
   open Exp A using (natE)
   open HalfLineNegExp lem₁ using (negExp-add)
   open LebesgueDyadicAlg lem using (natE≈nat)
-  open LebesgueShiftAlg lem using (bnd-rat)
   open MonusAlg lem₁ using (rat-bnd)
   open LogNeg lem using (UD; exp-inj)
+  open import Relation.Binary.Reasoning.Setoid (OmegaSemiring.setoid A)
   open Hom
 
   expW : Sg → Cut
@@ -97,7 +92,7 @@ module ExpWeight (lem₁ : LEM₁) where
 
   private
     module CS = CommutativeSemiring commutativeSemiring
-    module EWAlg = ExpWeightRing CS.*-commutativeMonoid
+    module EWAlg = ExpWeightAlg CS.*-commutativeMonoid
   open EWAlg using (cancel-mul; cancel-3; rearrange-step; rearrange-step′; ud-step)
 
   bnd-natE : ∀ {a} → Bnd a → Σ ℕ (λ n → a ≤ natE n)
@@ -109,33 +104,37 @@ module ExpWeight (lem₁ : LEM₁) where
   exp-inv : ∀ {a} → Bnd a → expC lem a * negExp a ≈ 1#
   exp-inv {a} ba = trans (*-comm (expC lem a) (negExp a)) (neg-exp-inv ba)
 
-  expW-C-step : ∀ s t k (fk : Bnd k) →
+  expW-C-step : ∀ s t k →
     expW s * ((expC lem (neg s) * expC lem (neg t)) * expC lem k) ≈
     expC lem (pos s + neg t + k)
-  expW-C-step s t k fk =
-    trans (rearrange-step (expC lem (pos s)) (negExp (neg s))
-                          (expC lem (neg s)) (expC lem (neg t)) (expC lem k)
-                          (neg-exp-inv (neg-fin s)))
-      (trans (*-cong (sym (expC-add (pos s) (neg t))) refl)
-        (sym (expC-add (pos s + neg t) k)))
+  expW-C-step s t k = begin
+    expW s * ((expC lem (neg s) * expC lem (neg t)) * expC lem k)
+      ≈⟨ rearrange-step (expC lem (pos s)) (negExp (neg s)) (expC lem (neg s)) (expC lem (neg t)) (expC lem k)
+           (neg-exp-inv (neg-fin s)) ⟩
+    (expC lem (pos s) * expC lem (neg t)) * expC lem k  ≈⟨ *-cong (sym (expC-add (pos s) (neg t))) refl ⟩
+    expC lem (pos s + neg t) * expC lem k              ≈⟨ sym (expC-add (pos s + neg t) k) ⟩
+    expC lem (pos s + neg t + k)                       ∎
 
-  expW-C-step′ : ∀ s t k (fk : Bnd k) →
+  expW-C-step′ : ∀ s t k →
     expW t * ((expC lem (neg s) * expC lem (neg t)) * expC lem k) ≈
     expC lem (pos t + neg s + k)
-  expW-C-step′ s t k fk =
-    trans (rearrange-step′ (expC lem (pos t)) (negExp (neg t))
-                           (expC lem (neg s)) (expC lem (neg t)) (expC lem k)
-                           (neg-exp-inv (neg-fin t)))
-      (trans (*-cong (sym (expC-add (pos t) (neg s))) refl)
-        (sym (expC-add (pos t + neg s) k)))
+  expW-C-step′ s t k = begin
+    expW t * ((expC lem (neg s) * expC lem (neg t)) * expC lem k)
+      ≈⟨ rearrange-step′ (expC lem (pos t)) (negExp (neg t)) (expC lem (neg s)) (expC lem (neg t)) (expC lem k)
+           (neg-exp-inv (neg-fin t)) ⟩
+    (expC lem (pos t) * expC lem (neg s)) * expC lem k  ≈⟨ *-cong (sym (expC-add (pos t) (neg s))) refl ⟩
+    expC lem (pos t + neg s) * expC lem k              ≈⟨ sym (expC-add (pos t + neg s) k) ⟩
+    expC lem (pos t + neg s + k)                       ∎
 
   expW-C-eq : ∀ s t (st : s ≃ t) →
     expW s * ((expC lem (neg s) * expC lem (neg t)) * expC lem (Bounded._≃_.k st)) ≈
     expW t * ((expC lem (neg s) * expC lem (neg t)) * expC lem (Bounded._≃_.k st))
   expW-C-eq s t (mk≃ k fk eq) =
-    trans (expW-C-step s t k fk)
-      (trans (expC-cong lem eq)
-        (sym (expW-C-step′ s t k fk)))
+    begin
+      expW s * ((expC lem (neg s) * expC lem (neg t)) * expC lem k)  ≈⟨ expW-C-step s t k ⟩
+      expC lem (pos s + neg t + k)                                   ≈⟨ expC-cong lem eq ⟩
+      expC lem (pos t + neg s + k)                                   ≈⟨ sym (expW-C-step′ s t k) ⟩
+      expW t * ((expC lem (neg s) * expC lem (neg t)) * expC lem k)  ∎
 
   expW-cong : ∀ {s t} → s ≃ t → expW s ≈ expW t
   expW-cong {s} {t} (mk≃ k fk eq) = cancel-mul (expW s) (expW t) C D
@@ -205,22 +204,26 @@ module ExpWeight (lem₁ : LEM₁) where
   expW-fin : ∀ s → Bnd (expW s)
   expW-fin s = rat-bnd (expW s) (expW-bnd s)
 
-  log-expW : ∀ s → logS (expW s) (expW-pos s) (expW-bnd s) ≃ s
-  log-expW s = mk≃ 0# Is-0 (trans (+-identityʳ _) (trans log-eq (sym (+-identityʳ _))))
+  -- the log equation behind `log-expW`
+  log-expW-eq : ∀ s → logP (expW s) + neg s ≈ pos s + logN (expW s)
+  log-expW-eq s = exp-inj (begin
+    expC lem (logP x + neg s)  ≈⟨ expC-add (logP x) (neg s) ⟩
+    ep * e
+      ≈⟨ ud-step ep en p e (negExp (neg s)) (neg-exp-inv (neg-fin s)) (UD (expW-pos s) (expW-bnd s)) ⟩
+    p * en                     ≈⟨ sym (expC-add (pos s) (logN x)) ⟩
+    expC lem (pos s + logN x)  ∎)
     where
       x = expW s
-      px = expW-pos s
-      bx = expW-bnd s
       ep = expC lem (logP x)
       en = expC lem (logN x)
       p = expC lem (pos s)
       e = expC lem (neg s)
-      n = negExp (neg s)
-      h1 : ep * e ≈ p * en
-      h1 = ud-step ep en p e n (neg-exp-inv (neg-fin s)) (UD px bx)
-      h2 : expC lem (logP x + neg s) ≈ expC lem (pos s + logN x)
-      h2 = trans (expC-add (logP x) (neg s)) (trans h1 (sym (expC-add (pos s) (logN x))))
-      log-eq : logP x + neg s ≈ pos s + logN x
-      log-eq = exp-inj h2
+
+  log-expW : ∀ s → logS (expW s) (expW-pos s) (expW-bnd s) ≃ s
+  log-expW s = mk≃ 0# Is-0 (begin
+    logP (expW s) + neg s + 0#  ≈⟨ +-identityʳ _ ⟩
+    logP (expW s) + neg s       ≈⟨ log-expW-eq s ⟩
+    pos s + logN (expW s)       ≈⟨ sym (+-identityʳ _) ⟩
+    pos s + logN (expW s) + 0#  ∎)
 
 
