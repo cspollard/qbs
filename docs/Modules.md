@@ -164,6 +164,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.Estimator` | 276 |  | The generic estimator theorem, over an abstract ring of random variables. |
 | `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
+| `QBS.Analysis.ExpFamAlg` | 172 |  | Commutative ring algebra for exponential families (plan ExpFam, item 56). |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
 | `QBS.Analysis.ExpRate` | 413 |  | The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1 certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`. |
 | `QBS.Analysis.ExpRateExt` | 269 |  | From small widths to all widths: the extension step that removes the restriction `λ ≤ 1` of the exponential with a rate. |
