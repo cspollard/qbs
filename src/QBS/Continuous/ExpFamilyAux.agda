@@ -6,9 +6,9 @@
 --     `f ≐ g` (`≈T⇒≐`) and equal weights `expWT f`, `expWT g` with no finiteness (`expWT-≈T`);
 --   * `scaleT` distributes over `+T` and commutes with precomposition, and kills the zero test (`scaleT-+T`, `scaleT-∘T`,
 --     `scaleT-0`), and the zero scalar kills every test (`scaleT-0S`), all up to `≈T`;
---   * finiteness closure: `FinT-+T`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`;
 --   * weights of sums: `expWT-+T` (e^{f + g} ≈ e^{f} e^{g} pointwise, for `FinT f`, `FinT g`) and `expWT-0`;
---   * re-exported from `Continuous/ProdReweight`: `prod-reweight`, `prod-scale`, `reweight-cong`;
+--   * re-exported from `Continuous/ProdReweight`: `prod-reweight`, `prod-scale`, `reweight-cong`; and from
+--     `Continuous/FinTest`: `FinT-+T`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`;
 --   * logarithms: `PosQ-resp`, `BndQ-resp`, `logS-cong` (any proofs), and `logS-∏ⁿ`, log xᴺ ≃ N · log x
 --     (`ExpFamAlg.scaleA`), with `PosQ-∏ⁿ`, `BndQ-∏ⁿ`.
 -- Route: the part identities are `ExpFamilyAlg.scale-+-alg` pointwise; `expWT-+T` is `ExpWeight.expW-+` at the
@@ -17,7 +17,7 @@
 -- `log-one`.
 module QBS.Continuous.ExpFamilyAux where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Algebra.Properties.CommutativeSemigroup using (interchange)
@@ -41,6 +41,7 @@ open import QBS.Continuous.FinProd using (module FinProd)
 open import QBS.Continuous.ExpWeight using (module ExpWeight)
 open import QBS.Continuous.ExpFamilyAlg using (module ExpFamilyAlg)
 open import QBS.Continuous.ProdReweight using (module ProdReweight)
+open import QBS.Continuous.FinTest using (module FinTest)
 
 module ExpFamilyAux (lem₁ : LEM₁) where
   private
@@ -50,7 +51,7 @@ module ExpFamilyAux (lem₁ : LEM₁) where
     +-commutativeSemigroup)
   open Bounded A using (Sg; _≃_; 0S; signedRing; finite; ≃-refl; ≃-trans; +S-cong; mk≃)
   open Sg
-  open SubSemiring finite using (Is-0; Is-+; Is-*)
+  open SubSemiring finite using (Is-0)
   open NegExp lem using (negExp; negExp-anti)
   open SignedTest lem₁ using (SgT; at⁺; at⁻; FinT; _≐_; _+T_; scaleT; constT; _∘T_)
   open SignedLog lem₁ using (PosQ; logS; logP-cong; logN-cong; log-mul; log-one; PosQ-mul; BndQ-mul; PosQ-one;
@@ -60,6 +61,7 @@ module ExpFamilyAux (lem₁ : LEM₁) where
   open ExpFamAlg signedRing using (scaleA)
   open ExpFamilyAlg commutativeSemiring using (scale-+-alg; scale-0-alg; zero-scale-alg; +-0-alg)
   open ProdReweight lem public using (reweight-cong; prod-reweight; prod-scale)
+  open FinTest lem₁ public using (FinT-+T; FinT-scaleT; FinT-constT; FinT-∘T)
   open Hom
   open _⊑_
 
@@ -107,22 +109,6 @@ module ExpFamilyAux (lem₁ : LEM₁) where
 
   scaleT-0S : ∀ {X : QBS S} (f : SgT X) → scaleT 0S f ≈T constT {X} 0S
   scaleT-0S f x = zero-scale-alg (at⁺ f x) (at⁻ f x) , zero-scale-alg (at⁻ f x) (at⁺ f x)
-
-  ----------------------------------------------------------------------------
-  -- finiteness
-
-  FinT-+T : ∀ {X : QBS S} {f g : SgT X} → FinT f → FinT g → FinT (f +T g)
-  FinT-+T ff fg x = Is-+ (proj₁ (ff x)) (proj₁ (fg x)) , Is-+ (proj₂ (ff x)) (proj₂ (fg x))
-
-  FinT-scaleT : ∀ {X : QBS S} (c : Sg) {f : SgT X} → FinT f → FinT (scaleT c f)
-  FinT-scaleT c ff x = Is-+ (Is-* (pos-fin c) (proj₁ (ff x))) (Is-* (neg-fin c) (proj₂ (ff x)))
-                     , Is-+ (Is-* (pos-fin c) (proj₂ (ff x))) (Is-* (neg-fin c) (proj₁ (ff x)))
-
-  FinT-constT : ∀ {X : QBS S} (c : Sg) → FinT (constT {X} c)
-  FinT-constT c x = pos-fin c , neg-fin c
-
-  FinT-∘T : ∀ {X Y : QBS S} {f : SgT Y} (φ : Hom S X Y) → FinT f → FinT (f ∘T φ)
-  FinT-∘T φ ff x = ff (map φ ⟨$⟩ x)
 
   ----------------------------------------------------------------------------
   -- weights

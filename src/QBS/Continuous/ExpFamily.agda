@@ -298,7 +298,7 @@ module ExpFamily (lem₁ : LEM₁) where
   product-expFam {X} h (suc N) k η T n fin hn g =
     trans (prod-cong {X} {Xⁿ N X} (λ f → refl) (product-expFam h N k η T n fin hn) g)
     (trans (prod-scale n nN (reweightPre w h) (reweightPre wN hN) g) (trans (∫ᴹ-scale (n * nN) _ g)
-    (trans (*-cong refl (trans (prod-reweight w wN h hN g) (reweight-cong (prodPre h hN) (weight-split N k η T fin) g)))
+    (trans (*-cong refl (trans (prod-reweight w wN h hN g) (reweight-cong (prodPre h hN) (λ x → weight-split N k η T fin {x}) g)))
     (sym (∫ᴹ-scale (n * nN) _ g)))))
     where
       w = weight k η T

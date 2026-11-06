@@ -22,7 +22,7 @@
 -- needs the family as a kernel Θ ⇒ T X and disintegration; see plan 07).
 -- Route: every test is finite, so it is evaluated at θ to a signed value (`ExpFamilyPostAux.atSg-*`, `FinT-*`) and the
 -- algebra is the ring identity `ExpFamilyPostAlg.expo-update` (or `expo-draw`) in `Signed.signedRing`; weights by
--- `ExpWeight.expW-+` and `expW-cong`; measures by `ExpFamilyPostAux.reweight-reweight` and `reweight-cong`.
+-- `ExpWeight.expW-+` and `expW-cong`; measures by `ExpFamilyPostAux.reweight-reweight` and `ProdReweight.reweight-cong`.
 module QBS.Continuous.ExpFamilyPost where
 
 open import Data.Fin.Base using (Fin; zero; suc)
@@ -74,9 +74,9 @@ module ExpFamilyPost (lem₁ : LEM₁) where
   open SFiniteNorm lem using (normPre; massP)
   open SFiniteIncl lem using (ιPre)
   open ExpWeight lem₁ using (expW; expWT; atSg; expW-cong; expW-+; expW-0)
-  open ExpFamily lem₁ using (dotT)
+  open ExpFamily lem₁ using (dotT; FinT-dotT)
   open ExpFamilyPostAux lem₁
-    using ( FinT-+; FinT-neg; FinT-scale; FinT-dot; atSg-+; atSg-neg; atSg-scale; atSg-dot; ≐-atSg; expWT-at; mulH-at
+    using ( FinT-+T; FinT-negT; FinT-scaleT; atSg-+; atSg-neg; atSg-scale; atSg-dot; ≐-atSg; expWT-at; mulH-at
           ; reweight-cong; reweight-reweight; prodW; prodW-zero; prodW-suc; norm-cong )
   open Hom
 
@@ -114,13 +114,13 @@ module ExpFamilyPost (lem₁ : LEM₁) where
     priorPre p = reweightPre (priorWeight p) μ_Θ
 
     priorTest-fin : ∀ p → FinT (priorTest p)
-    priorTest-fin (χ , ν) = FinT-+ (FinT-dot k χ finη) (FinT-neg (FinT-scale (scaleA ν 1S) finA))
+    priorTest-fin (χ , ν) = FinT-+T (FinT-dotT k χ η finη) (FinT-negT (FinT-scaleT (scaleA ν 1S) finA))
 
     -- the value of the prior exponent at θ
     priorTest-at : ∀ χ ν θ → atSg (priorTest (χ , ν)) (priorTest-fin (χ , ν)) θ ≃ expo χ ν (ηAt θ) (AAt θ)
-    priorTest-at χ ν θ = ≃-trans (atSg-+ (FinT-dot k χ finη) (FinT-neg (FinT-scale (scaleA ν 1S) finA)) θ)
+    priorTest-at χ ν θ = ≃-trans (atSg-+ (FinT-dotT k χ η finη) (FinT-negT (FinT-scaleT (scaleA ν 1S) finA)) θ)
       (+S-cong (atSg-dot k χ finη θ)
-        (≃-trans (atSg-neg (FinT-scale (scaleA ν 1S) finA) θ) (-S-cong (atSg-scale (scaleA ν 1S) finA θ))))
+        (≃-trans (atSg-neg (FinT-scaleT (scaleA ν 1S) finA) θ) (-S-cong (atSg-scale (scaleA ν 1S) finA θ))))
 
     priorWeight-at : ∀ χ ν θ → map (priorWeight (χ , ν)) ⟨$⟩ θ ≈ expW (expo χ ν (ηAt θ) (AAt θ))
     priorWeight-at χ ν θ =
@@ -147,8 +147,8 @@ module ExpFamilyPost (lem₁ : LEM₁) where
 
     -- the conjugate update, on exponents and on weights
     update-test : ∀ {N} (p : Param k) (T : Fin N → Vec k) → priorTest p +T likTest T ≐ priorTest (updateSample p T)
-    update-test {N} (χ , ν) T = ≐-atSg (FinT-+ fp fl) (priorTest-fin (χ +V sumV T , ν Nat.+ N)) λ θ → begin
-      atSg (priorTest (χ , ν) +T likTest T) (FinT-+ fp fl) θ   ≈⟨ atSg-+ fp fl θ ⟩
+    update-test {N} (χ , ν) T = ≐-atSg (FinT-+T fp fl) (priorTest-fin (χ +V sumV T , ν Nat.+ N)) λ θ → begin
+      atSg (priorTest (χ , ν) +T likTest T) (FinT-+T fp fl) θ   ≈⟨ atSg-+ fp fl θ ⟩
       atSg (priorTest (χ , ν)) fp θ +S atSg (likTest T) fl θ  ≈⟨ +S-cong (priorTest-at χ ν θ) (priorTest-at (sumV T) N θ) ⟩
       expo χ ν (ηAt θ) (AAt θ) +S expo (sumV T) N (ηAt θ) (AAt θ)
         ≈⟨ expo-update χ (sumV T) ν N (ηAt θ) (AAt θ) ⟩
@@ -189,10 +189,10 @@ module ExpFamilyPost (lem₁ : LEM₁) where
     likData {N} t = prodW N (λ i → expWT (drawTest (t i)))
 
     drawTest-fin : ∀ t → FinT (drawTest t)
-    drawTest-fin t = FinT-+ (FinT-dot k t finη) (FinT-neg finA)
+    drawTest-fin t = FinT-+T (FinT-dotT k t η finη) (FinT-negT finA)
 
     drawTest-at : ∀ t θ → atSg (drawTest t) (drawTest-fin t) θ ≃ t · ηAt θ +S -S AAt θ
-    drawTest-at t θ = ≃-trans (atSg-+ (FinT-dot k t finη) (FinT-neg finA) θ)
+    drawTest-at t θ = ≃-trans (atSg-+ (FinT-dotT k t η finη) (FinT-negT finA) θ)
       (+S-cong (atSg-dot k t finη θ) (atSg-neg finA θ))
 
     drawWeight-at : ∀ t θ → map (expWT (drawTest t)) ⟨$⟩ θ ≈ expW (t · ηAt θ +S -S AAt θ)

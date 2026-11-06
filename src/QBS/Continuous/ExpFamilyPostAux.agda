@@ -4,13 +4,13 @@
 -- On tests with both parts finite at every point (`FinT`) the cross-added `_≐_` is safe to chain; here such a test is
 -- evaluated at a point to a signed value (`ExpWeight.atSg`), where `≃` is a ring congruence, and the algebra is done
 -- on values:
---   * `FinT-+`, `FinT-neg`, `FinT-scale`, `FinT-const`, `FinT-dot`: `FinT` is closed under the test operations and
---     under `ExpFamily.dotT` (finite coefficients);
+--   * re-exported from `Continuous/FinTest`: `FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT` (`FinT` is closed
+--     under the test operations; for `ExpFamily.dotT`, `ExpFamily.FinT-dotT`);
 --   * `atSg-irr`, `atSg-+`, `atSg-neg`, `atSg-scale`, `atSg-const`, `atSg-dot`: evaluation commutes with the
 --     operations, `atSg (dotT k χ T) x ≃ χ · (Tⱼ(x))ⱼ`; `≐-atSg`: tests with ≃ values are `≐`;
 --   * `expWT-at`: the weight of a finite test at x is `expW` of its value;
---   * `mulH-at`, `reweight-cong`, `reweight-reweight`: reweighting respects pointwise ≈ of densities, and
---     reweighting twice is reweighting by the product;
+--   * `mulH-at`, `reweight-reweight`: reweighting twice is reweighting by the product; `reweight-cong` (pointwise
+--     ≈ densities give ≈ᴹ measures) is re-exported from `Continuous/ProdReweight`;
 --   * `prodW N w`, the pointwise product of N weights, with `prodW-zero`, `prodW-suc`;
 --   * `norm-cong`: ≈ᴹ measures have ≈ᴹ normalisations (`SFiniteNorm.normPre`), whatever the normalisers.
 -- Route: the `atSg` lemmas are definitional up to `≃` (witness 0, `≃-by`); `≐-atSg` cancels the finite witness
@@ -19,8 +19,7 @@
 module QBS.Continuous.ExpFamilyPostAux where
 
 open import Data.Fin.Base using (Fin; zero; suc)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core
@@ -41,6 +40,8 @@ open import QBS.Continuous.SFiniteIncl using (module SFiniteIncl)
 open import QBS.Continuous.ExpWeight using (module ExpWeight)
 open import QBS.Continuous.ExpFamily using (module ExpFamily)
 open import QBS.Continuous.InfAlg using (module InfAlg)
+open import QBS.Continuous.FinTest using (module FinTest)
+open import QBS.Continuous.ProdReweight using (module ProdReweight)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 module ExpFamilyPostAux (lem₁ : LEM₁) where
@@ -52,7 +53,7 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   open Bounded A using (Sg; signedRing; _+S_; _*S_; -S_; _≃_; mk≃; ≃-trans; +S-cong; finite)
   open Sg
   open import QBS.Analysis.Signed using (SubSemiring)
-  open SubSemiring finite using (Is-0; Is-+; Is-*)
+  open SubSemiring finite using (Is-0)
   open SgLinAlg signedRing using (Vec; _·_)
   open SignedTest lem₁ using (SgT; _+T_; -T_; scaleT; constT; FinT; _≐_; at⁺; at⁻)
   open SetoidReasoning (OmegaSemiring.setoid A)
@@ -63,28 +64,10 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   open SFiniteIncl lem using (ιPre; ι-cong)
   open InfAlg lem₁ using (cancel-bnd)
   open ExpWeight lem₁ using (expW; expWT; atSg)
-  open ExpFamily lem₁ using (dotT)
+  open ExpFamily lem₁ using (dotT; FinT-dotT)
+  open FinTest lem₁ public using (FinT-+T; FinT-negT; FinT-scaleT; FinT-constT)
+  open ProdReweight lem public using (reweight-cong)
   open Hom
-
-  ----------------------------------------------------------------------------
-  -- finite tests
-
-  FinT-+ : ∀ {X : QBS S} {f g : SgT X} → FinT f → FinT g → FinT (f +T g)
-  FinT-+ ff fg x = Is-+ (proj₁ (ff x)) (proj₁ (fg x)) , Is-+ (proj₂ (ff x)) (proj₂ (fg x))
-
-  FinT-neg : ∀ {X : QBS S} {f : SgT X} → FinT f → FinT (-T f)
-  FinT-neg ff x = proj₂ (ff x) , proj₁ (ff x)
-
-  FinT-scale : ∀ {X : QBS S} (c : Sg) {f : SgT X} → FinT f → FinT (scaleT c f)
-  FinT-scale c ff x = Is-+ (Is-* (pos-fin c) (proj₁ (ff x))) (Is-* (neg-fin c) (proj₂ (ff x)))
-                    , Is-+ (Is-* (pos-fin c) (proj₂ (ff x))) (Is-* (neg-fin c) (proj₁ (ff x)))
-
-  FinT-const : ∀ {X : QBS S} (c : Sg) → FinT (constT {X} c)
-  FinT-const c x = pos-fin c , neg-fin c
-
-  FinT-dot : ∀ {X : QBS S} k (χ : Vec k) {T : Fin k → SgT X} → (∀ j → FinT (T j)) → FinT (dotT k χ T)
-  FinT-dot zero χ fT = FinT-const (Bounded.0S A)
-  FinT-dot (suc k) χ fT = FinT-+ (FinT-scale (χ zero) (fT zero)) (FinT-dot k (λ j → χ (suc j)) (λ j → fT (suc j)))
 
   ----------------------------------------------------------------------------
   -- values of finite tests
@@ -97,25 +80,26 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   atSg-irr f p q x = ≃-by _ _ refl
 
   atSg-+ : ∀ {X : QBS S} {f g : SgT X} (ff : FinT f) (fg : FinT g) x →
-    atSg (f +T g) (FinT-+ ff fg) x ≃ atSg f ff x +S atSg g fg x
+    atSg (f +T g) (FinT-+T ff fg) x ≃ atSg f ff x +S atSg g fg x
   atSg-+ ff fg x = ≃-by _ _ refl
 
-  atSg-neg : ∀ {X : QBS S} {f : SgT X} (ff : FinT f) x → atSg (-T f) (FinT-neg ff) x ≃ -S atSg f ff x
+  atSg-neg : ∀ {X : QBS S} {f : SgT X} (ff : FinT f) x → atSg (-T f) (FinT-negT ff) x ≃ -S atSg f ff x
   atSg-neg ff x = ≃-by _ _ refl
 
   atSg-scale : ∀ {X : QBS S} (c : Sg) {f : SgT X} (ff : FinT f) x →
-    atSg (scaleT c f) (FinT-scale c ff) x ≃ c *S atSg f ff x
+    atSg (scaleT c f) (FinT-scaleT c ff) x ≃ c *S atSg f ff x
   atSg-scale c ff x = ≃-by _ _ refl
 
-  atSg-const : ∀ {X : QBS S} (c : Sg) x → atSg (constT {X} c) (FinT-const c) x ≃ c
+  atSg-const : ∀ {X : QBS S} (c : Sg) x → atSg (constT {X} c) (FinT-constT c) x ≃ c
   atSg-const c x = ≃-by _ _ refl
 
   atSg-dot : ∀ {X : QBS S} k (χ : Vec k) {T : Fin k → SgT X} (fT : ∀ j → FinT (T j)) x →
-    atSg (dotT k χ T) (FinT-dot k χ fT) x ≃ χ · (λ j → atSg (T j) (fT j) x)
+    atSg (dotT k χ T) (FinT-dotT k χ T fT) x ≃ χ · (λ j → atSg (T j) (fT j) x)
   atSg-dot zero χ fT x = ≃-by _ _ refl
-  atSg-dot (suc k) χ fT x = ≃-trans (atSg-+ (FinT-scale (χ zero) (fT zero)) (FinT-dot k χ′ fT′) x)
+  atSg-dot (suc k) χ {T} fT x = ≃-trans (atSg-+ (FinT-scaleT (χ zero) (fT zero)) (FinT-dotT k χ′ T′ fT′) x)
     (+S-cong (atSg-scale (χ zero) (fT zero) x) (atSg-dot k χ′ fT′ x))
     where χ′ = λ j → χ (suc j)
+          T′ = λ j → T (suc j)
           fT′ = λ j → fT (suc j)
 
   ≐-atSg : ∀ {X : QBS S} {f g : SgT X} (ff : FinT f) (fg : FinT g) → (∀ x → atSg f ff x ≃ atSg g fg x) → f ≐ g
@@ -134,14 +118,6 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
 
   mulH-at : ∀ {X : QBS S} (d e : Hom S X WQ) x → map (mulH {X} d e) ⟨$⟩ x ≈ (map d ⟨$⟩ x) * (map e ⟨$⟩ x)
   mulH-at d e x = refl
-
-  reweight-cong : ∀ {X : QBS S} {d d′ : Hom S X WQ} (μ : Pre (XW X)) → (∀ x → map d ⟨$⟩ x ≈ map d′ ⟨$⟩ x) →
-    _≈ᴹ_ {X} (reweightPre d μ) (reweightPre d′ μ)
-  reweight-cong {X} {d} {d′} μ h f = begin
-    ∫ᴹ (reweightPre d μ) f   ≈⟨ ∫ᴹ-reweight d μ f ⟩
-    ∫ᴹ μ (mulH {X} d f)      ≈⟨ ∫ᴹ-cong μ {mulH {X} d f} {mulH {X} d′ f} (λ x → *-cong (h x) refl) ⟩
-    ∫ᴹ μ (mulH {X} d′ f)     ≈⟨ sym (∫ᴹ-reweight d′ μ f) ⟩
-    ∫ᴹ (reweightPre d′ μ) f  ∎
 
   reweight-reweight : ∀ {X : QBS S} (d e : Hom S X WQ) (μ : Pre (XW X)) →
     _≈ᴹ_ {X} (reweightPre d (reweightPre e μ)) (reweightPre (mulH {X} e d) μ)

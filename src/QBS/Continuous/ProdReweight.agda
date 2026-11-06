@@ -39,10 +39,13 @@ module ProdReweight (lem : LEM₀) where
   open Product lem using (prodPre; intL; intL-pt; ∫-prod; cmul)
   open Hom
 
-  reweight-cong : ∀ {X : QBS S} {v w : Hom S X WQ} (s : Pre (XW X)) → _≈H_ S v w →
+  reweight-cong : ∀ {X : QBS S} {v w : Hom S X WQ} (s : Pre (XW X)) → (∀ x → map v ⟨$⟩ x ≈ map w ⟨$⟩ x) →
     _≈ᴹ_ {X} (reweightPre {X} v s) (reweightPre {X} w s)
-  reweight-cong {X} {v} {w} s e f = trans (∫ᴹ-reweight {X} v s f)
-    (trans (∫ᴹ-cong {X} s {mulH {X} v f} {mulH {X} w f} (λ x → *-cong (e {x}) refl)) (sym (∫ᴹ-reweight {X} w s f)))
+  reweight-cong {X} {v} {w} s e f = begin
+    ∫ᴹ (reweightPre {X} v s) f  ≈⟨ ∫ᴹ-reweight {X} v s f ⟩
+    ∫ᴹ s (mulH {X} v f)         ≈⟨ ∫ᴹ-cong {X} s {mulH {X} v f} {mulH {X} w f} (λ x → *-cong (e x) refl) ⟩
+    ∫ᴹ s (mulH {X} w f)         ≈⟨ sym (∫ᴹ-reweight {X} w s f) ⟩
+    ∫ᴹ (reweightPre {X} w s) f  ∎
 
   -- c (a b) ≈ (a c) b, the pointwise rearrangement of the densities
   rw-alg : ∀ (a b c : ∣A∣) → c * (a * b) ≈ (a * c) * b
