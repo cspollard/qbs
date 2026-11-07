@@ -22,6 +22,7 @@ import Categories.Morphism.Reasoning as MR
 
 open import QBS.CommMonad using (ProbMonad)
 import QBS.StrongPoint as SP
+open import QBS.Bind using (module Bind)
 
 -- An abstract probability monad on a cartesian closed category with an object
 -- ℛ of probes (random sources), in the style of Heunen–Kammar–Staton–Vákár.
@@ -95,6 +96,7 @@ module _ {o h e} ℓ {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical
     private module Mor = Morph C
     -- `σ`, `τ`, `ψ` and the strength-at-a-point lemmas `σ-point`, `τ-point`, `ψ-point` are generic: see `StrongPoint`
     open SP.Strength-at-points CC cm
+    open Bind (CommutativeMonad.M cm) using (bind-nat)
 
     field
       split : ℛ Mor.≅ (ℛ × ℛ)
@@ -126,22 +128,12 @@ module _ {o h e} ℓ {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical
         ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
       T.F.F₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ measure ν ∎
 
-    -- Tγ commutes past the join, and the kernel assembles from the strength
+    -- Tγ commutes past the join (`bind-nat`), and the kernel assembles from the strength
     join-kernel : ∀ {X} (γ : ℛ × ℛ ⇒ X) ν (s : ⊤ ⇒ T.F.F₀ ℛ) →
       T.F.F₁ γ ∘ T.μ.η (ℛ × ℛ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , measure ν ∘ ! ⟩ ∘ s
         ≈ T.μ.η X ∘ T.F.F₁ (kernel γ ν) ∘ s
-    join-kernel γ ν s = begin
-      T.F.F₁ γ ∘ T.μ.η (ℛ × ℛ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , measure ν ∘ ! ⟩ ∘ s
-        ≈⟨ pullˡ (T.μ.sym-commute γ) ⟩
-      (T.μ.η _ ∘ T.F.F₁ (T.F.F₁ γ)) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , measure ν ∘ ! ⟩ ∘ s
-        ≈⟨ assoc ⟩
-      T.μ.η _ ∘ T.F.F₁ (T.F.F₁ γ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , measure ν ∘ ! ⟩ ∘ s
-        ≈⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
-      T.μ.η _ ∘ T.F.F₁ (T.F.F₁ γ ∘ σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , measure ν ∘ ! ⟩ ∘ s
-        ≈⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
-      T.μ.η _ ∘ T.F.F₁ ((T.F.F₁ γ ∘ σ.η (ℛ , ℛ)) ∘ ⟨ id , measure ν ∘ ! ⟩) ∘ s
-        ≈⟨ refl⟩∘⟨ T.F.F-resp-≈ assoc ⟩∘⟨refl ⟩
-      T.μ.η _ ∘ T.F.F₁ (kernel γ ν) ∘ s ∎
+    join-kernel γ ν s =
+      (refl⟩∘⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism)) ○ bind-nat γ (σ.η (ℛ , ℛ) ∘ ⟨ id , measure ν ∘ ! ⟩) s
 
     law-join : ∀ {X} (γ : ℛ × ℛ ⇒ X) μ ν →
       T.μ.η X ∘ law (kernel γ ν) μ ≈ law (γ ∘ Mor._≅_.from split) (tensor μ ν)

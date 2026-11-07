@@ -38,11 +38,12 @@ Contents:
 - `ℛQ` — the probe object, the space of random sources; random elements of `X` correspond to morphisms `ℛQ ⇒ X`.
 
 ### Abstract layer map
-The dependency stack is `Core → Category → {Exponential, Limits, Colimits, Complete} → Probability → Statistical → IsQBSLike → IsStatisticalQBSLike → Instance`.  `Probability` and `Statistical` are stated over an arbitrary cartesian closed category `C` and do not mention QBS; `QBSCat S` is the primary instance (`Instance`), and the discrete and continuous models supply the monads.  `IsQBSLike` bundles what an example needs: cartesian closure, (countable) coproducts and products, a probe object, and a `ProbabilityInterface`.  Two generic helpers sit under `Probability`: `QBS.CommMonad` (`ProbMonad CC`, the one spelling of "commutative monad on a cartesian closed category", with `braidedOf`) and `QBS.StrongPoint` (`ψ`, `σ-point`, `τ-point`, `ψ-point`: strength of any commutative monad at global elements; later modules should reuse it).  Bind is the local reading `μ ∘ M k ∘ t`.
+The dependency stack is `Core → Category → {Exponential, Limits, Colimits, Complete} → Probability → Statistical → IsQBSLike → IsStatisticalQBSLike → Instance`.  `Probability` and `Statistical` are stated over an arbitrary cartesian closed category `C` and do not mention QBS; `QBSCat S` is the primary instance (`Instance`), and the discrete and continuous models supply the monads.  `IsQBSLike` bundles what an example needs: cartesian closure, (countable) coproducts and products, a probe object, and a `ProbabilityInterface`.  Two generic helpers sit under `Probability`: `QBS.CommMonad` (`ProbMonad CC`, the one spelling of "commutative monad on a cartesian closed category", with `braidedOf`) and `QBS.StrongPoint` (`ψ`, `σ-point`, `τ-point`, `ψ-point`: strength of any commutative monad at global elements; later modules should reuse it).  Bind is named once, in `QBS.Bind` (`bind k t = μ ∘ M k ∘ t`); later modules should use it.
 
-### `QBS.CommMonad`, `QBS.StrongPoint`
+### `QBS.CommMonad`, `QBS.StrongPoint`, `QBS.Bind`
 - `braidedOf`, `ProbMonad` — the braided monoidal structure of the products of a cartesian closed category, and commutative monads for it.
 - `Strength-at-points` — `ψ` (Kock's double strength), `σ-unit`, `τ-unit`, `σ-point`, `τ-point`, `ψ-point`; generic, no ℛ or measures.
+- `Bind M` (module `Bind`, for any monad `M`) — `bind k t = μ ∘ M k ∘ t`, Kleisli composition `_∘ᴷ_`, and the laws `bind-return`, `bind-η`, `bind-η-∘` (units), `bind-assoc`, `∘ᴷ-assoc`, `bind-pre`, `bind-nat`, `bind-map`, `bind-join`, `bind-cong`; `scaleM a t` is `bind t (score ∘ a)`. Use it instead of writing `μ ∘ M k ∘ t`.
 
 ### `QBS.Probability`
 - `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`, assembled from the monad (`ProbMonad`), `ProbLaws` and `Fubini` (fields re-exported).

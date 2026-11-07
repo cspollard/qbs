@@ -121,11 +121,11 @@ For example, a calculation in an ordered semiring, with one solver step:
 and naturality of a monad's multiplication, in the categorical syntax:
 
 ```agda
--- from: src/QBS/Statistical.agda
-  scale-nat {X} {Y} f a t = begin
-    M.F.F₁ f ∘ M.μ.η X ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ extendʳ (M.μ.sym-commute f) ⟩
-    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
-    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f ∘ t) ∘ score ∘ a  ∎
+-- from: src/QBS/Bind.agda
+  bind-nat {W = W} f k t = begin
+    T.F.F₁ f ∘ T.μ.η _ ∘ T.F.F₁ k ∘ t                   ≈⟨ extendʳ (T.μ.sym-commute f) ⟩
+    T.μ.η W ∘ T.F.F₁ (T.F.F₁ f) ∘ T.F.F₁ k ∘ t          ≈⟨ refl⟩∘⟨ pullˡ (⟺ T.F.homomorphism) ⟩
+    T.μ.η W ∘ T.F.F₁ (T.F.F₁ f ∘ k) ∘ t                  ∎
 ```
 
 Align the `≈⟨` columns when the terms are short.  A chain is still a declaration under the 18-line limit: when it

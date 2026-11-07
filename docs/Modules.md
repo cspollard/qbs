@@ -15,6 +15,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
+| `QBS.Bind` | 115 |  | `Bind M`: the one spelling of bind and Kleisli composition for a monad `M`, so that proofs about measures read as monad calculations. |
 | `QBS.BoolQ` | 57 |  | The Boolean QBS `BoolQ = 1Q +Q 1Q`, the coproduct (`Colimits`) of two points, over any random source. |
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
 | `QBS.Category.Cartesian` | 26 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
@@ -93,9 +94,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.IsQBSLike` | 36 |  | `IsQBSLike ℓ C`: what a category `C` must provide for QBS-style probabilistic programming: cartesian closure (higher-order programs), binary and ℕ-indexed coproducts (branching, discrete data), ℕ-indexed products (inf... |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 132 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 169 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Probability` | 161 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 32 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 235 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
+| `QBS.Statistical` | 204 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 | `QBS.StrongPoint` | 136 |  | `StrongPoint CC cm`: the strength of a commutative monad `cm` on a cartesian category, evaluated at global elements. |
 

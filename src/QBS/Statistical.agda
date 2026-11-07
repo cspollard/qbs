@@ -13,8 +13,9 @@
 -- `zero⇒` of the weights is an absorbing element of the multiplication, not a zero object.
 -- Linearity: `bind-sumK` is linear in the kernel; `sum-nat`/`sum-join` are linear in the measure.  They are separate
 -- axioms, not derivable from one another without a unit measure.
--- Bind vocabulary: a bind is `μ ∘ M k ∘ t` for a global measure `t` and kernel `k`; later modules should use this
--- reading (`scaleM a t` is `t` bound through `score a`).
+-- Bind vocabulary: a bind is `μ ∘ M k ∘ t` for a global measure `t` and kernel `k`.  It is named once, in `QBS.Bind`
+-- (`bind k t`, Kleisli composition, unit/associativity laws); later modules should use that, not spell out
+-- `μ ∘ M k ∘ t` (`scaleM a t` is `bind t (score ∘ a)`, and its laws are instances of the `Bind` laws).
 -- Instances: `Model/StatInstance` (discrete), `Continuous/SFiniteStat`.
 module QBS.Statistical where
 
@@ -36,6 +37,7 @@ import Categories.Morphism.Reasoning as MR
 import Categories.NaturalTransformation as NT
 
 open import QBS.CommMonad using (ProbMonad)
+open import QBS.Bind using (module Bind)
 open import QBS.Probability using (ProbabilityInterface)
 
 -- A commutative monoid object of weights, with an absorbing zero (`zero⇒ : ⊤ ⇒ W`, an absorbing element
@@ -84,6 +86,7 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
   open Canonical.CartesianClosed CC using (⊤; _×_; !; ⟨_,_⟩; !-unique)
   open CommutativeMonoidWithZero WM
   private module M = Monad (CommutativeMonad.M (SubMonad.commutativeMonad SM))
+  open Bind (CommutativeMonad.M (SubMonad.commutativeMonad SM))
   field
     -- the zero measure is absorbing for bind
     zero : ⊤ ⇒ M.F.F₀ ⊤
@@ -105,59 +108,25 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
     ∘!≈ b = (refl⟩∘⟨ !-unique id) ○ identityʳ
 
   scale-one : ∀ {X} (t : ⊤ ⇒ M.F.F₀ X) → scaleM oneW t ≈ t
-  scale-one {X} t = begin
-    M.μ.η X ∘ M.F.F₁ t ∘ score ∘ oneW  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ score-one ⟩
-    M.μ.η X ∘ M.F.F₁ t ∘ M.η.η ⊤       ≈⟨ refl⟩∘⟨ M.η.sym-commute t ⟩
-    M.μ.η X ∘ M.η.η (M.F.F₀ X) ∘ t     ≈⟨ cancelˡ M.identityʳ ⟩
-    t                                  ∎
+  scale-one t = bind-cong Equiv.refl (score-one ○ ⟺ identityʳ) ○ bind-η t id ○ identityʳ
 
   scale-mul : ∀ {X} (a b : ⊤ ⇒ W) (t : ⊤ ⇒ M.F.F₀ X) →
     scaleM (mulW ∘ ⟨ a , b ⟩) t ≈ scaleM a (scaleM b t)
-  scale-mul {X} a b t = begin
-    M.μ.η X ∘ M.F.F₁ t ∘ score ∘ mulW ∘ ⟨ a , b ⟩
-      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ score-mul a b ⟩
-    M.μ.η X ∘ M.F.F₁ t ∘ M.μ.η ⊤ ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ extendʳ (M.μ.sym-commute t) ⟩
-    M.μ.η X ∘ M.μ.η (M.F.F₀ X) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ sym-assoc ⟩
-    (M.μ.η X ∘ M.μ.η (M.F.F₀ X)) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ M.sym-assoc ⟩∘⟨refl ⟩
-    (M.μ.η X ∘ M.F.F₁ (M.μ.η X)) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ assoc ⟩
-    M.μ.η X ∘ M.F.F₁ (M.μ.η X) ∘ M.F.F₁ (M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
-    M.μ.η X ∘ M.F.F₁ (M.μ.η X ∘ M.F.F₁ t) ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
-    M.μ.η X ∘ M.F.F₁ ((M.μ.η X ∘ M.F.F₁ t) ∘ score ∘ b ∘ !) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ M.F.F-resp-≈ (refl⟩∘⟨ refl⟩∘⟨ ∘!≈ _) ⟩∘⟨refl ⟩
-    M.μ.η X ∘ M.F.F₁ ((M.μ.η X ∘ M.F.F₁ t) ∘ score ∘ b) ∘ score ∘ a
-      ≈⟨ refl⟩∘⟨ M.F.F-resp-≈ assoc ⟩∘⟨refl ⟩
-    M.μ.η X ∘ M.F.F₁ (M.μ.η X ∘ M.F.F₁ t ∘ score ∘ b) ∘ score ∘ a ∎
+  scale-mul a b t =
+    bind-cong Equiv.refl (score-mul a b) ○ bind-assoc t (score ∘ b ∘ !) (score ∘ a)
+      ○ bind-cong (bind-cong Equiv.refl (refl⟩∘⟨ ∘!≈ b)) Equiv.refl
 
   scale-return : ∀ {X} (a : ⊤ ⇒ W) (x : ⊤ ⇒ X) →
     scaleM a (M.η.η X ∘ x) ≈ M.F.F₁ (x ∘ !) ∘ score ∘ a
-  scale-return {X} a x = begin
-    M.μ.η X ∘ M.F.F₁ (M.η.η X ∘ x) ∘ score ∘ a  ≈⟨ refl⟩∘⟨ M.F.homomorphism ⟩∘⟨refl ⟩
-    M.μ.η X ∘ (M.F.F₁ (M.η.η X) ∘ M.F.F₁ x) ∘ score ∘ a  ≈⟨ refl⟩∘⟨ assoc ⟩
-    M.μ.η X ∘ M.F.F₁ (M.η.η X) ∘ M.F.F₁ x ∘ score ∘ a  ≈⟨ cancelˡ M.identityˡ ⟩
-    M.F.F₁ x ∘ score ∘ a  ≈⟨ M.F.F-resp-≈ (⟺ (∘!≈ x)) ⟩∘⟨refl ⟩
-    M.F.F₁ (x ∘ !) ∘ score ∘ a  ∎
+  scale-return a x = bind-η-∘ x (score ∘ a) ○ M.F.F-resp-≈ (⟺ (∘!≈ x)) ⟩∘⟨refl
 
   scale-nat : ∀ {X Y} (f : X ⇒ Y) (a : ⊤ ⇒ W) (t : ⊤ ⇒ M.F.F₀ X) →
     M.F.F₁ f ∘ scaleM a t ≈ scaleM a (M.F.F₁ f ∘ t)
-  scale-nat {X} {Y} f a t = begin
-    M.F.F₁ f ∘ M.μ.η X ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ extendʳ (M.μ.sym-commute f) ⟩
-    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
-    M.μ.η Y ∘ M.F.F₁ (M.F.F₁ f ∘ t) ∘ score ∘ a  ∎
+  scale-nat f a t = bind-nat f t (score ∘ a)
 
   scale-join : ∀ {X} (a : ⊤ ⇒ W) (t : ⊤ ⇒ M.F.F₀ (M.F.F₀ X)) →
     M.μ.η X ∘ scaleM a t ≈ scaleM a (M.μ.η X ∘ t)
-  scale-join {X} a t = begin
-    M.μ.η X ∘ M.μ.η (M.F.F₀ X) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ sym-assoc ⟩
-    (M.μ.η X ∘ M.μ.η (M.F.F₀ X)) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ ⟺ M.assoc ⟩∘⟨refl ⟩
-    (M.μ.η X ∘ M.F.F₁ (M.μ.η X)) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ assoc ⟩
-    M.μ.η X ∘ M.F.F₁ (M.μ.η X) ∘ M.F.F₁ t ∘ score ∘ a  ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.F.homomorphism) ⟩
-    M.μ.η X ∘ M.F.F₁ (M.μ.η X ∘ t) ∘ score ∘ a  ∎
+  scale-join a t = bind-join t (score ∘ a)
 
 -- Countable sums of kernels X ⇒ M Y (pointwise sums of measures), compatible with the monad: sums are
 -- natural in the target, commute with join, and bind is linear in the kernel.  The sum of global measures
