@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Monotone functions are tests (plan 03, "Tests and the real line").
+-- Monotone functions are tests.
 -- For F : [0,∞] → [0,∞] respecting ≈ and increasing (or decreasing), `F ∘ α` is threshold-measurable whenever α is,
 -- so F is a morphism `monoH F : WQ ⇒ WQ` (`antiH F` for decreasing F) with no measurability proof from the user.
 -- Route: the threshold set U = {x | q ∈ F x} is an up-set (a down-set).  With excluded middle it is the union of the

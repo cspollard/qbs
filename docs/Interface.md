@@ -216,6 +216,23 @@ Lebesgue measure on [0,∞) as an s-finite measure on the weight space `WQ = [0,
 - `ss`, `two`, `U-inv`, `L-inv`, `base`, `norm`, `Geo.total` (`GeometricNorm`, `module GeometricNorm A R`, abstract in any `OmegaSemiring` with `Arch`) — `norm`: the recursion `x m ≈ (1 + q (m+1)) x (m+1)`, `q m ≈ q (m+1)²`, `q m ≤ 1`, the one-step facts (`base`) and `hp m q m ≤ x m ≤ hp m` give `x 0 + q 0 ≈ 1`, by error-doubling invariants and `arch`; `Geo.total`: `I + g ≈ 1` and `gᴺ (N+1) ≤ 1` give `(∑ᶠ gⁿ) I ≈ 1`.
 - `Lsplit` (`abstract`, over `Lsplit′`, with the unfolding `Lsplit-def`), `x2-rec-alg`, `x2-lo`, `x2-hi`, `L5-alg`, `GeoMom2.total` (`GeometricMoment2`, `module GeometricMoment2 A R`, abstract) — the ring identities of the first-bit split of `L`, the recursion for `x2`, its bounds `h q ≤ x2 ≤ h`, and `GeoMom2.total`: `I + g ≈ 1`, `K + 2g ≈ 1`, `L + 5g ≈ 2` and `gᴺ (N+1) ≤ 1` give `∑ᶠ gⁿ (n² I + 2n K + L) ≈ 2` (the telescoping error `pol N gᴺ`, `pol N = N² + 2N + 2`, is small along `N = 4t`).
 
+### Lebesgue measure and its uniqueness: `QBS.Continuous.LebesgueInterval`, `QBS.Continuous.UniquenessWQ`, `QBS.Continuous.UniquenessR`, `QBS.Continuous.UniquenessRQ`, `QBS.Continuous.LebesgueShift`, `QBS.Continuous.LebesgueScale`, `QBS.Continuous.RealShift`, `QBS.Continuous.RealScale`
+Everything is stated without subtraction on `[0,∞]`, and for every `lem₁ : LEM₁`.
+- `leb-Iv` (`LebesgueInterval`) — `a + λ[a,b) ≈ b` for cuts `a ≤ b` with `b` finite: the additive form of `λ[a,b) = b − a`.  `leb-unique` is the converse: a measure with these interval masses is `lebPre`.
+- `uniqWQ` (`UniquenessWQ`), `uniqR` (`UniquenessR`, on Cantor space), `uniqRQ` (`UniquenessRQ`, on the real line) — two s-finite measures that agree on dyadic intervals, on clopen cells, respectively on both half-lines, are equal (a π–λ uniqueness theorem; `docs/UniquenessLit.md`).
+- `∫-shift`, `∫-scale` (`LebesgueShift`, `LebesgueScale`), `∫-shiftR` (`RealShift`), `∫-scaleR`, `∫-reflR` (`RealScale`) — translation and scale invariance of Lebesgue measure on `[0,∞)` and on the real line, and invariance under `x ↦ −x`.
+
+### Change of variables: `QBS.Continuous.ChangeOfVariables`, `QBS.Continuous.ChangeOfVariablesFn`, `QBS.Continuous.FTCDyadic`
+- `push-eq` (`ChangeOfVariables`) — the headline: the pushforward `mapM ψ lebPre` equals `reweightPre φ′ lebPre`.  `cov` and `cov-inv` are its integral forms: `∫ g(φ x) φ′(x) dx ≈ ∫ g(y) dy` and `∫ h(ψ y) dy ≈ ∫ h(x) φ′(x) dx`, for an increasing bijection φ of `[0,∞]` with inverse ψ and a derivative certificate for φ′.  Only increasing bijections are covered.
+- `covF`, `covF-inv` (`ChangeOfVariablesFn`) — the same, with φ, ψ, φ′ given as plain functions on cuts.
+- `ftc-dy` (`FTCDyadic`) — the fundamental theorem of calculus on each dyadic interval from `Deriv` data: `∫_[m/2ⁿ,(m+1)/2ⁿ) h + G(right) ≈ G(left) + ∫_[m/2ⁿ,(m+1)/2ⁿ) k` when `G′ = k` with slack `h`.
+
+### Convergence theorems: `QBS.Continuous.SupTest`, `QBS.Continuous.Fatou`, `QBS.Continuous.Dominated`, `QBS.Continuous.DominatedSigned`
+For the Daniell integral `∫ᴹ p` over any source `X`; none of this is specific to Lebesgue measure.
+- `Conv` (`Dominated`) — `Conv a l` means `liminf a ≈ l ≈ limsup a` in `[0,∞]`.
+- `fatou`, `rev-fatou` (`Fatou`) — `∫ liminf h ≤ liminf ∫ h`, and `limsup ∫ h ≤ ∫ limsup h` when every `h n ≤ g` with `∫ g` finite.  They are the primitive statements.
+- `mct-conv`, `dct`, `dct-prob` (`Dominated`) — monotone convergence (`∫ h n ↑ ∫ ⨆ h n`), dominated convergence (pointwise `h n → f`, `h n ≤ g`, `∫ g` finite give `∫ h n → ∫ f`), and its probability-measure version with a constant bound.  The signed version is in `DominatedSigned` (used by `dct-Ex`).
+
 ### `QBS.Continuous.SFiniteReweight`, `QBS.Continuous.ExpDist`, `QBS.Continuous.ExpDistSq`, `QBS.Inference.ExpDistMean`, `QBS.Inference.ExpDistVar`, `QBS.Inference.ExpDistPair`, `QBS.Inference.ProductMarginals`, `QBS.Continuous.DensityDist`, `QBS.Inference.DensityExpectation`
 
 - `mulH`, `reweightPre`, `∫ᴹ-reweight` (`SFiniteReweight`) — reweighting `p : Pre (XW X)` by a density `d : X ⇒ WQ`: `∫ᴹ (reweightPre d p) f ≈ ∫ᴹ p (mulH d f)` with `mulH d f` the pointwise product.

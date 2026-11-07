@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products").
+-- Lebesgue measure on the plane ℝ × ℝ (the product Lebesgue measure).
 --   * `leb2 = lebR ⊗ lebR` (`Product.prodPre`), with iterated integrals in both orders (`∫-leb2`, `∫-leb2′`);
 --   * `∫-leb2-rect`: ∫ g(x) h(y) d(x, y) ≈ ∫ g · ∫ h;
 --   * `area`: the rectangle [a, b) × [c, d) in the positive quadrant has area x y, where a + x ≈ b and c + y ≈ d;

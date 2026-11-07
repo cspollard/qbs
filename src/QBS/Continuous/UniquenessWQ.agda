@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Uniqueness of measures on the half-line `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"; `docs/UniquenessLit.md`).
+-- Uniqueness of measures on the half-line `WQ = [0,∞]` (a π–λ uniqueness theorem; `docs/UniquenessLit.md`).
 -- Two measures `μ ν : Pre (XW WQ)` are equal (`uniqWQ : μ ≈ᴹ ν`) when
 --   * they agree on every dyadic interval [m/2ⁿ, (m+1)/2ⁿ) (`agreeI`),
 --   * μ is finite on each [k, k+1) (`finI`), and

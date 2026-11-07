@@ -1,7 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Downward monotone convergence and Fatou's lemma in both directions, for tests on any X (plan 03, "Dominated
--- convergence").
+-- Downward monotone convergence and Fatou's lemma in both directions, for tests on any X.
+-- Main results: `fatou` and `rev-fatou` (the last two definitions of the module; the truncation machinery before them
+-- proves `∫ᴹ-inf`).  They are the only primitive convergence statements: `Dominated.dct` and `mct-conv` follow from them.
 --   * `∫ᴹ-inf`: for a decreasing sequence h with ∫ h 0 finite, ∫ ⋂ₙ h n ≈ ⋂ₙ ∫ h n;
 --   * `fatou`: ∫ lim inf h ≤ lim inf ∫ h;
 --   * `rev-fatou`: if every h n ≤ g with ∫ g finite, lim sup ∫ h ≤ ∫ lim sup h.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Scaling of Lebesgue measure on [0,∞) by every finite positive constant (plan 03, "Uniqueness on the half-line").
+-- Scaling of Lebesgue measure on [0,∞) by every finite positive constant.
 -- For c with an inverse c′ (both finite) and every test h,
 --   `∫-scale : c · ∫ h(cx) dx ≈ ∫ h dx`.
 -- Route: `scaledLeb c`, the measure h ↦ c · ∫ h(cx) dx, gives [a,b) the mass c · (b c′ − a c′) = b − a

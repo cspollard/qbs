@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Translation of the whole real line `RQ = WQ +Q WQ` by a finite t ≥ 0, and translation invariance of `lebR`
--- (plan 03, "Translation and products").
+-- (the choice machinery `Dec`/`pick`/`flg`/`pieces` below serves a one-line invariance statement).
 --   * `shiftRH t : RQ ⇒ RQ`, x ↦ x + t: `inl x ↦ inl (x + t)`; `inr x ↦ inl (t ∸ x)` if x ≤ t, else `inr (x ∸ t)`
 --     (`shift-inl`, `shift-inr-le`, `shift-inr-gt`; the case split is excluded middle);
 --   * `∫-reflIv : ∫_{[0,t)} h(t ∸ x) dx ≈ ∫_{[0,t)} h` (reflection of an interval);

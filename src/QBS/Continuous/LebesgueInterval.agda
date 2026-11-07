@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses (plan 03,
--- "Uniqueness on the half-line").   No subtraction: "λ[a,b) = b − a" is stated as
+-- Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses.
+-- Public characterisation: `leb-unique` says a measure with these interval masses is `lebPre`.   No subtraction: "λ[a,b) = b − a" is stated as
 -- `a + λ[a,b) ≈ b`.
 --   * `leb-Iv`: for cuts a ≤ b with b finite, `a + ∫ lebPre χ[a,b) ≈ b`.  Approximate [a,b) from inside by unions of
 --     dyadic intervals (`LebesgueDyadic.leb-χI`) and pass to the limit (`J-⨆`).

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line").
+-- Lebesgue measure of the dyadic intervals (step towards `LebesgueInterval`).
 --   * `fair-top`: the all-true point has fair-coin measure 0 (`I (χ Top) ≤ ½ⁿ` for all n, by the first-bit split, since
 --     `true :: r` is all-true only when `r` is; then `Arch.arch`);
 --   * `cell-in`, `cell-out`: the unit interval shifted by j, `j + expansion r`, lies in the dyadic interval

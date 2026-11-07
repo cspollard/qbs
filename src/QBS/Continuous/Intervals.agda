@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line").
+-- Interval tests on `WQ = [0,∞]` (used by the half-line uniqueness theorem).
 --   * `χIv a b`, the indicator of [a, b) (for cuts a, b), and `χInf`, the indicator of {∞};
 --   * `dy n m = m / 2ⁿ` and the dyadic intervals `χI n m = χIv (dy n m) (dy n (m+1))`, with `χI-split`, the halving of a
 --     dyadic interval.

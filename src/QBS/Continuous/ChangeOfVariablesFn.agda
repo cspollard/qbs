@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Change of variables from functions alone (plan 03, "Tests and the real line").
+-- Change of variables from functions alone.
+-- A re-packaging of `ChangeOfVariables.cov`; nothing else in `src/` imports it, so it also serves as a worked example.
 -- `Continuous/ChangeOfVariables` takes φ, ψ and φ′ as morphisms.  Here they are plain functions Φ, Ψ, k on the cuts with
 -- the same hypotheses (`dv : ∀ N → Deriv (N+1) Φ 0 k`, the Galois connection a ≤ Ψ y ↔ Φ a ≤ y, Φ (Ψ y) ≈ y, Ψ finite on
 -- finite points), and the morphisms are built by the rules: φ = `LipTest.derivH`, φ′ = `LipTest.lipkH`, and

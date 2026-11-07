@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Algebra of rationally bounded lower reals and truncated subtraction (plan 03, "Signed dominated convergence").
+-- Algebra of rationally bounded lower reals and truncated subtraction.
 --   * `BndQ-≤`, `BndQ-≈`, `BndQ-add`, `BndQ-0`, `rat-bnd`: rational bounds are downward closed, respect ≈, add, and
 --     give a natural-number bound (`Bounded.Bnd`);
 --   * `cut-total`: any two lower reals are comparable (excluded middle on a rational in one but not the other);

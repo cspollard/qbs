@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Convergence with explicit tolerances, and convergence of differences (plan 03, "Signed dominated convergence").
+-- Convergence with explicit tolerances, and convergence of differences (helper for `DominatedSigned`).
 --   * `EConv a l`: for every k, eventually a n ≤ l + ½ᵏ and l ≤ a n + ½ᵏ;  `conv-econv`/`econv-conv`: for finite l
 --     this is `Dominated.Conv` (lim inf ≈ lim sup ≈ l);
 --   * `SConv a b u v`: "a n − b n → u − v" without subtraction: for every k, eventually a n + v ≤ u + b n + ½ᵏ and

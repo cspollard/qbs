@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence").
+-- Where an integrable test is infinite nothing is seen by the integral (an integrable test is finite almost everywhere).
 -- For a test g on X with ∫ g finite:
 --   * `finχ g`: the indicator of {x | g x is bounded by a rational} (`indH` after g), with `finχ-in`/`finχ-out`;
 --   * `∫-infχ`: the complementary indicator integrates to 0;  `∫-null`: so does u · [g = ∞] for every test u;

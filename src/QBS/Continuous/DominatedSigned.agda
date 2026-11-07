@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Dominated convergence for signed tests (plan 03, "Signed dominated convergence").  A signed test is a pair (h⁺, h⁻)
+-- Dominated convergence for signed tests.  A signed test is a pair (h⁺, h⁻)
 -- standing for h⁺ − h⁻, and its expectation the pair of integrals (`SignedIntegral`, `ExpectationInt.E-atᴵ`).
 --   * `dct-signed`: if h⁺ n − h⁻ n → f⁺ − f⁻ pointwise wherever g is finite (`ConvEps.SConv`), with h⁺ n + h⁻ n ≤ g,
 --     f⁺ + f⁻ ≤ g and ∫ g finite, then ∫ h⁺ n − ∫ h⁻ n → ∫ f⁺ − ∫ f⁻;

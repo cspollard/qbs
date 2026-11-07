@@ -178,6 +178,7 @@ Related modules:
 | linearity, scaling, monotonicity, domination | `Continuous.SignedExpect` |
 | push-forward along a map; bridge from the older `E-atᴵ` API | `Continuous.SignedTransport` |
 | convergence, dominated convergence (`dct-Ex`), differentiation under the integral (`deriv-Ex`) | `Continuous.SignedLimits`, `DominatedSigned` |
+| unsigned monotone and dominated convergence (`mct-conv`, `dct`), Fatou's lemma (`fatou`, `rev-fatou`) | `Continuous.Dominated`, `Continuous.Fatou` |
 | Fubini for signed tests | `Continuous.SignedFubini` |
 | the logarithm as a signed value (`log-mul`) | `Continuous.SignedLog` |
 

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The value-level algebra behind the `idT` laws of `RQArith` (plan 05, item 55a), over [0, ∞].
+-- The value-level algebra behind the `idT` laws of `RQArith`, over [0, ∞].  (The `Alg` modules hold value-level lemmas over the abstract carrier, kept apart so that the modules with the QBS morphisms typecheck quickly.)
 --   * `monus-add*`: t ≤ x gives t + (x ∸ t) ≈ x for every t, bounded or not;
 --   * `Inv p n P N`, "the point with parts (p, n) is the real number P − N": the cross equality p + N ≈ P + n, and
 --     bounded P, N force bounded p, n.  `Inv` composes through sums (`step-inv`) although `≐` does not (≐ is not

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`, plan 03, "Change of variables").
+-- The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`).
 --   * `null-le`: if F ≤ F′ off the all-true point and F is constant (= c, possibly ∞) on it, then J F ≤ J F′: pointwise
 --     F ≤ F′ + c χ_Top, and `J (c χ_Top) = c · 0 = 0` (`LebesgueDyadic.fair-top`, `J-scale`); no bound on F is needed;
 --   * `piece`: `∫ lebPre (f · χ[j,j+1)) ≈ J (f ∘ shiftPt j)`.  By `HalfLine.∫ᴹ-leb` the integral is a sum over the unit

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The fundamental theorem of calculus on every dyadic interval, from `Deriv` data (plan 03, "Change of variables").
+-- The fundamental theorem of calculus on every dyadic interval, from `Deriv` data.
 -- For G : [0,∞) → [0,∞) and tests h, k with `dv : ∀ N → Deriv (N+1) G h k` (G′ = k − h on every [0, N+1]),
 --   `ftc-dy : ∫_{[m/2ⁿ,(m+1)/2ⁿ)} h + G((m+1)/2ⁿ) ≈ G(m/2ⁿ) + ∫_{[m/2ⁿ,(m+1)/2ⁿ)} k`.
 -- Route: the rescaled data Gₙ(t) = G(t/2ⁿ), hₙ(t) = h(t/2ⁿ)/2ⁿ, kₙ(t) = k(t/2ⁿ)/2ⁿ satisfy `Deriv (N+1)` too (`dv-resc`,

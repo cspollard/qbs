@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Pointwise suprema, infima, lim inf and lim sup of sequences of tests on any X, and monotone convergence for `∫ᴹ`
--- (plan 03, "Dominated convergence").
+-- (the base of `Fatou` and `Dominated`).
 --   * `supH h` and `infH h` (x ↦ ⋃ₙ h n x and x ↦ ⋂ₙ h n x) are tests: random elements go to measurable functions by
 --     `Meas.Meas-⨆` and `Meas-inter`; `supH-pt`, `infH-pt` hold by `≋-refl`;
 --   * `liminfH h`, `limsupH h`, with `liminfH-pt`, `limsupH-pt` against `LowerRealsInf.liminfC`/`limsupC`;

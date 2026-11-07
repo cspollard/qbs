@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer").
+-- Facts about +∞ in [0, ∞] used by the signed layer.
 --   * `not-bnd-top`: a value with no natural bound is ∞;  `∞-abs`: ∞ + b ≈ ∞;
 --   * `cancel-bnd` (re-exported from `BoundedCancel` for `lemOf lem₁`);
 --   * `top-sum`, `top-ge`, `sum-top-bnd`, `top-left`, `top-right-le`: ∞ absorbs sums and bounds everything, and a sum

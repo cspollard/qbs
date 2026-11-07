@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form (plan 03, "Uniqueness on the
--- half-line").  Cantor space is the disjoint union of the blocks `Blk k = {trueᵏ false …}` and
+-- Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form.  (The main result `uniqR` is the last
+-- definition of the file; the module is about Cantor space ℛ, not the real line.)  Cantor space is the disjoint union of the blocks `Blk k = {trueᵏ false …}` and
 -- the all-true point `Top` (`Borel/Cells`).  Two measures `μ ν : Pre (XW ℛ)` are equal (`uniqR : μ ≈ᴹ ν`) when
 --   * they agree on every cell `Cell k w` (`agreeCell`),
 --   * each block has finite μ-mass (`finBlk`), and

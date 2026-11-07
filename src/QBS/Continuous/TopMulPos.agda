@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- ∞ times a nonzero value is ∞ in [0, ∞] (plan 05, item 55b; helper for `SignedMul`).
+-- ∞ times a nonzero value is ∞ in [0, ∞] (helper for `SignedMul`).
 --   * `ex-pos`: a cut that is not 0 has a positive member (excluded middle on the rationals);
 --   * `top-pos`: infC ⊗ y ≋ infC when y ≉ 0.
 -- Route: take a positive s ∈ y; for a rational q the Archimedean property gives q ≤ k s, and r = k + 1 > 0 has

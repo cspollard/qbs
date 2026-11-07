@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x (plan 03, "Translation and products").
+-- Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x.
 --   * `monus x t` is x − t when t ≤ x and 0 otherwise (`monus-add`, `monus-zero`, `monus-+`);
 --   * it respects ≈, is increasing in x and decreasing in t, so `subH t = monoH (_∸ t)` and `rsubH t = antiH (t ∸_)` are
 --     tests by `MonoTest`.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Locally Lipschitz functions are tests, and so is everything with `Deriv` data (plan 03, "Tests and the real line").
+-- Locally Lipschitz functions are tests, and so is everything with `Deriv` data.
 --   * `LocLip F`: on every [0, N+1], F (a + w) and F a differ by at most w c both ways (w ≤ 1, c finite);
 --   * `lipH F : WQ ⇒ WQ` for F respecting ≈ with `LocLip F` (the value at ∞ is arbitrary);
 --   * `derivH G h k dv`, `lipkH`, `liphH`: from `dv : ∀ N → Deriv (N+1) G h k` (`Analysis/Deriv`), G, h and k are tests

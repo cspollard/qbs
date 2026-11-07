@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55).
+-- Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ, each a QBS morphism.
 --   * `copair×ˡ f g : (X +Q Y) ×Q Z ⇒ W` from `f : X ×Q Z ⇒ W` and `g : Y ×Q Z ⇒ W` (distributivity of × over +, in the
 --     form needed for maps out of a product), `copair×ʳ` for the second factor; the computations `copair×ˡ-inl`/`-inr`;
 --   * `addW`, `monusP : WQ ×Q WQ ⇒ WQ`, (a, b) ↦ a + b and a ∸ b, and the pair of Borel facts they need on random elements

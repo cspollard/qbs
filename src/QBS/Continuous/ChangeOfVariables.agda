@@ -1,6 +1,10 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Monotone change of variables on the half-line with a derivative certificate (plan 03, "Change of variables").
+-- Monotone change of variables on the half-line with a derivative certificate.
+-- Headline (`push-eq`): the pushforward of Lebesgue measure along ψ is Lebesgue measure with density φ′,
+--   `mapM ψ lebPre ≈ reweightPre φ′ lebPre`;  `cov` and `cov-inv` below are its two integral forms (with `∫ᴹ-map`).
+-- Scope: only increasing bijections φ of [0,∞] with an inverse ψ are covered.  Decreasing maps (reflection is in
+-- `RealScale`) and non-surjective φ have no change-of-variables theorem here.
 -- Data: an increasing bijection φ of [0,∞] with inverse ψ (both morphisms; `gc-to`, `gc-from`: a ≤ ψ y ↔ φ a ≤ y, and
 -- `φψ : φ (ψ y) ≈ y`), ψ finite on finite points, and a derivative φ′ with `dv : ∀ N → Deriv (N+1) φ 0 φ′`.  Then
 --   `cov : ∫ g(φ x) φ′(x) dx ≈ ∫ g(y) dy`   for every test g,

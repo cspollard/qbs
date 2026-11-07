@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Scaling and reflection of the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line").
+-- Scaling and reflection of the whole real line `RQ = WQ +Q WQ`.
 --   * `scaleRH c : RQ ⇒ RQ`, x ↦ c x on each summand (`[inl ∘ (c ·) , inr ∘ (c ·)]`), and `reflRH = [inr , inl]`, x ↦ −x;
 --   * `∫-scaleR : c ∫ h(c x) dx ≈ ∫ h`  for finite c, c′ with c c′ ≈ 1 (`LebesgueScale.∫-scale` on each half);
 --   * `∫-reflR : ∫ h(−x) dx ≈ ∫ h` (the halves swap, `+-comm`).

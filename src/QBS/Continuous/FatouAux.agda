@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Auxiliary tests and lemmas for downward monotone convergence (`Continuous/Fatou`, plan 03).
+-- Auxiliary tests and lemmas for downward monotone convergence (helper for `Continuous/Fatou`).
 --   * `imp-borel`: for Borel U and V, the set `U → V` is Borel (excluded middle);
 --   * `Meas-monus2`: x ∸ t is threshold-measurable for measurable x and t, when every t r is rationally bounded
 --     (`Monus.monus` unfolds to q < 0 or a countable quantification over the rationals);

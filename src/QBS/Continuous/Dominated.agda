@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Dominated convergence for tests on any X (plan 03, "Dominated convergence").
+-- Monotone and dominated convergence for the Daniell integral `∫ᴹ p` on any source X.  Main results: `mct-conv`
+-- (increasing h n ↑ f), `dct` (pointwise convergence under an integrable bound), `dct-prob`.  Fatou's lemma is in
+-- `Fatou`; the signed version in `DominatedSigned`.
 --   * `Conv a l`: a sequence of values converges to l when lim inf a ≈ l ≈ lim sup a (convergence in [0, ∞]);
 --   * `dct`: if h n → f pointwise and every h n ≤ g with ∫ g finite, then ∫ h n → ∫ f;
 --   * `mct-conv`: an increasing sequence of tests has ∫ h n → ∫ ⋃ h (no domination needed);

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Uniqueness of measures on the whole real line `RQ = WQ +Q WQ` (plan 03, "Tests and the real line").
+-- Uniqueness of measures on the whole real line `RQ = WQ +Q WQ` (`uniqRQ`).
 -- A measure μ on RQ has two halves on the half-line, `restrL μ` and `restrR μ`: reweight by the indicator of the left
 -- (right) summand and fold RQ onto WQ (`foldH = [id , id]`), so `∫-restrL : ∫ (restrL μ) g ≈ ∫ μ [g , 0]`.
 --   * `∫-split : ∫ μ f ≈ ∫ μ [f∘inl , 0] + ∫ μ [0 , f∘inr]` (every test on RQ is the sum of its two halves);

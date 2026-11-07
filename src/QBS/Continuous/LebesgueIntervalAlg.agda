@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The mass of an interval under a measure whose dyadic cells have mass ½ⁿ (plan 03, "Uniqueness on the half-line"),
+-- The mass of an interval under a measure whose dyadic cells have mass ½ⁿ,
 -- the engine of `LebesgueInterval.leb-Iv`.  For a pre-measure p on `WQ`, write `F b = ∫ p χ[0,b)`.
 --   * `∫ᴹ-split-iv`: `∫ χ[a,b) = ∫ χ[a,c) + ∫ χ[c,b)` for a ≤ c ≤ b (additivity of the integral over `split-iv`);
 --   * `F-dy`: `F (m/2ⁿ) ≈ m/2ⁿ`, from the cells `χ[i/2ⁿ, (i+1)/2ⁿ)`, i < m, by induction on m;
