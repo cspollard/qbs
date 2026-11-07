@@ -85,7 +85,7 @@ module ExpFamily (lem₁ : LEM₁) where
     commutativeSemiring)
   open import Relation.Binary.Reasoning.Setoid setoid
   open Exp A using (natE)
-  open NegExp lem using (negExp; negExp-anti)
+  open NegExp lem using (negExp; negExp-anti; negExp-cong)
   open Weights lem using (WQ; constW)
   open Bounded A using (Sg; _≃_; Bnd; 0S; -S_; 1S; ι; signedRing; ≃-trans)
   open SgLinAlg signedRing using (Vec)
@@ -340,9 +340,6 @@ module ExpFamily (lem₁ : LEM₁) where
   -- Instance: Exp(1)
 
   private
-    negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-    negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
-
     exp1-pos-step : ∀ x → ((0# * x) + (1# * 0#)) + 0# ≈ 0#
     exp1-pos-step x = trans (+-cong (trans (+-cong (zeroˡ x) (zeroʳ 1#)) (+-identityˡ 0#)) refl)
       (+-identityˡ 0#)

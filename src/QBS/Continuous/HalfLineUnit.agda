@@ -48,22 +48,19 @@ module HalfLineUnit (lem₁ : LEM₁) where
   R = lowerRealsArch (lemOf lem₁)
   open Arch R using (half; hp; hp-double) renaming (half+half to hh)
   open GeometricNorm A R
-  open Exp A using (natE)
+  open Exp A using (natE; bd1)
   open Integration A using (I; I-cong; I-mono; I-scale)
   open Measurable A using (Fun; Fun-const; Fun-scale; Fun-pre)
   open Meas (lemOf lem₁) using (Meas)
   open LevelSets (lemOf lem₁) using (LS)
   open MeasFun (lemOf lem₁) using (Meas→Fun)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; Meas-negExp; negExp-expC-nat)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; Meas-negExp; negExp-expC-nat; negExp-cong)
   open Expansion A half hh using (expansion; expansion≤1; Fun-expansion)
   open ExpansionCons A half hh using (expansion-cons)
   open FairCoin lem₁ using (fairCoin)
   open FirstBit lem₁ using (firstBit-fun)
   open Indicators A (lemOf lem₁) using (I-const)
   open HalfLineNegExp lem₁ using (negExp-add; I-negExp; Meas-negExp-expansion)
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
 
   ----------------------------------------------------------------------------
   -- the family `r ↦ e^{−2⁻ʲ u(r)}` and its integral
@@ -82,9 +79,6 @@ module HalfLineUnit (lem₁ : LEM₁) where
 
   q : ℕ → Cut
   q j = negExp (hp j)
-
-  bd1 : ∀ {x} → x ≤ 1# → x ≤ natE 1
-  bd1 h = ≤-trans h (≤-reflexive (sym (+-identityˡ 1#)))
 
   bd2 : ∀ {x} → x ≤ 1# → x ≤ natE 2
   bd2 h = ≤-trans (bd1 h) ≤-+ʳ

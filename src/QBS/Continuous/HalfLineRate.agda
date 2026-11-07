@@ -34,14 +34,14 @@ module HalfLineRate (lem₁ : LEM₁) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open AlgP A R using (pw)
   open Series A using (∑ᶠ; ∑ᶠ-cong; ∑ᶠ-scale)
-  open NegExp (lemOf lem₁) using (negExp; Meas-negExp)
+  open NegExp (lemOf lem₁) using (negExp; Meas-negExp; negExp-cong)
   open Lebesgue (lemOf lem₁) using (J; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
   open FairCoin lem₁ using (fairCoin)
   open SFinite (lemOf lem₁) using (∫ᴹ)
   open HalfLine lem₁ using (lebPre; shiftPt; Meas-hshift; ∫ᴹ-leb)
-  open HalfLineMomentN lem₁ using (negExp-cong; pw-cong; Meas-pw)
+  open HalfLineMomentN lem₁ using (pw-cong; Meas-pw)
   open QBS
   open Hom
 

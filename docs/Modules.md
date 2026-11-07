@@ -165,7 +165,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.DigitAlg` | 140 |  | The algebra behind the digit code of `[0,∞]` (`Continuous/DigitStream`, `Continuous/DigitCode`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.Estimator` | 276 |  | The generic estimator theorem, over an abstract ring of random variables. |
-| `QBS.Analysis.Exp` | 319 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
+| `QBS.Analysis.Exp` | 323 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpFamAlg` | 150 |  | Commutative ring algebra for exponential families (plan 07, item 56). |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
 | `QBS.Analysis.ExpRate` | 413 |  | The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1 certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`. |
@@ -203,7 +203,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Min` | 36 |  | A binary minimum on the values of an `OmegaSemiring`, with exactly the properties that the dyadic truncations `min (a, 2ᵏ) / 2ᵏ` of `Analysis/Unbounded` need: greatest lower bound, continuity along increasing suprema,... |
 | `QBS.Analysis.Mixture` | 54 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, `addM` of two `scaleM`s from `Analysis/Cone`: it is again a measure (with total mass at most 1). |
 | `QBS.Analysis.MixtureN` | 83 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |
-| `QBS.Analysis.NegExp` | 241 | lem | `e^{−x}` on the lower reals [0, ∞], as a cut defined directly (there is no negation or division): q ∈ negExp x  iff  ∃ p > q, ∀ s ∈ expC x, p · s < 1, i.e. |
+| `QBS.Analysis.NegExp` | 244 | lem | `e^{−x}` on the lower reals [0, ∞], as a cut defined directly (there is no negation or division): q ∈ negExp x  iff  ∃ p > q, ∀ s ∈ expC x, p · s < 1, i.e. |
 | `QBS.Analysis.Omega` | 129 |  | Values for measures: a commutative semiring with a compatible partial order (for the extended non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences preserved by + and ×, and ca... |
 | `QBS.Analysis.OpenMeasure` | 272 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
 | `QBS.Analysis.Param` | 216 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
@@ -258,7 +258,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
-| `QBS.Continuous.ExpFamily` | 456 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
+| `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
 | `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`), over an abstract commutative semiring. |
 | `QBS.Continuous.ExpFamilyAux` | 155 | lem | Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for `Continuous/ExpFamily`). |
 | `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A). |
@@ -283,19 +283,19 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
 | `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
 | `QBS.Continuous.GaussInverse` | 126 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
-| `QBS.Continuous.GaussMean` | 109 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
+| `QBS.Continuous.GaussMean` | 106 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
 | `QBS.Continuous.GaussMeanUnit` | 193 | lem | Gaussian first moment on the half-line (part 1): the unit-interval identity for `G = e^{−x²/2}`. |
 | `QBS.Continuous.GaussMoment` | 126 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
 | `QBS.Continuous.HalfLine` | 91 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
 | `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineMoment2` | 298 | lem | The second moment of the exponential distribution, `∫₀^∞ x² e^{−x} dλ(x) = 2`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineMomentFact` | 123 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
-| `QBS.Continuous.HalfLineMomentN` | 197 | lem | All polynomial moments of the exponential: integration by parts on each unit interval (part 1). |
+| `QBS.Continuous.HalfLineMomentN` | 191 | lem | All polynomial moments of the exponential: integration by parts on each unit interval (part 1). |
 | `QBS.Continuous.HalfLineNegExp` | 118 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 69 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
-| `QBS.Continuous.HalfLineUnit` | 159 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
+| `QBS.Continuous.HalfLineUnit` | 153 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
 | `QBS.Continuous.IID` | 166 | lem | Independent and identically distributed families (plan 05, item 46). |
 | `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (plan 05, helper for `Independence`). |
 | `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (plan 05, helper for `IndepAlg`). |
@@ -387,8 +387,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SubProb` | 67 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
 | `QBS.Continuous.SupTest` | 97 | lem | Pointwise suprema, infima, lim inf and lim sup of sequences of tests on any X, and monotone convergence for `∫ᴹ` (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.TailFTC` | 173 | lem | A derivative-free fundamental theorem of calculus in tail form, on the unit interval (part 2: the measure side). |
-| `QBS.Continuous.TailFTCExp` | 88 | lem | Validation of `Continuous/TailFTC`: `∫₀¹ e^{−u} du + e^{−1} = 1` (as `HalfLineUnit.I-negExp-unit`), with h = G = e^{−·}. |
-| `QBS.Continuous.TailFTCExpHalf` | 91 | lem | Validation of `Continuous/TailFTCHalfLine`: `∫₀^∞ e^{−x} dλ = 1` from the certificate for h = G = e^{−·} on each [n, n+1] (the same pointwise exp algebra as `TailFTCExp`, at the shifted points) and the tail `e^{−N} ≤ ... |
+| `QBS.Continuous.TailFTCExp` | 82 | lem | Validation of `Continuous/TailFTC`: `∫₀¹ e^{−u} du + e^{−1} = 1` (as `HalfLineUnit.I-negExp-unit`), with h = G = e^{−·}. |
+| `QBS.Continuous.TailFTCExpHalf` | 85 | lem | Validation of `Continuous/TailFTCHalfLine`: `∫₀^∞ e^{−x} dλ = 1` from the certificate for h = G = e^{−·} on each [n, n+1] (the same pointwise exp algebra as `TailFTCExp`, at the shifted points) and the tail `e^{−N} ≤ ... |
 | `QBS.Continuous.TailFTCHalfLine` | 94 | lem | The fundamental theorem of calculus in tail form on the half-line (`Continuous/TailFTC`, applied on each [n, n+1]). |
 | `QBS.Continuous.TailFTCLip` | 223 | lem | The tail-form fundamental theorem of calculus with Lipschitz errors and integration by parts, on the unit interval (part 2: the measure side; the algebra is `Analysis/TailFTCLip`). |
 | `QBS.Continuous.TailFTCLipHalf` | 92 | lem | Integration by parts on the half-line, from the unit-interval identities (`Continuous/TailFTCLipJ`). |

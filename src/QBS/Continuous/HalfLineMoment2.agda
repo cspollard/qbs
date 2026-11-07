@@ -70,7 +70,7 @@ module HalfLineMoment2 (lem₁ : LEM₁) where
   open Meas (lemOf lem₁) using (Meas; Meas-⊗; Meas-⊕; Meas-const)
   open LevelSets (lemOf lem₁) using (LS)
   open MeasFun (lemOf lem₁) using (Meas→Fun)
-  open NegExp (lemOf lem₁) using (negExp; negExp≤1; Meas-negExp)
+  open NegExp (lemOf lem₁) using (negExp; negExp≤1; Meas-negExp; negExp-cong)
   open Expansion A half hh using (expansion; expansion≤1; Fun-expansion)
   open ExpansionCons A half hh using (expansion-cons)
   open Daniell lem₁ using (L-one)
@@ -80,7 +80,7 @@ module HalfLineMoment2 (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ)
   open HalfLine lem₁ using (lebPre; shiftPt; Meas-hshift; ∫ᴹ-leb)
   open HalfLineNegExp lem₁ using (negExp-add; I-negExp; Meas-negExp-expansion; shift-bd; unit-bd)
-  open HalfLineUnit lem₁ using (negExp-cong; G; Meas-G; Fun-G; F; q; q-sq; q≤1; q≤F; base-at; pt-true; pt-false; I-negExp-unit)
+  open HalfLineUnit lem₁ using (G; Meas-G; Fun-G; F; q; q-sq; q≤1; q≤F; base-at; pt-true; pt-false; I-negExp-unit)
   open HalfLineNorm lem₁ using (g; negExp-pw; gb)
   open HalfLineMean lem₁ using (KG; Meas-KG; Fun-KG; KK; K; Meas-xe; K-pin; xs-pin; ww; ww-rec; ww-lo; ww-hi)
   open QBS

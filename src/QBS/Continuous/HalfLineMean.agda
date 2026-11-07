@@ -61,14 +61,14 @@ module HalfLineMean (lem₁ : LEM₁) where
   R = lowerRealsArch (lemOf lem₁)
   open Arch R using (half; hp; hp-double) renaming (half+half to hh)
   open GeometricNorm A R using (hp≤1; norm; norm-s; w-alg; K-true-alg; K-false-alg; K-rec-alg; KG-alg; shift-alg; ww-alg; K-fin-alg; module GeoMean)
-  open Exp A using (natE; pw)
+  open Exp A using (natE; pw; bd1)
   open Series A using (∑ᶠ; ∑ᶠ-cong)
   open Integration A using (I; I-cong; I-mono; I-add; I-scale)
   open Measurable A using (Fun; Fun-const; Fun-scale; Fun-pre; sumF)
   open Meas (lemOf lem₁) using (Meas; Meas-⊗; Meas-⊕; Meas-const)
   open LevelSets (lemOf lem₁) using (LS)
   open MeasFun (lemOf lem₁) using (Meas→Fun)
-  open NegExp (lemOf lem₁) using (negExp; negExp≤1; Meas-negExp; negExp-expC-nat)
+  open NegExp (lemOf lem₁) using (negExp; negExp≤1; Meas-negExp; negExp-expC-nat; negExp-cong)
   open Expansion A half hh using (expansion; expansion≤1; Fun-expansion)
   open ExpansionCons A half hh using (expansion-cons)
   open HalfOrder A R using (half≤1)
@@ -79,8 +79,8 @@ module HalfLineMean (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ)
   open HalfLine lem₁ using (lebPre; shiftPt; Meas-hshift; ∫ᴹ-leb)
   open HalfLineNegExp lem₁ using (negExp-add; I-negExp; Meas-negExp-expansion; shift-bd; unit-bd)
-  open HalfLineUnit lem₁ using (negExp-cong; G; Meas-G; Fun-G; F; q; q-sq; q≤1; q≤F; F≤1; base-at; xs; xs-rec; pt-true; pt-false;
-    I-negExp≈F0; I-negExp-unit; hp·e≤1; bd1)
+  open HalfLineUnit lem₁ using (G; Meas-G; Fun-G; F; q; q-sq; q≤1; q≤F; F≤1; base-at; xs; xs-rec; pt-true; pt-false;
+    I-negExp≈F0; I-negExp-unit; hp·e≤1)
   open HalfLineNorm lem₁ using (g; negExp-pw; gb)
   open QBS
   open Hom
