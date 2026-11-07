@@ -8,7 +8,13 @@
 --                    global measure by a weight (a bind through `score`), and proves its laws
 --   `CountableSums`         countable sums `sumK` of kernels (s-finiteness); `sumM` is the case of global measures
 --   `Normalization` `normalize : M X ⇒ Prob X + 1`, homogeneous under invertible weights
--- The interface adds that every measure is a countable sum of scaled laws.
+-- The interface adds that every measure is a countable sum of scaled laws (`scaled-laws`, the only field outside
+-- the five sub-records, and the place where s-finiteness lives).
+-- `zero⇒` of the weights is an absorbing element of the multiplication, not a zero object.
+-- Linearity: `bind-sumK` is linear in the kernel; `sum-nat`/`sum-join` are linear in the measure.  They are separate
+-- axioms, not derivable from one another without a unit measure.
+-- Bind vocabulary: a bind is `μ ∘ M k ∘ t` for a global measure `t` and kernel `k`; later modules should use this
+-- reading (`scaleM a t` is `t` bound through `score a`).
 -- Instances: `Model/StatInstance` (discrete), `Continuous/SFiniteStat`.
 module QBS.Statistical where
 

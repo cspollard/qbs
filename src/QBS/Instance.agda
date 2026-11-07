@@ -1,6 +1,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. statistical) monad as a hypothesis.
+-- Every random source gives the category structure for free (cartesian closure, limits, colimits); the monad is
+-- the only modelling input.  Consumers: `Model.ProbInstance`, `Model.StatInstance`, `Continuous.ProbInstance`,
+-- `Continuous.SFiniteStat`.
 module QBS.Instance where
 
 

@@ -4,6 +4,7 @@
 -- A commutative strong monad of probability measures, `law a μ` (the distribution of a probe) with its axioms,
 -- and the bind (Fubini) axioms over a splitting ℛ ≅ ℛ × ℛ.
 -- A hypothesis of the abstract layer, supplied by the discrete and continuous models.
+-- The generic strong-monad calculation (`ψ`, strength at points) is in `StrongPoint`; `ProbMonad` is in `CommMonad`.
 module QBS.Probability where
 
 open import Level using (suc; _⊔_)

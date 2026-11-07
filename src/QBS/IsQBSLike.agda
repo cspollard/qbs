@@ -1,6 +1,10 @@
 {-# OPTIONS --safe --without-K #-}
 
--- `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`.
+-- `IsQBSLike ℓ C`: what a category `C` must provide for QBS-style probabilistic programming: cartesian closure
+-- (higher-order programs), binary and ℕ-indexed coproducts (branching, discrete data), ℕ-indexed products (infinite
+-- families), a probe object ℛ, and a `ProbabilityInterface` on ℛ (a commutative strong monad of laws).  ℛ enters
+-- only through that interface.  `QBSCat S` is the intended instance (`QBS.Instance`), given a monad as hypothesis;
+-- `Model.ProbInstance` (discrete) and `Continuous.ProbInstance` supply the monads.
 module QBS.IsQBSLike where
 
 open import Level using (suc; _⊔_)

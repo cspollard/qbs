@@ -37,6 +37,13 @@ Contents:
 ### `QBS.Probes`
 - `ℛQ` — the probe object, the space of random sources; random elements of `X` correspond to morphisms `ℛQ ⇒ X`.
 
+### Abstract layer map
+The dependency stack is `Core → Category → {Exponential, Limits, Colimits, Complete} → Probability → Statistical → IsQBSLike → IsStatisticalQBSLike → Instance`.  `Probability` and `Statistical` are stated over an arbitrary cartesian closed category `C` and do not mention QBS; `QBSCat S` is the primary instance (`Instance`), and the discrete and continuous models supply the monads.  `IsQBSLike` bundles what an example needs: cartesian closure, (countable) coproducts and products, a probe object, and a `ProbabilityInterface`.  Two generic helpers sit under `Probability`: `QBS.CommMonad` (`ProbMonad CC`, the one spelling of "commutative monad on a cartesian closed category", with `braidedOf`) and `QBS.StrongPoint` (`ψ`, `σ-point`, `τ-point`, `ψ-point`: strength of any commutative monad at global elements; later modules should reuse it).  Bind is the local reading `μ ∘ M k ∘ t`.
+
+### `QBS.CommMonad`, `QBS.StrongPoint`
+- `braidedOf`, `ProbMonad` — the braided monoidal structure of the products of a cartesian closed category, and commutative monads for it.
+- `Strength-at-points` — `ψ` (Kock's double strength), `σ-unit`, `τ-unit`, `σ-point`, `τ-point`, `ψ-point`; generic, no ℛ or measures.
+
 ### `QBS.Probability`
 - `ProbabilityInterface` — an abstract commutative strong monad of probability measures over a cartesian closed category with probe object `ℛ`, assembled from the monad (`ProbMonad`), `ProbLaws` and `Fubini` (fields re-exported).
 - `Measure` — the type of probability measures on `ℛ`; `measure μ : ⊤ ⇒ T ℛ` embeds a measure as a global element of the monad, and `law a μ = T a ∘ measure μ : ⊤ ⇒ T X` (derived) is the distribution of a probe `a : ℛ ⇒ X` under `μ`.

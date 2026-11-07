@@ -17,7 +17,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 |---|---|---|---|
 | `QBS.BoolQ` | 57 |  | The Boolean QBS `BoolQ = 1Q +Q 1Q`, the coproduct (`Colimits`) of two points, over any random source. |
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
-| `QBS.Category.Cartesian` | 24 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
+| `QBS.Category.Cartesian` | 26 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
 | `QBS.Category.Concrete` | 181 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
 | `QBS.Category.Forget` | 33 |  | The forgetful functor `QBSCat S → Setoids`. |
 | `QBS.Category.Measurable` | 57 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
@@ -26,7 +26,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Colimits` | 199 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.CommMonad` | 24 |  | `braidedOf CC` and `ProbMonad CC`: the one spelling of "a commutative monad on a cartesian closed category", for the symmetric monoidal structure of its products. |
 | `QBS.Complete` | 173 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
-| `QBS.Core` | 213 |  | Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site. |
+| `QBS.Core` | 215 |  | Quasi-Borel spaces over an abstract random source. |
 | `QBS.Exponential` | 132 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 132 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.BernHalf` | 117 | lem | The biased coin at θ = ½ is the fair coin: `bernθ ½ ≈ᵖ bernB` (both of `Inference/BoolDist`). |
@@ -88,14 +88,14 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.WeakLaw` | 155 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05, item 50). |
 | `QBS.Inference.WeakLawAlg` | 69 | lem | Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05, item 50). |
 | `QBS.Inference.WeakLawCheb` | 69 | lem | The core of Chebyshev's inequality about any centre c ≃ E g (plan 05, item 50; helper for `Inference/WeakLaw`). |
-| `QBS.Instance` | 45 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
+| `QBS.Instance` | 48 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IntegralMonad` | 222 |  | A monad on quasi-Borel spaces presented by its integral. |
-| `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
+| `QBS.IsQBSLike` | 36 |  | `IsQBSLike ℓ C`: what a category `C` must provide for QBS-style probabilistic programming: cartesian closure (higher-order programs), binary and ℕ-indexed coproducts (branching, discrete data), ℕ-indexed products (inf... |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 132 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 168 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Probability` | 169 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 32 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 229 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
+| `QBS.Statistical` | 235 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 | `QBS.StrongPoint` | 136 |  | `StrongPoint CC cm`: the strength of a commutative monad `cm` on a cartesian category, evaluated at global elements. |
 

@@ -253,3 +253,16 @@ Candidates, in order of value:
 Note: the agent did not read `Core.agda` proofs, `Limits`, `Colimits`, `Complete` or `Exponential` bodies, and did not
 check proofs inside `IntegralMonad` beyond the header and top-level records. Findings on those are from headers and
 signatures only.
+
+## Implementation status (2026-11-07)
+
+- §3.1 `IsQBSLike` header, §3.2 `Instance` header, §3.3 `Core` opening line, §3.5 `Statistical` header (absorbing zero, `scaled-laws`, linearity directions), §3.7 `Category.Cartesian` usage and INLINE note, §3.8 `Probability` pointer to the generic module: done (tier A).
+- §3.4 abstract layer map: done, in `Interface.md` ("Abstract layer map", plus entries for `CommMonad` and `StrongPoint`).
+- §3.6 `StatisticalLemmas` rename or merge: skipped (maintainer question 2 is open).
+- §4.1 braided plumbing: done. New `QBS.CommMonad` holds `braidedOf` and `ProbMonad`; `Probability` (`ProbLaws`, `Fubini`, `ProbabilityInterface`) and `Statistical` (`SubMonad`) use `ProbMonad CC` and have no private `braided`. `Category.Cartesian.braided` is kept: it is the QBSCat-specific INLINE name that the models import, and changing it risks the 30 s conversions noted in `Model.Strong`. `Continuous.ProbInstance` imports `ProbMonad` from `CommMonad` (it was in `Probability`).
+- §4.2 generic strong-monad lemmas: done. New `QBS.StrongPoint` (module `Strength-at-points CC cm`) has `ψ`, `σ-unit`, `τ-unit`, `σ-point`, `τ-point`, and `ψ-point` generalised from ℛ to any A, B. `Fubini` opens it. The names are no longer exported through `ProbabilityInterface`; nothing used them from there. Open question 1 (models re-proving these) was not investigated.
+- §4.3 bind/Kleisli vocabulary (tier D): skipped for budget. The convention `bind k t = μ ∘ M k ∘ t` is stated in `Statistical`'s header only; no `bindK` definition and no rewrite of `scale-mul` and friends.
+- §4.4 `sum-nat`/`sum-join` derivability: checked against the report's own analysis, not derivable from `bind-sumK` without a unit measure. The header comment records which direction each covers; no field removed.
+- §4.5-4.8, §5: no change recommended.
+- Tier C and E: nothing to do in this domain.
+- Renames: none. Timings (cold .agdai): Probability 4.9 s to 4.0 s, Statistical 4.6 s to 4.6 s; `StrongPoint` 2.6 s, 0.44 GB.

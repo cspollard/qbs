@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site.
+-- Quasi-Borel spaces over an abstract random source.  Elementarily: a QBS is a setoid X together with a set of
+-- "random elements" ℛ → X, closed under precomposition with measurable maps, constants, and countable measurable
+-- case splits.  Equivalently (the rest of this header): concrete sheaves on a one-object site.
 --   Measurability  : a monoid 𝕄 of setoid maps Rˢ → Rˢ (closed under ≈, containing the constants).
 --   Probes M X     : a sub-𝕄-set of the setoid maps Rˢ → X, closed under ≈ and containing the constants;
 --                    i.e. a subpresheaf of Setoid(Rˢ, X) on 𝕄.
