@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`).
---   * `mapM-id`, `fst-pair`: pushing s ⊗ t along (x, y) ↦ (x, g y) gives s ⊗ g₊t;
+--   * `fst-pair`: pushing s ⊗ t along (x, y) ↦ (x, g y) gives s ⊗ g₊t;
 --   * `pairⁿ`: for probability measures μᵢ and i ≠ j, the pair of coordinates (xᵢ, xⱼ) of `FinProd.prodⁿ` has law μᵢ ⊗ μⱼ.
 -- Route: induction on n through the four cases on (i, j): (0, j+1) is `fst-pair` and `FinProd.margⁿ`; (i+1, 0) swaps
 -- (`ProdMap.swapM`); (i+1, j+1) pushes forward along snd (`FinProd.snd-law`) and recurses.
@@ -32,13 +32,10 @@ module FinProdPair (lem₁ : LEM₁) where
   open Weights (lemOf lem₁) using (constW)
   open SFinite (lemOf lem₁) using (XW; ∫ᴹ; ∫ᴹ-map; ∫ᴹ-cong; _≈ᴹ_; mapM; module C)
   open Product (lemOf lem₁) using (prodPre; prod-cong)
-  open ProdMap (lemOf lem₁) using (mapM-comp; mapM-cong; mapM-ext; _×H_; map-prod; swapQ; swapM)
+  open ProdMap (lemOf lem₁) using (mapM-id; mapM-comp; mapM-cong; mapM-ext; _×H_; map-prod; swapQ; swapM)
   open FinProd lem₁ using (ΠQ; projQ; prodⁿ; margⁿ; mass-prodⁿ; snd-law; tl; tlμ)
   open QBS
   open Hom
-
-  mapM-id : ∀ {X : QBS S} (s : C.Pre (XW X)) → _≈ᴹ_ {X} (mapM {X} {X} (idH S) s) s
-  mapM-id {X} s h = trans≈ (∫ᴹ-map {X} {X} (idH S) s h) (∫ᴹ-cong {X} s {_∘H_ S h (idH S)} {h} (λ x → refl≈))
 
   -- (x, y) ↦ (x, g y)
   fst-pair : ∀ {X Y Z : QBS S} (g : Hom S Y Z) (s : C.Pre (XW X)) (t : C.Pre (XW Y)) →

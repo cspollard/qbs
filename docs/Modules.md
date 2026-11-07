@@ -240,7 +240,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
 | `QBS.Continuous.ChangeOfVariablesFn` | 71 | lem | Change of variables from functions alone (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.CoinCoords` | 197 | lem | Independent coordinates of the fair coin. |
-| `QBS.Continuous.CoinCoordsJoint` | 178 | lem | The coin coordinates are iid (plan 05, item 47). |
+| `QBS.Continuous.CoinCoordsJoint` | 174 | lem | The coin coordinates are iid (plan 05, item 47). |
 | `QBS.Continuous.CoinIndep` | 124 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ConvEps` | 202 | lem | Convergence with explicit tolerances, and convergence of differences (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
@@ -275,7 +275,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Fatou` | 277 | lem | Downward monotone convergence and Fatou's lemma in both directions, for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.FatouAux` | 87 | lem | Auxiliary tests and lemmas for downward monotone convergence (`Continuous/Fatou`, plan 03). |
 | `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43). |
-| `QBS.Continuous.FinProdPair` | 102 | lem | Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`). |
+| `QBS.Continuous.FinProdPair` | 99 | lem | Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`). |
 | `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (plan 05, item 53a; enabler for `Inference/GaussVector`). |
 | `QBS.Continuous.FinTest` | 47 | lem | Finite signed tests are closed under the test operations (plan 07, items 59 and 60; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamilyPostAux`). |
 | `QBS.Continuous.FirstBit` | 153 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
@@ -331,7 +331,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ProbInstance` | 130 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
-| `QBS.Continuous.ProdMap` | 81 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
+| `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (plan 07, item 59; helper for `Continuous/ExpFamilyAux`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
 | `QBS.Continuous.RQArith` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
