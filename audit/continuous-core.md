@@ -218,3 +218,11 @@ Tier B:
 - `Wit-mono`: wrong finding, used in `SFiniteIncl` and `SFinite`; kept.
 - `tl`/`tlμ`/`tlp` unification, `SFiniteNorm`/`SFiniteDecomp` unification, `SFiniteStatBridge` pair reduction: not attempted (medium risk, budget).
 Tiers D and E (JoinWit sharing, generic double strength, begin-chains in TM/Strong, IndepAlg/IndepRing merge, relocations): not done.
+
+### Second pass (2026-11-07)
+
+- Readability: done.  `Monad.TM` associativity is now the `begin … ∎` lemma `join-assoc` (and `sym-assoc` is its symmetry); `Strong`'s `σH` congruence, `μ-η-comm` and `mid` are `begin … ∎` chains (the Fubini step of `mid` is the local `swap-order`).  `Strong` cold: 27.0 s before, 22.9 s after.  "Move plumbing below the commutativity theorem": not possible, `commutative` uses `hF`/`hmerge`/`mid`/`lhsEq`/`rhsEq`, which must precede it; skipped.
+- Tier D, JoinWit: done.  New `Continuous/JoinKernel` (`JoinKernel.Inner`/`Outer`) holds `K′`, `kK′`, `gK`, `kgK`, `g′`, `gok′` (all weight- and class-independent); both `JoinWit` modules open it and export the same names.  `Monad` 3.9 s, `SFiniteMonad` 5.6 s.  The remaining `gpr′` differs (`ok-bind` against `IsProb-bind`) and stays in each.
+- Tier D, generic double strength: skipped.  `ProdMap.map-prod`/`swapM` and `ExchangeableSwap` are integral-level proofs about `prodPre` and `≈ᴹ`, not about the categorical `ψ`; the only link is `CondIID.ψ-at`, which imports those modules.  A generic `ψ` naturality/symmetry module would have no consumer that it shortens, so it would be new dead code.
+- Tier B, `SFiniteNorm`/`SFiniteDecomp`: wrong finding.  `massM`/`normM` are on `Measure` (level pieces), `massP`/`normBd` on `Pre (XW X)`; they are linked by `massP-J` through `J`, not the same statement.  Kept.  `tl`/`tlμ`/`tlp`: only `tl` (Cantor tail, `DigitAlg`) exists now; nothing to unify.
+- Tier E, `IndepAlg`/`IndepRing`: skipped.  `IndepRing` is generic over any `CommutativeSemiring` and isolates the ring-solver calls, which the brief says to keep separate.  `Digit*`/`FirstBit*` left as instructed.
