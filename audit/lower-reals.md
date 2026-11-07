@@ -159,3 +159,31 @@ Line numbers are approximate. They come from grepping top-level declarations and
 Limits of this audit: the agent read the headers and top-level statements of all 21 modules but proofs only in
 `Omega.agda`, `RationalLemmas.agda` and the tops of `LowerReals`/`Series`. Findings 4, 7 and 8 depend on proofs it did
 not read, so confirm them against the code before acting.
+
+## Implementation status (2026-11-07)
+
+Tier A (documentation)
+- Three-layer overview and the ω-cpo remark (pointed ω-cpo, `+`/`×` Scott-continuous): done, in the `Omega.agda` header.
+- "Number foundations" entry in `Interface.md`: done.
+- "plan 03" headers: done for `LowerRealsInf` and `LowerRealsNear` (`Threshold` had no such reference).
+- `UnboundedLowerReals` header says it is a short instance module: done.
+- `RationalLemmas` header explains the adapter layer over stdlib instance arguments: done.
+- `LowerReals.agda` contents summary at the top, and the join/meet-of-downsets remark: done.
+
+Tier B (simplification)
+- `ring₁..ring₇`: done, renamed (no inlining, to keep each `solve` shared): `add-neg-pad`, `add-shift`, `add-telescope`,
+  `sub-recover`, `add-sub-cancelʳ` (was `ring₅`), `neg-add-double`, `add-assoc-shift`. Importers updated in `LowerReals`,
+  `LowerRealsNear`, `LowerInverse`.
+- Merge `add-sub`/`sub-add`/`ring₅`: wrong. The three are different statements (`r + (q - r) = q`, `(q - q′) + q′ = q`,
+  `(a + s) - a = s`), so they are kept; `ring₅` is documented as the right-cancellation form.
+- `hpC`/`tp` link: already one lemma by construction (`hpC n = qC (tp n) (tp-pos n)`, and `hpC-double` is `qC-add` plus `tp-double`);
+  nothing to change. `ntwo` in `LowerRealsMin` is a separate (doubling, not halving) sequence.
+
+Tier E (merges): skipped, with reasons.
+- `Min` into `LowerRealsMin`: `Min` is the abstract layer, `LowerRealsMin` the instance; merging would break the three layers.
+- `CutSplit` into `LowerRealsNear`: `split1` is unrelated to `Near`, and its Gaussian importers (`PolyDominationOdd`,
+  `GaussReal`, `GaussHalfLine`) would then depend on `LowerRealsMin`/`LowerRealsInf` for nothing.
+- `UnboundedLowerReals`: it has no importers (a documented instance witness). Merging it into `LowerRealsMin` would make every
+  cut-minimum importer depend on `Unbounded`. Kept.
+
+Left alone as instructed: `ExtNat` unification, ω-cpo record, moving `Cone`/`Threshold`. Findings 2, 6, 7, 8, 9 of §4 not attempted.
