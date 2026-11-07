@@ -177,8 +177,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.ExtNat` | 338 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 105 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
-| `QBS.Analysis.GaussExp` | 46 |  | Small algebra for the Gaussian exponential facts `E u + u E u ≤ 1 ≤ E u + u` (`E = e^{−x}`), over an abstract Archimedean ω-semiring A. |
-| `QBS.Analysis.GaussTail` | 43 |  | Small facts for the Gaussian tail and finiteness, over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussExp` | 77 |  | Small algebra for the Gaussian exponential facts `E u + u E u ≤ 1 ≤ E u + u` (`E = e^{−x}`), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
 | `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
 | `QBS.Analysis.Half` | 84 |  | Powers of ½ in an `OmegaSemiring` with a half (`half + half ≈ 1`): `hp n = ½ⁿ` is the stdlib power `half ^ n` (so `hp (suc n) = half * hp n` holds by definition), with `½ (x + x) = x`, the doubling law `½ⁿ⁺¹ + ½ⁿ⁺¹ = ... |

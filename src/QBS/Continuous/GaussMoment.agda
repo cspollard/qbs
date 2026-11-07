@@ -5,7 +5,7 @@
 --   * `moment-succ j : ∫ᴹ lebPre (gMomH (j+2)) ≈ (j+1) · ∫ᴹ lebPre (gMomH j)`: integration by parts on the half-line,
 --     `DerivBridge.OnHalfLine.glue-D` applied to `DerivGauss.DFgaussJ` (the certificate `G′ = k − h` from the rules of
 --     `Analysis/Deriv*`) with `G = xʲ⁺¹ e^{−x²/2}`;
---     `G 0 = 0`, and `G(N) → 0` along the multiples of j+2 because `e^{−N²/2} ≤ e^{−N}` for N ≥ 2 (`Analysis/GaussTail.big`)
+--     `G 0 = 0`, and `G(N) → 0` along the multiples of j+2 because `e^{−N²/2} ≤ e^{−N}` for N ≥ 2 (`Analysis/GaussExp.AlgGT.big`)
 --     and `Nʲ⁺¹ e^{−N} → 0` (`Analysis/ExpTail`);
 --   * `∫-x²φ : ∫ x² e^{−x²/2} ≈ ∫ e^{−x²/2}` (j = 0: so `Var = 1` for the half-normal);
 --   * `even-moment n : ∫ x²ⁿ e^{−x²/2} ≈ (2n−1)‼ · Z`, with `dfac n = (2n−1)‼` (`dfac 0 = 1`, `dfac (n+1) = (2n+1) dfac n`).
@@ -28,7 +28,7 @@ open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
-open import QBS.Analysis.GaussTail using (module AlgGT)
+open import QBS.Analysis.GaussExp using (module AlgGT)
 open import QBS.Analysis.Deriv using (module AlgD)
 open import QBS.Analysis.DerivGauss using (module AlgDG)
 open import QBS.Continuous.FairCoin using (module FairCoin)

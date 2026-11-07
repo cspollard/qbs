@@ -3,7 +3,7 @@
 -- Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser).
 -- With `G = φ = e^{−x²/2}`, `h = x φ` and `k = 0` (the zero test `kzH`, written `0 · φ` so that its integral is `0 · ∫ φ`),
 -- `dv1 n` is the `Deriv` certificate `G′ = k − h` on `[0, n+1]` from `DerivGauss.DFgauss` (the chain rule applied to `½ x²`).
--- Since `G 0 = 1` and `φ(N) → 0` along the integers N ≥ 2 (`Φtail`: φ(N) ≤ e^{−N}, `Analysis/GaussTail.big`, and
+-- Since `G 0 = 1` and `φ(N) → 0` along the integers N ≥ 2 (`Φtail`: φ(N) ≤ e^{−N}, `Analysis/GaussExp.AlgGT.big`, and
 -- `Continuous/HalfLineMomentFact.T.tail` at j = 0), `DerivBridge.OnHalfLine.glue-D0` gives
 --   `∫-xφ : ∫ᴹ lebPre (gMomH 1) ≈ 1`.
 -- (This replaces a hand-written telescoping sum over the unit-interval identities of the retired `GaussCertM1` pack.)
@@ -27,7 +27,7 @@ open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
-open import QBS.Analysis.GaussTail using (module AlgGT)
+open import QBS.Analysis.GaussExp using (module AlgGT)
 open import QBS.Analysis.Deriv using (module AlgD)
 open import QBS.Analysis.DerivGauss using (module AlgDG)
 open import QBS.Continuous.FairCoin using (module FairCoin)

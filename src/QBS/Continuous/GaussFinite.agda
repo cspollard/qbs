@@ -3,7 +3,7 @@
 -- The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used).
 -- On the unit interval [n, n+1] the Gaussian is at most its left value Φ(n) (it is antitone), so the unit integral is
 -- at most Φ(n) (`J-const`), and Φ(n) ≤ 2 ½ⁿ: for n = 0, 1 because Φ ≤ 1, and for n ≥ 2 because ½ n² ≥ n
--- (`Analysis/GaussTail.big`) gives `e^{−n²/2} ≤ e^{−n} ≤ ½ⁿ` (`TailFTCExpHalf.tail`).  Then
+-- (`Analysis/GaussExp.AlgGT.big`) gives `e^{−n²/2} ≤ e^{−n} ≤ ½ⁿ` (`TailFTCExpHalf.tail`).  Then
 -- `Z = ∑ₙ ∫₀¹ Φ(n+u) du ≤ ∑ₙ 2 ½ⁿ ≤ 4`, since `∑ ½ⁿ = 1 + ∑ ½ⁿ⁺¹ ≤ 2`.
 --   * `Z-le : Z ≤ (1 + 1) + (1 + 1)`;  `Z-bnd : Bnd Z` (bounded by the natural number 4).
 module QBS.Continuous.GaussFinite where
@@ -26,7 +26,7 @@ open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
-open import QBS.Analysis.GaussTail using (module AlgGT)
+open import QBS.Analysis.GaussExp using (module AlgGT)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.CoinIndep using (module CoinIndep)
 open import QBS.Continuous.Weights using (module Weights)
