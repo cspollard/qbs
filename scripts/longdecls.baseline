@@ -9,7 +9,7 @@ QBS.Analysis.CoinIntegral.bound
 QBS.Analysis.Variance.expand-alg
 QBS.Analysis.Unbounded.Iinf-scale-fun
 QBS.Analysis.LevelSets.LS-sum
-QBS.Analysis.CoinFacts.μ-add
+QBS.Analysis.Daniell.Facts.μ-add
 QBS.Continuous.UniformMoment.four
 QBS.Analysis.Variance.neg-mul-alg
 QBS.Borel.PiLambda.Lam-⋃

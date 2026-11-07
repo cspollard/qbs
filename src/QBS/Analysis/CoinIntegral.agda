@@ -4,7 +4,7 @@
 -- fair coin `BorelMeasure.coinBM` is the instance used by `Continuous.FairCoin`): the supremum of the integrals of the
 -- simple functions below `h`, resized to Set with a classical axiom at Set₁.  Proves `L-add`, `L-scale`, `L-sup` and
 -- `L-one`, i.e. that `L` is a Daniell functional (`Measure`) agreeing with `B` on cylinders.
--- Glossary: `Sf` (`CoinSimple`) is a simple function, a countable Borel partition `V i` with values `ρ i`; `∫ s` is its
+-- Glossary: `Sf` (`Daniell.Simple`) is a simple function, a countable Borel partition `V i` with values `ρ i`; `∫ s` is its
 -- integral `∑ ρ i · μ (V i)`; `Minor h s` says `s` lies below `h`; `Lmem h q` says some minorant has integral above `q`;
 -- `L h` is the cut of such `q`, the supremum.
 module QBS.Analysis.CoinIntegral where
@@ -38,10 +38,10 @@ open import QBS.Analysis.LowerReals using (Cut; _⊑_; mk⊑; ⊗-mono)
 open import QBS.Analysis.LowerRealsArch using (arch-⊑; hpC; hpC-double; tp; tp-pos; tp-small)
 open import QBS.Analysis.Archimedean
 open import QBS.Analysis.BorelMeasure
-open import QBS.Analysis.CoinSimple
-open import QBS.Analysis.CoinCont
+open import QBS.Analysis.Daniell.Simple
+open import QBS.Analysis.Daniell.Continuity
 open import QBS.Analysis.LevelSets
-open import QBS.Analysis.CoinGrid
+open import QBS.Analysis.Daniell.Grid
 open import QBS.Classical using (LEM₀; LEM₁)
 open Cut
 open _⊑_

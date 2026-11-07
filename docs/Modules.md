@@ -149,14 +149,14 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Cauchy` | 134 |  | The Cauchy product of series in an `OmegaSemiring`: for every `a b : ℕ → A`, `(∑ᶠ a) * (∑ᶠ b) ≈ ∑ᶠ n. |
 | `QBS.Analysis.Clopen` | 262 | lem | Clopen subsets of Cantor space as finite binary trees, with Boolean semantics, and the fan theorem (compactness of Cantor space): a decreasing sequence of clopen sets with empty intersection is eventually empty. |
 | `QBS.Analysis.ClopenMeasure` | 100 |  | The dyadic premeasure on clopen sets (finite trees), with values in an `OmegaSemiring` that has a half: μ0 (leaf true) = 1, μ0 (leaf false) = 0, μ0 (split a b) = ½ (μ0 a + μ0 b). |
-| `QBS.Analysis.CoinCont` | 139 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
-| `QBS.Analysis.CoinFacts` | 88 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
-| `QBS.Analysis.CoinGrid` | 158 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
 | `QBS.Analysis.CoinIntegral` | 432 | lem | The Daniell integral of an arbitrary measurable `h` against any Borel probability measure `B` (generic in `B`; the fair coin `BorelMeasure.coinBM` is the instance used by `Continuous.FairCoin`): the supremum of the in... |
-| `QBS.Analysis.CoinSimple` | 139 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 112 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
 | `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |
 | `QBS.Analysis.CutSum` | 438 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
+| `QBS.Analysis.Daniell.Continuity` | 139 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
+| `QBS.Analysis.Daniell.Facts` | 88 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
+| `QBS.Analysis.Daniell.Grid` | 158 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
+| `QBS.Analysis.Daniell.Simple` | 139 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Density` | 137 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.Deriv` | 384 |  | A certificate calculus for the tail FTC (part 1: the notion, and the linear closure rules). |
 | `QBS.Analysis.DerivChain` | 317 |  | A certificate calculus for the tail FTC (part 4: the chain rule for the exponential), over an abstract Archimedean ω-semiring. |

@@ -2,7 +2,7 @@
 
 -- Continuity of the fair-coin measure along increasing unions, and completion of a partial
 -- simple function (disjoint Borel cells with values) to a simple function on the whole space.
-module QBS.Analysis.CoinCont where
+module QBS.Analysis.Daniell.Continuity where
 
 import Level as L
 open import Data.Nat.Base using (ℕ; zero; suc)
@@ -21,8 +21,8 @@ open import QBS.Borel.PiLambda using (∁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
 open import QBS.Analysis.BorelMeasure
-open import QBS.Analysis.CoinFacts
-open import QBS.Analysis.CoinSimple
+open import QBS.Analysis.Daniell.Facts
+open import QBS.Analysis.Daniell.Simple
 open import QBS.Classical using (LEM₀)
 
 module Cont (lem : LEM₀) (B : BM.BorelMeasure lem) where

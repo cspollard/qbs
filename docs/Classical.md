@@ -41,7 +41,7 @@ Two points about the form of `lem`:
 * **It is stated for all types, not only propositions.** Because `Σ` is proof-relevant and nothing is
   truncated, `lem (Σ A B)` returns an actual witness. Calling `lem` on a `Σ`-type is therefore an
   epsilon operator (global choice for inhabited types), and the proofs use it that way: `Clopen.choice`,
-  `Borel/Lead.lead`, `Pieces.find`, `LowerReals.near-sup`, `CoinGrid.find`. This is stronger than
+  `Borel/Lead.lead`, `Pieces.find`, `LowerReals.near-sup`, `Daniell.Grid.find`. This is stronger than
   classical logic for h-propositions. It is consistent with `--without-K` (set-like models) but not
   with univalence or `--cubical`.
 * **Mentioning `lem` is not using it.** Many modules take `lem` only to pass it to
@@ -92,7 +92,7 @@ constructions case-split on it anyway, using `lem` (or a `Dec` argument):
 * `Analysis/Fun.agda`, `Mask`. Restriction to a Borel set takes `dec` as an argument; callers such as
   `Analysis/Restrict.agda` (hard rejection) supply it from `lem`.
 * `Analysis/Meas.agda` (`imp-borel`), `Analysis/LevelSets.agda` (`borel-prop`, the level sets of a
-  measurable function), `Analysis/CoinFacts.agda`, `Analysis/Regular.agda` (`cov x with lem (U x)`).
+  measurable function), `Analysis/Daniell/Facts.agda`, `Analysis/Regular.agda` (`cov x with lem (U x)`).
 * `Borel/PiLambda.agda`. Dynkin's π–λ theorem decides membership in `P`, `A`, `B` and `Fin∪ U n` in
   order to take disjoint refinements and differences.
 * `Borel/Lead.agda`. `lead : Cantor → ℕ` decides `∃ m, k m = false`, which is an LPO-style decision. The
@@ -110,7 +110,7 @@ implies LLPO. It is essential to the construction of the fair coin: `OpenMeasure
 ### 3.4 The Carathéodory extension and the integral
 
 * `Analysis/Regular.agda`. Carathéodory regularity, with the case splits above and Dynkin from §3.2.
-* `Analysis/CoinCont.agda`, `CoinGrid.agda`, `CoinSimple.agda`, `MeasFun.agda`, `CoinFacts.agda`. Dyadic
+* `Analysis/Daniell/Continuity.agda`, `Daniell/Grid.agda`, `Daniell/Simple.agda`, `MeasFun.agda`, `Daniell/Facts.agda`. Dyadic
   grid approximations (the largest grid point strictly below `h x`, found by `lem`), completion of a
   partial simple function to a total one (`dec x w with lem (W n x)`), and intersections of cells
   (`term i j with lem (Σ Cantor …)`).
@@ -223,7 +223,7 @@ lem (Set), lem₁ (Set₁)
   └─ Clopen.Fan (König, `choice`)             → OpenMeasure → Regular (Carathéodory) → BorelMeasure
   └─ PiLambda (Dynkin), Indicators, Meas      → Uniqueness, Param, Tensor (Fubini)
   └─ CutSum (resizing, UIP at Set₁)           → AdditiveSemiring, ViterbiSemiring
-  └─ CoinIntegral / CoinGrid / CoinSimple     → Functional → Riesz
+  └─ CoinIntegral / Daniell.Grid / Daniell.Simple     → Functional → Riesz
   └─ SFiniteNorm / SFiniteDecomp (invDec)     → SFiniteStat (`normalize`, `scaled-laws`)
   └─ SignedInf (is a part ∞?), LogCore (logs) → SignedExpect → Gauss*, Entropy, KLDiv, Frequentist
 ```

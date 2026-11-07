@@ -41,7 +41,7 @@ geometric theories, close to Daniell. The integrands are Dedekind-real-valued co
 this needs compactness and finite (probability) valuations. Vickers (below) reports that their valuation
 locale is the probability-valuation subspace of his.
 *For us:* the "simple functions" algebra (the modular monoid) is the constructive counterpart of
-`Analysis/CoinSimple` and `CoinGrid`.
+`Analysis/Daniell/Simple` and `Daniell/Grid`.
 
 ### Coquand and Spitters, *Formal topology and constructive mathematics: the Gelfand and Stone–Yosida representation theorems* (2005), `coquand-spitters-gelfand-stone-yosida.pdf`
 Constructive Stone–Yosida for Riesz spaces. Per the search summary, it avoids countable choice, and

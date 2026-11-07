@@ -3,7 +3,7 @@
 -- Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that
 -- equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ).  It lies below h
 -- and within 2⁻ᵏ of it.
-module QBS.Analysis.CoinGrid where
+module QBS.Analysis.Daniell.Grid where
 
 import Level as L
 open import Level using (lift)
@@ -29,7 +29,7 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.LowerReals
 open import QBS.Analysis.LowerRealsArch using (tp; tp-pos)
 open import QBS.Analysis.BorelMeasure
-open import QBS.Analysis.CoinSimple
+open import QBS.Analysis.Daniell.Simple
 open import QBS.Analysis.LevelSets
 open import QBS.Classical using (LEM₀)
 open Cut

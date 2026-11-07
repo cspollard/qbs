@@ -3,7 +3,7 @@
 -- Simple functions on Cantor space (countable Borel partitions with values in A) and their
 -- integral against the fair-coin measure; monotone and additive under common refinement.  This
 -- is the base of the Lebesgue-style integral of the measurable functions.
-module QBS.Analysis.CoinSimple where
+module QBS.Analysis.Daniell.Simple where
 
 import Level as L
 open import Data.Nat.Base using (ℕ; zero; suc)
@@ -21,7 +21,7 @@ open import QBS.Model.Pairing
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
 open import QBS.Analysis.BorelMeasure
-open import QBS.Analysis.CoinFacts
+open import QBS.Analysis.Daniell.Facts
 open import QBS.Classical using (LEM₀)
 
 module Simple (lem : LEM₀) (B : BM.BorelMeasure lem) where

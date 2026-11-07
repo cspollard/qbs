@@ -2,7 +2,7 @@
 
 -- Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral:
 -- the whole space and the empty set, partitions, monotonicity.
-module QBS.Analysis.CoinFacts where
+module QBS.Analysis.Daniell.Facts where
 
 import Level as L
 open import Data.Nat.Base using (ℕ; zero; suc)

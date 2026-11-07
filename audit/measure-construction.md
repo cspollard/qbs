@@ -127,3 +127,11 @@ Not findable: nearly everything except the `Measure` interface and `Meas`/`Lebes
 - D, using `_≈ₘ_` to shorten existing chains: skipped.
 - D, `DynkinClass` record (§4.2), `Cone`/`Threshold` move, dyadic merge (§4.3): skipped for budget.
 - E, `Coin*` renames, `CoinIntegral` split, `Analysis.Measure` rename (§3.6, §4.10): skipped for budget.
+
+## Implementation status, round 2 (2026-11-07)
+
+- D, `DynkinClass` record (§4.2): skipped, not worthwhile. `dynkin` already takes `resp`, `cyl`, `compl`, `disj` as its four arguments, and each application (`Regular`, `Uniqueness`, `Param`) proves exactly those four. A record would add a declaration and a wrapper without shortening any application.
+- B, `Mixture` (§4.4): done. Folded as `module Mixture` at the end of `Analysis/Cone`; `Analysis/Mixture.agda` deleted; `Continuous/FirstBit` and the `MixtureN` header updated.
+- B, `Indicators.PS` (§4.8): partly done. `PS V N x` is definitionally `psum (λ n → χ (V n) x) N`, so it is now defined as that and `PS-inc` is `psum-inc`. `PS-sup` stays: it is a pointwise argument, not `∑ᶠ-⨆`.
+- E, renames: `Analysis.CoinFacts` → `Analysis.Daniell.Facts`, `CoinSimple` → `Daniell.Simple`, `CoinCont` → `Daniell.Continuity`, `CoinGrid` → `Daniell.Grid`. Importers: `CoinIntegral`, `Functional`, and the Daniell modules themselves. `scripts/longdecls.baseline` and the docs were updated.
+- E, `CoinIntegral` rename and Add/Scale/Sup split: skipped. 179 modules import it (156 only for `lemOf`), so a rename or a split would mean editing and re-checking all of them by hand. A tidier route is to move `lemOf` into a tiny module first.

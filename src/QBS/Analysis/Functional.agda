@@ -21,9 +21,9 @@ open import QBS.Analysis.Fun
 open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Analysis.Measure
 open import QBS.Analysis.BorelMeasure
-open import QBS.Analysis.CoinCont using (module Cont)
+open import QBS.Analysis.Daniell.Continuity using (module Cont)
 open import QBS.Analysis.LevelSets using (module LevelSets)
-open import QBS.Analysis.CoinSimple using (module Simple)
+open import QBS.Analysis.Daniell.Simple using (module Simple)
 open import QBS.Analysis.CoinIntegral
 open import QBS.Classical using (LEM₁)
 
