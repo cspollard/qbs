@@ -318,7 +318,7 @@ module Classical (lem : LEM₀) where
       iter (suc n) with iter n
       ... | r , mr , h with step r mr
       ... | r′ , mr′ , lt = r′ , mr′ ,
-        ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (nat-suc* n ε)) (ring₇ b₀ (nat n * ε) ε)))
+        ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (nat-suc* n ε)) (add-assoc-shift b₀ (nat n * ε) ε)))
           (<-≤ (≤-<-trans (+-mono-≤ h (≤-refl {ε})) lt))
 
       k = proj₁ (arch (1ℚᵘ + 1ℚᵘ) 0<ε)
@@ -329,7 +329,7 @@ module Classical (lem : LEM₀) where
       hrk = proj₂ (proj₂ (iter k))
 
       final : 1ℚᵘ ≤ rk
-      final = ≤-trans (≤-≃ (≃-sym (ring₆ 1ℚᵘ))) (≤-trans (+-mono-≤ (≤-refl {b₀}) hk) hrk)
+      final = ≤-trans (≤-≃ (≃-sym (neg-add-double 1ℚᵘ))) (≤-trans (+-mono-≤ (≤-refl {b₀}) hk) hrk)
 
   -- the complement 1 − c of a cut below 1
   complC : ∀ c → c ⊑ oneC → Cut
@@ -339,9 +339,9 @@ module Classical (lem : LEM₀) where
         ε , 0<ε , (λ r m → ≤-trans (+-mono-≤ (≤-refl {r}) (+-mono-≤ le (≤-refl {ε}))) (h r m))
     ; open′ = λ {q} (ε , 0<ε , h) →
         let δ , 0<δ , δ<ε = dense 0<ε
-        in q + δ , lt-add 0<δ , ε + - δ , pos-diff δ<ε , (λ r m → ≤-trans (≤-≃ (ring₂ r q δ ε)) (h r m))
+        in q + δ , lt-add 0<δ , ε + - δ , pos-diff δ<ε , (λ r m → ≤-trans (≤-≃ (add-shift r q δ ε)) (h r m))
     ; neg = λ {q} q<0 →
-        0ℚᵘ + - q , neg-pos q<0 , (λ r m → ≤-trans (≤-≃ (ring₁ r q)) (<-≤ (ap bd r m))) }
+        0ℚᵘ + - q , neg-pos q<0 , (λ r m → ≤-trans (≤-≃ (add-neg-pad r q)) (<-≤ (ap bd r m))) }
 
   complement-ok : ∀ c (bd : c ⊑ oneC) → c ⊕ complC c bd ≋ oneC
   complement-ok c bd = mk⊑ fwd , mk⊑ bwd
@@ -356,7 +356,7 @@ module Classical (lem : LEM₀) where
             r , mr , hr = near-sup c bd 0<δ
         in r , q + - r , mr ,
            (η + - δ , pos-diff δ<η , λ r′ m′ → ≤-trans (+-mono-≤ (hr r′ m′) (≤-refl {(q + - r) + (η + - δ)}))
-               (≤-≃ (ring₃ r δ q 1ℚᵘ))) ,
+               (≤-≃ (add-telescope r δ q 1ℚᵘ))) ,
            ≤-≃ (≃-sym (add-sub r q))
 
   cancel-⊑ : ∀ {a x y} → a ⊑ oneC → a ⊕ x ⊑ a ⊕ y → x ⊑ y
@@ -368,8 +368,8 @@ module Classical (lem : LEM₀) where
         le₁ : r + q′ ≤ (r + δ) + s
         le₁ = ≤-trans h (+-mono-≤ (hr r″ mr″) (≤-refl {s}))
         q≤s : q ≤ s
-        q≤s = ≤-trans (≤-≃ (ring₄ r q q′))
-                (≤-trans (+-mono-≤ le₁ (≤-refl {(- (r + δ))})) (≤-≃ (ring₅ (r + δ) s)))
+        q≤s = ≤-trans (≤-≃ (sub-recover r q q′))
+                (≤-trans (+-mono-≤ le₁ (≤-refl {(- (r + δ))})) (≤-≃ (add-sub-cancelʳ (r + δ) s)))
     in down y q≤s ms)
 
   cancel : ∀ {a x y} → a ⊑ oneC → a ⊕ x ≋ a ⊕ y → x ≋ y

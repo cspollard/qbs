@@ -52,7 +52,7 @@ module Near (lem : LEM₀) where
   nsb-iter c ε st (suc n) with nsb-iter c ε st n
   ... | r , mr , h with st r mr
   ... | r′ , mr′ , lt = r′ , mr′ ,
-    ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {0ℚᵘ + - 1ℚᵘ}) (nat-suc* n ε)) (ring₇ (0ℚᵘ + - 1ℚᵘ) (nat n * ε) ε)))
+    ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {0ℚᵘ + - 1ℚᵘ}) (nat-suc* n ε)) (add-assoc-shift (0ℚᵘ + - 1ℚᵘ) (nat n * ε) ε)))
       (<-≤ (≤-<-trans (+-mono-≤ h (≤-refl {ε})) lt))
 
   -- a cut bounded by M has an element within ε of its supremum
@@ -82,8 +82,8 @@ module Near (lem : LEM₀) where
         le₁ : r + q′ ≤ (r + δ) + s
         le₁ = ≤-trans h (+-mono-≤ (hr r″ mr″) (≤-refl {s}))
         q≤s : q ≤ s
-        q≤s = ≤-trans (≤-≃ (ring₄ r q q′))
-                (≤-trans (+-mono-≤ le₁ (≤-refl {(- (r + δ))})) (≤-≃ (ring₅ (r + δ) s)))
+        q≤s = ≤-trans (≤-≃ (sub-recover r q q′))
+                (≤-trans (+-mono-≤ le₁ (≤-refl {(- (r + δ))})) (≤-≃ (add-sub-cancelʳ (r + δ) s)))
     in down y q≤s ms)
 
   w-gt : ∀ q q₂ m s* → m < q₂ → (q + - s*) < q₂ + - (s* + (m + - q))

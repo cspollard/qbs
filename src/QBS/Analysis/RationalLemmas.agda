@@ -194,27 +194,28 @@ pos-diff {p} {q} p<q = ≃-<ˡ (+-inverseʳ p) (+-mono-<-≤ p<q (≤-refl {(- p
 neg-pos : ∀ {q} → q < 0ℚᵘ → 0ℚᵘ < 0ℚᵘ + - q
 neg-pos {q} q<0 = ≃-<ˡ (+-inverseʳ q) (+-mono-<-≤ q<0 (≤-refl {(- q)}))
 
--- ring identities
-ring₁ : ∀ r q → r + (q + (0ℚᵘ + - q)) ≃ r
-ring₁ = solve 2 (λ r q → r :+ (q :+ (con 0ℚᵘ :+ :- q)) := r) ≃-refl
+-- ring identities, each a single `solve` (named for the cut proofs in `LowerReals`/`LowerRealsNear` that use them)
+add-neg-pad : ∀ r q → r + (q + (0ℚᵘ + - q)) ≃ r
+add-neg-pad = solve 2 (λ r q → r :+ (q :+ (con 0ℚᵘ :+ :- q)) := r) ≃-refl
 
-ring₂ : ∀ r q δ ε → r + ((q + δ) + (ε + - δ)) ≃ r + (q + ε)
-ring₂ = solve 4 (λ r q δ ε → r :+ ((q :+ δ) :+ (ε :+ :- δ)) := r :+ (q :+ ε)) ≃-refl
+add-shift : ∀ r q δ ε → r + ((q + δ) + (ε + - δ)) ≃ r + (q + ε)
+add-shift = solve 4 (λ r q δ ε → r :+ ((q :+ δ) :+ (ε :+ :- δ)) := r :+ (q :+ ε)) ≃-refl
 
-ring₃ : ∀ r δ q u → (r + δ) + ((q + - r) + ((u + - q) + - δ)) ≃ u
-ring₃ = solve 4 (λ r δ q u → (r :+ δ) :+ ((q :+ :- r) :+ ((u :+ :- q) :+ :- δ)) := u) ≃-refl
+add-telescope : ∀ r δ q u → (r + δ) + ((q + - r) + ((u + - q) + - δ)) ≃ u
+add-telescope = solve 4 (λ r δ q u → (r :+ δ) :+ ((q :+ :- r) :+ ((u :+ :- q) :+ :- δ)) := u) ≃-refl
 
-ring₄ : ∀ r q q′ → q ≃ (r + q′) + (- (r + (q′ + - q)))
-ring₄ = solve 3 (λ r q q′ → q := (r :+ q′) :+ :- (r :+ (q′ :+ :- q))) ≃-refl
+sub-recover : ∀ r q q′ → q ≃ (r + q′) + (- (r + (q′ + - q)))
+sub-recover = solve 3 (λ r q q′ → q := (r :+ q′) :+ :- (r :+ (q′ :+ :- q))) ≃-refl
 
-ring₅ : ∀ a s → ((a + s) + - a) ≃ s
-ring₅ = solve 2 (λ a s → (a :+ s) :+ :- a := s) ≃-refl
+-- `(a + s) - a = s`, the right-cancellation form of `add-sub` (a different statement from `sub-add`)
+add-sub-cancelʳ : ∀ a s → ((a + s) + - a) ≃ s
+add-sub-cancelʳ = solve 2 (λ a s → (a :+ s) :+ :- a := s) ≃-refl
 
-ring₆ : ∀ x → (0ℚᵘ + - x) + (x + x) ≃ x
-ring₆ = solve 1 (λ x → (con 0ℚᵘ :+ :- x) :+ (x :+ x) := x) ≃-refl
+neg-add-double : ∀ x → (0ℚᵘ + - x) + (x + x) ≃ x
+neg-add-double = solve 1 (λ x → (con 0ℚᵘ :+ :- x) :+ (x :+ x) := x) ≃-refl
 
-ring₇ : ∀ b n ε → b + (n + ε) ≃ (b + n) + ε
-ring₇ = solve 3 (λ b n ε → b :+ (n :+ ε) := (b :+ n) :+ ε) ≃-refl
+add-assoc-shift : ∀ b n ε → b + (n + ε) ≃ (b + n) + ε
+add-assoc-shift = solve 3 (λ b n ε → b :+ (n :+ ε) := (b :+ n) :+ ε) ≃-refl
 
 -- a pure rational estimate used for scaling in the Daniell integral
 smallprod : ∀ {N tk tn r y q : ℚᵘ} → 0ℚᵘ < N → 0ℚᵘ < y → r < N → y ≤ tk → N * tk < tn → q ≤ r * y → q < tn

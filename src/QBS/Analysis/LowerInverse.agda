@@ -169,7 +169,7 @@ module InvClassical (lem : LEM₀) where
       iter (suc n) with iter n
       ... | r , mr , h with step r mr
       ... | r′ , mr′ , lt = r′ , mr′ ,
-        ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (nat-suc* n ε)) (ring₇ b₀ (nat n * ε) ε)))
+        ≤-trans (≤-≃ (≃-trans (+-cong (≃-refl {b₀}) (nat-suc* n ε)) (add-assoc-shift b₀ (nat n * ε) ε)))
           (<-≤ (≤-<-trans (+-mono-≤ h (≤-refl {ε})) lt))
 
       k = proj₁ (arch (M + 1ℚᵘ) 0<ε)
