@@ -45,7 +45,7 @@ Two points about the form of `lem`:
   classical logic for h-propositions. It is consistent with `--without-K` (set-like models) but not
   with univalence or `--cubical`.
 * **Mentioning `lem` is not using it.** Many modules take `lem` only to pass it to
-  `LowerRealsOmega lem` or `BM lem` (for example `LowerRealsMin`, `CoinSets`, `Continuous/ProbInstance`,
+  `LowerRealsOmega lem` or `BM lem` (for example `LowerRealsMin`, `Regular`, `Continuous/ProbInstance`,
   `Continuous/Monad`). The places that call it are listed in §3.
 
 ## 2. The part with no classical hypotheses
@@ -105,7 +105,7 @@ constructions case-split on it anyway, using `lem` (or a `Dec` argument):
 eventually empty. The proof is König's lemma, with an infinite path chosen by `lem`
 (`not-all`, `bad-split`, `choice`, `choice-ok`). This is weak König's lemma / the fan theorem, which
 implies LLPO. It is essential to the construction of the fair coin: `OpenMeasure`, `Regular` and
-`CoinSets` rest on it.
+`BorelMeasure` rest on it.
 
 ### 3.4 The Carathéodory extension and the integral
 
@@ -220,7 +220,7 @@ Most of the work is algebra over an abstract ω-semiring, which needs nothing. T
 ```
 lem (Set), lem₁ (Set₁)
   └─ LowerReals.Classical (near-sup)          → complement, cancel → LowerRealsOmega
-  └─ Clopen.Fan (König, `choice`)             → OpenMeasure → Regular (Carathéodory) → CoinSets
+  └─ Clopen.Fan (König, `choice`)             → OpenMeasure → Regular (Carathéodory) → BorelMeasure
   └─ PiLambda (Dynkin), Indicators, Meas      → Uniqueness, Param, Tensor (Fubini)
   └─ CutSum (resizing, UIP at Set₁)           → AdditiveSemiring, ViterbiSemiring
   └─ CoinIntegral / CoinGrid / CoinSimple     → Functional → Riesz

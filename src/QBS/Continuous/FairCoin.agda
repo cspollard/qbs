@@ -15,7 +15,7 @@ open import QBS.Borel.Merge using (Cyl-borel)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Indicators using (module Indicators)
-open import QBS.Analysis.CoinSets using (module CoinSets)
+open import QBS.Analysis.Regular using (module Regularity)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.ClopenMeasure using (module Premeasure)
 open import QBS.Analysis.Measure
@@ -31,7 +31,7 @@ module FairCoin (lem₁ : LEM₁) where
   open Integration A
   open Indicators A (lemOf lem₁) using (χ; Fun-χ)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open CoinSets (lemOf lem₁) using (μ-cyl; cyl→tree)
+  open Regularity (lowerRealsArch (lemOf lem₁)) (lemOf lem₁) using (μ-cyl; cyl→tree)
   open Premeasure (lowerRealsArch (lemOf lem₁)) using (μ0)
 
   -- the fair coin: the Daniell functional of the fair-coin Borel measure

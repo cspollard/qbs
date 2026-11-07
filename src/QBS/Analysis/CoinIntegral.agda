@@ -1,8 +1,12 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The integral against the fair-coin measure of every measurable function: the supremum of the
--- integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and
--- the proof that it is a Daniell functional (`Measure`) agreeing with the dyadic premeasure.
+-- The Daniell integral of an arbitrary measurable `h` against any Borel probability measure `B` (generic in `B`; the
+-- fair coin `BorelMeasure.coinBM` is the instance used by `Continuous.FairCoin`): the supremum of the integrals of the
+-- simple functions below `h`, resized to Set with a classical axiom at Set₁.  Proves `L-add`, `L-scale`, `L-sup` and
+-- `L-one`, i.e. that `L` is a Daniell functional (`Measure`) agreeing with `B` on cylinders.
+-- Glossary: `Sf` (`CoinSimple`) is a simple function, a countable Borel partition `V i` with values `ρ i`; `∫ s` is its
+-- integral `∑ ρ i · μ (V i)`; `Minor h s` says `s` lies below `h`; `Lmem h q` says some minorant has integral above `q`;
+-- `L h` is the cut of such `q`, the supremum.
 module QBS.Analysis.CoinIntegral where
 
 import Level as L

@@ -115,8 +115,18 @@ rationals appear.  `RationalLemmas` is the adapter layer between stdlib ℚᵘ l
 - `Measure` — a sub-probability measure as a Daniell functional on measurable functions; `IsProb` — total mass 1.
 - `Fun` — the inductive class of measurable `[0,1]`-valued functions on Cantor space.
 
+### Measure construction on Cantor space
+`Borel.Core`/`Borel.PiLambda`: the Borel σ-algebra and π–λ (`dynkin`: a class containing cylinders and closed under complement and disjoint union contains every Borel set).  `Analysis.Clopen`/`ClopenMeasure`/`OpenMeasure`/`Regular`: the fan theorem (compactness), the dyadic premeasure and its Carathéodory extension (`Regularity.borel-meas`), giving `BorelMeasure.coinBM`, a σ-additive probability on Borel sets.  `Analysis.CoinIntegral` (generic in any `BorelMeasure`): the Daniell integral `L` by simple minorants; `Functional.functional` turns a `BorelMeasure` into a `Measure`.  `Analysis.Measure`: measures as Daniell functionals with `dirac`/`push`/`bind`.  Then `Uniqueness`, `Riesz`, `Tensor`/`Tonelli`/`JFubini` and `Lebesgue` below.
+
 ### `QBS.Analysis.CoinIntegral`, `QBS.Continuous.FairCoin`
-- `fairCoin` — the fair-coin measure on Cantor space; `fairCoin-cyl` — its value on cylinders.
+- `L`, `L-add`, `L-scale`, `L-sup` (`CoinIntegral`, `module DaniellB`) — the integral of any measurable `h` against any Borel probability measure `B` as the supremum of the integrals of simple minorants, and its Daniell-functional laws.
+- `fairCoin` (`Continuous.FairCoin`, not `CoinIntegral`) — the fair-coin measure on Cantor space, `Functional.functional` of `coinBM`; `fairCoin-cyl` — its value on cylinders.
+
+### `QBS.Analysis.Uniqueness`, `QBS.Analysis.Riesz`, `QBS.Analysis.Tensor`, `QBS.Analysis.JFubini`, `QBS.Analysis.Regular`
+- `agree-fun` (`Uniqueness`) — probability measures that agree on cylinders agree on every `Fun`, by π–λ.
+- `setFun`, `setFun-functional`, `functional-setFun` (`Riesz`) — the Riesz–Daniell correspondence between set functions and functionals.
+- `tensor₁`, `tensor₂` (`Tensor`) — the product of two measures, integrated in either order; they agree (Fubini), which is commutativity of the strength.  `J-fubini` (`JFubini`) is the unbounded version for `Meas` integrands.
+- `borel-meas` (`Regular`, `Regularity`) — every Borel set is regular: the Carathéodory extension of the dyadic premeasure by two-sided open approximation.
 
 ### `QBS.Analysis.Meas`, `QBS.Analysis.Lebesgue`
 - `Meas` — threshold measurability of `[0,∞]`-valued functions; `Lebesgue`: `J m φ` — the integral of a `Meas` function (unbounded).

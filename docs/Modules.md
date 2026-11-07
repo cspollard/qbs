@@ -143,7 +143,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.AffineAlg` | 88 |  | Algebra for moments of pushforward (affine) families, generic over an `OmegaSemiring` (so the ring solver never sees concrete cuts). |
 | `QBS.Analysis.Archimedean` | 40 |  | The extra structure of the extended non-negative reals that the construction of Lebesgue-type measures needs, beyond `OmegaSemiring`: a half, Archimedean closure, cancellation for the order, and tails of convergent se... |
 | `QBS.Analysis.BinaryExpansion` | 90 |  | The binary expansion map R → [0,1], r ↦ Σₙ rₙ 2^{-(n+1)}, is measurable (a `Fun`): it is the supremum of the partial sums, each a finite sum of weighted bit indicators. |
-| `QBS.Analysis.BorelMeasure` | 50 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
+| `QBS.Analysis.BorelMeasure` | 51 | lem | Borel probability measures on Cantor space as σ-additive set functions, valued in the lower-cut reals: the set-function side of the Riesz–Daniell correspondence. |
 | `QBS.Analysis.BoundedCancel` | 63 |  | Cancellation of elements bounded by a natural number: `a ≤ n`, `a + x = a + y` give `x = y`. |
 | `QBS.Analysis.BoundedRing` | 168 | lem | The commutative ring of bounded signed random variables on a probability space, with its expectation. |
 | `QBS.Analysis.Cauchy` | 134 |  | The Cauchy product of series in an `OmegaSemiring`: for every `a b : ℕ → A`, `(∑ᶠ a) * (∑ᶠ b) ≈ ∑ᶠ n. |
@@ -152,8 +152,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinCont` | 139 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
 | `QBS.Analysis.CoinFacts` | 88 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
 | `QBS.Analysis.CoinGrid` | 158 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
-| `QBS.Analysis.CoinIntegral` | 428 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
-| `QBS.Analysis.CoinSets` | 12 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
+| `QBS.Analysis.CoinIntegral` | 432 | lem | The Daniell integral of an arbitrary measurable `h` against any Borel probability measure `B` (generic in `B`; the fair coin `BorelMeasure.coinBM` is the instance used by `Continuous.FairCoin`): the supremum of the in... |
 | `QBS.Analysis.CoinSimple` | 139 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
 | `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |
@@ -230,7 +229,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Unbounded` | 438 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
 | `QBS.Analysis.UnboundedLowerReals` | 17 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 112 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
-| `QBS.Analysis.UniquenessWeighted` | 144 | lem | Uniqueness for finite weighted pushforwards on Cantor space (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Analysis.UniquenessWeighted` | 144 | lem | Uniqueness for finite weighted pushforwards on Cantor space (used for Lebesgue measure on the half-line). |
 | `QBS.Analysis.Variance` | 241 | lem | Variance of a signed random variable. |
 
 ## Continuous model

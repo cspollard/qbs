@@ -33,7 +33,7 @@ open import QBS.Analysis.LowerReals using (LowerRealsOmega)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.CoinIntegral using (module Daniell; lemOf)
-open import QBS.Analysis.CoinSets using (module CoinSets)
+open import QBS.Analysis.Regular using (module Regularity)
 open import QBS.Continuous.FairCoin
 open import QBS.Classical using (LEM₁)
 
@@ -93,7 +93,7 @@ module FirstBit (lem₁ : LEM₁) where
   open Mixture A half hh
   open Indicators A (lemOf lem₁) using (χ; Fun-χ; χ-in; χ-out; case)
   open Premeasure R using (μ0; μ0-ext)
-  open CoinSets (lemOf lem₁) using (cyl→tree)
+  open Regularity (lowerRealsArch (lemOf lem₁)) (lemOf lem₁) using (cyl→tree)
   open Uniqueness A (lemOf lem₁) using (agree-fun)
   open SetoidReasoning setoid
 

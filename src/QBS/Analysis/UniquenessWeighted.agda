@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Uniqueness for finite weighted pushforwards on Cantor space (plan 03, "Uniqueness on the half-line").  A probability
+-- Uniqueness for finite weighted pushforwards on Cantor space (used for Lebesgue measure on the half-line).  A probability
 -- measure m, a `Meas` weight w and a measurable map x give the functional
 --   Jw g = ∫ w(r) · g(x r) dm(r)
 -- on the threshold-measurable g.  Two such functionals with equal finite mass that agree on every cylinder agree on

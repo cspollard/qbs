@@ -17,7 +17,8 @@ open import QBS.Analysis.Omega
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Clopen using (leaf)
 open import QBS.Analysis.LowerReals using (LowerRealsOmega)
-open import QBS.Analysis.CoinSets using (module CoinSets)
+open import QBS.Analysis.Regular using (module Regularity)
+open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Classical using (LEM₀)
 
 module BM (lem : LEM₀) where
@@ -44,6 +45,6 @@ module BM (lem : LEM₀) where
     ; μ-⊥ = CS.μ-unique ⊥-borel (CS.meas-resp {CS.Pt (leaf false)} {λ _ → ⊥} e (CS.meas-clopen (leaf false)))
     }
     where
-      module CS = CoinSets lem
+      module CS = Regularity (lowerRealsArch lem) lem
       e : CS.Pt (leaf false) ≐ (λ _ → ⊥)
       e x = (λ ()) , (λ ())
