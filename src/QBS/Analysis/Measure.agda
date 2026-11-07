@@ -5,10 +5,11 @@
 -- of total mass at most 1 (`IsProb`: exactly 1).  (By the Riesz–Daniell correspondence these are exactly the Borel probability
 -- measures; we use the functional form because the Giry-monad operations are then plain
 -- composition: no extension theorem is needed to build Dirac, push-forward or bind.)
+-- `_≈ₘ_` is equality of measures; `push-id` and `push-∘` say push-forward is functorial.
 module QBS.Analysis.Measure where
 
 open import Level using (zero; suc)
-open import Function.Base using (_∘_; const)
+open import Function.Base using (_∘_; const; id)
 open import Data.Nat.Base using (ℕ)
 import Level
 open import Data.Unit.Polymorphic.Base using (tt) renaming (⊤ to ⊤ᵖ)
@@ -78,6 +79,18 @@ module Integration (A : OmegaSemiring (suc zero)) where
         I-sup m (λ n → hs n ∘ f) (λ n → Fun-pre (fs n) mf) (λ x → inc (f x)) _ (λ x → e (f x))
     ; I-sub = λ fh → I-sub m _
     }
+
+  -- equality of measures: same integral of every measurable function
+  _≈ₘ_ : Measure → Measure → Set₁
+  m ≈ₘ n = ∀ {h} (fh : Fun h) → I m h fh ≈ I n h fh
+
+  -- push-forward is functorial: along the identity and along a composite
+  push-id : ∀ (mf : Measurable (down id)) m → push mf m ≈ₘ m
+  push-id mf m fh = I-cong m (λ x → refl) _ fh
+
+  push-∘ : ∀ {f g} (mf : Measurable (down f)) (mg : Measurable (down g)) (mgf : Measurable (down (g ∘ f))) m →
+    push mg (push mf m) ≈ₘ push mgf m
+  push-∘ mf mg mgf m fh = I-cong m (λ x → refl) _ _
 
   IsProb-push : ∀ {f} (mf : Measurable (down f)) {m} → IsProb m → IsProb (push {f} mf m)
   IsProb-push {f} mf {m} pm = trans (I-cong m (λ x → refl) _ (Fun-const 1# ≤-refl)) pm

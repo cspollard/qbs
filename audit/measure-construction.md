@@ -111,3 +111,19 @@ Not findable: nearly everything except the `Measure` interface and `Meas`/`Lebes
 4. Is the `Fun`/`Meas` duality permanent, or is `Fun` intended as scaffolding?
 5. Is the intended outsider entry point `Analysis.Measure` (the interface) or `Regular` (the construction)? The roadmap in §3.1 assumes both.
 6. Should `Analysis.Cone` and `Mixture` join `Measure.agda` as "operations on measures"?
+
+## Implementation status (2026-11-07)
+
+- A, roadmap entry (§3.1): done, in `Interface.md` ("Measure construction on Cantor space").
+- A, `fairCoin` pointer (§3.2): done.
+- A, `CoinIntegral` header and glossary for `L`, `Minor`, `Lmem`, `Sf` (§3.3, §3.4): done. `Pt`, `rC`, `th`, `tp` not glossed.
+- A, `Interface.md` lines for Riesz, Uniqueness, Tensor, JFubini, Regular (§3.8): done.
+- A, `UniquenessWeighted` "plan 03" header (§4.6): done.
+- B, `Borel.Measure` record (§4.1): done earlier by agent 0.
+- B, `CoinSets` (§3.5, §4.7): done, inlined as `Regularity (lowerRealsArch lem) lem` in `BorelMeasure`, `FairCoin`, `CoinIndep`, `FirstBit`; module deleted, `Classical.md` updated (`History.md` left as history).
+- B, fold `Mixture` (§4.4): skipped for budget. B, `Indicators.PS` (§4.8): not examined.
+- C: nothing recommended.
+- D, `push-id`/`push-∘` (§5): done as plain lemmas in `Analysis.Measure`, with `_≈ₘ_` (equality of measures).
+- D, using `_≈ₘ_` to shorten existing chains: skipped.
+- D, `DynkinClass` record (§4.2), `Cone`/`Threshold` move, dyadic merge (§4.3): skipped for budget.
+- E, `Coin*` renames, `CoinIntegral` split, `Analysis.Measure` rename (§3.6, §4.10): skipped for budget.

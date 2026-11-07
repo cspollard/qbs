@@ -200,7 +200,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.LowerRealsNear` | 119 | lem | Finite lower reals are approached from below, and what follows, used by dominated convergence. |
 | `QBS.Analysis.Meas` | 123 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |
 | `QBS.Analysis.MeasFun` | 222 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
-| `QBS.Analysis.Measure` | 131 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
+| `QBS.Analysis.Measure` | 144 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
 | `QBS.Analysis.Min` | 36 |  | A binary minimum on the values of an `OmegaSemiring`, with exactly the properties that the dyadic truncations `min (a, 2ᵏ) / 2ᵏ` of `Analysis/Unbounded` need: greatest lower bound, continuity along increasing suprema,... |
 | `QBS.Analysis.Mixture` | 54 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, `addM` of two `scaleM`s from `Analysis/Cone`: it is again a measure (with total mass at most 1). |
 | `QBS.Analysis.MixtureN` | 83 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |

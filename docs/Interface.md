@@ -114,6 +114,7 @@ rationals appear.  `RationalLemmas` is the adapter layer between stdlib ℚᵘ l
 - `Integration` (`Measure`) — `module Integration A`: `probClass` (probability measures of the continuous model; not the discrete `WeightClasses.probClass`).
 - `Measure` — a sub-probability measure as a Daniell functional on measurable functions; `IsProb` — total mass 1.
 - `Fun` — the inductive class of measurable `[0,1]`-valued functions on Cantor space.
+- `_≈ₘ_`, `push-id`, `push-∘` (`Measure`) — equality of measures (same integral of every `Fun`), and functoriality of `push` along the identity and composites.
 
 ### Measure construction on Cantor space
 `Borel.Core`/`Borel.PiLambda`: the Borel σ-algebra and π–λ (`dynkin`: a class containing cylinders and closed under complement and disjoint union contains every Borel set).  `Analysis.Clopen`/`ClopenMeasure`/`OpenMeasure`/`Regular`: the fan theorem (compactness), the dyadic premeasure and its Carathéodory extension (`Regularity.borel-meas`), giving `BorelMeasure.coinBM`, a σ-additive probability on Borel sets.  `Analysis.CoinIntegral` (generic in any `BorelMeasure`): the Daniell integral `L` by simple minorants; `Functional.functional` turns a `BorelMeasure` into a `Measure`.  `Analysis.Measure`: measures as Daniell functionals with `dirac`/`push`/`bind`.  Then `Uniqueness`, `Riesz`, `Tensor`/`Tonelli`/`JFubini` and `Lebesgue` below.
