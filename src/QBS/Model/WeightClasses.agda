@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The two weight classes: probability measures (total mass 1) and all measures.
+-- The two weight classes: probability measures (total mass 1) and all measures.  A `WeightClass` is a
+-- sub-monad of the all-measures monad on weight functions: a predicate closed under `η` (`ok-dirac`),
+-- `map` (`ok-push`) and `bind` (`ok-bind`); the inclusion probability ⊂ all is `inclusion` of `StatInstance`.
 module QBS.Model.WeightClasses where
 
 open import Level using (Lift)

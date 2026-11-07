@@ -155,3 +155,16 @@ Top recommendations:
 6. Should `WeightClass` also require `ok-resp`-free (strictly, setoid-respecting) classes to be proof-irrelevant?  `Ok` is
    `Set ℓ`-valued; for `probClass`, `Ok μ = ∑ μ ≈ 1#` is not a proposition in general, which matters when comparing `Pre`
    equality (it is avoided by `_≈ᵖ_` ignoring `μ-ok`; confirm this is deliberate).
+
+## Implementation status (2026-11-07)
+
+- A (docs): done.  `Interface.md` `CompleteSemiring` entry replaced; `WeightClass`, `TQ`/`TM`, `commutativeMonad`/`fubini`,
+  `viterbiStatisticalQBSLike` added; headers of `Model/Monad`, `Model/Semiring`, `StatInstance`, `Example/Program` (5-line `do`
+  snippet) and `Example/Recipes` (reading order, levels and hypotheses per example, continuous recipe noted) updated.
+  Entry point is `Model.Discrete` (+ `Example/Program` as overview); no separate `Example.Overview` module was added.
+- B: `boolCommSemiring` as stdlib `Lift`: skipped, this stdlib has no lifting of semirings (only `LiftedChoice`); the
+  existing proof already reuses `Bool`'s `∨-∧-commutativeSemiring` through `lc`.  Classical toolkit sharing was done by agent 0.
+- E: `StatInstance` (565 lines) split into `StatWeights` (inclusion, score, sums), `StatNormalize` (`normH`) and
+  `StatInstance` (laws and `discreteStat`): 27.4 s -> 3.7 + 4.1 + 6.5 s.  `BoolModel`/`ViterbiModel`/`AdditiveModel` folded
+  into `Model/Instances` (old modules deleted).  `WeightClass` documented as a sub-monad in the `WeightClasses` header.
+- Not attempted (C/D and report items 4.3, 4.5-4.8, 4.10, Pairing/Cantor merge): out of the requested tiers.

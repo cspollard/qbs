@@ -106,7 +106,7 @@ All files check under `--safe --without-K`, with no postulates.
   `Model/Monad.agda` is generic in the weight class, `Sub = Measures A subClass` is a monad of
   sub-probability measures, and `SubStrength = Strength A subClass` its strength and commutativity,
   with no further proofs.
-- `Model/BoolSemiring.agda`, `Model/BoolModel.agda` – the Boolean semiring `({false,true}, ∨, ∧)` as a
+- `Model/BoolSemiring.agda` (model in `Model/Instances.agda`, with the Viterbi and additive ones) – the Boolean semiring `({false,true}, ∨, ∧)` as a
   `NormalizableSemiring` (sums are classically decided `∃`), and the resulting concrete
   `IsStatisticalQBSLike`: possibilistic weights. Degenerate but non-vacuous.
 - `Analysis/CutSum.agda` – sums of lower cuts over an arbitrary `I : Set₁`. `Mem f q` is an inductive
@@ -118,10 +118,10 @@ All files check under `--safe --without-K`, with no postulates.
   sums) and partition associativity `sum-Σ` (via `row-add`, `split1`, `nested⇒flat`,
   `flat⇒nested`). Excluded middle for `Set₁` also gives decidable equality and hence proof-irrelevant
   identity (`uip`), which is what makes pairs `(i , j)` injective in `j` without axiom K.
-- `Model/AdditiveSemiring.agda`, `Model/AdditiveModel.agda` – `([0,∞], +, ×)` as a
+- `Model/AdditiveSemiring.agda` (model `additiveStatisticalQBSLike` in `Model/Instances.agda`) – `([0,∞], +, ×)` as a
   `NormalizableSemiring` (`additiveNormalizable`: `invertible?` is just `lem₁`) and the resulting
   `additiveStatisticalQBSLike`: the discrete statistical model with ordinary additive real weights.
-- `Model/ViterbiSemiring.agda`, `Model/ViterbiModel.agda` – the Viterbi semiring `([0,∞], max, ×)` on
+- `Model/ViterbiSemiring.agda` (model in `Model/Instances.agda`) – the Viterbi semiring `([0,∞], max, ×)` on
   lower cuts as a `NormalizableSemiring` (sums are unions, classically resized with `lem` at
   `Set₁`; weights are real and invertibility is non-trivial), and the resulting
   `IsStatisticalQBSLike`: best-path weights, not additive probability.

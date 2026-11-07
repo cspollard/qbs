@@ -8,6 +8,10 @@
 -- (Def. 4) pairs are identified when they have the same push-forward; we use the
 -- equivalent description "same integral against every test function X → A",
 -- which needs no grouping of points into classes (and so no quotients).
+--
+-- `Measures.TM` packages `TQ, TH, ηH, joinH` as an agda-categories `Monad` on `QBSCat S` (through
+-- `QBS.IntegralMonad.Laws`, which reduces the monad laws to integral equations).  Strength and
+-- commutativity are in `Model/Strong.agda`; instances in `ProbInstance`/`StatInstance`.
 module QBS.Model.Monad where
 
 open import Level using (suc; Lift; lift; lower)

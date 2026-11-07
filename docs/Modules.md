@@ -104,24 +104,24 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS.Model.AdditiveModel` | 19 | lem | The discrete statistical model with additive real weights over [0,∞]: ordinary (countably additive) discrete measures with real-valued weights, with `normalize`. |
 | `QBS.Model.AdditiveSemiring` | 80 | lem | The additive extended non-negative reals ([0,∞], +, ×) as lower cuts of the rationals, as a normalisable complete semiring: sums over arbitrary index sets are genuine sums (finite sub-sums of distinct indices, see `An... |
-| `QBS.Model.BoolModel` | 19 | lem | The discrete statistical model with Boolean (possibilistic) weights: a concrete instance of `IsStatisticalQBSLike`, so the abstract interface and the discrete model are non-vacuous. |
 | `QBS.Model.BoolSemiring` | 116 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
 | `QBS.Model.Cantor` | 53 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 24 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
 | `QBS.Model.DiscreteSource` | 49 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
-| `QBS.Model.Monad` | 280 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
+| `QBS.Model.Instances` | 34 | lem | Non-vacuity witnesses for the discrete statistical model: `IsStatisticalQBSLike` instances with Boolean (possibilistic), Viterbi (max, ×) and additive [0,∞] weights, so the abstract interfaces and the model are not em... |
+| `QBS.Model.Monad` | 284 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 123 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
-| `QBS.Model.Semiring` | 49 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
-| `QBS.Model.StatInstance` | 566 |  | The discrete measure monad is a model of `StatisticalInterface`. |
+| `QBS.Model.Semiring` | 51 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
+| `QBS.Model.StatInstance` | 227 |  | The discrete measure monad is a model of `StatisticalInterface`: assembles `StatWeights` (weights, inclusion, score, countable sums) and `StatNormalize` (`normH`) and proves the laws; packaged at `discreteStat`. |
+| `QBS.Model.StatNormalize` | 253 |  | Normalisation of the discrete model: `normH : M X ⇒ Prob X + 1`, built from a decision on the invertibility of the mass (`InvDec`), with its invariance lemmas (`normProb`, `normZero`, `normScale`). |
+| `QBS.Model.StatWeights` | 217 |  | Weights, inclusion, score and countable sums of the discrete model: the weights object `WQ`, the inclusion of probability measures into all measures (`inclusion`), `scoreE` and the countable sums `sumKH`. |
 | `QBS.Model.Strong` | 139 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 112 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
-| `QBS.Model.ViterbiModel` | 19 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
 | `QBS.Model.ViterbiSemiring` | 176 | lem | The Viterbi semiring ([0,∞], max, ×) on lower cuts of the rationals as a normalisable complete semiring. |
-| `QBS.Model.WeightClasses` | 49 |  | The two weight classes: probability measures (total mass 1) and all measures. |
+| `QBS.Model.WeightClasses` | 51 |  | The two weight classes: probability measures (total mass 1) and all measures. |
 
 ## Borel structure on Cantor space
 
@@ -419,6 +419,6 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Example.Conditioning` | 77 |  | Rejection-style conditioning with `do`-notation: the programs of `Example/Program.agda` over the sub-probability measures of `Model/SubProb.agda`, where `guard` discards runs and the missing mass is the probability of... |
 | `QBS.Example.HardConditioning` | 97 |  | Hard conditioning in the discrete model: restrict a sub-probability measure to the points where a Boolean observation holds (disintegration along a Boolean-valued function). |
 | `QBS.Example.Probability` | 85 | lem | Real probabilities with `do`-notation: the programs of `Example/Program.agda` over the additive semiring ([0,∞], +, ×) of lower cuts. |
-| `QBS.Example.Program` | 188 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |
-| `QBS.Example.Recipes` | 61 | lem | Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in ... |
+| `QBS.Example.Program` | 192 | lem | A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model. |
+| `QBS.Example.Recipes` | 66 | lem | Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in ... |
 

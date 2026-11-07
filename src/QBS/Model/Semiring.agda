@@ -4,7 +4,9 @@
 -- semirings with sums over arbitrary index sets, associative over partitions and
 -- distributing over multiplication.  The extended non-negative reals [0, ∞] are
 -- the motivating example; measures in this development take values in an
--- arbitrary one, so the discrete model does not depend on a construction of ℝ.
+-- arbitrary one, so the discrete model does not depend on a construction of ℝ.  Nothing is instantiated
+-- here: the Boolean, Viterbi and additive [0,∞] instances are `BoolSemiring`, `ViterbiSemiring` and
+-- `AdditiveSemiring`.
 module QBS.Model.Semiring where
 
 open import Level using (Level; suc)

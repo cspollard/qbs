@@ -2,7 +2,12 @@
 
 -- Copy-and-paste set-ups, referenced from docs/Guide.md: the imports and `open`s needed to state a result about
 -- (1) a Bernoulli coin in the discrete model (with a proof of its mean), and (2) the uniform distribution in
--- the continuous model (`∫ uniform f` and the unit interval `AQ` in scope).
+-- the continuous model (`∫ uniform f` and the unit interval `AQ` in scope).  Note that (2) is a continuous recipe.
+--
+-- Reading order for `Example/`: `Recipes` (set-ups) -> `Program` (programs, `∫-bind`; levels: any
+-- `CompleteSemiring ℓ`) -> `Probability` (two coins; additive semiring, level 1) -> `Bayes` (any
+-- `NormalizableSemiring ℓ`) -> `Conditioning` (`CompleteSemiring L.zero`, so Boolean-like weights, not the
+-- level-1 additive ones) -> `HardConditioning`.
 module QBS.Example.Recipes where
 
 import Level as L

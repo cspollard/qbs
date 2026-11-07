@@ -1,6 +1,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- A worked example: probabilistic programs in Agda's `do`-notation on the discrete QBS model.
+--   both = do { a ← flip ; b ← flip ; pure (a ∧B b) }        -- two fair coins, conjoined
+--   ∫-both : ∫ both f ≈ ∑ over the four outcomes of weight * f (a ∧B b)
+--   with `isTrue` the indicator of `true`:  ∫ both isTrue ≈ half * half   (see `Example/Probability.agda`)
+-- Entry point of `Example/`; the reading order is at the top of `Example/Recipes.agda`.
 --
 -- A program is a countable-support measure on a type of Agda values (`Prog T`).  `pure` and
 -- `_>>=_` are the unit and bind of the probability monad of `Model/Monad.agda`, with `_>>=_`

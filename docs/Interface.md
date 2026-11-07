@@ -68,7 +68,7 @@ The dependency stack is `Core → Category → {Exponential, Limits, Colimits, C
 ## Discrete model
 
 ### `QBS.Model.Semiring`
-- `CompleteSemiring` — a commutative semiring with countable sums `∑` (fields `_+_`, `_*_`, `0#`, `1#`, `∑`).
+- `CompleteSemiring ℓ` — a stdlib `CommutativeSemiring ℓ ℓ` (`commutativeSemiring`, opened publicly) with an `∑` over `Set ℓ`-indexed families that respects `≈`, vanishes on `⊥`, is the identity on `⊤`, splits over `⊎`, is associative over `Σ` (partitions), invariant under bijection, and distributes over `*`.  The model examples are `[0,∞]`, Viterbi and Boolean.
 - `NormalizableSemiring` — a complete semiring with inverses for normalisation (`complete` is the underlying semiring).
 
 ### `QBS.Model.Monad`
@@ -77,15 +77,19 @@ The dependency stack is `Core → Category → {Exponential, Limits, Colimits, C
 - `∫` — `∫ p f`: the expectation `∑ r. μ r * f (α r)`.
 - `ηPre`, `mapPre`, `joinPre`, `∫-η`, `∫-join` — unit, map, join and their integral rules.
 
+- `TQ`, `TM` (in `module Measures`) — the commutative strong monad of measures: `TM : Monad (QBSCat S)` (laws via `QBS.IntegralMonad.Laws`), with `commutativeMonad` and `fubini` in `QBS.Model.Strong`.
+
 ### `QBS.Model.WeightClasses`
+- `WeightClass` (`Model.Monad`) — a predicate `Ok` on weight functions closed under `dirac`, push-forward and bind (a sub-monad of the all-measures monad).
 - `probClass`, `allClass` — total mass 1 / arbitrary weights; `QBS.Model.SubProb`: `subClass` — total mass ≤ 1.
 
-### `QBS.Model.Discrete`, `QBS.Model.StatInstance`
+### `QBS.Model.Discrete`, `QBS.Model.StatWeights`, `QBS.Model.StatNormalize`, `QBS.Model.StatInstance`
 - `discreteStatisticalQBSLike` — `NormalizableSemiring → IsStatisticalQBSLike`, the discrete model.
-- `discreteStat` (`StatInstance`) — its `StatisticalInterface`, with `normalize`.
+- `discreteStat` (`StatInstance`) — its `StatisticalInterface`, with `normalize`; weights, `inclusion` and `score`/sums are in `StatWeights`, `normH` in `StatNormalize`.
 
-### Concrete semirings: `QBS.Model.BoolSemiring`, `QBS.Model.ViterbiSemiring`, `QBS.Model.AdditiveSemiring`, `QBS.Model.AdditiveModel`, `QBS.Model.BoolModel`, `QBS.Model.ViterbiModel`
-- `boolComplete`, `additiveComplete`, `additiveNormalizable` — complete / normalisable semirings (Boolean, additive `[0,∞]`); models `QBS.Model.BoolModel`, `ViterbiModel`, `AdditiveModel` (`additiveStatisticalQBSLike`).
+### Concrete semirings: `QBS.Model.BoolSemiring`, `QBS.Model.ViterbiSemiring`, `QBS.Model.AdditiveSemiring`, `QBS.Model.Instances`
+- `boolComplete`, `additiveComplete`, `additiveNormalizable` — complete / normalisable semirings (Boolean, additive `[0,∞]`).
+- `boolStatisticalQBSLike`, `viterbiStatisticalQBSLike`, `additiveStatisticalQBSLike` (`QBS.Model.Instances`) — non-vacuity witnesses; each needs `LEM`.
 
 ## Number foundations
 

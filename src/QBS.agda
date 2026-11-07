@@ -78,13 +78,13 @@ import QBS.Model.Monad as Monad
 
 -- The model of `ProbabilityInterface` and `StatisticalInterface`, and the packaged `IsStatisticalQBSLike`.
 import QBS.Model.ProbInstance as ProbInstance
+import QBS.Model.StatWeights as StatWeights
+import QBS.Model.StatNormalize as StatNormalize
 import QBS.Model.StatInstance as StatInstance
 import QBS.Model.Discrete as Discrete
 
 -- Concrete weights: Boolean (possibility), Viterbi (max, ×), and the additive extended non-negative reals.
-import QBS.Model.BoolModel as BoolModel
-import QBS.Model.ViterbiModel as ViterbiModel
-import QBS.Model.AdditiveModel as AdditiveModel
+import QBS.Model.Instances as Instances
 
 -- Sub-probability measures: soft conditioning that discards runs.
 import QBS.Model.SubProb as SubProb

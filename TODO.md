@@ -51,7 +51,7 @@ Newest first within each group.
 - [x] Hard conditioning: DONE, continuous at measure level (`Analysis/Restrict`: `restrictM`, `restrict-split`) and discrete (`Example/HardConditioning`: `condition`, `condition-split`).
 - [x] Sub-probability monad for the continuous model: DONE (`Continuous/SubProb`: `ContinuousSub`, `scoreH`, `failPre`; `Continuous/SubModel`: `softUniform`).
 - [x] Fair-coin measure on Cantor space: DONE (`Continuous/FairCoin`; evens/odds independence `Continuous/CoinIndep`; uniform distribution `Continuous/Uniform`, mean ½ in `UniformMean`). Pipeline in the README section "The fair-coin measure".
-- [x] Additive real-valued normalisable semiring for the discrete model: DONE (`Analysis/CutSum`, `Model/AdditiveSemiring`, `Model/AdditiveModel`).
+- [x] Additive real-valued normalisable semiring for the discrete model: DONE (`Analysis/CutSum`, `Model/AdditiveSemiring`, `Model/Instances`).
 - [x] `bind` linear in the kernel argument: DONE (`sumK`, `sumK-point`, `bind-sumK` in `StatisticalInterface`; proved in `Model/StatInstance`).
 
 ## Compile time
