@@ -77,12 +77,7 @@ module SFiniteCommute (lem : LEM₀) where
 
   -- the test function x ↦ f (x , y)
   fixH₂ : ∀ {X Y : QBS S} → ∣ Y ∣ → Hom S (_×Q_ S X Y) WQ → Hom S X WQ
-  fixH₂ {X} {Y} y f = record
-    { map = record
-        { to = λ x → map f ⟨$⟩ (x , y)
-        ; cong = λ e → Func.cong (map f) (e , Setoid.refl (Carrier Y)) }
-    ; map-random = λ {γ} rγ → map-random f {< γ , constₛ y >ₛ} (rγ , const-random Y y)
-    }
+  fixH₂ {X} {Y} = fixR {X} {Y} {WQ}
 
   -- the right strength integrates the left component
   τ-int : ∀ {X Y : QBS S} (s : Pre (XW X)) (y : ∣ Y ∣) (g : Hom S (_×Q_ S X Y) WQ) →

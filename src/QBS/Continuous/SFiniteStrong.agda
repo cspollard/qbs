@@ -53,12 +53,7 @@ module SFiniteStrong (lem : LEM₀) where
 
   -- the test function y ↦ f (x , y)
   fixH : ∀ {X Y : QBS S} → ∣ X ∣ → Hom S (_×Q_ S X Y) WQ → Hom S Y WQ
-  fixH {X} {Y} x f = record
-    { map = record
-        { to = λ y → map f ⟨$⟩ (x , y)
-        ; cong = λ e → Func.cong (map f) (Setoid.refl (Carrier X) , e) }
-    ; map-random = λ {γ} rγ → map-random f {< constₛ x , γ >ₛ} (const-random X x , rγ)
-    }
+  fixH {X} {Y} = fixL {X} {Y} {WQ}
 
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (XW (_×Q_ S X Y))

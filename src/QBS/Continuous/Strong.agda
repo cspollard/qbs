@@ -45,12 +45,7 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
 
   -- the test function y ↦ f (x , y)
   fixH : ∀ {X Y : QBS S} → ∣ X ∣ → Hom S (_×Q_ S X Y) AQ → Hom S Y AQ
-  fixH {X} {Y} x f = record
-    { map = record
-        { to = λ y → map f ⟨$⟩ (x , y)
-        ; cong = λ e → Func.cong (map f) (Setoid.refl (Carrier X) , e) }
-    ; map-random = λ {γ} rγ → map-random f {< constₛ x , γ >ₛ} (const-random X x , rγ)
-    }
+  fixH {X} {Y} = fixL {X} {Y} {AQ}
 
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (_×Q_ S X Y)

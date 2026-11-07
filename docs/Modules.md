@@ -347,7 +347,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.RealShiftNull` | 267 | lem | Helpers for `RealShift`: null points of Lebesgue measure on the half-line, and splitting at a point. |
 | `QBS.Continuous.RealShiftRefl` | 224 | lem | Reflection of the interval [0, t) (helper for `RealShift.∫-reflIv`). |
 | `QBS.Continuous.SFinite` | 334 | lem | The s-finite measure monad of the continuous model. |
-| `QBS.Continuous.SFiniteCommute` | 238 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
+| `QBS.Continuous.SFiniteCommute` | 233 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 437 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
 | `QBS.Continuous.SFiniteIncl` | 217 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
 | `QBS.Continuous.SFiniteMonad` | 242 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
@@ -355,9 +355,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteReweight` | 58 | lem | Reweighting an s-finite measure by a density: `reweightPre d p` multiplies the weight of every sample of `p : Pre (XW X)` by `d x`, where `d : X ⇒ WQ`. |
 | `QBS.Continuous.SFiniteStat` | 168 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
 | `QBS.Continuous.SFiniteStatBridge` | 280 | lem | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
-| `QBS.Continuous.SFiniteStrong` | 118 | lem | Strength and commutativity of the s-finite measure monad. |
+| `QBS.Continuous.SFiniteStrong` | 113 | lem | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 252 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
-| `QBS.Continuous.Sample` | 146 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
+| `QBS.Continuous.Sample` | 165 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
 | `QBS.Continuous.SgMoments` | 63 | lem | Finite samples of signed tests and their moment hypotheses (plan 05, items 46 and 50). |
 | `QBS.Continuous.SgSample` | 135 | lem | Unbiased estimators from moment hypotheses, for unbounded signed tests (plan 05, item 46). |
 | `QBS.Continuous.SgSampleAlg` | 53 | lem | Pointwise identities for sums of products of signed tests (plan 05, item 46; helper for `SgSample`). |
@@ -376,7 +376,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
 | `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.SignedVarRing` | 112 |  | Ring identities on parts of signed values over an abstract commutative semiring (plan 03, "Information quantities"; helper for `SignedVarAlg`). |
-| `QBS.Continuous.Strong` | 180 | lem | Strength and commutativity of the continuous probability monad. |
+| `QBS.Continuous.Strong` | 175 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 65 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 67 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
 | `QBS.Continuous.SupTest` | 97 | lem | Pointwise suprema, infima, lim inf and lim sup of sequences of tests on any X, and monotone convergence for `∫ᴹ` (plan 03, "Dominated convergence"). |

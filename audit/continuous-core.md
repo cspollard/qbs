@@ -201,3 +201,20 @@ monad on QBS is given by its integral equations and the laws are derived once.  
 4. Is compile time a constraint on introducing a generic monoidal-functor module over `Commutative`?
 5. Which of `CoinCoords` (pairwise) results are still used outside the module now that `CoinCoordsJoint` gives mutual
    independence?  If none, `CoinCoords` could shrink to the lemmas `CoinCoordsJoint` needs (`J-evens`, `J-odds`).
+
+## Implementation status (2026-11-07)
+
+Tier A (commit 383586d):
+- Interface.md section "Continuous core" and Guide.md subsection: done.
+- Monad header (parametrised by K, Wit's equivalence, why TM is written out): done.  CoinCoords/CoinCoordsJoint header pointers: done.
+- "plan N" references removed from the headers of CoinCoordsJoint, DigitCode, DigitStream, Exchangeable, FinProd, FinProdProb, IID, Independence,
+  NatCancel, ProdBridge, ProdReweight, Product, ProdMap, IndepAlg, IndepRing, FinProdPair, ExchangeableSwap (and the Contributing.md excerpt): done.
+- "(helper)" marks in Modules.md: skipped (Modules.md is generated from the first header sentence; the headers already say "helper for").
+
+Tier B:
+- Generic `fixH`: done.  `Sample.fixL`/`Sample.fixR` (any value space V); `Strong.fixH`, `SFiniteStrong.fixH`, `SFiniteCommute.fixH₂` are now one-line instances.  Strong compile time unchanged (21 s before and after, cold interface).
+- `fst-law`/`snd-law`: already one-line corollaries of `Product.marg₁/marg₂` plus `∫ᴹ-scale`; nothing to delete.  Skipped.
+- `rw-alg`/`sc-alg`: four-step `trans` lemmas used at two places; the stdlib route needs a CommutativeSemigroup instance from the semiring record for no real gain.  Skipped.
+- `Wit-mono`: wrong finding, used in `SFiniteIncl` and `SFinite`; kept.
+- `tl`/`tlμ`/`tlp` unification, `SFiniteNorm`/`SFiniteDecomp` unification, `SFiniteStatBridge` pair reduction: not attempted (medium risk, budget).
+Tiers D and E (JoinWit sharing, generic double strength, begin-chains in TM/Strong, IndepAlg/IndepRing merge, relocations): not done.

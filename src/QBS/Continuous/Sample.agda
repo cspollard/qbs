@@ -12,6 +12,7 @@ open import Data.Nat.Base using (ℕ; zero; _+_)
 import Data.Nat.Base as ℕ
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
+open import Data.Product.Function.NonDependent.Setoid using (<_,_>ₛ)
 open import Data.Sum.Base using (inj₁; inj₂)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -29,6 +30,24 @@ open import QBS.Analysis.Fun
 
 S = cantorSource
 R = R₁
+
+-- Partial application of a morphism on a product: `fixL x f = y ↦ f (x , y)` and `fixR y f = x ↦ f (x , y)`, into any
+-- value space V (the test functions `AQ`/`WQ` of the probability and s-finite strengths are the two uses).
+fixL : ∀ {X Y V : QBS S} → QBS.∣ X ∣ → Hom S (_×Q_ S X Y) V → Hom S Y V
+fixL {X} {Y} x f = record
+  { map = record
+      { to = λ y → Hom.map f ⟨$⟩ (x , y)
+      ; cong = λ e → Func.cong (Hom.map f) (Setoid.refl (QBS.Carrier X) , e) }
+  ; map-random = λ {γ} rγ → Hom.map-random f {< constₛ x , γ >ₛ} (QBS.const-random X x , rγ)
+  }
+
+fixR : ∀ {X Y V : QBS S} → QBS.∣ Y ∣ → Hom S (_×Q_ S X Y) V → Hom S X V
+fixR {X} {Y} y f = record
+  { map = record
+      { to = λ x → Hom.map f ⟨$⟩ (x , y)
+      ; cong = λ e → Func.cong (Hom.map f) (e , Setoid.refl (QBS.Carrier Y)) }
+  ; map-random = λ {γ} rγ → Hom.map-random f {< γ , constₛ y >ₛ} (rγ , QBS.const-random Y y)
+  }
 
 ----------------------------------------------------------------------------
 -- even and odd bits
