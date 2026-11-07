@@ -26,6 +26,7 @@ open import QBS.Analysis.Tensor using (module Tensor)
 open import QBS.Analysis.JParam using (module JParam)
 open import QBS.Analysis.Tonelli using (module Tonelli)
 open import QBS.Continuous.Sample
+open import QBS.Continuous.JoinKernel using (module JoinKernel)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import Categories.Functor using (Endofunctor)
@@ -68,32 +69,11 @@ module SFiniteMonad (lem : LEM₀) where
     a₂ : Joint (XW X)
     a₂ = a w₂
 
-    -- the inner measure on u = merge s t, given the merged parameter k = merge r s
-    K′ : R₁ → Measure
-    K′ k = push {mergeR (oddsR k)} (measurable-merge₁ (lower (oddsR k))) (g w₂ k)
-
-    kK′ : KernelOk K′
-    kK′ {h} fh = Fun-ext
-      (λ k → I-cong (g w₂ k)
-               (λ t → Fun-resp lem fh (lower (mergeR-cong (oddsR-cong (merge-evens k t)) (merge-odds k t)))) _ _)
-      (P₁.PF (g w₂) (g-ok w₂) {λ x → h (φ x)} (Fun-pre {h} {φ} fh mφ))
-      where
-        φ : R₁ → R₁
-        φ x = mergeR (oddsR (evensR x)) (oddsR x)
-        mφ : Measurable (down φ)
-        mφ = measurable-merge (measurable-∘ measurable-evens measurable-odds) measurable-odds
-
-    gK : R₁ → R₁ → Measure
-    gK r s = K′ (mergeR r s)
-
-    kgK : ∀ r → KernelOk (gK r)
-    kgK r fh = Fun-pre (kK′ fh) (measurable-merge₁ (lower r))
-
-    g′ : R₁ → Measure
-    g′ r = bind (g w r) (gK r) (kgK r)
-
-    gok′ : KernelOk g′
-    gok′ fh = P₁.PF (g w) (g-ok w) (kK′ fh)
+    -- the weight-independent kernel part is shared with the probability monad (`Continuous/JoinKernel`)
+    module IK = JoinKernel.Inner A lem (g w₂) (g-ok w₂)
+    module OK = IK.Outer (g w) (g-ok w)
+    open IK using (K′; kK′) public
+    open OK using (gK; kgK; g′; gok′) public
 
     gpr′ : ∀ r → IsProb (g′ r)
     gpr′ r = IsProb-bind {g w r} {gK r} {kgK r} (g-pr w r)

@@ -298,6 +298,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
 | `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.JoinKernel` | 58 | lem | Shared kernel construction for the join of the probability and s-finite monads: given a witness that a random family of measures on X has outer kernel `g` and, at each merged parameter, inner kernel `G`, the join is r... |
 | `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
 | `QBS.Continuous.LebPlane` | 105 | lem | Lebesgue measure on the plane ℝ × ℝ (plan 03, "Translation and products"). |
 | `QBS.Continuous.LebesgueDyadic` | 218 | lem | Lebesgue measure of the dyadic intervals (plan 03, "Uniqueness on the half-line"). |
@@ -316,7 +317,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LogNeg` | 155 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
 | `QBS.Continuous.LogRat` | 163 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
 | `QBS.Continuous.LogRecip` | 130 | lem | The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
-| `QBS.Continuous.Monad` | 431 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
+| `QBS.Continuous.Monad` | 422 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.MonoTestAlg` | 116 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
 | `QBS.Continuous.Monus` | 123 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x (plan 03, "Translation and products"). |
@@ -350,7 +351,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteCommute` | 233 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 437 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
 | `QBS.Continuous.SFiniteIncl` | 217 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
-| `QBS.Continuous.SFiniteMonad` | 242 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
+| `QBS.Continuous.SFiniteMonad` | 222 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 498 | lem | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
 | `QBS.Continuous.SFiniteReweight` | 58 | lem | Reweighting an s-finite measure by a density: `reweightPre d p` multiplies the weight of every sample of `p : Pre (XW X)` by `d x`, where `d : X ⇒ WQ`. |
 | `QBS.Continuous.SFiniteStat` | 168 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
@@ -376,7 +377,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
 | `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
 | `QBS.Continuous.SignedVarRing` | 112 |  | Ring identities on parts of signed values over an abstract commutative semiring (plan 03, "Information quantities"; helper for `SignedVarAlg`). |
-| `QBS.Continuous.Strong` | 175 | lem | Strength and commutativity of the continuous probability monad. |
+| `QBS.Continuous.Strong` | 189 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 65 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 67 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
 | `QBS.Continuous.SupTest` | 97 | lem | Pointwise suprema, infima, lim inf and lim sup of sequences of tests on any X, and monotone convergence for `∫ᴹ` (plan 03, "Dominated convergence"). |

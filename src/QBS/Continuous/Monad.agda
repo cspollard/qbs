@@ -44,6 +44,7 @@ open import QBS.Analysis.Indicators
 open import QBS.Analysis.Param
 open import QBS.Analysis.Tensor
 open import QBS.Continuous.Sample
+open import QBS.Continuous.JoinKernel using (module JoinKernel)
 open import QBS.Classical using (LEM₀)
 
 module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integration.MeasureClass A) where
@@ -321,26 +322,11 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
     a₂ : Joint X
     a₂ = a w₂
 
-    -- the inner measure on u = merge s t, given the merged parameter k = merge r s
-    K′ : R → Measure
-    K′ k = push {mergeR (oddsR k)} (measurable-merge₁ (lower (oddsR k))) (g w₂ k)
-
-    kK′ : KernelOk K′
-    kK′ {h} fh = Fun-ext
-      (λ k → I-cong (g w₂ k)
-               (λ t → Fun-resp lem fh (lower (mergeR-cong (oddsR-cong (merge-evens k t)) (merge-odds k t)))) _ _)
-      (P₁.PF (g w₂) (g-ok w₂) {λ x → h (φ x)} (Fun-pre {h} {φ} fh mφ))
-      where
-        φ : R → R
-        φ x = mergeR (oddsR (evensR x)) (oddsR x)
-        mφ : Measurable (down φ)
-        mφ = measurable-merge (measurable-∘ measurable-evens measurable-odds) measurable-odds
-
-    g′ : R → Measure
-    g′ r = bind (g w r) (λ s → K′ (mergeR r s)) (λ fh → Fun-pre (kK′ fh) (measurable-merge₁ (lower r)))
-
-    gok′ : KernelOk g′
-    gok′ fh = P₁.PF (g w) (g-ok w) (kK′ fh)
+    -- the weight-independent kernel part is shared with the s-finite monad (`Continuous/JoinKernel`)
+    module IK = JoinKernel.Inner A lem (g w₂) (g-ok w₂)
+    module OK = IK.Outer (g w) (g-ok w)
+    open IK using (K′; kK′) public
+    open OK using (g′; gok′) public
 
     gpr′ : ∀ r → Ok (g′ r)
     gpr′ r = ok-bind (g-pr w r) (λ s → ok-push (measurable-merge₁ (lower (oddsR (mergeR r s)))) (g-pr w₂ (mergeR r s)))
