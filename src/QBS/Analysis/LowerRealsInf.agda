@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Infima of sequences of lower cuts, and lim inf / lim sup of sequences (plan 03, "Dominated convergence").
+-- Infima of sequences of lower cuts, and lim inf / lim sup of sequences of cuts, used by dominated convergence.
 --   * `interC c`: the interior of the intersection, mem q ⟺ ∃ q′ > q with q′ ∈ c n for every n (rounded, so a cut);
 --     `inter-lb`, `inter-glb`, `inter-mono`; `union-mono` for `LowerReals.unionC`;
 --   * `liminfC c = ⋃ₙ ⋂ₖ c (n + k)` and `limsupC c = ⋂ₙ ⋃ₖ c (n + k)`, with `liminf-limsup : liminf ⊑ limsup`

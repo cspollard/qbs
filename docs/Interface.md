@@ -79,6 +79,14 @@ Contents:
 ### Concrete semirings: `QBS.Model.BoolSemiring`, `QBS.Model.ViterbiSemiring`, `QBS.Model.AdditiveSemiring`, `QBS.Model.AdditiveModel`, `QBS.Model.BoolModel`, `QBS.Model.ViterbiModel`
 - `boolComplete`, `additiveComplete`, `additiveNormalizable` — complete / normalisable semirings (Boolean, additive `[0,∞]`); models `QBS.Model.BoolModel`, `ViterbiModel`, `AdditiveModel` (`additiveStatisticalQBSLike`).
 
+## Number foundations
+
+Numbers come in three layers: (1) `Omega`, an ω-continuous ordered semiring of values (an ω-cpo with `+` and `×`
+Scott-continuous); (2) `Archimedean`/`Min`/`Series`/`SeriesSup`/`Unbounded`, constructions and extra axioms stated
+abstractly in an `OmegaSemiring`, in the order `OmegaSemiring` → `Arch` → `Min` → `Series` → `Unbounded`; (3)
+`LowerReals`/`LowerRealsArch`/`LowerRealsMin`/`UnboundedLowerReals`, the lower-cut instance, which is the only place the
+rationals appear.  `RationalLemmas` is the adapter layer between stdlib ℚᵘ lemmas and the cut proofs.
+
 ## Continuous model
 
 ### `QBS.Borel.Source`

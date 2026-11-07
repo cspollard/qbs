@@ -1,7 +1,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain
--- statements without instance arguments, plus the Archimedean property.  Unnormalised rationals
+-- statements without instance arguments, plus the Archimedean property.  This is an adapter layer over the stdlib:
+-- the stdlib lemmas take `{{Positive p}}`/`{{NonNegative p}}` instance arguments, which are hard to use inside
+-- lower-cut proofs where positivity is a hypothesis `0 < p`, so the wrappers here turn the instance form into
+-- ordinary hypotheses.  Unnormalised rationals
 -- keep arithmetic computational; equality is ≃ and the order respects it.
 module QBS.Analysis.RationalLemmas where
 

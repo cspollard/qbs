@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts.
+-- This is a short instance module: `LowerRealsUnbounded lem` is `Unbounded` at `LowerRealsOmega`, `lowerRealsArch`
+-- and `lowerRealsMin`.
 module QBS.Analysis.UnboundedLowerReals where
 
 

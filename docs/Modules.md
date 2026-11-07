@@ -191,11 +191,11 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Lebesgue` | 101 | lem | The integral of threshold-measurable functions R → [0,∞] (lower cuts) against a measure: `J m φ` is the unbounded integral `Iinf` of `Analysis/Unbounded`, with `FunInf φ` obtained from `Meas φ` (`Analysis/Meas`, `Anal... |
 | `QBS.Analysis.LevelSets` | 169 | lem | The strict level sets {x \| q < h x} of a measurable function h : R → [0,1] (values lower cuts) are Borel, by induction on the derivation that h is measurable. |
 | `QBS.Analysis.LowerInverse` | 259 | lem | The inverse of a lower cut: `q < 1/c` iff `q < 0` or `q ρ < 1` for some `ρ > 0` that is not below `c` (so `1/0 = ∞` and `1/∞ = 0`). |
-| `QBS.Analysis.LowerReals` | 423 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
+| `QBS.Analysis.LowerReals` | 426 | lem | The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of rationals strictly below it (so it contains every negative rational). |
 | `QBS.Analysis.LowerRealsArch` | 162 | lem | The `Arch` structure (a half, tolerances 2⁻ⁿ, Archimedean closure, order cancellation, tails) on the extended non-negative reals as lower cuts of the rationals. |
-| `QBS.Analysis.LowerRealsInf` | 58 |  | Infima of sequences of lower cuts, and lim inf / lim sup of sequences (plan 03, "Dominated convergence"). |
+| `QBS.Analysis.LowerRealsInf` | 58 |  | Infima of sequences of lower cuts, and lim inf / lim sup of sequences of cuts, used by dominated convergence. |
 | `QBS.Analysis.LowerRealsMin` | 104 | lem | The minimum of two lower cuts is their intersection: the `Min` structure on the extended non-negative reals as lower cuts of the rationals. |
-| `QBS.Analysis.LowerRealsNear` | 119 | lem | Finite lower reals are approached from below, and what follows (plan 03, "Dominated convergence"). |
+| `QBS.Analysis.LowerRealsNear` | 119 | lem | Finite lower reals are approached from below, and what follows, used by dominated convergence. |
 | `QBS.Analysis.Meas` | 123 | lem | Measurability of lower-real valued functions on Cantor space by thresholds: Meas h  :=  for every rational q, the set {x \| q ∈ h x} is Borel. |
 | `QBS.Analysis.MeasFun` | 222 | lem | Every threshold-measurable function R → [0,1] (`Analysis/Meas`) is in the inductive class `Fun`. |
 | `QBS.Analysis.Measure` | 131 |  | Sub-probability measures on Cantor space as Daniell-style integration functionals on the measurable functions: monotone, additive, homogeneous, continuous along increasing sequences, of total mass at most 1 (`IsProb`:... |
@@ -203,12 +203,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Mixture` | 54 |  | The equal mixture ½ μ₁ + ½ μ₂ of two measures, `addM` of two `scaleM`s from `Analysis/Cone`: it is again a measure (with total mass at most 1). |
 | `QBS.Analysis.MixtureN` | 83 |  | Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals: `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`. |
 | `QBS.Analysis.NegExp` | 244 | lem | `e^{−x}` on the lower reals [0, ∞], as a cut defined directly (there is no negation or division): q ∈ negExp x  iff  ∃ p > q, ∀ s ∈ expC x, p · s < 1, i.e. |
-| `QBS.Analysis.Omega` | 129 |  | Values for measures: a commutative semiring with a compatible partial order (for the extended non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences preserved by + and ×, and ca... |
+| `QBS.Analysis.Omega` | 138 |  | Values for measures: a commutative semiring with a compatible partial order (for the extended non-negative reals, the natural order a ≤ b ⟺ ∃ d, a + d = b), suprema of increasing sequences preserved by + and ×, and ca... |
 | `QBS.Analysis.OpenMeasure` | 272 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
 | `QBS.Analysis.Param` | 215 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
 | `QBS.Analysis.Pieces` | 144 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
 | `QBS.Analysis.PolyExpCert` | 370 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
-| `QBS.Analysis.RationalLemmas` | 220 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
+| `QBS.Analysis.RationalLemmas` | 223 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 312 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 114 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
 | `QBS.Analysis.Riesz` | 63 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |
@@ -225,7 +225,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Threshold` | 74 | lem | Threshold sets of measurable lower-real functions: {x \| h x ≤ t} is Borel (the complement of the union over rationals q of {q < h x} ∩ {q ∉ t}), plus two facts about the lower reals: comparison with ½ is total, and ½ ... |
 | `QBS.Analysis.Tonelli` | 60 | lem | Tonelli for kernels with unbounded integrands: integrating a threshold-measurable φ ≥ 0 against `bind m g` is integrating `r ↦ ∫ φ dg(r)` against m, and that function is again measurable. |
 | `QBS.Analysis.Unbounded` | 438 |  | Integration of unbounded measurable functions `R → [0,∞]` against a (sub-probability) measure, by dyadic truncation. |
-| `QBS.Analysis.UnboundedLowerReals` | 15 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
+| `QBS.Analysis.UnboundedLowerReals` | 17 | lem | Unbounded integration (`Analysis/Unbounded`) for the extended non-negative reals as lower cuts. |
 | `QBS.Analysis.Uniqueness` | 112 | lem | Two probability measures that agree on the finite cylinders agree on every measurable function (uniqueness of measures, via the π–λ theorem). |
 | `QBS.Analysis.UniquenessWeighted` | 144 | lem | Uniqueness for finite weighted pushforwards on Cantor space (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Analysis.Variance` | 241 | lem | Variance of a signed random variable. |

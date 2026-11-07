@@ -9,6 +9,15 @@
 -- an ordered semiring with suprema of increasing sequences, along which + and × are continuous.
 -- The stdlib (2.3) has no ordered-semiring bundle, so the record is local, but its order is a stdlib
 -- `IsPartialOrder` (`isPartialOrder`, with the bundled `poset`).
+-- In order-theoretic terms Ω is a pointed ω-cpo (bottom `0`, suprema `⨆` of increasing ℕ-sequences) whose `+` and `×` are
+-- Scott-continuous (`+-⨆`, `*-⨆`).
+--
+-- Numbers come in three layers.
+--   (1) `Omega`: an ω-continuous ordered semiring of values (this module).
+--   (2) `Archimedean`, `Min`, `Series`, `SeriesSup`, `Unbounded`: constructions and extra axioms stated abstractly in an
+--       `OmegaSemiring`, each abstract in the previous ones (`OmegaSemiring` → `Arch` → `Min` → `Series` → `Unbounded`).
+--   (3) `LowerReals*`: the instance by lower cuts of ℚ (`LowerReals`, `LowerRealsArch`, `LowerRealsMin`,
+--       `UnboundedLowerReals`), which is the only place the rationals appear.
 module QBS.Analysis.Omega where
 
 import Level as L

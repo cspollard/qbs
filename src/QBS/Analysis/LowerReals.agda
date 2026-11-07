@@ -2,7 +2,10 @@
 
 -- The extended non-negative reals [0, ∞] as lower cuts of the rationals: a value is the set of
 -- rationals strictly below it (so it contains every negative rational).  Order is inclusion;
--- suprema of chains are unions.  Compare the lower reals of Vickers / Jones–Plotkin valuations.
+-- suprema of chains are unions (`unionC`, `interC` in `LowerRealsInf` are the join and meet of the frame of downsets).
+-- Compare the lower reals of Vickers / Jones–Plotkin valuations.
+-- Contents: cut algebra (`⊕`, `⊗`, order, `unionC` with its continuity), then the `Classical` module (the only place
+-- excluded middle `lem` enters: `near-sup`, `complC`, `cancel`), then the bundles `cutSemiring` and `LowerRealsOmega lem`.
 module QBS.Analysis.LowerReals where
 
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)

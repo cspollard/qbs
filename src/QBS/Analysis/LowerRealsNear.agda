@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Finite lower reals are approached from below, and what follows (plan 03, "Dominated convergence").
+-- Finite lower reals are approached from below, and what follows, used by dominated convergence.
 --   * `near-sup-bnd c M`: a cut bounded by the rational M has an element within ε of every other element
 --     (`LowerReals.near-sup` for the bound 1, with the same excluded-middle iteration);
 --   * `cancel-bnd-⊑`: `a ⊕ x ⊑ a ⊕ y` gives `x ⊑ y` for a rationally bounded a (the order version of
