@@ -208,7 +208,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Param` | 215 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
 | `QBS.Analysis.Pieces` | 144 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
 | `QBS.Analysis.PolyExpCert` | 370 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
-| `QBS.Analysis.RationalLemmas` | 223 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
+| `QBS.Analysis.RationalLemmas` | 224 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 312 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 114 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
 | `QBS.Analysis.Riesz` | 63 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |
