@@ -11,6 +11,7 @@ open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
+import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import Categories.Category.Core using (Category)
 
@@ -55,15 +56,18 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
     ∫ {_×Q_ S X Y} (σPre {X} {Y} (x , q)) f ≈ ∫ {Y} q (fixH {X} {Y} x f)
   ∫-σ {X} {Y} x q f = I-cong (m q) (λ r → Setoid.refl Aˢ) _ _
 
+  open SetoidReasoning Aˢ
+
   σH : ∀ X Y → Hom S (_×Q_ S X (TQ Y)) (TQ (_×Q_ S X Y))
   σH X Y = record
     { map = record
         { to = σPre {X} {Y}
-        ; cong = λ {(x , q)} {(x′ , q′)} (ex , eq) f →
-            Setoid.trans Aˢ (∫-σ {X} {Y} x q f)
-              (Setoid.trans Aˢ (eq (fixH {X} {Y} x f))
-                (Setoid.trans Aˢ (I-cong (m q′) (λ r → Func.cong (map f) (ex , Setoid.refl (Carrier Y))) _ _)
-                  (Setoid.sym Aˢ (∫-σ {X} {Y} x′ q′ f))))
+        ; cong = λ {(x , q)} {(x′ , q′)} (ex , eq) f → begin
+            ∫ {_×Q_ S X Y} (σPre {X} {Y} (x , q)) f   ≈⟨ ∫-σ {X} {Y} x q f ⟩
+            ∫ {Y} q (fixH {X} {Y} x f)                ≈⟨ eq (fixH {X} {Y} x f) ⟩
+            ∫ {Y} q′ (fixH {X} {Y} x f)               ≈⟨ I-cong (m q′) (λ r → Func.cong (map f) (ex , Setoid.refl (Carrier Y))) _ _ ⟩
+            ∫ {Y} q′ (fixH {X} {Y} x′ f)              ≈˘⟨ ∫-σ {X} {Y} x′ q′ f ⟩
+            ∫ {_×Q_ S X Y} (σPre {X} {Y} (x′ , q′)) f ∎
         }
     ; map-random = λ {β} (pb , w) → record
         { a = pairQ S (fstJ {X} (proj₁ₛ ∘ₛ β) pb) (a w)
@@ -103,11 +107,16 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
         }
     ; identityˡ = λ {_} {(_ , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
     ; η-comm = λ {A} {B} {x} h → Func.cong (map h) (Setoid.refl (Carrier (_×Q_ S A B)))
-    ; μ-η-comm = λ {A} {B} {(a , P)} g →
-        Setoid.trans Aˢ (∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g)
-          (Setoid.trans Aˢ (Ir (m P) (λ r → ∫-σ {A} {B} a (α P ⟨$⟩ r) g))
-            (Setoid.trans Aˢ (Setoid.sym Aˢ (∫-join {B} P (fixH {A} {B} a g)))
-              (Setoid.sym Aˢ (∫-σ {A} {B} a (joinPre P) g))))
+    ; μ-η-comm = λ {A} {B} {(a , P)} g → begin
+        ∫ {_×Q_ S A B} (joinPre (mapPre (σH A B) (σPre {A} {TQ B} (a , P)))) g
+          ≈⟨ ∫-join (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) g ⟩
+        ∫ {TQ (_×Q_ S A B)} (mapPre (σH A B) (σPre {A} {TQ B} (a , P))) (∫ᶠ g)
+          ≈⟨ Ir (m P) (λ r → ∫-σ {A} {B} a (α P ⟨$⟩ r) g) ⟩
+        ∫ {TQ B} P (∫ᶠ (fixH {A} {B} a g))
+          ≈˘⟨ ∫-join {B} P (fixH {A} {B} a g) ⟩
+        ∫ {B} (joinPre P) (fixH {A} {B} a g)
+          ≈˘⟨ ∫-σ {A} {B} a (joinPre P) g ⟩
+        ∫ {_×Q_ S A B} (σPre {A} {B} (a , joinPre P)) g ∎
     ; strength-assoc = λ {_} {_} {_} {((x , y) , q)} h → Ir (m q) (λ r → Setoid.refl Aˢ)
     }
 
@@ -159,14 +168,19 @@ module Strength (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integrati
   mid : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Hom S (_×Q_ S X Y) AQ) →
     ∫ {_×Q_ S X Y} (joinPre (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)))) g
     ≈ ∫ {_×Q_ S X Y} (joinPre (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)))) g
-  mid {X} {Y} s t g =
-    Setoid.trans Aˢ
-      (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
-      (Setoid.trans Aˢ
-        (Setoid.trans Aˢ (Ir (m t) (λ r → Ir (m s) (λ k → Setoid.sym Aˢ (hmerge s t g k r))))
+  mid {X} {Y} s t g = begin
+    ∫ {_×Q_ S X Y} (joinPre (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)))) g
+      ≈⟨ ∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g ⟩
+    ∫ {TQ (_×Q_ S X Y)} (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) (∫ᶠ g)
+      ≈⟨ swap-order ⟩
+    ∫ {TQ (_×Q_ S X Y)} (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) (∫ᶠ g)
+      ≈˘⟨ ∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g ⟩
+    ∫ {_×Q_ S X Y} (joinPre (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)))) g ∎
+    where
+    -- Fubini: integrate over t then s, or s then t, after merging the two coordinate streams
+    swap-order = Setoid.trans Aˢ (Ir (m t) (λ r → Ir (m s) (λ k → Setoid.sym Aˢ (hmerge s t g k r))))
           (Setoid.trans Aˢ (Setoid.sym Aˢ (fubini (m s) (m t) {hF s t g} (fhF s t g)))
-            (Ir (m s) (λ k → Ir (m t) (λ r → hmerge s t g k r)))))
-        (Setoid.sym Aˢ (∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g)))
+            (Ir (m s) (λ k → Ir (m t) (λ r → hmerge s t g k r))))
 
   commutative : Commutative braided strongMonad
   commutative = record { commutes = λ {X} {Y} {p} g →

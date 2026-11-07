@@ -410,20 +410,25 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
 
   open Laws integral monadData public using (TF; ηN; μN)
 
+  -- associativity of join, on pre-measures
+  join-assoc : ∀ {X : QBS S} (p : Pre (TQ (TQ X))) (f : Hom S X AQ) →
+    ∫ {X} (joinPre (mapPre (joinH X) p)) f ≈ ∫ {X} (joinPre (joinPre p)) f
+  join-assoc {X} p f = begin
+    ∫ {X} (joinPre (mapPre (joinH X) p)) f           ≈⟨ ∫-join (mapPre (joinH X) p) f ⟩
+    ∫ {TQ X} (mapPre (joinH X) p) (∫ᶠ f)             ≈⟨ I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _ ⟩
+    ∫ {TQ (TQ X)} p (∫ᶠ (∫ᶠ f))                      ≈˘⟨ ∫-join p (∫ᶠ f) ⟩
+    ∫ {TQ X} (joinPre p) (∫ᶠ f)                      ≈˘⟨ ∫-join (joinPre p) f ⟩
+    ∫ {X} (joinPre (joinPre p)) f                    ∎
+    where open SetoidReasoning Aˢ
+
   -- `TM` is written out (not `Laws.TM`): with the generic `TM`, `Continuous/Strong` was ~17 % slower to check
   TM : Monad (QBSCat S)
   TM = record
     { F = TF
     ; η = ηN
     ; μ = μN
-    ; assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-          (Setoid.trans Aˢ (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)
-            (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))))
-    ; sym-assoc = λ {X} {p} f →
-        Setoid.trans Aˢ (Setoid.trans Aˢ (∫-join (joinPre p) f) (∫-join p (∫ᶠ f)))
-          (Setoid.sym Aˢ (Setoid.trans Aˢ (∫-join (mapPre (joinH X) p) f)
-            (I-cong (m p) (λ r → ∫-join (α p ⟨$⟩ r) f) _ _)))
+    ; assoc = λ {X} {p} f → join-assoc p f
+    ; sym-assoc = λ {X} {p} f → Setoid.sym Aˢ (join-assoc p f)
     ; identityˡ = λ {X} {p} f →
         Setoid.trans Aˢ (∫-join (mapPre (ηH X) p) f) (I-cong (m p) (λ r → Setoid.refl Aˢ) _ _)
     ; identityʳ = λ {X} {p} f → ∫-join (ηPre p) f
