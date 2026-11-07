@@ -212,3 +212,8 @@ ring₆ = solve 1 (λ x → (con 0ℚᵘ :+ :- x) :+ (x :+ x) := x) ≃-refl
 
 ring₇ : ∀ b n ε → b + (n + ε) ≃ (b + n) + ε
 ring₇ = solve 3 (λ b n ε → b :+ (n :+ ε) := (b :+ n) :+ ε) ≃-refl
+
+-- a pure rational estimate used for scaling in the Daniell integral
+smallprod : ∀ {N tk tn r y q : ℚᵘ} → 0ℚᵘ < N → 0ℚᵘ < y → r < N → y ≤ tk → N * tk < tn → q ≤ r * y → q < tn
+smallprod {N} 0<N 0<y r<N y≤tk Ntk<tn le =
+  ≤-<-trans le (<-trans (<-≤-trans (*-mono-<-posʳ 0<y r<N) (*-mono-≤-nn (<-≤ 0<N) y≤tk)) Ntk<tn)

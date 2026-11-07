@@ -149,7 +149,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinCont` | 139 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
 | `QBS.Analysis.CoinFacts` | 88 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
 | `QBS.Analysis.CoinGrid` | 158 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
-| `QBS.Analysis.CoinIntegral` | 433 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
+| `QBS.Analysis.CoinIntegral` | 428 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
 | `QBS.Analysis.CoinSets` | 12 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
 | `QBS.Analysis.CoinSimple` | 139 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
@@ -208,7 +208,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Param` | 215 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
 | `QBS.Analysis.Pieces` | 144 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
 | `QBS.Analysis.PolyExpCert` | 370 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
-| `QBS.Analysis.RationalLemmas` | 215 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
+| `QBS.Analysis.RationalLemmas` | 220 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 312 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 114 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
 | `QBS.Analysis.Riesz` | 63 | lem | The Riesz–Daniell correspondence between probability measures as Daniell functionals (`Measure` with `IsProb`) and Borel probability measures as σ-additive set functions (`BorelMeasure`): * `setFun m` restricts a func... |

@@ -42,11 +42,6 @@ open import QBS.Classical using (LEM₀; LEM₁)
 open Cut
 open _⊑_
 
--- a pure rational estimate used for scaling
-smallprod : ∀ {N tk tn r y q : ℚᵘ} → 0ℚᵘ < N → 0ℚᵘ < y → r < N → y ≤ᵘ tk → N *ᵘ tk < tn → q ≤ᵘ r *ᵘ y → q < tn
-smallprod {N} 0<N 0<y r<N y≤tk Ntk<tn le =
-  RL.≤-<-trans le (RL.<-trans (RL.<-≤-trans (RL.*-mono-<-posʳ 0<y r<N) (RL.*-mono-≤-nn (RL.<-≤ 0<N) y≤tk)) Ntk<tn)
-
 -- classical logic at `Set` from classical logic at `Set₁`
 lemOf : LEM₁ → LEM₀
 lemOf lem₁ P with lem₁ (Lift (L.suc L.zero) P)
@@ -223,7 +218,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
           go : ∀ q → mem (c * rC (tp k)) q → q < tp n
           go q (inj₁ lt) = RL.<-trans lt (tp-pos n)
           go q (inj₂ (r , y , 0<r , 0<y , mr , my , le)) =
-            smallprod {N} {tp k} {tp n} {r} {y} {q} 0<N 0<y (below r 0<r (ap cN r mr))
+            RL.smallprod {N} {tp k} {tp n} {r} {y} {q} 0<N 0<y (below r 0<r (ap cN r mr))
               (RL.<-≤ (below′ k y 0<y my)) (Ntk n k tk<δ) le
 
       tol : ∀ n → Σ ℕ (λ k → c * rC (tp k) ≤ hpC n)
