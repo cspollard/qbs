@@ -39,6 +39,10 @@ module Exp {ℓ} (A : OmegaSemiring ℓ) where
   natE zero = 0#
   natE (suc n) = natE n + 1#
 
+  -- a bound by 1 is a bound by the natural number 1
+  bd1 : ∀ {x} → x ≤ 1# → x ≤ natE 1
+  bd1 h = ≤-trans h (≤-reflexive (sym (+-identityˡ 1#)))
+
   pw-mono : ∀ {x y} k → x ≤ y → pw x k ≤ pw y k
   pw-mono zero h = ≤-refl
   pw-mono {x} {y} (suc k) h =

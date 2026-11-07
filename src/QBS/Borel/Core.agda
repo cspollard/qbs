@@ -31,6 +31,10 @@ Pred = Cantor → Set
 _≐_ : Pred → Pred → Set
 U ≐ V = ∀ x → (U x → V x) × (V x → U x)
 
+-- the members of a family of sets are pairwise disjoint
+Disjoint : (ℕ → Pred) → Set
+Disjoint U = ∀ x m n → U m x → U n x → m ≡ n
+
 data Borel : Pred → Set₁ where
   gen   : ∀ n b → Borel (λ x → x n ≡ b)
   compl : ∀ {U} → Borel U → Borel (λ x → U x → ⊥)

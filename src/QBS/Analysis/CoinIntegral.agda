@@ -20,10 +20,10 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Data.Rational.Unnormalised.Base using (_<_)
 open import Data.Rational.Unnormalised.Base using () renaming (_*_ to _*ᵘ_; _+_ to _+ᵘ_; _≤_ to _≤ᵘ_; _≃_ to _≃ᵘ_)
 import QBS.Analysis.RationalLemmas as RL
+import QBS.Classical.Decide as D
 open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans; nat-nonneg)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Model.Pairing using (unpair)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
@@ -41,11 +41,6 @@ open import QBS.Analysis.CoinGrid
 open import QBS.Classical using (LEM₀; LEM₁)
 open Cut
 open _⊑_
-
--- a pure rational estimate used for scaling
-smallprod : ∀ {N tk tn r y q : ℚᵘ} → 0ℚᵘ < N → 0ℚᵘ < y → r < N → y ≤ᵘ tk → N *ᵘ tk < tn → q ≤ᵘ r *ᵘ y → q < tn
-smallprod {N} 0<N 0<y r<N y≤tk Ntk<tn le =
-  RL.≤-<-trans le (RL.<-trans (RL.<-≤-trans (RL.*-mono-<-posʳ 0<y r<N) (RL.*-mono-≤-nn (RL.<-≤ 0<N) y≤tk)) Ntk<tn)
 
 -- classical logic at `Set` from classical logic at `Set₁`
 lemOf : LEM₁ → LEM₀
@@ -69,19 +64,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
   open LevelSets (lemOf lem₁) using (Lvl)
 
   private
-    dec : Set₁ → Bool
-    dec P with lem₁ P
-    ... | inj₁ _ = true
-    ... | inj₂ _ = false
-
-    dec-true : ∀ {P} → P → dec P ≡ true
-    dec-true {P} p with lem₁ P
-    ... | inj₁ _ = ≡.refl
-    ... | inj₂ np = ⊥-elim (np p)
-
-    from-true : ∀ {P} → dec P ≡ true → P
-    from-true {P} e with lem₁ P
-    ... | inj₁ p = p
+    open D.Decide (D.fromLEM₁ lem₁)
 
   -- s lies below h
   Minor : (R₁ → Cut) → Sf → Set₁
@@ -235,7 +218,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
           go : ∀ q → mem (c * rC (tp k)) q → q < tp n
           go q (inj₁ lt) = RL.<-trans lt (tp-pos n)
           go q (inj₂ (r , y , 0<r , 0<y , mr , my , le)) =
-            smallprod {N} {tp k} {tp n} {r} {y} {q} 0<N 0<y (below r 0<r (ap cN r mr))
+            RL.smallprod {N} {tp k} {tp n} {r} {y} {q} 0<N 0<y (below r 0<r (ap cN r mr))
               (RL.<-≤ (below′ k y 0<y my)) (Ntk n k tk<δ) le
 
       tol : ∀ n → Σ ℕ (λ k → c * rC (tp k) ≤ hpC n)

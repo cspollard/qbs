@@ -14,7 +14,6 @@ open import Data.Product.Base using (_,_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Core
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda using (⊥ᵖ)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series using (module Series)

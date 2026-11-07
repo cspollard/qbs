@@ -20,6 +20,7 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; 
 
 open import QBS.Analysis.RationalLemmas
 open import QBS.Analysis.LowerReals
+import QBS.Classical.Decide as D
 open Cut
 open _⊑_
 
@@ -161,20 +162,7 @@ module CSum (lem₁ : LEM₁) where
   ι-inj = ,-injectiveʳ-UIP uip
 
   private
-    dec : Set₁ → Bool
-    dec P with lem₁ P
-    ... | inj₁ _ = true
-    ... | inj₂ _ = false
-
-    dec-true : ∀ {P} → P → dec P ≡ true
-    dec-true {P} p with lem₁ P
-    ... | inj₁ _ = refl
-    ... | inj₂ np with np p
-    ...   | ()
-
-    from-true : ∀ {P} → dec P ≡ true → P
-    from-true {P} e with lem₁ P
-    ... | inj₁ p = p
+    open D.Decide (D.fromLEM₁ lem₁)
 
   -- the sum of a family of cuts
   sumC : ∀ {I : Set₁} → (I → Cut) → Cut

@@ -12,7 +12,6 @@ open import Data.Product.Base using (_,_)
 open import Data.Bool.Base using (false)
 
 open import QBS.Borel.Core
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda using (cylTop)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series using (module Series)

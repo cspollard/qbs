@@ -19,7 +19,6 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
 
 open import QBS.Borel.Core
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Classical using (LEM₀)
 
 -- operations on sets

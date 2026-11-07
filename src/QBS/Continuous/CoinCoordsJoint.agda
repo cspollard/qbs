@@ -68,7 +68,7 @@ module CoinCoordsJoint (lem₁ : LEM₁) where
   open OmegaSemiring A using (1#; *-cong; *-identityʳ)
   open SFiniteReweight (lemOf lem₁) using (mulH)
   open Weights (lemOf lem₁) using (constW)
-  open ProdMap (lemOf lem₁) using (mapM-comp; mapM-cong; mapM-ext; _×H_; map-prod)
+  open ProdMap (lemOf lem₁) using (mapM-id; mapM-comp; mapM-cong; mapM-ext; _×H_; map-prod)
   open FinProd lem₁ using (ΠQ; tupleQ; prodⁿ)
   open ProdBridge lem₁ using (ι-mass)
   open SFiniteIncl (lemOf lem₁) using (ιPre)
@@ -140,10 +140,6 @@ module CoinCoordsJoint (lem₁ : LEM₁) where
     Setoid._≈_ (Carrier (ΠQ n (λ _ → X))) (map (tupleQ n (λ _ → X) F) ⟨$⟩ z) (map (tupleQ n (λ _ → X) G) ⟨$⟩ z′)
   tuple-ext zero F G z z′ e = Setoid.refl (Carrier (ΠQ zero (λ _ → ℛ)))
   tuple-ext (suc n) F G z z′ e = e zero , tuple-ext n (λ j → F (suc j)) (λ j → G (suc j)) z z′ (λ j → e (suc j))
-
-  -- the pushforward along the identity is the identity
-  mapM-id : ∀ {X : QBS S} (p : C.Pre (XW X)) → _≈ᴹ_ {X} (mapM {X} {X} (idH S {X}) p) p
-  mapM-id {X} p h = trans (∫ᴹ-map {X} {X} (idH S {X}) p h) (∫ᴹ-cong {X} p {_∘H_ S h (idH S {X})} {h} (λ _ → refl))
 
   -- one more coordinate: (evens, odds) splits the coin, then the tail is the first n coordinates of the odd half
   coins-step : ∀ n → IID coinPre coin n (λ i → coordH (toℕ i)) → IID coinPre coin (suc n) (λ i → coordH (toℕ i))

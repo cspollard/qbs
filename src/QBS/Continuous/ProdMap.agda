@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`).
---   * `mapM-comp`, `mapM-cong`, `mapM-ext`: push-forward composes, respects ≈ᴹ and pointwise equal maps;
+--   * `mapM-id`, `mapM-comp`, `mapM-cong`, `mapM-ext`: push-forward composes, respects ≈ᴹ and pointwise equal maps;
 --   * `_×H_`: the map (x, y) ↦ (f x, g y), and `map-prod`: pushing s ⊗ t forward along f × g gives f₊s ⊗ g₊t;
 --   * `swapQ` and `swapM`: pushing s ⊗ t forward along (x, y) ↦ (y, x) gives t ⊗ s.
 -- Route: through the integrals: `SFinite.∫ᴹ-map`, `Product.∫-prod` for the left-nested product and `Product.∫-prod′` for
@@ -34,6 +34,10 @@ module ProdMap (lem : LEM₀) where
   open SFiniteStrong lem using (fixH)
   open QBS
   open Hom
+
+  -- the pushforward along the identity is the identity
+  mapM-id : ∀ {X : QBS S} (p : C.Pre (XW X)) → _≈ᴹ_ {X} (mapM {X} {X} (idH S {X}) p) p
+  mapM-id {X} p h = trans (∫ᴹ-map {X} {X} (idH S {X}) p h) (∫ᴹ-cong {X} p {_∘H_ S h (idH S {X})} {h} (λ _ → refl))
 
   mapM-comp : ∀ {X Y Z : QBS S} (f : Hom S X Y) (g : Hom S Y Z) (p : C.Pre (XW X)) →
     _≈ᴹ_ {Z} (mapM {Y} {Z} g (mapM {X} {Y} f p)) (mapM {X} {Z} (_∘H_ S g f) p)

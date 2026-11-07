@@ -20,6 +20,7 @@ open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Archimedean using (Arch)
+open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 import QBS.Analysis.LowerReals as LR
@@ -42,6 +43,7 @@ module GaussInverse (lem₁ : LEM₁) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (half; half+half; cancel≤)
   open Exp A using (natE)
+  open HalfOrder A R using (half≤1)
   open Series A using (∑ᶠ; ≤-∑ᶠ)
   open Expansion A half half+half using (expansion; expansion≤1)
   open Lebesgue (lemOf lem₁) using (J; J-mono)
@@ -74,9 +76,6 @@ module GaussInverse (lem₁ : LEM₁) where
   -- Φ(1) ≥ ½
   u-half : half * (natE 1 * natE 1) ≈ half
   u-half = trans (*-cong refl (trans (*-cong (+-identityˡ 1#) (+-identityˡ 1#)) (*-identityˡ 1#))) (*-identityʳ half)
-
-  half≤1 : half ≤ 1#
-  half≤1 = ≤-trans ≤-+ʳ (≤-reflexive half+half)
 
   half≤Φ1 : half ≤ Φ (natE 1)
   half≤Φ1 = cancel≤ half≤1 (≤-trans (≤-reflexive half+half)

@@ -26,8 +26,8 @@ module TailFTCExpHalf (lem₁ : LEM₁) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (half; hp; half-twice)
   open AlgT A R
-  open Exp A using (natE)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; negExp-zero)
+  open Exp A using (natE; bd1)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; negExp-zero; negExp-cong)
   open HalfLine lem₁ using (lebPre)
   open HalfLineNegExp lem₁ using (negExp-add; negExpH)
   open TailFTCHalfLine lem₁ using (module Leb)
@@ -35,12 +35,6 @@ module TailFTCExpHalf (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ)
   open import QBS.Continuous.Weights using (module Weights)
   open Weights (lemOf lem₁) using (WQ)
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
-
-  bd1 : ∀ {x} → x ≤ 1# → x ≤ natE 1
-  bd1 h = ≤-trans h (≤-reflexive (sym (+-identityˡ 1#)))
 
   facts : ∀ n → (negExp (hp n) + hp n * negExp (hp n) ≤ 1#) × (1# ≤ negExp (hp n) + hp n)
   facts n = exp-facts {negExp (hp n)} {hp n} {expC (lemOf lem₁) (hp n)} (negExp-expC-nat (hp n) 1 (bd1 (hp≤1 n)))

@@ -16,6 +16,7 @@ import Data.Nat.Properties as ℕ
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Archimedean using (Arch)
+open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.TailFTC using (module AlgT)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
 open import QBS.Analysis.GaussCert using (module AlgG)
@@ -32,11 +33,9 @@ module AlgGE (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (half; half+half; half-twice)
   open AlgT A R using (P; P≥1)
+  open HalfOrder A R using (half≤1)
   open AlgP A R using (*-monoʳ; *-mono₂; P-mono; P-+; P-*; yt)
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
-
-  half≤1 : half ≤ 1#
-  half≤1 = ≤-trans ≤-+ʳ (≤-reflexive half+half)
 
   half≤ : ∀ z → half * z ≤ z
   half≤ z = ≤-trans (*-monoʳ z half≤1) (≤-reflexive (*-identityˡ z))

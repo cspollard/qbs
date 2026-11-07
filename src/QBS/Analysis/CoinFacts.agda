@@ -12,7 +12,6 @@ open import Data.Empty using (⊥; ⊥-elim)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Core
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series

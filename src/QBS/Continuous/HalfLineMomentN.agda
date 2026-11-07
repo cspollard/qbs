@@ -41,8 +41,8 @@ module HalfLineMomentN (lem₁ : LEM₁) where
   open Arch R using (half; hp) renaming (half+half to hh)
   open AlgT A R using (P; Dy; dy-bound; hp≤1; exp-facts)
   open AlgP A R using (pw; pw-mono; natE≤P; *-monoʳ; module Ex)
-  open Exp A using (natE)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; Meas-negExp)
+  open Exp A using (natE; bd1)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; Meas-negExp; negExp-cong)
   open Lebesgue (lemOf lem₁) using (J)
   open Meas (lemOf lem₁) using (Meas; Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
@@ -52,12 +52,6 @@ module HalfLineMomentN (lem₁ : LEM₁) where
   open TailFTCLipJ lem₁ using (module LipJ)
   open QBS
   open Hom
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
-
-  bd1 : ∀ {x} → x ≤ 1# → x ≤ natE 1
-  bd1 h = ≤-trans h (≤-reflexive (sym (+-identityˡ 1#)))
 
   -- the first-order exponential facts at any width t ≤ 1
   facts : ∀ {t} → t ≤ 1# → (negExp t + t * negExp t ≤ 1#) × (1# ≤ negExp t + t)

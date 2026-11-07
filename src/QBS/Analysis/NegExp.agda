@@ -54,6 +54,9 @@ module NegExp (lem : LEM₀) where
   negExp-anti : ∀ {x y} → x ⊑ y → negExp y ⊑ negExp x
   negExp-anti xy = mk⊑ (λ q (p , lt , f) → p , lt , λ s m → f s (ap (expC-mono lem xy) s m))
 
+  negExp-cong : ∀ {x y} → x ≋ y → negExp x ≋ negExp y
+  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
+
   -- if `p s < 1` for all `s < 1` then `p ≤ 1`
   bound1 : ∀ {p} → (∀ s → s < 1ℚᵘ → p * s < 1ℚᵘ) → p ≤ 1ℚᵘ
   bound1 {p} f with ≤-or-> p 1ℚᵘ

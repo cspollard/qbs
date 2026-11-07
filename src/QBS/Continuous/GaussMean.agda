@@ -45,7 +45,7 @@ module GaussMean (lem₁ : LEM₁) where
   open AlgGT A R using (big)
   open Exp A using (natE)
   open Series A using (psum; ∑ᶠ; ∑ᶠ-lub; psum≤∑ᶠ)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp-zero)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp-zero; negExp-cong)
   open Lebesgue (lemOf lem₁) using (J; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
@@ -73,9 +73,6 @@ module GaussMean (lem₁ : LEM₁) where
   psum-b0 : ∀ N → psum b N ≈ 0#
   psum-b0 zero = refl
   psum-b0 (suc N) = trans (+-cong (psum-b0 N) (b0 N)) (+-identityˡ 0#)
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = ≤-antisym (negExp-anti (≤-reflexive (sym e))) (negExp-anti (≤-reflexive e))
 
   Φ0 : Φ 0# ≈ 1#
   Φ0 = trans (negExp-cong (trans (*-cong refl (zeroˡ 0#)) (zeroʳ half))) negExp-zero

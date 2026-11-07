@@ -19,6 +19,9 @@ module HalfOrder (A : OmegaSemiring (suc zero)) (R : Arch A) where
   half≤1 : half ≤ 1#
   half≤1 = ≤-trans ≤-+ʳ (≤-reflexive hh)
 
+  hm : ∀ x → half * x + half * x ≈ x
+  hm x = trans (sym (distribˡ half x x)) (half-twice x)
+
   -- halving reflects the order
   half-cancel : ∀ {x y} → half * x ≤ half * y → x ≤ y
   half-cancel {x} {y} h = ≤-resp (half-twice x) (half-twice y)

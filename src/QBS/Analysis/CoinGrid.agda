@@ -24,7 +24,6 @@ open +-*-Solver using (solve; _:+_; _:*_; :-_; _:=_; con)
 
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda using (∁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.LowerReals

@@ -31,19 +31,13 @@ module TailFTCExp (lem₁ : LEM₁) where
   open Arch R using (half; hp) renaming (half+half to hh)
   open AlgT A R
   open Integration A using (I; I-cong)
-  open Exp A using (natE)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; negExp-zero)
+  open Exp A using (natE; bd1)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; negExp-zero; negExp-cong)
   open Expansion A half hh using (expansion)
   open MeasFun (lemOf lem₁) using (Meas→Fun)
   open FairCoin lem₁ using (fairCoin)
   open HalfLineNegExp lem₁ using (negExp-add; I-negExp; Meas-negExp-expansion)
   open HalfLineUnit lem₁ using (I-negExp≈F0; Fun-G)
-
-  negExp-cong : ∀ {x y} → x ≈ y → negExp x ≈ negExp y
-  negExp-cong e = negExp-anti (proj₂ e) , negExp-anti (proj₁ e)
-
-  bd1 : ∀ {x} → x ≤ 1# → x ≤ natE 1
-  bd1 h = ≤-trans h (≤-reflexive (sym (+-identityˡ 1#)))
 
   Fh = Meas→Fun {λ r → negExp (expansion r)} (λ r → negExp≤1 _) Meas-negExp-expansion
 

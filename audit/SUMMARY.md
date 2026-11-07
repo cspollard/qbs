@@ -108,3 +108,34 @@ Each report's §6 lists its own questions. These come up across reports:
 - Is the `Fun`/`Meas` (`I`/`J`) duality permanent, or is `Fun` scaffolding?
 - Should the legacy proof routes be deleted, or kept as cross-checks?
 - Should Kleisli composition come from agda-categories or be a local `bind`?
+
+## Global cleanup status (2026-11-07)
+
+Agent 0 (`global-cleanup`), one commit per item or group.  Every module touched was checked from the CLI with exit 0.
+
+1. **Classical decision toolkit: done.**  New `QBS.Classical.Decide` with `module Decide (lem : LEM ℓ)` (`dec`, `dec-true`,
+   `dec-false`, `from-true`, `dec-iff`) and `fromLEM₁ : LEM₁ → LEM 1`.  `BoolSemiring`, `ViterbiSemiring`, `CutSum` and
+   `CoinIntegral` open it privately.  (`dec-or`/`dec-bool` stay in `BoolSemiring`: used there only.)
+2. **Small helpers: partly done.**
+   - Done: `negExp-cong` is now in `Analysis.NegExp` (6 copies removed: `TailFTCExp`, `TailFTCExpHalf`, `HalfLineUnit`,
+     `HalfLineMomentN`, `GaussMean`, `ExpFamily`); `bd1` in `Analysis.Exp` (4 copies); `half≤1` reused from `HalfOrder`
+     (`GaussExp`, `GaussInverse`, `UniformMomentN`); `hm` moved to `HalfOrder` (`TailFTC`, `UniformMomentN`).  Importers of the
+     removed copies (`ExpRateInt`, `GaussHalfLine`, `HalfLineMean`, `HalfLineMoment2`, `ExpRateMoment`, `HalfLineMomentFact`,
+     `HalfLineRate`, `DerivMoment`, `ExpRateOne`) now take the names from `NegExp`/`Exp`.
+   - Skipped, not duplicates: `two` (the exact copies are one-liners `1# + 1#` in `DyadicAlg`, `RealShiftNull` and
+     `CoinPosterior`; the others are ℚ, ℕ → ∣A∣ or `Bnd` statements; the only common home would be the `OmegaSemiring` record, which
+     would rebuild the whole library); `fact` (`BetaIntegral` uses `#`, `HalfLineMomentFact` uses `natE`: different functions);
+     `half≤1` in `Mixture` (it has no `Arch`, only `half` and `hh` parameters) and `hm` in `UniformMean` (generic
+     `CommutativeSemiring`, no `Arch`); the exponential inequalities (the copies differ in hypothesis: `t ≤ 1#`, `t ≤ P s`,
+     `hp n`; only the two `facts n` are identical, and sharing them would make `TailFTCExpHalf` import `TailFTCExp` and
+     `HalfLineUnit`).
+3. **Strength helpers: partly done.**  `mapM-id` now lives in `ProdMap` (copies in `FinProdPair`, `CoinCoordsJoint` removed).
+   `fixH` is already one copy per codomain: `Strong.fixH` is into `AQ` and `SFiniteStrong.fixH` into `WQ`, so the statements differ;
+   `SFiniteCommute` only defines the mirror `fixH₂` and imports `fixH`.  A generic-codomain `fixH` is left for `continuous-core`.
+4. **Dead record: done.**  `QBS.Borel.Measure` is deleted; `Disjoint` is in `QBS.Borel.Core`; the 12 `using (Disjoint)`
+   imports are removed (all opened `Borel.Core` already).
+5. **Signed duplicates: wrong.**  `RandomVectorDefs.Int-mul` is an adapter taking `Int₂` pairs and passing the second components
+   to `RandomVectorAlg.Int-mul`, not a re-statement.  `RandomVectorLawAux.Ex-law` is about `ιPre (mapPre h P)`, while
+   `SignedTransport.Ex-map` is about `mapM h p`; they differ and linking them needs `ι-nat` and `Ex-≈`.  Both left for
+   `continuous-signed-info`.
+6. **`smallprod`: done**, now in `RationalLemmas`.
