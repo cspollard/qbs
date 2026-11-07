@@ -3,7 +3,8 @@
 -- Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`.
 -- The normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` stays abstract (its value `√(π/2)` is never used).
 --   * `moment-succ j : ∫ᴹ lebPre (gMomH (j+2)) ≈ (j+1) · ∫ᴹ lebPre (gMomH j)`: integration by parts on the half-line,
---     `TailFTCLipHalf.glue` applied to the unit-interval identities of `GaussHalfLine` with `G = xʲ⁺¹ e^{−x²/2}`;
+--     `DerivBridge.OnHalfLine.glue-D` applied to `DerivGauss.DFgaussJ` (the certificate `G′ = k − h` from the rules of
+--     `Analysis/Deriv*`) with `G = xʲ⁺¹ e^{−x²/2}`;
 --     `G 0 = 0`, and `G(N) → 0` along the multiples of j+2 because `e^{−N²/2} ≤ e^{−N}` for N ≥ 2 (`Analysis/GaussTail.big`)
 --     and `Nʲ⁺¹ e^{−N} → 0` (`Analysis/ExpTail`);
 --   * `∫-x²φ : ∫ x² e^{−x²/2} ≈ ∫ e^{−x²/2}` (j = 0: so `Var = 1` for the half-normal);
@@ -28,6 +29,8 @@ open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
 open import QBS.Analysis.GaussTail using (module AlgGT)
+open import QBS.Analysis.Deriv using (module AlgD)
+open import QBS.Analysis.DerivGauss using (module AlgDG)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
@@ -35,17 +38,17 @@ open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.HalfLineMomentFact using (module HalfLineMomentFact)
 open import QBS.Continuous.GaussHalfLine using (module GaussHalfLine)
 open import QBS.Continuous.TailFTC using (module TailFTC)
-open import QBS.Continuous.TailFTCLipHalf using (module TailFTCLipHalf)
+open import QBS.Continuous.DerivBridge using (module DerivBridge)
 
 module GaussMoment (lem₁ : LEM₁) where
   open TailFTC lem₁ using (A; R)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (hp)
-  open AlgP A R using (pw)
+  open AlgP A R using (pw; natE≤P)
   open AlgGT A R using (big)
   open Exp A using (natE)
   open Series A using (∑ᶠ; ∑ᶠ-cong; ∑ᶠ-scale)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti)
+  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1)
   open Lebesgue (lemOf lem₁) using (J; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
@@ -53,8 +56,11 @@ module GaussMoment (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ; ∫ᴹ-cong)
   open HalfLine lem₁ using (lebPre; shiftPt; Meas-hshift; ∫ᴹ-leb)
   open HalfLineMomentFact lem₁ using (module T)
-  open GaussHalfLine lem₁ using (Φ; phiH; gh; gMomH; gKH; module AtInterval)
-  open TailFTCLipHalf lem₁ using (module Glue)
+  open GaussHalfLine lem₁ using (Φ; phiH; gh; gMomH; gKH; Ea; Eb; Ec)
+  open AlgD A R using (Deriv; Fin)
+  open AlgDG A R using (module Gx)
+  open Gx negExp negExp≤1 negExp-anti Ea Eb Ec using (DFgaussJ)
+  open DerivBridge lem₁ using (module OnHalfLine)
   open QBS
   open Hom
 
@@ -93,8 +99,15 @@ module GaussMoment (lem₁ : LEM₁) where
   ----------------------------------------------------------------------------
   -- ∫ xʲ⁺² e^{−x²/2} = (j+1) ∫ xʲ e^{−x²/2}
 
+  -- the data on [0, n+1], from the rules of `Analysis/Deriv*`: `(xʲ⁺¹ Φ)′ = (j+1) xʲ Φ − xʲ⁺² Φ`
+  fin : ∀ n → Fin (natE (suc n))
+  fin n = suc n , natE≤P (suc n)
+
+  dvn : ∀ j n → Deriv (natE (suc n)) (gh (suc j)) (λ x → map (gMomH (suc (suc j))) ⟨$⟩ x) (λ x → map (gKH j) ⟨$⟩ x)
+  dvn j n = DFgaussJ (fin n) j
+
   moment-succ : ∀ j → ∫ᴹ {WQ} lebPre (gMomH (suc (suc j))) ≈ natE (suc j) * ∫ᴹ {WQ} lebPre (gMomH j)
-  moment-succ j = trans (Glue.glue (gMomH (suc (suc j))) (gKH j) (gh (suc j)) (λ n → AtInterval.ibp-unit n j) (G0 j) (gtail j))
+  moment-succ j = trans (OnHalfLine.glue-D (gMomH (suc (suc j))) (gKH j) (gh (suc j)) (dvn j) (G0 j) (gtail j))
     (k-scale j)
 
   -- Z = ∫ e^{−x²/2}, and j = 0: ∫ x² e^{−x²/2} = Z

@@ -1,12 +1,11 @@
 {-# OPTIONS --safe --without-K #-}
 
--- All polynomial moments of the exponential: integration by parts on each unit interval (part 1).
+-- All polynomial moments of the exponential: the tests (part 1; part 2 is `HalfLineMomentFact`).
 --   * `pwNegExpH i : WQ ⇒ WQ`, the test `x ↦ xⁱ e^{−x}`, and `kH j`, the test `x ↦ (j+1) xʲ e^{−x}`;
---   * `ibp-unit j n`: with `G = h = xʲ⁺¹ e^{−x}` and `k = (j+1) xʲ e^{−x}` (so that `G′ = k − h`),
---       ∫₀¹ h(n+u) du + G(n+1) = G(n) + ∫₀¹ k(n+u) du.
--- The identity is `TailFTCLipJ.ftc-J` on the interval [n, n+1]: the Lipschitz and certificate hypotheses are the
--- pointwise facts of `Analysis/PolyExpCert` at M = n+1 (Bernoulli's inequality with remainder, and the first-order
--- exponential facts `y + w y ≤ 1 ≤ y + w` derived from `1 + w ≤ eʷ ≤ 1 + w + w²`), moved to the dyadic pieces of [0,1].
+--   * `facts`, `eadd`: the first-order exponential facts `y + w y ≤ 1 ≤ y + w` (from `1 + w ≤ eʷ ≤ 1 + w + w²`) and the
+--     addition law of `e^{−x}` on `[0, N]`, the inputs of the certificate calculus `Analysis/Deriv*`.
+-- (The unit-interval identity `ibp-unit`, which this module used to prove from the hand-written pack of
+-- `Analysis/PolyExpCert`, is replaced by the `Deriv` route of `HalfLineMomentFact`.)
 module QBS.Continuous.HalfLineMomentN where
 
 open import Function.Bundles using (_⟨$⟩_)
@@ -20,36 +19,26 @@ open import QBS.Continuous.Sample using (S)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
-open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.Meas using (module Meas)
 open import QBS.Analysis.Exp using (module Exp)
 open import QBS.Analysis.ExpLower using (expC; 1+≤expC; expC≤quad)
 open import QBS.Analysis.NegExp using (module NegExp)
-open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.TailFTC using (module AlgT)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
-open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.Weights using (module Weights)
-open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.HalfLineNegExp using (module HalfLineNegExp)
 open import QBS.Continuous.TailFTC using (module TailFTC)
-open import QBS.Continuous.TailFTCLipJ using (module TailFTCLipJ)
 
 module HalfLineMomentN (lem₁ : LEM₁) where
   open TailFTC lem₁ using (A; R)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
-  open Arch R using (half; hp) renaming (half+half to hh)
-  open AlgT A R using (P; Dy; dy-bound; hp≤1; exp-facts)
-  open AlgP A R using (pw; pw-mono; natE≤P; *-monoʳ; module Ex)
+  open AlgT A R using (exp-facts)
+  open AlgP A R using (pw; pw-mono)
   open Exp A using (natE; bd1)
-  open NegExp (lemOf lem₁) using (negExp; negExp-anti; negExp≤1; negExp-expC-nat; Meas-negExp; negExp-cong)
-  open Lebesgue (lemOf lem₁) using (J)
+  open NegExp (lemOf lem₁) using (negExp; negExp-expC-nat; Meas-negExp; negExp-cong)
   open Meas (lemOf lem₁) using (Meas; Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
-  open FairCoin lem₁ using (fairCoin)
-  open HalfLine lem₁ using (shiftPt; Meas-hshift)
   open HalfLineNegExp lem₁ using (negExp-add)
-  open TailFTCLipJ lem₁ using (module LipJ)
   open QBS
   open Hom
 
@@ -88,103 +77,3 @@ module HalfLineMomentN (lem₁ : LEM₁) where
     { map = record { to = λ x → natE (suc j) * hx j x ; cong = λ e → *-cong refl (hx-cong j e) }
     ; map-random = λ {γ} m → Meas-⊗ {λ _ → natE (suc j)} {λ r → hx j (γ ⟨$⟩ r)} (Meas-const (natE (suc j)))
         (map-random (pwNegExpH j) {γ} m) }
-
-  ----------------------------------------------------------------------------
-  -- the identity on [n₀, n₀ + 1]
-
-  module AtInterval (n₀ j : ℕ) where
-    M : ∣A∣
-    M = natE (suc n₀)
-
-    module X = Ex negExp M (suc n₀) (natE≤P (suc n₀)) negExp≤1 negExp-anti (eadd (suc n₀))
-      (λ t1 → proj₁ (facts t1)) (λ t1 → proj₂ (facts t1))
-
-    Sx sI : ℕ
-    Sx = proj₁ (X.pack j)
-    sI = X.sIdx Sx
-
-    c3 = proj₁ (proj₂ (X.pack j))
-    hb = proj₁ (proj₂ (proj₂ (X.pack j)))
-    kb = proj₁ (proj₂ (proj₂ (proj₂ (X.pack j))))
-    hl = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ (X.pack j)))))
-    kl = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (X.pack j))))))
-    cr1 = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (X.pack j)))))))
-    cr2 = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (X.pack j))))))))
-    gb = proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (proj₂ (X.pack j))))))))
-
-    -- the point `a + w x` of a dyadic piece, shifted to n₀
-    hle : ∀ {n} x → x ≤ 1# → hp n * x ≤ hp n
-    hle {n} x x1 = ≤-trans (*-mono (hp n) x1) (≤-reflexive (*-identityʳ _))
-
-    pt : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → (natE n₀ + a) + hp n * x ≤ M
-    pt {n} {a} dy x x1 = ≤-trans (≤-reflexive (+-assoc (natE n₀) a (hp n * x)))
-      (+-mono ≤-refl (≤-trans (+-mono ≤-refl (hle x x1)) (dy-bound dy)))
-
-    shU : ∀ (u : ∣A∣ → ∣A∣) → (∀ {x y} → x ≈ y → u x ≈ u y) →
-      (∀ {a t} → a + t ≤ M → t ≤ 1# → u (a + t) ≤ u a + t * P Sx) →
-      ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → u (natE n₀ + (a + hp n * x)) ≤ u (natE n₀ + a) + hp n * P Sx
-    shU u uc up {n} {a} dy x x1 =
-      ≤-trans (≤-resp (uc (+-assoc (natE n₀) a (hp n * x))) refl (up (pt dy x x1) (≤-trans (hle x x1) (hp≤1 n))))
-        (+-mono ≤-refl (*-monoʳ (P Sx) (hle x x1)))
-
-    shD : ∀ (u : ∣A∣ → ∣A∣) → (∀ {x y} → x ≈ y → u x ≈ u y) →
-      (∀ {a t} → a + t ≤ M → t ≤ 1# → u a ≤ u (a + t) + t * P Sx) →
-      ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → u (natE n₀ + a) ≤ u (natE n₀ + (a + hp n * x)) + hp n * P Sx
-    shD u uc down {n} {a} dy x x1 =
-      ≤-trans (down (pt dy x x1) (≤-trans (hle x x1) (hp≤1 n)))
-        (+-mono (≤-reflexive (uc (+-assoc (natE n₀) a (hp n * x)))) (*-monoʳ (P Sx) (hle x x1)))
-
-    pt1 : ∀ {n a} → Dy n a → (natE n₀ + a) + hp n ≤ M
-    pt1 {n} {a} dy = ≤-trans (≤-reflexive (+-assoc (natE n₀) a (hp n))) (+-mono ≤-refl (dy-bound dy))
-
-    kcong : ∀ {x y} → x ≈ y → natE (suc j) * hx j x ≈ natE (suc j) * hx j y
-    kcong e = *-cong refl (hx-cong j e)
-
-    -- the data of the interval, named so that `LipJ` is applied to small terms
-    hF kF : ∣A∣ → ∣A∣
-    hF u = X.hh (suc j) (natE n₀ + u)
-    kF u = natE (suc j) * X.hh j (natE n₀ + u)
-
-    hF-cong : ∀ {x y} → x ≈ y → hF x ≈ hF y
-    hF-cong e = hx-cong (suc j) (+-cong refl e)
-
-    kF-cong : ∀ {x y} → x ≈ y → kF x ≈ kF y
-    kF-cong e = kcong (+-cong refl e)
-
-    hbF : ∀ x → x ≤ 1# → hF x + P Sx ≤ P sI
-    hbF x x1 = hb {natE n₀ + x} (+-mono (≤-refl {natE n₀}) x1)
-
-    kbF : ∀ x → x ≤ 1# → kF x + P Sx ≤ P sI
-    kbF x x1 = kb {natE n₀ + x} (+-mono (≤-refl {natE n₀}) x1)
-
-    hU : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → hF (a + hp n * x) ≤ hF a + hp n * P Sx
-    hU dy x x1 = shU (X.hh (suc j)) (hx-cong (suc j)) (proj₁ hl) dy x x1
-
-    hD : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → hF a ≤ hF (a + hp n * x) + hp n * P Sx
-    hD dy x x1 = shD (X.hh (suc j)) (hx-cong (suc j)) (proj₂ hl) dy x x1
-
-    kU : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → kF (a + hp n * x) ≤ kF a + hp n * P Sx
-    kU dy x x1 = shU (λ y → natE (suc j) * X.hh j y) kcong (proj₁ kl) dy x x1
-
-    kD : ∀ {n a} → Dy n a → ∀ x → x ≤ 1# → kF a ≤ kF (a + hp n * x) + hp n * P Sx
-    kD dy x x1 = shD (λ y → natE (suc j) * X.hh j y) kcong (proj₂ kl) dy x x1
-
-    GB : ∀ {n a} → Dy n a → hF a ≤ P sI
-    GB {n} {a} dy = gb {natE n₀ + a} (+-mono (≤-refl {natE n₀}) (≤-trans ≤-+ʳ (dy-bound dy)))
-
-    C1 : ∀ {n a} → Dy n a → hF (a + hp n) + hp n * hF a ≤ (hF a + hp n * kF a) + (hp n * hp n) * P Sx
-    C1 {n} {a} dy = ≤-resp (+-cong (hx-cong (suc j) (+-assoc (natE n₀) a (hp n))) refl) refl
-      (cr1 {natE n₀ + a} {hp n} (pt1 dy) (hp≤1 n))
-
-    C2 : ∀ {n a} → Dy n a → hF a + hp n * kF a ≤ (hF (a + hp n) + hp n * hF a) + (hp n * hp n) * P Sx
-    C2 {n} {a} dy = ≤-resp refl (+-cong (+-cong (hx-cong (suc j) (+-assoc (natE n₀) a (hp n))) refl) refl)
-      (cr2 {natE n₀ + a} {hp n} (pt1 dy) (hp≤1 n))
-
-    module L = LipJ hF kF hF sI sI (P Sx) hF-cong kF-cong hF-cong c3 hbF kbF hU hD kU kD
-      (Meas-hshift n₀ (pwNegExpH (suc j))) (Meas-hshift n₀ (kH j)) GB C1 C2
-
-    -- ∫₀¹ h(n₀+u) du + G(n₀+1) = G(n₀) + ∫₀¹ k(n₀+u) du
-    ibp-unit : J fairCoin (λ r → map (pwNegExpH (suc j)) ⟨$⟩ shiftPt n₀ r) (Meas-hshift n₀ (pwNegExpH (suc j)))
-        + hx (suc j) (natE (suc n₀))
-      ≈ hx (suc j) (natE n₀) + J fairCoin (λ r → map (kH j) ⟨$⟩ shiftPt n₀ r) (Meas-hshift n₀ (kH j))
-    ibp-unit = trans L.ftc-J (+-cong (hx-cong (suc j) (+-identityʳ (natE n₀))) refl)

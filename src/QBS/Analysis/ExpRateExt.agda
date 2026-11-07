@@ -1,5 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Legacy: the halving extension that a future `Deriv.Daff` for rates `l > 1` would absorb (see `Analysis/ExpRate`); kept for
+-- `Continuous/ExpRateInt`.
+--
 -- From small widths to all widths: the extension step that removes the restriction `λ ≤ 1` of the exponential with a rate.
 -- The rate-1 data of `Analysis/PolyExpCert` is evaluated at the width `λ t`, which is at most 1 only for `t ≤ ½ᴷ` when
 -- `λ ≤ 2ᴷ`.  Over an abstract Archimedean ω-semiring (halving needs only `½ + ½ = 1`), three statements pass from the

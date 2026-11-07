@@ -161,7 +161,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Deriv` | 384 |  | A certificate calculus for the tail FTC (part 1: the notion, and the linear closure rules). |
 | `QBS.Analysis.DerivChain` | 317 |  | A certificate calculus for the tail FTC (part 4: the chain rule for the exponential), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.DerivExp` | 92 |  | A certificate calculus for the tail FTC (part 3: the base cases `xⁿ` and `e^{−x}`, and `xʲ⁺¹ e^{−x}`). |
-| `QBS.Analysis.DerivGauss` | 65 |  | A certificate calculus for the tail FTC (part 5: the Gaussian), over an abstract Archimedean ω-semiring. |
+| `QBS.Analysis.DerivGauss` | 74 |  | A certificate calculus for the tail FTC (part 5: the Gaussian), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.DerivProd` | 219 |  | A certificate calculus for the tail FTC (part 2: the product rule), over an abstract Archimedean ω-semiring. |
 | `QBS.Analysis.DigitAlg` | 140 |  | The algebra behind the digit code of `[0,∞]` (`Continuous/DigitStream`, `Continuous/DigitCode`), over an abstract ω-semiring with a half. |
 | `QBS.Analysis.DyadicAlg` | 155 |  | The algebra behind dyadic scaling of Lebesgue measure (`Continuous/HalfLineScale`), over an abstract ω-semiring with a half. |
@@ -169,17 +169,15 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Exp` | 323 |  | The exponential function on an `OmegaSemiring`: `exp x = ⨆ₙ ∑_{k<n} x^k / k!`, the supremum of the increasing partial sums. |
 | `QBS.Analysis.ExpFamAlg` | 150 |  | Commutative ring algebra for exponential families (plan 07, item 56). |
 | `QBS.Analysis.ExpLower` | 138 | lem | The exponential on the lower reals [0, ∞] (`Analysis/Exp` instantiated at `LowerRealsOmega`): the reciprocals `1/(n+1)` are the rational cuts `qC (1/(n+1))`; the only work is the product of two rational cuts (`qC-mul`... |
-| `QBS.Analysis.ExpRate` | 413 |  | The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1 certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`. |
-| `QBS.Analysis.ExpRateExt` | 269 |  | From small widths to all widths: the extension step that removes the restriction `λ ≤ 1` of the exponential with a rate. |
+| `QBS.Analysis.ExpRate` | 417 |  | Legacy (superseded in spirit by `Analysis/Deriv.Daff`, composition with `x ↦ l x` for `l ≤ 1`); kept because `Continuous/ExpRateInt` and `Continuous/ExpRateMoment` still use `Rate`/`Tl`, and `Daff` has no analogue of ... |
+| `QBS.Analysis.ExpRateExt` | 272 |  | Legacy: the halving extension that a future `Deriv.Daff` for rates `l > 1` would absorb (see `Analysis/ExpRate`); kept for `Continuous/ExpRateInt`. |
 | `QBS.Analysis.ExpRateSigned` | 40 |  | The signed arithmetic of the moments of the exponential with a rate λ, over an abstract Archimedean ω-semiring (the concrete cut semiring makes Agda unify the huge signed expressions too slowly): * `var-val`: with `V₁... |
 | `QBS.Analysis.ExpTail` | 89 |  | The tail `xᵉ e^{−x} → 0` at the integers, along the multiples of ι = e + 1 (a frequent, not eventual, tail). |
 | `QBS.Analysis.ExpansionCons` | 69 |  | Self-similarity of the binary expansion: prepending a bit b to r gives expansion (b :: r) ≈ sel b ½ + ½ · expansion r. |
 | `QBS.Analysis.ExtNat` | 338 | lem | The extended natural numbers ℕ∞ = ℕ ∪ {∞} as a commutative semiring (0 · ∞ = 0). |
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 105 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
-| `QBS.Analysis.GaussCert` | 300 | lem | Pointwise algebra for the Gaussian moments `∫₀^∞ xʲ e^{−x²/2} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
-| `QBS.Analysis.GaussCertM1` | 124 |  | The Gaussian pack at `j = −1`: pointwise algebra for `∫₀^∞ x e^{−x²/2} dx = 1` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
-| `QBS.Analysis.GaussExp` | 137 |  | The Gaussian `Φ x = E (½ x²)` from an exponential E (`Analysis/GaussCert`'s input), over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussExp` | 46 |  | Small algebra for the Gaussian exponential facts `E u + u E u ≤ 1 ≤ E u + u` (`E = e^{−x}`), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GaussTail` | 43 |  | Small facts for the Gaussian tail and finiteness, over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
 | `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
@@ -208,7 +206,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.OpenMeasure` | 272 | lem | Open subsets of Cantor space as increasing chains of clopen sets, their measure ν (the supremum of the clopen measures), and the consequences of compactness: ν depends only on the set, ν is modular, and covers of the ... |
 | `QBS.Analysis.Param` | 215 | lem | Parametric measurability: if g is a kernel (its integrals of measurable functions are measurable in the parameter) and h is measurable on Cantor space, then r ↦ ∫ g(r)(s ↦ h(merge r s)) is measurable. |
 | `QBS.Analysis.Pieces` | 144 | lem | Splitting `[0,∞]` into countably many pieces on which a weight is bounded: the piece 0 is `{w = ∞}` and the piece `k+1` is `{k < w ≤ k+1}`. |
-| `QBS.Analysis.PolyExpCert` | 370 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
+| `QBS.Analysis.PolyExpCert` | 374 | lem | Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`). |
 | `QBS.Analysis.RationalLemmas` | 224 |  | Ordered-field facts about the unnormalised rationals in the form used for lower cuts: plain statements without instance arguments, plus the Archimedean property. |
 | `QBS.Analysis.Regular` | 312 | lem | Regular sets and the σ-additive extension of the fair-coin premeasure to all Borel sets. |
 | `QBS.Analysis.Restrict` | 114 | lem | Hard rejection in the continuous model: restricting a measure to a Borel set U, `I (restrictM U m) h f = I m (χ U · h)`. |
@@ -245,8 +243,6 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ConvEps` | 202 | lem | Convergence with explicit tolerances, and convergence of differences (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
 | `QBS.Continuous.DerivBridge` | 151 | lem | The certificate calculus (`Analysis/Deriv`) feeds the tail FTC: from `Deriv` data to integration by parts. |
-| `QBS.Continuous.DerivGaussMoment` | 125 | lem | Validation of the chain rule (`Analysis/DerivChain`, `Analysis/DerivGauss`): the Gaussian first and second moments on the half-line from `Deriv` data built by the rules, through `DerivBridge.OnHalfLine.glue-D0`. |
-| `QBS.Continuous.DerivMoment` | 69 | lem | Validation of the certificate calculus: `∫₀^∞ xⁿ e^{−x} dλ(x) = n!` from `Deriv` data built by the rules. |
 | `QBS.Continuous.DigitCode` | 104 | lem | The digit code of `[0,∞]` into Cantor space, and its decoding (plan 03, "Uniqueness on the half-line"). |
 | `QBS.Continuous.DigitCut` | 49 | lem | Two facts about cuts that the digit code of `[0,∞]` needs (`Continuous/DigitCode`), both from `Analysis/ExpLower`: `natE (n+1)` and `m / 2ⁿ` are rational cuts, so a point is either above a dyadic threshold or below it. |
 | `QBS.Continuous.DigitDecode` | 202 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
@@ -281,16 +277,15 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FirstBit` | 153 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 61 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
-| `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
+| `QBS.Continuous.GaussHalfLine` | 132 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the exponential facts. |
 | `QBS.Continuous.GaussInverse` | 125 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
-| `QBS.Continuous.GaussMean` | 106 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
-| `QBS.Continuous.GaussMeanUnit` | 193 | lem | Gaussian first moment on the half-line (part 1): the unit-interval identity for `G = e^{−x²/2}`. |
-| `QBS.Continuous.GaussMoment` | 126 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
+| `QBS.Continuous.GaussMean` | 119 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
+| `QBS.Continuous.GaussMoment` | 139 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
 | `QBS.Continuous.HalfLine` | 91 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
 | `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
 | `QBS.Continuous.HalfLineMoment2` | 298 | lem | The second moment of the exponential distribution, `∫₀^∞ x² e^{−x} dλ(x) = 2`, multiplied out (no subtraction). |
-| `QBS.Continuous.HalfLineMomentFact` | 123 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
-| `QBS.Continuous.HalfLineMomentN` | 191 | lem | All polynomial moments of the exponential: integration by parts on each unit interval (part 1). |
+| `QBS.Continuous.HalfLineMomentFact` | 134 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
+| `QBS.Continuous.HalfLineMomentN` | 80 | lem | All polynomial moments of the exponential: the tests (part 1; part 2 is `HalfLineMomentFact`). |
 | `QBS.Continuous.HalfLineNegExp` | 118 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 69 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |

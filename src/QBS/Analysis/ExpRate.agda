@@ -1,5 +1,9 @@
 {-# OPTIONS --safe --without-K #-}
 
+-- Legacy (superseded in spirit by `Analysis/Deriv.Daff`, composition with `x ↦ l x` for `l ≤ 1`); kept because
+-- `Continuous/ExpRateInt` and `Continuous/ExpRateMoment` still use `Rate`/`Tl`, and `Daff` has no analogue of the halving
+-- extension `Analysis/ExpRateExt` (rates `l > 1`) yet.
+--
 -- The exponential with a rate λ: the pointwise algebra, over an abstract Archimedean ω-semiring, that moves the rate-1
 -- certificates of `Analysis/PolyExpCert` to `x ↦ e^{−λx}`.  There is no division, so the rate comes with a reciprocal
 -- `c` (`λ c ≈ 1`), and every rescaling is exact algebra:

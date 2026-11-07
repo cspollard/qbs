@@ -2,6 +2,10 @@
 
 -- Pointwise algebra for the integrals `∫₀^∞ xʲ e^{−x} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`).
 --
+-- Legacy for new work: the certificate calculus `Analysis/Deriv*` (`DerivExp.xjE`) gives the same data from the rules and is
+-- what `HalfLineMomentFact` uses.  Kept because `Analysis/Deriv*` import `AlgP` (`pw`, `dpw`, `yt`, `module Ex`) and because
+-- `Analysis/ExpRate` still builds its rate-λ certificate from `Ex.pack`.
+--
 -- Over an abstract Archimedean ω-semiring A with a function E (the exponential e^{−x}) satisfying
 --   E x ≤ 1,  E antitone,  E (a + t) = E a · E t when a + t ≤ M and t ≤ 1,
 --   E t + t E t ≤ 1 ≤ E t + t  for t ≤ 1   (the facts `AlgT.exp-facts` derives from 1 + t ≤ eᵗ ≤ 1 + t + t²),

@@ -4,14 +4,16 @@
 --   * `∫ᴹ-pw-moment : ∫ᴹ lebPre (pwNegExpH n) ≈ fact n`, with `fact 0 = 1`, `fact (n+1) = (n+1) · fact n`;
 --   * `∫-x`, `∫-x²`: the cases n = 1, 2, with the statements of `HalfLineMean` (`∫ x e^{−x} = 1`) and
 --     `HalfLineMoment2` (`∫ x² e^{−x} = 2`), re-derived here without their self-similarity recursions.
--- The step `∫ xʲ⁺¹ e^{−x} = (j+1) ∫ xʲ e^{−x}` is `TailFTCLipHalf.glue` (integration by parts on the half-line) applied
--- to the unit-interval identities of `HalfLineMomentN`, with `G = xʲ⁺¹ e^{−x}`: `G 0 = 0`, and `G(N) → 0` along the
--- multiples of j+2 (`Analysis/ExpTail`).  The base case is `TailFTCExpHalf.∫-negExp`.
+-- The step `∫ xʲ⁺¹ e^{−x} = (j+1) ∫ xʲ e^{−x}` is `DerivBridge.OnHalfLine.glue-D` (integration by parts on the half-line)
+-- applied to `dvn j n = DerivExp.xjE`, the certificate `G′ = k − h` for `G = h = xʲ⁺¹ e^{−x}` built from the rules of
+-- `Analysis/Deriv*` on `[0, n+1]`, with `G 0 = 0` and `G(N) → 0` along the multiples of j+2 (`Analysis/ExpTail`).
+-- The base case is `TailFTCExpHalf.∫-negExp`.
 module QBS.Continuous.HalfLineMomentFact where
 
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 import Data.Nat.Base as ℕ
+open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -25,6 +27,8 @@ open import QBS.Analysis.NegExp using (module NegExp)
 open import QBS.Analysis.Series using (module Series)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.PolyExpCert using (module AlgP)
+open import QBS.Analysis.Deriv using (module AlgD)
+open import QBS.Analysis.DerivExp using (module AlgDE)
 open import QBS.Analysis.ExpTail using (module AlgTail)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.Weights using (module Weights)
@@ -35,18 +39,18 @@ open import QBS.Continuous.HalfLineMean using (module HalfLineMean)
 open import QBS.Continuous.HalfLineMoment2 using (module HalfLineMoment2)
 open import QBS.Continuous.HalfLineMomentN using (module HalfLineMomentN)
 open import QBS.Continuous.TailFTC using (module TailFTC)
-open import QBS.Continuous.TailFTCLipHalf using (module TailFTCLipHalf)
+open import QBS.Continuous.DerivBridge using (module DerivBridge)
 open import QBS.Continuous.TailFTCExpHalf using (module TailFTCExpHalf)
 
 module HalfLineMomentFact (lem₁ : LEM₁) where
   open TailFTC lem₁ using (A; R)
   open OmegaSemiring A renaming (Carrier to ∣A∣)
   open Arch R using (hp)
-  open AlgP A R using (natE-+; pw)
+  open AlgP A R using (natE-+; pw; natE≤P)
   open AlgTail A R using (module Tail)
   open Exp A using (natE)
   open Series A using (∑ᶠ; ∑ᶠ-cong; ∑ᶠ-scale)
-  open NegExp (lemOf lem₁) using (negExp; negExp≤1; negExp-expC-nat; negExp-zero; negExp-cong)
+  open NegExp (lemOf lem₁) using (negExp; negExp≤1; negExp-anti; negExp-expC-nat; negExp-zero; negExp-cong)
   open Lebesgue (lemOf lem₁) using (J; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
@@ -54,8 +58,10 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   open SFinite (lemOf lem₁) using (∫ᴹ; ∫ᴹ-cong)
   open HalfLine lem₁ using (lebPre; shiftPt; Meas-hshift; ∫ᴹ-leb)
   open HalfLineNegExp lem₁ using (negExp-add; negExpH)
-  open HalfLineMomentN lem₁ using (pwNegExpH; kH; hx; module AtInterval)
-  open TailFTCLipHalf lem₁ using (module Glue)
+  open HalfLineMomentN lem₁ using (pwNegExpH; kH; hx; facts; eadd)
+  open AlgD A R using (Deriv)
+  open AlgDE A R using (module Expo)
+  open DerivBridge lem₁ using (module OnHalfLine)
   open TailFTCExpHalf lem₁ using (∫-negExp)
   open HalfLineMean lem₁ using (xNegExpH)
   open HalfLineMoment2 lem₁ using (x²NegExpH)
@@ -97,7 +103,12 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   G0 : ∀ j → hx (suc j) 0# ≈ 0#
   G0 j = trans (*-cong (zeroˡ (pw j 0#)) refl) (zeroˡ (negExp 0#))
 
-  moment-succ j = trans (Glue.glue (pwNegExpH (suc j)) (kH j) (hx (suc j)) (λ n → AtInterval.ibp-unit n j) (G0 j)
+  -- the data on [0, n+1]: `xʲ⁺¹ e^{−x}` has derivative data `(j+1) xʲ e^{−x}`, from the rules of `Analysis/Deriv*`
+  dvn : ∀ j n → Deriv (natE (suc n)) (hx (suc j)) (λ x → map (pwNegExpH (suc j)) ⟨$⟩ x) (λ x → map (kH j) ⟨$⟩ x)
+  dvn j n = Expo.xjE negExp (natE (suc n)) (suc n) (natE≤P (suc n)) negExp≤1 negExp-anti negExp-cong (eadd (suc n))
+    (λ t1 → proj₁ (facts t1)) (λ t1 → proj₂ (facts t1)) (suc n , natE≤P (suc n)) j
+
+  moment-succ j = trans (OnHalfLine.glue-D (pwNegExpH (suc j)) (kH j) (hx (suc j)) (dvn j) (G0 j)
       (λ m N₀ → T.tail (suc j) m N₀))
     (k-scale j)
 
