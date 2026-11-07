@@ -96,6 +96,9 @@ What to check:
 - **When a module's interface changes** (a name is removed, renamed, moved or retyped): `grep -rn` for every use, then
   check each module that used it.
 - **When only proofs change:** the module itself is enough.
+- **Final verification pass**, after your last commit: re-check every module you edited, plus every module that
+  mentions a name you added, moved, renamed or removed (`grep -rlw`), in one CLI loop. Report the counts (checked,
+  exit 0, failed) and list any failure. The orchestrator relies on this pass and does not re-run it, so do not skip it.
 
 Compile time and memory:
 
@@ -357,8 +360,7 @@ one at a time. Use this prompt:
 
 After each agent, the orchestrator does the following before starting the next:
 
-1. Re-check, from the CLI in the worktree, every module the agent says it touched, plus the users of anything it
-   renamed or removed. Look at the exit status.
-2. Run `make doccheck` and `make longcheck`.
-3. Merge into `main`, re-time the canary modules on a quiet machine, and push only with the maintainer's approval.
-4. Delete the worktree and its branch.
+1. Read the agent's report. Its final verification pass, `make doccheck` and `make longcheck` are the agent's job. The
+   orchestrator does not re-run them; it sends the agent back if any of them is missing or failed.
+2. Merge into `main`. Push only with the maintainer's approval.
+3. Delete the worktree and its branch.
