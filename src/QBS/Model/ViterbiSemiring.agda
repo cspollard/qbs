@@ -26,6 +26,7 @@ open _⊑_
 open import QBS.Model.Semiring
 import Algebra.Structures.Biased {A = Cut} _≋_ as Bi
 open import QBS.Classical using (LEM)
+import QBS.Classical.Decide as D
 
 private
   ℓ₁ = L.suc L.zero
@@ -90,20 +91,7 @@ viterbiSemiring = record
 
 module _ (lem : LEM ℓ₁) where
   private
-    dec : Set ℓ₁ → Bool
-    dec P with lem P
-    ... | inj₁ _ = true
-    ... | inj₂ _ = false
-
-    dec-true : ∀ {P} → P → dec P ≡ true
-    dec-true {P} p with lem P
-    ... | inj₁ _ = refl
-    ... | inj₂ np with np p
-    ...   | ()
-
-    from-true : ∀ {P} → dec P ≡ true → P
-    from-true {P} e with lem P
-    ... | inj₁ p = p
+    open D.Decide lem
 
     exfalso : ∀ {A : Set} → ⊥ {ℓ₁} → A
     exfalso ()

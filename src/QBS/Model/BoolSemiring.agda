@@ -20,9 +20,12 @@ open import Relation.Binary.PropositionalEquality.Properties using (isEquivalenc
 
 open import QBS.Model.Semiring
 open import QBS.Classical using (LEM)
+import QBS.Classical.Decide as D
 
 module _ (ℓ : Level) (lem : LEM ℓ) where
   private
+    open D.Decide lem
+
     C = Lift ℓ Bool
     module S = CommutativeSemiring B.∨-∧-commutativeSemiring
     lc : ∀ {x y : Bool} → x ≡ y → lift {ℓ = ℓ} x ≡ lift y
@@ -57,33 +60,6 @@ module _ (ℓ : Level) (lem : LEM ℓ) where
   private
     exfalso : ∀ {a} {A : Set a} → ⊥ {ℓ} → A
     exfalso ()
-
-    -- classical truth value of a proposition
-    dec : (P : Set ℓ) → Bool
-    dec P with lem P
-    ... | inj₁ _ = true
-    ... | inj₂ _ = false
-
-    dec-true : ∀ {P} → P → dec P ≡ true
-    dec-true {P} p with lem P
-    ... | inj₁ _ = refl
-    ... | inj₂ np = exfalso (np p)
-
-    dec-false : ∀ {P} → (P → ⊥ {ℓ}) → dec P ≡ false
-    dec-false {P} np with lem P
-    ... | inj₁ p = exfalso (np p)
-    ... | inj₂ _ = refl
-
-    from-true : ∀ {P} → dec P ≡ true → P
-    from-true {P} e with lem P
-    ... | inj₁ p = p
-
-    dec-iff : ∀ {P Q : Set ℓ} → (P → Q) → (Q → P) → dec P ≡ dec Q
-    dec-iff {P} {Q} f g with lem P | lem Q
-    ... | inj₁ _ | inj₁ _ = refl
-    ... | inj₂ _ | inj₂ _ = refl
-    ... | inj₁ p | inj₂ nq = exfalso (nq (f p))
-    ... | inj₂ np | inj₁ q = exfalso (np (g q))
 
     dec-or : ∀ {P Q R : Set ℓ} → (P → Q ⊎ R) → (Q ⊎ R → P) → dec P ≡ dec Q ∨ dec R
     dec-or {P} {Q} {R} f g with lem P | lem Q | lem R

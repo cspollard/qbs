@@ -22,6 +22,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Category.Forget` | 33 |  | The forgetful functor `QBSCat S → Setoids`. |
 | `QBS.Category.Measurable` | 57 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
 | `QBS.Classical` | 23 |  | Excluded middle, named once. |
+| `QBS.Classical.Decide` | 55 | lem | The classical decision toolkit: with `lem : LEM ℓ`, every proposition in `Set ℓ` has a Boolean truth value `dec P` that is `true` exactly when `P` holds. |
 | `QBS.Colimits` | 199 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.Complete` | 173 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
 | `QBS.Core` | 213 |  | Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site. |
@@ -103,7 +104,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.AdditiveModel` | 19 | lem | The discrete statistical model with additive real weights over [0,∞]: ordinary (countably additive) discrete measures with real-valued weights, with `normalize`. |
 | `QBS.Model.AdditiveSemiring` | 80 | lem | The additive extended non-negative reals ([0,∞], +, ×) as lower cuts of the rationals, as a normalisable complete semiring: sums over arbitrary index sets are genuine sums (finite sub-sums of distinct indices, see `An... |
 | `QBS.Model.BoolModel` | 19 | lem | The discrete statistical model with Boolean (possibilistic) weights: a concrete instance of `IsStatisticalQBSLike`, so the abstract interface and the discrete model are non-vacuous. |
-| `QBS.Model.BoolSemiring` | 140 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
+| `QBS.Model.BoolSemiring` | 116 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
 | `QBS.Model.Cantor` | 53 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 24 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
 | `QBS.Model.DiscreteSource` | 49 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
@@ -116,7 +117,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 112 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
 | `QBS.Model.ViterbiModel` | 19 | lem | The discrete statistical model with Viterbi (max, ×) weights over [0,∞]: weights are real numbers and invertibility is non-trivial. |
-| `QBS.Model.ViterbiSemiring` | 188 | lem | The Viterbi semiring ([0,∞], max, ×) on lower cuts of the rationals as a normalisable complete semiring. |
+| `QBS.Model.ViterbiSemiring` | 176 | lem | The Viterbi semiring ([0,∞], max, ×) on lower cuts of the rationals as a normalisable complete semiring. |
 | `QBS.Model.WeightClasses` | 49 |  | The two weight classes: probability measures (total mass 1) and all measures. |
 
 ## Borel structure on Cantor space
@@ -149,12 +150,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.CoinCont` | 140 | lem | Continuity of the fair-coin measure along increasing unions, and completion of a partial simple function (disjoint Borel cells with values) to a simple function on the whole space. |
 | `QBS.Analysis.CoinFacts` | 89 | lem | Basic facts about the fair-coin measure of Borel sets, in the form used to build its integral: the whole space and the empty set, partitions, monotonicity. |
 | `QBS.Analysis.CoinGrid` | 159 | lem | Dyadic grid approximations of a measurable function h : R → [0,1]: the simple function that equals the largest grid point a·2⁻ᵏ strictly below h x (and 0 if h x ≤ 2⁻ᵏ). |
-| `QBS.Analysis.CoinIntegral` | 445 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
+| `QBS.Analysis.CoinIntegral` | 434 | lem | The integral against the fair-coin measure of every measurable function: the supremum of the integrals of the simple functions below it (resized to Set with a classical axiom at Set₁), and the proof that it is a Danie... |
 | `QBS.Analysis.CoinSets` | 12 | lem | The fair-coin measure on the Borel sets of Cantor space, valued in lower cuts of the rationals: σ-additive, with the dyadic value on every finite cylinder. |
 | `QBS.Analysis.CoinSimple` | 140 | lem | Simple functions on Cantor space (countable Borel partitions with values in A) and their integral against the fair-coin measure; monotone and additive under common refinement. |
 | `QBS.Analysis.Cone` | 70 |  | Measures form a cone: a module over [0,∞] (valuations; Jones–Plotkin 1989, Keimel–Plotkin). |
 | `QBS.Analysis.CutSplit` | 28 | lem | Totality of a lower real against the constant 1 (by excluded middle): `x ≤ 1` or `1 ≤ x`. |
-| `QBS.Analysis.CutSum` | 450 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
+| `QBS.Analysis.CutSum` | 438 | lem | Sums of lower cuts over an arbitrary index set `I : Set₁`. |
 | `QBS.Analysis.Density` | 137 | lem | The measure with density `v : R → [0,∞]` against a measure `m`, scaled by a constant `d`: `I h = d · J m (v · h)`. |
 | `QBS.Analysis.Deriv` | 384 |  | A certificate calculus for the tail FTC (part 1: the notion, and the linear closure rules). |
 | `QBS.Analysis.DerivChain` | 317 |  | A certificate calculus for the tail FTC (part 4: the chain rule for the exponential), over an abstract Archimedean ω-semiring. |

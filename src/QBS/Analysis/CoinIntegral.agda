@@ -20,6 +20,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open import Data.Rational.Unnormalised.Base using (_<_)
 open import Data.Rational.Unnormalised.Base using () renaming (_*_ to _*ᵘ_; _+_ to _+ᵘ_; _≤_ to _≤ᵘ_; _≃_ to _≃ᵘ_)
 import QBS.Analysis.RationalLemmas as RL
+import QBS.Classical.Decide as D
 open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans; nat-nonneg)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
@@ -69,19 +70,7 @@ module DaniellB (lem₁ : LEM₁) (B : BM.BorelMeasure (lemOf lem₁)) where
   open LevelSets (lemOf lem₁) using (Lvl)
 
   private
-    dec : Set₁ → Bool
-    dec P with lem₁ P
-    ... | inj₁ _ = true
-    ... | inj₂ _ = false
-
-    dec-true : ∀ {P} → P → dec P ≡ true
-    dec-true {P} p with lem₁ P
-    ... | inj₁ _ = ≡.refl
-    ... | inj₂ np = ⊥-elim (np p)
-
-    from-true : ∀ {P} → dec P ≡ true → P
-    from-true {P} e with lem₁ P
-    ... | inj₁ p = p
+    open D.Decide (D.fromLEM₁ lem₁)
 
   -- s lies below h
   Minor : (R₁ → Cut) → Sf → Set₁
