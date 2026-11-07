@@ -73,11 +73,7 @@ module AlgN (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   hp≤1 zero = ≤-refl
   hp≤1 (suc n) = ≤-trans (hp-≤ n) (hp≤1 n)
 
-  half≤1 : half ≤ 1#
-  half≤1 = ≤-trans ≤-+ʳ (≤-reflexive hh)
-
-  hm : ∀ x → half * x + half * x ≈ x
-  hm x = trans (sym (distribˡ half x x)) (half-twice x)
+  open HalfOrder A R using (half≤1; hm)
 
   ----------------------------------------------------------------------------
   -- Z ν 0 k when ν is 1 below k:  Z ν 0 k + ½ᵏ = 1 + ½ᵏ ν k

@@ -17,6 +17,7 @@ open import Data.Product.Base using (Σ; _×_; _,_)
 
 open import QBS.Analysis.Omega using (OmegaSemiring)
 open import QBS.Analysis.Archimedean using (Arch)
+open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.Series using (module Series)
 
 module AlgT (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
@@ -92,8 +93,7 @@ module AlgT (A : OmegaSemiring (L.suc L.zero)) (R : Arch A) where
   P≥1 zero = ≤-refl
   P≥1 (suc k) = ≤-trans (P≥1 k) ≤-+ʳ
 
-  hm : ∀ x → half * x + half * x ≈ x
-  hm x = trans (sym (distribˡ half x x)) (half-twice x)
+  open HalfOrder A R using (hm)
 
   cancel≤P : ∀ k {a x y} → a ≤ P k → a + x ≤ a + y → x ≤ y
   cancel≤P zero le e = cancel≤ le e

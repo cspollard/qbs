@@ -178,12 +178,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Functional` | 106 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
 | `QBS.Analysis.GaussCert` | 300 | lem | Pointwise algebra for the Gaussian moments `∫₀^∞ xʲ e^{−x²/2} dx` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GaussCertM1` | 124 |  | The Gaussian pack at `j = −1`: pointwise algebra for `∫₀^∞ x e^{−x²/2} dx = 1` through the Lipschitz tail FTC (`Analysis/TailFTCLip`), over an abstract Archimedean ω-semiring A. |
-| `QBS.Analysis.GaussExp` | 138 |  | The Gaussian `Φ x = E (½ x²)` from an exponential E (`Analysis/GaussCert`'s input), over an abstract Archimedean ω-semiring A. |
+| `QBS.Analysis.GaussExp` | 137 |  | The Gaussian `Φ x = E (½ x²)` from an exponential E (`Analysis/GaussCert`'s input), over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GaussTail` | 43 |  | Small facts for the Gaussian tail and finiteness, over an abstract Archimedean ω-semiring A. |
 | `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
 | `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
 | `QBS.Analysis.Half` | 84 |  | Powers of ½ in an `OmegaSemiring` with a half (`half + half ≈ 1`): `hp n = ½ⁿ` is the stdlib power `half ^ n` (so `hp (suc n) = half * hp n` holds by definition), with `½ (x + x) = x`, the doubling law `½ⁿ⁺¹ + ½ⁿ⁺¹ = ... |
-| `QBS.Analysis.HalfOrder` | 58 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
+| `QBS.Analysis.HalfOrder` | 61 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
 | `QBS.Analysis.Indicators` | 178 | lem | Indicator functions of Borel sets (classically decided), and the measure of a disjoint union as the supremum of the partial sums. |
 | `QBS.Analysis.Interleave` | 88 |  | Interleaving of clopen trees: `interleave t₁ t₂` is the clopen set {merge a s \| a ∈ t₁, s ∈ t₂} (even coordinates read by t₁, odd ones by t₂), with its dyadic measure the product `μ0 t₁ * μ0 t₂`. |
 | `QBS.Analysis.JFubini` | 70 | lem | Fubini for unbounded integrands: the iterated integrals `J μ (r ↦ J ν (s ↦ Φ (merge r s)))` and `J ν (s ↦ J μ (r ↦ Φ (merge r s)))` of a threshold-measurable `Φ` agree. |
@@ -282,7 +282,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FirstBitInf` | 61 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
 | `QBS.Continuous.GaussHalfLine` | 256 | lem | Gaussian moments on the half-line, without π (part 1): the tests and the unit-interval identities. |
-| `QBS.Continuous.GaussInverse` | 126 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
+| `QBS.Continuous.GaussInverse` | 125 | lem | The Gaussian normaliser `Z = ∫₀^∞ e^{−x²/2} dλ` is invertible: `Z · n ≈ 1#` for some `n` (`Z-inv`), so that the half-normal distribution can be normalised without ever computing Z (`Inference/HalfNormal`). |
 | `QBS.Continuous.GaussMean` | 106 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
 | `QBS.Continuous.GaussMeanUnit` | 193 | lem | Gaussian first moment on the half-line (part 1): the unit-interval identity for `G = e^{−x²/2}`. |
 | `QBS.Continuous.GaussMoment` | 126 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
@@ -399,7 +399,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformInterval` | 114 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
 | `QBS.Continuous.UniformMean` | 107 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by self-similarity (split off the first bit, as `UniformMoment` and `SelfSimilar` do) and cancellation. |
 | `QBS.Continuous.UniformMoment` | 176 | lem | The second moment of the uniform distribution: with e the binary expansion and m = E[e²], e(true :: s) = ½ + ½ e(s),  e(false :: s) = ½ e(s) and the first-bit decomposition give 4m = 1 + m, hence 3m = 1 (no division n... |
-| `QBS.Continuous.UniformMomentN` | 418 | lem | All moments of the uniform distribution (part 1: the algebra). |
+| `QBS.Continuous.UniformMomentN` | 414 | lem | All moments of the uniform distribution (part 1: the algebra). |
 | `QBS.Continuous.UniformSample` | 123 | lem | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 154 | lem | The variance of the uniform distribution. |
 | `QBS.Continuous.UniquenessR` | 326 | lem | Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form (plan 03, "Uniqueness on the half-line"). |
