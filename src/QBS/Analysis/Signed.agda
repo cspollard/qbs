@@ -7,6 +7,9 @@
 -- cancellation (and no classical principle): the witness `c` replaces cancellation.  It must be restricted to
 -- a subsemiring of finite elements, since in `[0,∞]` the witness `c = ∞` would identify everything.
 -- The result is a commutative ring (`signedRing`) with the embedding `ι` of the finite elements.
+-- In categorical terms `Sg R F` is the Grothendieck group completion of the additive monoid of `F`, extended to a ring
+-- and delivered as a stdlib `CommutativeRing`; for `F` closed under cancellation it is the usual `p − n` quotient.
+-- (`SubSemiring` is a predicate `Is` plus closure fields rather than a sub-record, so that `Sg` can reuse the carrier of `R`.)
 -- Generic in the semiring: for the extended non-negative reals take the elements bounded by a natural number.
 module QBS.Analysis.Signed where
 

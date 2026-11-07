@@ -217,7 +217,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Series` | 448 |  | Countable sums in an `OmegaSemiring`: ∑ᶠ a = ⨆ of the partial sums. |
 | `QBS.Analysis.SeriesSup` | 62 |  | Countable sums commute with suprema of increasing sequences (monotone convergence for series). |
 | `QBS.Analysis.SgLinAlg` | 125 |  | Vectors and matrices over a commutative ring (plan 05, item 51), for mean vectors and covariance matrices of random vectors; instantiated at the signed values (`Analysis/Signed.signedRing`). |
-| `QBS.Analysis.Signed` | 241 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
+| `QBS.Analysis.Signed` | 244 |  | Signed values: the ring of differences of "finite" elements of a commutative semiring. |
 | `QBS.Analysis.SignedIntegral` | 181 | lem | The integral of signed functions against a measure, with values in the signed ring of `Analysis/Signed`. |
 | `QBS.Analysis.SignedOmega` | 48 |  | Signed values over an `OmegaSemiring` (for the extended non-negative reals): the "finite" elements are those bounded by a natural number, and `Analysis/Signed` gives the ring of their differences. |
 | `QBS.Analysis.TailFTC` | 195 |  | A derivative-free fundamental theorem of calculus in tail form (part 1: the algebra). |
