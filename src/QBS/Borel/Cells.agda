@@ -7,7 +7,7 @@
 --     2^{-|w|} inside [k, k+1);
 --   * `Top`, the all-true sequence (the code of ∞), which lies in no block;
 --   * `cyl-refine`: every cylinder is decided on every cell of a large enough depth inside a block, so measures that
---     agree on the cells of a block agree on every cylinder inside it (`Continuous/UniquenessR`).
+--     agree on the cells of a block agree on every cylinder inside it (`Continuous/UniquenessCantor`).
 module QBS.Borel.Cells where
 
 open import Data.Bool.Base using (Bool; true; false)

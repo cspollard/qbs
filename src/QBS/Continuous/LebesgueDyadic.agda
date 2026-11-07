@@ -45,8 +45,8 @@ open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.Intervals using (module Intervals)
 open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Continuous.FirstBitInf using (module FirstBitInf)
-open import QBS.Continuous.LebesgueDyadicNat
-open import QBS.Continuous.LebesgueDyadicAlg using (module LebesgueDyadicAlg)
+open import QBS.Continuous.LebesgueDyadicAlg using (module LebesgueDyadicAlg; module DyadicNat)
+open DyadicNat
 
 module LebesgueDyadic (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J; J-fun; J-irrel; J-cong; J-mono; J-add)

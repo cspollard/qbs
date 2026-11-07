@@ -5,11 +5,11 @@
 --   * `dct-signed`: if h⁺ n − h⁻ n → f⁺ − f⁻ pointwise wherever g is finite (`ConvEps.SConv`), with h⁺ n + h⁻ n ≤ g,
 --     f⁺ + f⁻ ≤ g and ∫ g finite, then ∫ h⁺ n − ∫ h⁻ n → ∫ f⁺ − ∫ f⁻;
 --   * `dct-signed-prob`: under a probability measure, with a uniform bound N in place of g.
--- Route: d n = h⁺ n + f⁻ and e n = h⁻ n + f⁺ (`FatouAux.addX`), cut to where g is finite (`NullInf.finχ`, so values are
+-- Route: d n = h⁺ n + f⁻ and e n = h⁻ n + f⁺ (`FatouAux.addX`), cut to where g is finite (`IntegrableFinite.finχ`, so values are
 -- pointwise bounded); `pn n = d n ∸ e n`, `qn n = e n ∸ d n` (`FatouAux.monusH`).  Pointwise d n + qn n ≈ e n + pn n
 -- (`MonusAlg.monus-swap`: lower reals are comparable by excluded middle), pn n, qn n → 0 pointwise (`ConvEps.econv-conv`,
 -- `MonusAlg.monus-small`), dominated by g + g, so ∫ pn n, ∫ qn n → 0 (`Dominated.dct`, `ConvEps.conv-econv`).  Integrate,
--- drop the cut (`NullInf.∫-fin-cut`) and cross-add: ∫h⁺ n + ∫f⁻ + ∫qn n ≈ ∫h⁻ n + ∫f⁺ + ∫pn n (`final-alg`), which is
+-- drop the cut (`IntegrableFinite.∫-fin-cut`) and cross-add: ∫h⁺ n + ∫f⁻ + ∫qn n ≈ ∫h⁻ n + ∫f⁺ + ∫pn n (`final-alg`), which is
 -- the claim up to ∫pn n, ∫qn n ≤ ½ᵏ; `ConvEps.sconv-shift` is not needed.
 module QBS.Continuous.DominatedSigned where
 
@@ -43,7 +43,7 @@ open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.Product using (module Product)
 open import QBS.Continuous.Monus using (module Monus)
 open import QBS.Continuous.MonusAlg using (module MonusAlg)
-open import QBS.Continuous.NullInf using (module NullInf)
+open import QBS.Continuous.IntegrableFinite using (module IntegrableFinite)
 
 module DominatedSigned (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
@@ -63,7 +63,7 @@ module DominatedSigned (lem₁ : LEM₁) where
   open MonusAlg lem₁ using (BndQ-≤; BndQ-≈; BndQ-add; BndQ-0; rat-bnd; monus-le; monus-small; monus-swap)
   open ConvEps lem₁ using (EConv; SConv; conv-econv; econv-conv)
   open Dominated lem₁ using (Conv; dct; prob-mass)
-  open NullInf lem₁ using (finχ; finχ-in; finχ-out; ∫-fin-cut)
+  open IntegrableFinite lem₁ using (finχ; finχ-in; finχ-out; ∫-fin-cut)
   open Continuous A (lemOf lem₁) probClass using (Pre)
   open QBS
   open Hom

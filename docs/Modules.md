@@ -294,25 +294,24 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (helper for `Independence`). |
 | `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (helper for `IndepAlg`). |
 | `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (independence means the law of the tuple is the product of the laws; this is a strong definition, with `Ex-indep`/`Var-indep` as consequences). |
-| `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer. |
+| `QBS.Continuous.InfAlg` | 136 | lem | Facts about +∞ in [0, ∞] used by the signed layer. |
 | `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
 | `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
+| `QBS.Continuous.IntegrableFinite` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (an integrable test is finite almost everywhere). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (used by the half-line uniqueness theorem). |
 | `QBS.Continuous.JoinKernel` | 58 | lem | Shared kernel construction for the join of the probability and s-finite monads: given a witness that a random family of measures on X has outer kernel `g` and, at each merged parameter, inner kernel `G`, the join is r... |
 | `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
 | `QBS.Continuous.LebPlane` | 105 | lem | Lebesgue measure on the plane ℝ × ℝ (the product Lebesgue measure). |
 | `QBS.Continuous.LebesgueDyadic` | 218 | lem | Lebesgue measure of the dyadic intervals (step towards `LebesgueInterval`). |
-| `QBS.Continuous.LebesgueDyadicAlg` | 235 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
-| `QBS.Continuous.LebesgueDyadicNat` | 68 |  | Natural-number arithmetic for the dyadic cells of `LebesgueDyadic`: the cell `[j·2ⁿ, (j+1)·2ⁿ)` of indices `m`, its two halves (the cells `2j` and `2j+1` at level n, for `p = 2ⁿ`), the level-0 cell, and the unique `k ... |
+| `QBS.Continuous.LebesgueDyadicAlg` | 297 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
 | `QBS.Continuous.LebesgueInterval` | 80 | lem | Lebesgue measure of every interval, and the characterisation of Lebesgue measure by its interval masses. |
 | `QBS.Continuous.LebesgueIntervalAlg` | 119 | lem | The mass of an interval under a measure whose dyadic cells have mass ½ⁿ, the engine of `LebesgueInterval.leb-Iv`. |
 | `QBS.Continuous.LebesgueScale` | 84 | lem | Scaling of Lebesgue measure on [0,∞) by every finite positive constant. |
 | `QBS.Continuous.LebesgueScaleAlg` | 76 | lem | Algebra of scaling the tests of Lebesgue measure (helper for `LebesgueScale`): for c · c′ ≈ 1, `Ge a (c x) ↔ Ge (a c′) x`, hence `χ[a,b)(c x) ≈ χ[a c′, b c′)(x)` (`χIv-scale`), and for c finite, `c x = ∞ ↔ x = ∞` (`χI... |
-| `QBS.Continuous.LebesgueShift` | 127 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut. |
-| `QBS.Continuous.LebesgueShiftAlg` | 129 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
-| `QBS.Continuous.LebesgueShiftCut` | 81 | lem | The difference of two lower cuts, for the translation of Lebesgue measure (`LebesgueShift`). |
+| `QBS.Continuous.LebesgueShift` | 126 | lem | Translation of Lebesgue measure on [0,∞) by every finite cut. |
+| `QBS.Continuous.LebesgueShiftAlg` | 199 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
 | `QBS.Continuous.LipTest` | 91 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data. |
-| `QBS.Continuous.LipTestAlg` | 249 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
+| `QBS.Continuous.LipTestAlg` | 248 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
 | `QBS.Continuous.LogCore` | 280 | lem | The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (plan 03, "Signed layer", helper for `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`). |
 | `QBS.Continuous.LogNeg` | 155 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
 | `QBS.Continuous.LogRat` | 163 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
@@ -320,17 +319,14 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Monad` | 422 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests. |
 | `QBS.Continuous.MonoTestAlg` | 116 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
-| `QBS.Continuous.Monus` | 123 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x. |
+| `QBS.Continuous.Monus` | 122 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x. |
 | `QBS.Continuous.MonusAlg` | 107 | lem | Algebra of rationally bounded lower reals and truncated subtraction. |
 | `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (lower-real arithmetic, misfiled here; helper for `Inference/WeakLaw`). |
-| `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (an integrable test is finite almost everywhere). |
 | `QBS.Continuous.ProbInstance` | 131 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (so that iid, independence and exchangeability can be stated on the s-finite side only). |
 | `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (helper for `Continuous/ExpFamilyAux`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (the double strength of the s-finite monad, at the integral level). |
-| `QBS.Continuous.RQArith` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ, each a QBS morphism. |
-| `QBS.Continuous.RQArithAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RQArith`, over [0, ∞]. |
 | `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |
 | `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
 | `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`). |
@@ -340,6 +336,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (plan 05, item 52; helper for `RandomVectorAlg`). |
 | `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (plan 05, item 52; helper for `RandomVector`). |
 | `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (plan 05, item 52; helper for `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
+| `QBS.Continuous.RealAffine` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ, each a QBS morphism. |
+| `QBS.Continuous.RealAffineAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RealAffine`, over [0, ∞]. |
 | `QBS.Continuous.RealDensity` | 88 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
 | `QBS.Continuous.RealLine` | 65 | lem | The whole real line as two half-lines, `RQ = WQ +Q WQ` (a QBS coproduct): `inl x` stands for `+x` and `inr x` for `−x` (zero appears twice, which is harmless: it has measure zero), and Lebesgue measure on it. |
 | `QBS.Continuous.RealModel` | 21 | lem | The continuous model with values in [0, ∞] (lower cuts of the rationals): quasi-Borel spaces over Cantor space with the Daniell probability monad, as an `IsQBSLike`. |
@@ -388,7 +386,6 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.TailFTCLip` | 223 | lem | The tail-form fundamental theorem of calculus with Lipschitz errors and integration by parts, on the unit interval (part 2: the measure side; the algebra is `Analysis/TailFTCLip`). |
 | `QBS.Continuous.TailFTCLipHalf` | 92 | lem | Integration by parts on the half-line, from the unit-interval identities (`Continuous/TailFTCLipJ`). |
 | `QBS.Continuous.TailFTCLipJ` | 137 | lem | The Lipschitz tail-form fundamental theorem (`Continuous/TailFTCLip`) for integrands of any size, in the unbounded integral `J`. |
-| `QBS.Continuous.TopMulPos` | 48 | lem | ∞ times a nonzero value is ∞ in [0, ∞] (helper for `SignedMul`). |
 | `QBS.Continuous.Uniform` | 55 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 192 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 114 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
@@ -397,7 +394,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniformMomentN` | 414 | lem | All moments of the uniform distribution (part 1: the algebra). |
 | `QBS.Continuous.UniformSample` | 123 | lem | Estimation from independent uniform draws. |
 | `QBS.Continuous.UniformVariance` | 154 | lem | The variance of the uniform distribution. |
-| `QBS.Continuous.UniquenessR` | 326 | lem | Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form. |
+| `QBS.Continuous.UniquenessCantor` | 326 | lem | Uniqueness of s-finite measures on Cantor space `ℛ = Probes.ℛQ S`, in the σ-finite form. |
 | `QBS.Continuous.UniquenessRQ` | 158 | lem | Uniqueness of measures on the whole real line `RQ = WQ +Q WQ` (`uniqRQ`). |
 | `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (a π–λ uniqueness theorem; `docs/UniquenessLit.md`). |

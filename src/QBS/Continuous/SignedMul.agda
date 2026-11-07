@@ -24,10 +24,10 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.LowerReals using (infC)
 open import QBS.Analysis.Signed using (SubSemiring)
-open import QBS.Continuous.InfAlg using (module InfAlg)
+open import QBS.Continuous.InfAlg using (module InfAlg; module TopMulPos)
 open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.SignedSq using (module SignedSq)
-open import QBS.Continuous.TopMulPos using (top-pos)
+open TopMulPos using (top-pos)
 
 module SignedMul (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)

@@ -201,3 +201,24 @@ which public module it serves (some do not).  Net: 4 fewer modules without compi
 4. Should the convergence theorems move to the abstract `IntegralMonad` layer (section 5) so the discrete model inherits them?
 5. Is `leb-unique` meant to be the public characterisation of Lebesgue measure (then add the `χInf` clause, 4.3), or an internal step?
 6. Does the library want a single-variable change of variables for decreasing maps (reflection exists in `RealScale`; no `cov` for decreasing φ) and for non-surjective φ?  The domain's title promises "change of variables" but only the increasing bijection on `[0,∞]` is proved; say so in the header.
+
+## Implementation status (2026-11-07)
+
+Tier A (documentation), done:
+- "plan 03/05" parentheticals replaced by topics in every header of the domain (`grep 'plan 0' ` is empty for it); outside the domain, only `Borel/Cells` and `GaussVectorLaw` were touched, for renames.
+- `Interface.md`: new sections "Lebesgue measure and its uniqueness", "Change of variables", "Convergence theorems" (`leb-Iv`, `leb-unique`, `uniqWQ`/`uniqR`/`uniqRQ`, `∫-shift`/`∫-scale`/`∫-shiftR`/`∫-scaleR`/`∫-reflR`, `push-eq`/`cov`/`cov-inv`/`covF`, `ftc-dy`, `Conv`, `fatou`, `rev-fatou`, `mct-conv`, `dct`, `dct-prob`).  `Guide.md` table gets a `Dominated`/`Fatou` row.
+- Headers: `Dominated` (proposed text), `Fatou` (main results named), `UniquenessCantor` (main result last), `ChangeOfVariables` (`push-eq` as headline, scope: increasing bijections of [0,∞] only), `ChangeOfVariablesFn` (nothing imports it: a worked example), `LebesgueInterval` (`leb-unique` is the public characterisation), `RealAffineAlg` (what the `Alg` suffix means).
+
+Tier D:
+- "ν is Lebesgue measure once": **already the case**.  `LebesgueShift`, `LebesgueScale`, `RealShiftRefl` and `UniquenessRQ.lebR-unique` all reduce to `LebesgueInterval.leb-unique` (one lemma, with the `χInf` clause as its hypothesis `hinf`); the report's "proved four times" was a misreading.  `RealShift`/`RealScale` go through the halves and `lebR` by `∫ᴹ-lebR`, not through `leb-unique`.  `ChangeOfVariables.push-eq` compares two measures with each other (not with `lebPre`), so it uses `uniqWQ` directly and cannot use `leb-unique`.  Wrong finding.
+- Deriving the `χInf` clause from the interval masses: **wrong**.  `λ + c·δ∞` has all the finite interval masses of `λ`, so the clause is independent; `finI` (finiteness on `[k,k+1)`) is a different hypothesis.  The clause stays an explicit hypothesis of `leb-unique`.
+- `push-eq` as the headline: done in the `ChangeOfVariables` header and `Interface.md`.
+- `dct` from `fatou`/`rev-fatou`: already so (`Dominated.dct` is `rev-fatou` + `∫ᴹ-monoX` + `fatou`); nothing to do.
+- `mct-conv` from `fatou`: skipped.  The current proof uses `SupTest.∫ᴹ-sup` (the primitive monotone convergence from which `∫ᴹ-inf` and hence `fatou` are proved), so routing it through `fatou` would not shorten it and would reverse the dependency order.
+
+Tiers B and E:
+- `ConvEps` inline: **wrong**, `SignedLimits` also imports it.  Kept.
+- `FatouAux` into `Fatou`: **wrong**, `FatouAux` has 14 importers outside `Fatou` (`SignedTest`, `KLDiv`, `RealAffine`, …); merging would make them depend on `Fatou`.  Kept.
+- `LebesgueDyadicNat` into `LebesgueDyadicAlg` (as `module DyadicNat`), `LebesgueShiftCut` into `LebesgueShiftAlg` (as `module LebesgueShiftCut`), `TopMulPos` into `InfAlg` (as `module TopMulPos`): done.
+- Renames, done: `UniquenessR` → `UniquenessCantor`, `RQArith` → `RealAffine`, `RQArithAlg` → `RealAffineAlg`, `NullInf` → `IntegrableFinite` (files and the parametrised modules inside them).
+- Not done: moving the pure ℕ/ℚ lemmas (`nat-2`, `pow-hp`, `tiny`, `zero-of`, `tail`, `close`, …) down to `RationalLemmas`; halving the left/right duplication in `UniquenessRQ`; `LebPlane`/`Monus`/`UniquenessR`-style further renames beyond the three requested; the `ConvEps`/`DominatedSigned` simplification.  Left for a later pass (budget).

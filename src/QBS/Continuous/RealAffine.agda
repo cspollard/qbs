@@ -23,9 +23,9 @@
 -- (flag `flg`, partition `flg-part`, pieces a ∸ b and b ∸ a from `monusP` and its swap).  The `idT` laws are case splits on the
 -- signs: `monus-add` (bounded subtrahend), `monus-zero`, `mix-le`, `mix-gt`, `add-*`; `idT-sumRH` by induction on n using
 -- `idT-add`, `idT-linRH` from `idT-scaleS`, `idT-affRH` from the rows, `proj-tuple` and `SgMoments.sumT`.  Since `≐` is not
--- transitive at infinite points, the n-ary laws go through the stronger invariant `RQArithAlg.Inv` (cross equality, and
+-- transitive at infinite points, the n-ary laws go through the stronger invariant `RealAffineAlg.Inv` (cross equality, and
 -- bounded targets give bounded parts), which composes through sums (`InvP-add`, `sumInv`, `lin-gen`, `row-gen`).
-module QBS.Continuous.RQArith where
+module QBS.Continuous.RealAffine where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Level using (lift)
@@ -70,9 +70,9 @@ open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.SgMoments using (module SgMoments)
 open import QBS.Continuous.FinProd using (module FinProd)
 open import QBS.Continuous.RandomVector using (module RandomVector)
-open import QBS.Continuous.RQArithAlg using (module RQArithAlg)
+open import QBS.Continuous.RealAffineAlg using (module RealAffineAlg)
 
-module RQArith (lem₁ : LEM₁) where
+module RealAffine (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; refl; sym; trans; +-cong; +-comm; commutativeSemiring)
     renaming (Carrier to ∣A∣)
@@ -94,7 +94,7 @@ module RQArith (lem₁ : LEM₁) where
   open SignedTest lem₁ using (SgT; at⁺; at⁻; _≐_; _+T_; _∘T_; scaleT; constT; idT)
   open SgMoments lem₁ using (sumT)
   open FinProd lem₁ using (ΠQ; projQ; tupleQ; proj-tuple)
-  open RQArithAlg lem₁ using (Inv; Inv-of; step-inv; monus-add*; not-le; z+; +z)
+  open RealAffineAlg lem₁ using (Inv; Inv-of; step-inv; monus-add*; not-le; z+; +z)
   open RandomVector lem₁ using (affT)
   open QBS
   open Hom

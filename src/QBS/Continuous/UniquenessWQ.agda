@@ -7,7 +7,7 @@
 --   * they agree on {∞} (`agreeInf`; Lebesgue measure and every density give it mass 0).
 -- Route: every test h equals `(h ∘ decode) ∘ code` (`DigitCode.decode-code`), so `∫ᴹ μ h ≈ ∫ᴹ (mapM code μ) (h ∘ decode)`
 -- (`SFinite.∫ᴹ-map`).  The pushforwards along `code` are measures on Cantor space whose cells and all-true point have the
--- masses of dyadic intervals and of {∞} (`pushCell`, `pushTop`), so `UniquenessR.uniqR` applies.
+-- masses of dyadic intervals and of {∞} (`pushCell`, `pushTop`), so `UniquenessCantor.uniqR` applies.
 module QBS.Continuous.UniquenessWQ where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -30,7 +30,7 @@ open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.Intervals using (module Intervals)
 open import QBS.Continuous.DigitCode using (module DigitCode)
-open import QBS.Continuous.UniquenessR using (module UniquenessR)
+open import QBS.Continuous.UniquenessCantor using (module UniquenessCantor)
 
 module UniquenessWQ (lem : LEM₀) where
   open Lebesgue lem using (A)
@@ -42,7 +42,7 @@ module UniquenessWQ (lem : LEM₀) where
   open C using (Pre)
   open Intervals lem using (χI; χInf)
   open DigitCode lem using (ℛ; code; decode; val; decode-code; code-cell; code-top)
-  open UniquenessR lem using (χR; χR-pt; uniqR)
+  open UniquenessCantor lem using (χR; χR-pt; uniqR)
   open QBS
   open Hom
 

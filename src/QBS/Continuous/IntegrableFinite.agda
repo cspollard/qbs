@@ -9,7 +9,7 @@
 -- multiply k = 2ᴺ⁺ʲ by ½ᴺ⁺ʲ and compare with ½ʲ, then `Arch.arch`); u · [g = ∞] is the supremum of [g = ∞] · (u ⊓ j)
 -- (`SupTest.∫ᴹ-sup`, `Fatou.supMin`); pointwise u ≈ finχ g · u + [g = ∞] · u by excluded middle on finiteness of g x.
 -- Borel: {r | BndQ (α r)} is ⋃_n {r | n ∉ α r}, the complement of a level set (`Meas`).
-module QBS.Continuous.NullInf where
+module QBS.Continuous.IntegrableFinite where
 
 open import Level using (lift)
 open import Function.Bundles using (_⟨$⟩_)
@@ -54,7 +54,7 @@ open _⊑_ using (ap)
 ⊓-rb : ∀ x y → (x ⊓ y) ⊑ y
 ⊓-rb x y = mk⊑ (λ q m → proj₂ m)
 
-module NullInf (lem₁ : LEM₁) where
+module IntegrableFinite (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
   open OmegaSemiring A using (_≈_; _≤_; _+_; _*_; 0#; 1#; refl; sym; trans; *-assoc; *-comm; *-cong; *-identityˡ; *-identityʳ;
     *-mono; +-identityˡ; +-identityʳ; ≤-trans; ≤-reflexive; ≤-antisym; 0-least; zeroˡ; zeroʳ; +-cong) renaming (Carrier to ∣A∣)

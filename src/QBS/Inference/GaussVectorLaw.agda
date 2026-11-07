@@ -2,14 +2,14 @@
 
 -- The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55).  On a probability P on Ω:
 --   * `coordT n i = idT ∘ projᵢ`, the coordinates on RQⁿ, and the law of A Z + b for any map Z : Ω ⇒ RQⁿ whose coordinates
---     form a random vector (`affLaw`, the push-forward along `RQArith.affRH A b ∘ Z`): its coordinates are a random vector
+--     form a random vector (`affLaw`, the push-forward along `RealAffine.affRH A b ∘ Z`): its coordinates are a random vector
 --     (`affLaw-RV`) with mean A mean(Z) + b (`affLaw-mean`) and covariance A Cov(Z) Aᵀ (`affLaw-cov`), the affine rule of
 --     `RandomVector` (`mean-aff`, `cov-aff`) read on the law;
 --   * the Gaussian N(b, A Aᵀ) = `Nᴬ A b`, the law of A Z + b under Z ∼ N(0, Iₙ) (`GaussVector.Nⁿ`, Z the identity of RQⁿ): a
 --     probability measure on RQᵐ (`Nᴬ-mass`) whose coordinates have mean b and covariance A Aᵀ (`Nᴬ-RV`, `Nᴬ-mean`,
 --     `Nᴬ-cov`), matching `GaussVector.gaussV-mean`/`gaussV-cov`, which compute the same moments on the Ω side.
 -- Route: `affLaw-*`: `RandomVectorLaw.RV-law`, `mean-law`, `cov-law` at h = affRH A b ∘ Z and X = coordT m, then
--- `RQArith.idT-affRH` (≐ is symmetric) with `RandomVectorLaw.RV-≐` (coordT is a pull-back of `idT`), `mean-≐`, `cov-≐`
+-- `RealAffine.idT-affRH` (≐ is symmetric) with `RandomVectorLaw.RV-≐` (coordT is a pull-back of `idT`), `mean-≐`, `cov-≐`
 -- to replace the coordinates by `affT`, and `RandomVector.RV-aff`, `mean-aff`, `cov-aff`.  `Nᴬ-*` repeat the same chain at
 -- P = Nⁿ n, h = affRH A b (not `affLaw-*` at Z = idH: comparing the two laws is far too slow), ending in
 -- `GaussVector.gaussV-mean`/`gaussV-cov` on the Ω side (`mean-chain`, `cov-chain` are abstract in the laws so that no
@@ -39,7 +39,7 @@ open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.FinProd using (module FinProd)
 open import QBS.Continuous.ProdBridge using (module ProdBridge)
 open import QBS.Continuous.RandomVector using (module RandomVector)
-open import QBS.Continuous.RQArith using (module RQArith)
+open import QBS.Continuous.RealAffine using (module RealAffine)
 open import QBS.Inference.GaussVector using (module GaussVector)
 open import QBS.Inference.GaussVectorAlg using (module GaussVectorAlg)
 open import QBS.Inference.IIDLaw using (module IIDLaw)
@@ -61,7 +61,7 @@ module GaussVectorLaw (lem₁ : LEM₁) where
   open ProdBridge lem₁ using (ι-mass)
   open RandomVector lem₁ using (RV; meanV; covM; affT; RV-aff; mean-aff; cov-aff)
   open RandomVectorLaw lem₁ using (RV-≐; mean-≐; cov-≐; RV-law; mean-law; cov-law)
-  open RQArith lem₁ using (RQⁿ; affRH; idT-affRH; zero-id)
+  open RealAffine lem₁ using (RQⁿ; affRH; idT-affRH; zero-id)
   open IIDLaw lem₁ using (obs)
   open GaussVector lem₁ using (Nⁿ; std-iid; std-mean; std-cov; RV-iid; gaussV-mean; gaussV-cov; γ; γ-mass; γ-i; γ-j; γ-em; γ-es)
   open QBS

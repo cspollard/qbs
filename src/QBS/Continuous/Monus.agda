@@ -25,8 +25,7 @@ open _⊑_ using (ap)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Analysis.Archimedean using (Arch)
 open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
-open import QBS.Continuous.LebesgueShiftCut using (module LebesgueShiftCut)
-open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
+open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg; module LebesgueShiftCut)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

@@ -56,7 +56,7 @@ One line per module: [Modules.md](Modules.md) (generated). The public names: [In
 | probability monad (continuous) | `Continuous.Monad`, `Strong`, `ProbInstance` | `Analysis.*`, `Continuous.Sample` |
 | s-finite monad `TM`, `continuousStat` | `Continuous.SFinite…SFiniteStat` | `J`, `Tonelli`, `JFubini`, `Series`, `MixtureN` |
 | Bayes' rule (discrete) | `Example.Bayes` | `Model.Monad`, `Model.WeightClasses` |
-| signed expectation, independence | `Continuous.SignedExpect`, `SignedFubini` | `SignedTest`, `SignedInf`, `Analysis.Signed`, `Continuous.Product`, `NullInf` |
+| signed expectation, independence | `Continuous.SignedExpect`, `SignedFubini` | `SignedTest`, `SignedInf`, `Analysis.Signed`, `Continuous.Product`, `IntegrableFinite` |
 | dominated convergence, differentiation | `Continuous.Dominated`, `DominatedSigned`, `SignedLimits` | `Fatou`, `SignedExpect` |
 | uniqueness of measures (half-line, real line) | `Continuous.UniquenessWQ`, `UniquenessRQ`, `LebesgueInterval` | `Borel.Cells`, `Continuous.DigitCode`, `Analysis.UniquenessWeighted` |
 | Gaussian N(μ, s²) and its variance | `Inference.GaussReal`, `GaussShift`, `GaussVar` | `Continuous.RealLine`, `RealShift`, `ChangeOfVariables`, `SignedVar` |

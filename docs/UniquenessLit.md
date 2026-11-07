@@ -40,7 +40,7 @@ with a probe (`Meas (h ∘ α)`). Uniqueness is therefore proved on Cantor space
     needs excluded middle.
   * The decode `decode : Hom S ℛ WQ` satisfies `decode (code x) ≈ x` (`decode-code`).
   * Then every test h equals `(h ∘ decode) ∘ code`, and `∫ᴹ μ h ≈ ∫ᴹ (mapM code μ) (h ∘ decode)`.
-* **Cantor space, σ-finite form** (`Continuous/UniquenessR`, `Borel/Cells`, `Analysis/UniquenessWeighted`).
+* **Cantor space, σ-finite form** (`Continuous/UniquenessCantor`, `Borel/Cells`, `Analysis/UniquenessWeighted`).
   Cantor space is the disjoint union of the blocks `{trueᵏ false …}` and the all-true point. Measures that agree on
   every cell, have finite mass on each block and agree on the all-true point are equal (`uniqR`). This is (2) above.
 * **Half-line** (`Continuous/UniquenessWQ`, `uniqWQ`). Under `code`, the cell `{lead = k} ∩ {fractional prefix = c}`

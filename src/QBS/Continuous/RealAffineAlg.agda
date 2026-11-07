@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The value-level algebra behind the `idT` laws of `RQArith`, over [0, ∞].  (The `Alg` modules hold value-level lemmas over the abstract carrier, kept apart so that the modules with the QBS morphisms typecheck quickly.)
+-- The value-level algebra behind the `idT` laws of `RealAffine`, over [0, ∞].  (The `Alg` modules hold value-level lemmas over the abstract carrier, kept apart so that the modules with the QBS morphisms typecheck quickly.)
 --   * `monus-add*`: t ≤ x gives t + (x ∸ t) ≈ x for every t, bounded or not;
 --   * `Inv p n P N`, "the point with parts (p, n) is the real number P − N": the cross equality p + N ≈ P + n, and
 --     bounded P, N force bounded p, n.  `Inv` composes through sums (`step-inv`) although `≐` does not (≐ is not
@@ -10,7 +10,7 @@
 -- Route: classify each of v, u by its parts (both bounded, or one of them ∞ and the other bounded: a part is
 -- zero) and treat the nine cases: all bounded by cancelling the bounded sum Vp + Vn + Up + Un from the sum of the three
 -- equations, otherwise both sides of the goal are ∞ (`sum-top-bnd`, `top-sum`).  `monus-add*` splits on `Bnd t`.
-module QBS.Continuous.RQArithAlg where
+module QBS.Continuous.RealAffineAlg where
 
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
@@ -27,7 +27,7 @@ open import QBS.Continuous.InfAlg using (module InfAlg)
 open import QBS.Continuous.Monus using (module Monus)
 open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
 
-module RQArithAlg (lem₁ : LEM₁) where
+module RealAffineAlg (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
   open OmegaSemiring A using (_≈_; _≤_; _+_; 0#; refl; sym; trans; +-cong; +-comm; ≤-trans; ≤-reflexive; ≤-+ʳ;
     commutativeSemiring) renaming (Carrier to ∣A∣)

@@ -31,8 +31,7 @@ open import QBS.Continuous.SFiniteSum using (module SFiniteSum)
 open import QBS.Continuous.LebesgueDyadic using (module LebesgueDyadic)
 open import QBS.Continuous.LebesgueInterval using (module LebesgueInterval)
 open import QBS.Continuous.LebesgueIntervalAlg using (module LebesgueIntervalAlg)
-open import QBS.Continuous.LebesgueShiftCut using (module LebesgueShiftCut)
-open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg)
+open import QBS.Continuous.LebesgueShiftAlg using (module LebesgueShiftAlg; module LebesgueShiftCut)
 
 module LebesgueShift (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)

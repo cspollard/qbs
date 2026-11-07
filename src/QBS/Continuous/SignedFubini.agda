@@ -3,10 +3,10 @@
 -- Fubini and independence for signed tests (plan 03, "Signed layer").
 -- For s-finite s on X, t on Y and a signed test f on X × Y integrable against s ⊗ t (`Product.prodPre`):
 --   * `innerT s f`: y ↦ ∫ f(x, y) ds(x), as a signed test on Y, cut to where both inner integrals are finite
---     (`NullInf.finχ`); `Int-inner`, and `Ex-fubini : Ex (s ⊗ t) f ≃ Ex t (innerT s f)`;
+--     (`IntegrableFinite.finχ`); `Int-inner`, and `Ex-fubini : Ex (s ⊗ t) f ≃ Ex t (innerT s f)`;
 --   * `_⊗T_`: f(x) g(y) for signed tests on X and Y; `Int-⊗` and independence `Ex-⊗ : Ex (s ⊗ t) (f ⊗ g) ≃ Ex s f · Ex t g`.
 -- Route: `Product.∫-prod` for each part, so ∫ (intL s f±) dt = ∫ f± d(s ⊗ t) is finite; the set where an inner
--- integral is infinite is t-null (`NullInf.∫-fin-cut` with g = intL f⁺ + intL f⁻).  `Ex-⊗` from `Product.∫-rect`
+-- integral is infinite is t-null (`IntegrableFinite.∫-fin-cut` with g = intL f⁺ + intL f⁻).  `Ex-⊗` from `Product.∫-rect`
 -- on the four products of parts and `FatouAux.∫ᴹ-addX`.
 module QBS.Continuous.SignedFubini where
 
@@ -25,7 +25,7 @@ open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.FatouAux using (module FatouAux)
 open import QBS.Continuous.Product using (module Product)
-open import QBS.Continuous.NullInf using (module NullInf)
+open import QBS.Continuous.IntegrableFinite using (module IntegrableFinite)
 open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.SignedExpect using (module SignedExpect)
 
@@ -37,7 +37,7 @@ module SignedFubini (lem₁ : LEM₁) where
   open SFiniteReweight (lemOf lem₁) using (mulH)
   open FatouAux lem₁ using (addX; ∫ᴹ-addX)
   open Product (lemOf lem₁) using (prodPre; intL; ∫-prod; ∫-rect)
-  open NullInf lem₁ using (finχ; ∫-fin-cut)
+  open IntegrableFinite lem₁ using (finχ; ∫-fin-cut)
   open OmegaSemiring A using (_≈_; _+_; _*_; 0#; refl; sym; trans; +-cong)
   open Bounded A using (mk≃; finite)
   open import QBS.Analysis.Signed using (SubSemiring)

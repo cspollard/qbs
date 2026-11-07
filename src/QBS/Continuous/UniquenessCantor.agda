@@ -13,7 +13,7 @@
 --     the weighted pushforward of `m p` with weight `w · χ Blk` along the probe of p, which has finite mass, so
 --     `Analysis/UniquenessWeighted.uniqW` applies.
 --   * `agree-top`: `Top` is a single point, so the part of a test g on it is `g(all-true)` times the mass of `Top`.
-module QBS.Continuous.UniquenessR where
+module QBS.Continuous.UniquenessCantor where
 
 open import Level using (lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
@@ -50,7 +50,7 @@ open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 
-module UniquenessR (lem : LEM₀) where
+module UniquenessCantor (lem : LEM₀) where
   open Lebesgue lem using (A; J; J-add; J-scale; J-cong)
   open OmegaSemiring A using (_≈_; _+_; _*_; 0#; 1#; refl; sym; trans; +-cong; *-cong; *-assoc; *-comm; *-identityˡ;
     *-identityʳ; zeroˡ; zeroʳ; +-identityˡ; +-identityʳ; *-commutativeSemigroup; ≤-resp) renaming (Carrier to ∣A∣)
