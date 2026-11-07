@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Countable mixtures `∑ₙ cₙ μₙ` of measures with coefficients of sum at most 1, as functionals:
--- `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`.  Monotone convergence is `∑ᶠ-⨆`.  (`Analysis/Mixture` is the
+-- `I h = ∑ᶠ (n ↦ cₙ · I μₙ h)`.  Monotone convergence is `∑ᶠ-⨆`.  (`Mixture` in `Analysis/Cone` is the
 -- binary case with half coefficients.)
 module QBS.Analysis.MixtureN where
 

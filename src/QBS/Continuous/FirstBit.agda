@@ -24,7 +24,7 @@ open import QBS.Borel.Merge using (Cyl-borel)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure
-open import QBS.Analysis.Mixture using (module Mixture)
+open import QBS.Analysis.Cone using (module Mixture)
 open import QBS.Analysis.Uniqueness using (module Uniqueness)
 open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Analysis.Clopen using (split; eval; eval-ext; cons; tl)

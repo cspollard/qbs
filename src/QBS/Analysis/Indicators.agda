@@ -106,8 +106,7 @@ module Indicators (A : OmegaSemiring (suc zero)) (lem : LEM₀) where
 
   -- partial sums of indicators of a family of sets
   PS : (ℕ → Pred) → ℕ → R → ∣A∣
-  PS V ℕ.zero x = 0#
-  PS V (ℕ.suc N) x = PS V N x + χ (V N) x
+  PS V N x = psum (λ n → χ (V n) x) N
 
   PS-null : ∀ V x N → (∀ k → k ℕ.< N → V k (lower x) → ⊥) → PS V N x ≈ 0#
   PS-null V x ℕ.zero h = refl
@@ -141,7 +140,7 @@ module Indicators (A : OmegaSemiring (suc zero)) (lem : LEM₀) where
   Fun-PS {V} bs dj (ℕ.suc N) = sumF (Fun-PS bs dj N) (Fun-χ (bs N)) (λ x → refl) (λ x → PS-≤1 V dj x (ℕ.suc N))
 
   PS-inc : ∀ V x → Increasing (λ N → PS V N x)
-  PS-inc V x N = ≤-+ʳ
+  PS-inc V x = psum-inc (λ n → χ (V n) x)
 
   PS-sup : ∀ V → Disjoint V → ∀ x →
     χ (λ y → Σ ℕ (λ n → V n y)) x ≈ ⨆ (λ N → PS V N x) (PS-inc V x)
