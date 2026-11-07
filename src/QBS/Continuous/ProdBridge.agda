@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44).  For probability
+-- The probability monad's product and push-forward inside the s-finite measures (so that iid, independence and exchangeability can be stated on the s-finite side only).  For probability
 -- measures p, q (`Continuous/Monad`) and their embeddings `SFiniteIncl.ιPre`:
 --   * `ι-⊗`: ιPre (p ⊗ᵖ q) ≈ᴹ ιPre p ⊗ ιPre q, relating `ExpectationProduct._⊗ᵖ_` (strength, then join) to
 --     `Product.prodPre` (double strength);

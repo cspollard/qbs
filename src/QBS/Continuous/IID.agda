@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Independent and identically distributed families (plan 05, item 46).  On a probability P on Ω, for an s-finite
+-- Independent and identically distributed families (functions of iid families are iid; moments feed `SgMoments`).  On a probability P on Ω, for an s-finite
 -- measure μ on Y (a probability law in the theorems: ∫ 1 dμ ≈ 1):
 --   * `IID μ n Xs`: the law of the tuple (X₀, …, X_{n−1}) is ≈ᴹ μ^{⊗n} (`FinProd.prodⁿ`); `IIDSeq μ Xs`: every finite
 --     prefix of a sequence is iid;

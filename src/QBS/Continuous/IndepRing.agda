@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities on parts of signed values for the variance of independent sums (plan 05, helper for `IndepAlg`).
+-- Ring identities on parts of signed values for the variance of independent sums (helper for `IndepAlg`).
 --   * `sa-cross`, `sa-sums`: (f + g)² = (f² + f g) + (f g + g²) on the parts (as `SignedVarRing` identities);
 --   * `var-cross`: ((e₁ + a b) + (a b + e₂)) − (a + b)² = (e₁ − a²) + (e₂ − b²).
 -- Route: one `solve` of the natural-coefficient ring solver each, over an abstract commutative semiring.

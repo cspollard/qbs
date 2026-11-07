@@ -236,21 +236,21 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ChangeOfVariables` | 169 | lem | Monotone change of variables on the half-line with a derivative certificate (plan 03, "Change of variables"). |
 | `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
 | `QBS.Continuous.ChangeOfVariablesFn` | 71 | lem | Change of variables from functions alone (plan 03, "Tests and the real line"). |
-| `QBS.Continuous.CoinCoords` | 197 | lem | Independent coordinates of the fair coin. |
-| `QBS.Continuous.CoinCoordsJoint` | 174 | lem | The coin coordinates are iid (plan 05, item 47). |
+| `QBS.Continuous.CoinCoords` | 198 | lem | Independent coordinates of the fair coin (pairwise independence only; `CoinCoordsJoint.coins-iid` gives mutual independence and supersedes this for most uses).`x ↦ (evens x, odds x)` splits the coin into two independe... |
+| `QBS.Continuous.CoinCoordsJoint` | 175 | lem | The coin coordinates are mutually independent and identically distributed (mutual independence; `CoinCoords` only has the pairwise version). |
 | `QBS.Continuous.CoinIndep` | 124 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ConvEps` | 202 | lem | Convergence with explicit tolerances, and convergence of differences (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
 | `QBS.Continuous.DerivBridge` | 151 | lem | The certificate calculus (`Analysis/Deriv`) feeds the tail FTC: from `Deriv` data to integration by parts. |
-| `QBS.Continuous.DigitCode` | 104 | lem | The digit code of `[0,∞]` into Cantor space, and its decoding (plan 03, "Uniqueness on the half-line"). |
+| `QBS.Continuous.DigitCode` | 104 | lem | The digit code of `[0,∞]` into Cantor space, and its decoding (used for the uniqueness of measures on the half-line; measure-construction material that lives here for import reasons). |
 | `QBS.Continuous.DigitCut` | 49 | lem | Two facts about cuts that the digit code of `[0,∞]` needs (`Continuous/DigitCode`), both from `Analysis/ExpLower`: `natE (n+1)` and `m / 2ⁿ` are rational cuts, so a point is either above a dyadic threshold or below it. |
 | `QBS.Continuous.DigitDecode` | 202 | lem | The decoding of the digit code of `[0,∞]` (`Continuous/DigitCode`): `decPt r = A r + E r`, where * `A r = ∑ᵢ [the first i+1 bits of r are true]` is the length of the leading run of `true`s (∞ on the all-true point); *... |
-| `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`). |
+| `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (uniqueness of measures on the half-line; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.Dominated` | 117 | lem | Dominated convergence for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
-| `QBS.Continuous.Exchangeable` | 120 | lem | Exchangeable laws (plan 05, item 49). |
-| `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`). |
+| `QBS.Continuous.Exchangeable` | 120 | lem | Exchangeable laws: product laws and mixtures of them are exchangeable (the easy half of de Finetti). |
+| `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
 | `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
@@ -269,9 +269,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FairCoin` | 44 | lem | The fair-coin measure on Cantor space as a `Measure` (Daniell functional on the measurable functions, values in the extended non-negative reals as lower cuts of ℚ), with its value on finite cylinders. |
 | `QBS.Continuous.Fatou` | 277 | lem | Downward monotone convergence and Fatou's lemma in both directions, for tests on any X (plan 03, "Dominated convergence"). |
 | `QBS.Continuous.FatouAux` | 87 | lem | Auxiliary tests and lemmas for downward monotone convergence (`Continuous/Fatou`, plan 03). |
-| `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43). |
-| `QBS.Continuous.FinProdPair` | 99 | lem | Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`). |
-| `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (plan 05, item 53a; enabler for `Inference/GaussVector`). |
+| `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (n-fold products and their marginals). |
+| `QBS.Continuous.FinProdPair` | 99 | lem | Two-coordinate marginals of the n-fold product measure (helper for `Independence.Indep-pair`). |
+| `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (the probability-monad counterpart of `FinProd.prodⁿ`; enabler for `Inference/GaussVector`). |
 | `QBS.Continuous.FinTest` | 47 | lem | Finite signed tests are closed under the test operations (plan 07, items 59 and 60; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamilyPostAux`). |
 | `QBS.Continuous.FirstBit` | 153 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 61 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
@@ -290,10 +290,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineScale` | 108 | lem | Dyadic scaling of Lebesgue measure on [0,∞), for every measurable test h : [0,∞] ⇒ [0,∞] (the first step of the change of variables, item B of `plans/03`). |
 | `QBS.Continuous.HalfLineUnit` | 153 | lem | The integral on the unit interval: `∫₀¹ e^{−u} du + e^{−1} = 1`, multiplied out. |
-| `QBS.Continuous.IID` | 166 | lem | Independent and identically distributed families (plan 05, item 46). |
-| `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (plan 05, helper for `Independence`). |
-| `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (plan 05, helper for `IndepAlg`). |
-| `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (plan 05, item 45). |
+| `QBS.Continuous.IID` | 166 | lem | Independent and identically distributed families (functions of iid families are iid; moments feed `SgMoments`). |
+| `QBS.Continuous.IndepAlg` | 45 | lem | Pointwise and ring identities for the variance of a sum of two signed tests (helper for `Independence`). |
+| `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (helper for `IndepAlg`). |
+| `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (independence means the law of the tuple is the product of the laws; this is a strong definition, with `Ex-indep`/`Var-indep` as consequences). |
 | `QBS.Continuous.InfAlg` | 97 | lem | Facts about +∞ in [0, ∞] used by the signed layer (plan 03, "Signed layer"). |
 | `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
 | `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
@@ -316,18 +316,18 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LogNeg` | 155 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
 | `QBS.Continuous.LogRat` | 163 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
 | `QBS.Continuous.LogRecip` | 130 | lem | The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
-| `QBS.Continuous.Monad` | 427 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
+| `QBS.Continuous.Monad` | 431 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests (plan 03, "Tests and the real line"). |
 | `QBS.Continuous.MonoTestAlg` | 116 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
 | `QBS.Continuous.Monus` | 123 | lem | Truncated subtraction of cuts, x ∸ t, and the tests x ↦ x ∸ t and x ↦ t ∸ x (plan 03, "Translation and products"). |
 | `QBS.Continuous.MonusAlg` | 107 | lem | Algebra of rationally bounded lower reals and truncated subtraction (plan 03, "Signed dominated convergence"). |
-| `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (plan 05, item 50; helper for `Inference/WeakLaw`). |
+| `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (lower-real arithmetic, misfiled here; helper for `Inference/WeakLaw`). |
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.ProbInstance` | 131 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
-| `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
-| `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
-| `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (plan 07, item 59; helper for `Continuous/ExpFamilyAux`). |
-| `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (plan 03, "Translation and products"). |
+| `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (so that iid, independence and exchangeability can be stated on the s-finite side only). |
+| `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`). |
+| `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (helper for `Continuous/ExpFamilyAux`). |
+| `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (the double strength of the s-finite monad, at the integral level). |
 | `QBS.Continuous.RQArith` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ (plan 05, item 55). |
 | `QBS.Continuous.RQArithAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RQArith` (plan 05, item 55a), over [0, ∞]. |
 | `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |

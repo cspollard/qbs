@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Independent coordinates of the fair coin.  `x ↦ (evens x, odds x)` splits the coin into two independent coins
+-- Independent coordinates of the fair coin (pairwise independence only; `CoinCoordsJoint.coins-iid` gives mutual
+-- independence and supersedes this for most uses).`x ↦ (evens x, odds x)` splits the coin into two independent coins
 -- (`CoinIndep.fairCoin-indep`); iterating on the odd half gives coordinates `coord i x = evens (odds^i x)`, which are
 -- pairwise independent, each with the law of the coin.  Stated for non-negative measurable functions first
 -- (`J-indep`), then for bounded signed ones (`E-indep`).

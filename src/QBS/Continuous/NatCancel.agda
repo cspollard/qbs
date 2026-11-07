@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Cancelling a positive natural factor in the order of the lower reals (plan 05, item 50; helper for `Inference/WeakLaw`).
+-- Cancelling a positive natural factor in the order of the lower reals (lower-real arithmetic, misfiled here; helper for `Inference/WeakLaw`).
 --   * `cancel-nat m`: (m + 1) x ≤ (m + 1) y gives x ≤ y, for any x, y in [0, ∞] (also infinite ones).
 -- Route: multiply by the reciprocal cut 1/(m + 1) (`ExpLower.qinvC`), which satisfies 1/(m + 1) · (m + 1) = 1
 -- (`ExpLower.inv-ok`, transported along `natE (m + 1) ≈ nat (m + 1)`); then x = 1/(m+1) · ((m+1) x) ≤ 1/(m+1) · ((m+1) y) = y

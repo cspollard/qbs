@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Swapping the first two factors of a triple product (plan 05, helper for `Exchangeable`).
+-- Swapping the first two factors of a triple product (helper for `Exchangeable`).
 --   * `sw3`: the map (x, (y, z)) ↦ (y, (x, z)) and `swap3`: pushing s ⊗ (t ⊗ r) forward along it gives t ⊗ (s ⊗ r),
 --     for arbitrary s-finite s, t, r.
 -- Route: both sides integrate to ∫ G d(s ⊗ t) for G(x, y) = ∫ h(y, (x, z)) dr(z): the right side by `Product.∫-prod`

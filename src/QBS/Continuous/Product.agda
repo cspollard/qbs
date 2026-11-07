@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Product measures and Fubini for tests on X × Y (plan 03, "Translation and products").
+-- Product measures and Fubini for tests on X × Y (the double strength of the s-finite monad, at the integral level).
 --   * `prodPre s t : Pre (XW (X × Y))`, the product of s-finite measures s on X and t on Y (the commutative monad's
 --     double strength: σ, then τ, then join);
 --   * `∫-prod`: ∫ g d(s ⊗ t) ≈ ∫ (y ↦ ∫ g(x, y) ds(x)) dt(y), and `∫-prod′`: ≈ ∫ (x ↦ ∫ g(x, y) dt(y)) ds(x);

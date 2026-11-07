@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Finite products of probability measures (plan 05, item 53a; enabler for `Inference/GaussVector`).  For probability
+-- Finite products of probability measures (the probability-monad counterpart of `FinProd.prodⁿ`; enabler for `Inference/GaussVector`).  For probability
 -- measures pᵢ on Xᵢ (`Continuous/Monad`):
 --   * `prodPⁿ n Xs p = p₀ ⊗ᵖ (p₁ ⊗ᵖ (… ⊗ᵖ δ))`, a probability measure on `FinProd.ΠQ n Xs`, by the recursion of
 --     `FinProd.prodⁿ` with `ExpectationProduct._⊗ᵖ_`;

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Finite products of quasi-Borel spaces and of s-finite measures (plan 05, item 43).  For a family `Xs : Fin n → QBS S`:
+-- Finite products of quasi-Borel spaces and of s-finite measures (n-fold products and their marginals).  For a family `Xs : Fin n → QBS S`:
 --   * `ΠQ n Xs`, the product X₀ × (X₁ × (… × 1)), by recursion on n (the homogeneous Xⁿ is `ΠQ n (λ _ → X)`), with
 --     the projections `projQ` and tupling `tupleQ` (`proj-tuple`);
 --   * `prodT n Xs g = (x₀, …) ↦ ∏ᵢ gᵢ(xᵢ)`, the product of tests, and `∏ⁿ`, the product of n values;

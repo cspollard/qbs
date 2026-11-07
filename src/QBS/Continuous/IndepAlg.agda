@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise and ring identities for the variance of a sum of two signed tests (plan 05, helper for `Independence`).
+-- Pointwise and ring identities for the variance of a sum of two signed tests (helper for `Independence`).
 --   * `sqadd-eq`, `sqadd-sums`: (f + g)² ≐ (f² + f g) + (f g + g²), and the sums of the parts agree pointwise;
 --   * `R-var`: ((e₁ + m) + (m + e₂)) − (a + b)² ≃ (e₁ − a²) + (e₂ − b²) when m = a b, in the signed ring.
 -- Route: parts of signed operations are polynomials in the parts (as in `SignedVarAlg`), so each identity is one solver

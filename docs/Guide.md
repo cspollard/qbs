@@ -131,6 +131,15 @@ The continuous model has the fair coin on Cantor space (`Continuous.FairCoin`), 
   statistical structure is `continuousStat` in `Continuous.SFiniteStat`
   (`open SFiniteStat lem`), so every result stated over `StatisticalInterface` applies to it.
 
+### Products, independence and iid (continuous core)
+
+- Both monads are commutative strong monads (`Continuous.Strong.commutative` is Fubini; `Continuous.SFiniteCommute.commutative`
+  is Tonelli for `[0,∞]`), and `Continuous.SFiniteIncl.inclusion` embeds the probability monad in the s-finite one.
+- `Continuous.Product.prodPre` is the product of two s-finite measures (`∫-prod`, `∫-rect`); `Continuous.FinProd.prodⁿ` is the n-fold product.
+- On a probability space, `Continuous.Independence.Indep` says the law of a tuple is the product of the laws (so `Ex-indep`, `Var-indep`
+  follow), `Continuous.IID.IID` adds equal marginals, and `Continuous.Exchangeable.Exch` is invariance under swaps.
+- `Continuous.CoinCoordsJoint.coins-iid`: the coordinates of the fair coin are iid.
+
 ## 4. Prove something generic
 
 State your theorem over a record of the interface, then supply a model:

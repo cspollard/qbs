@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Independence of random variables (plan 05, item 45).  On a probability space P on Ω (`Continuous/Monad`), a random
+-- Independence of random variables (independence means the law of the tuple is the product of the laws; this is a strong definition, with `Ex-indep`/`Var-indep` as consequences).  On a probability space P on Ω (`Continuous/Monad`), a random
 -- variable is a morphism X : Ω ⇒ Y and its law is the push-forward of ιPre P (`law`).
 --   * `Indep₂ X W`: the joint law of (X, W) is ≈ᴹ the product of the laws (`Product.prodPre`); `Indep n Ys Xs`, mutual
 --     independence of a family: the law of the tuple is the n-fold product of the laws (`FinProd.prodⁿ`);

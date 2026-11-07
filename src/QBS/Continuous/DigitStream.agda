@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The digit stream of a point of `[0,∞]` (plan 03, "Uniqueness on the half-line"; the engine of `Continuous/DigitCode`).
+-- The digit stream of a point of `[0,∞]` (uniqueness of measures on the half-line; the engine of `Continuous/DigitCode`).
 -- The code is the output of a small machine whose state is either `un j` (j ones emitted, still in the unary integer part)
 -- or `fr d m` (in the binary part: the point lies in the dyadic interval [m/2ᵈ, (m+1)/2ᵈ)).  In state s the machine asks
 -- "is the threshold `thr s` ≤ x?" (decided by excluded middle), emits the answer, and moves to `sB s answer`.

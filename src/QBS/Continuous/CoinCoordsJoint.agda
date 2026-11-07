@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The coin coordinates are iid (plan 05, item 47).  On Cantor space ℛ with the fair coin as a probability
+-- The coin coordinates are mutually independent and identically distributed (mutual independence; `CoinCoords` only has
+-- the pairwise version).  On Cantor space ℛ with the fair coin as a probability
 -- (`coinPre`; `coin = ιPre coinPre` in the s-finite layer):
 --   * `coordH i : ℛ ⇒ ℛ` is the i-th coordinate `CoinCoords.coord i = evens ∘ oddsⁱ` as a morphism;
 --   * the first n coordinates are iid with the law of the coin (`coins-iid`, so `IID.IID-indep` makes them mutually

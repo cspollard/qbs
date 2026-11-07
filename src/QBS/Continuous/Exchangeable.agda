@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Exchangeable laws (plan 05, item 49).  For s-finite measures on Xⁿ⁺¹ (`FinProd.ΠQ`):
+-- Exchangeable laws: product laws and mixtures of them are exchangeable (the easy half of de Finetti).  For s-finite measures on Xⁿ⁺¹ (`FinProd.ΠQ`):
 --   * `swapQ n k`, the transposition of coordinates k and k + 1 (adjacent transpositions generate all permutations);
 --     `Exch n p`: p is invariant under every adjacent transposition; it respects ≈ᴹ (`Exch-≈`), and adjacent
 --     coordinates of an exchangeable law have the same law (`Exch-marg`);

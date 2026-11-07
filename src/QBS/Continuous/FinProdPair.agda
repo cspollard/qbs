@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Two-coordinate marginals of the n-fold product measure (plan 05, helper for `Independence.Indep-pair`).
+-- Two-coordinate marginals of the n-fold product measure (helper for `Independence.Indep-pair`).
 --   * `fst-pair`: pushing s ⊗ t along (x, y) ↦ (x, g y) gives s ⊗ g₊t;
 --   * `pairⁿ`: for probability measures μᵢ and i ≠ j, the pair of coordinates (xᵢ, xⱼ) of `FinProd.prodⁿ` has law μᵢ ⊗ μⱼ.
 -- Route: induction on n through the four cases on (i, j): (0, j+1) is `fst-pair` and `FinProd.margⁿ`; (i+1, 0) swaps

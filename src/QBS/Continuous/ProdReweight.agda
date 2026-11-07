@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Densities and scalings of product measures (plan 07, item 59; helper for `Continuous/ExpFamilyAux`).  For s-finite
+-- Densities and scalings of product measures (helper for `Continuous/ExpFamilyAux`).  For s-finite
 -- s on X, t on Y, weights v : X ⇒ WQ, w : Y ⇒ WQ and constants a, b in [0, ∞]:
 --   * `reweight-cong`: pointwise equal densities give ≈ᴹ measures;
 --   * `prod-reweight`: (v · s) ⊗ (w · t) ≈ᴹ (v(x) w(y)) · (s ⊗ t);

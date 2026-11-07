@@ -187,6 +187,19 @@ Bayesian vs frequentist on "is the coin fair or two-headed?" (module parameter `
 - `single-draw h`, `likelihood-is-expectation h` — `E-B fairCoin _ (single (sampler h) idTest _) ≃ ι (heads h)`: `E[head | two-headed] ≃ 1`, `E[head | fair] ≃ ½` (from `UniformCDF.cdf`).
 - `evidence-is-prior-expectation` — `ι ½ *S E[head | two-headed] +S ι ½ *S E[head | fair] ≃ ι (½·1 + ½·½)`, the evidence of `CoinBias.evidence-heads` as the prior-weighted frequentist expectation.
 
+### Continuous core: monad, strength, products, independence
+Two layers with the same shape: the probability monad (`Monad`, `Strong`) and the s-finite monad (`SFinite*`: the same construction over weights in `[0,∞]`).
+- `TQ X`, `TM : Monad (QBSCat S)` (`Monad`) — measures on X: a probe α : ℛ → X plus a probability measure on ℛ, equal (`_≈ᵖ_`) when all [0,1]-tests have equal integrals.
+- `strongMonad`, `commutative` (`Strong`) — left strength (x, q) ↦ δₓ ⊗ q; commutativity is Fubini: the order of sampling is irrelevant.
+- `TQ`, `∫ᴹ`, `_≈ᴹ_`, `strongMonad`, `commutative` (`SFinite`, `SFiniteMonad`, `SFiniteStrong`, `SFiniteCommute`) — the s-finite monad and its Tonelli commutativity.
+- `inclusion : Monad⇒-id TM C.TM` (`SFiniteIncl`) — the probability monad is a submonad (weight 1); `ιPre`; `ProdBridge.ι-⊗` says the two products agree.
+- `prodPre`, `∫-prod`, `∫-prod′`, `∫-rect`, `marg₁`, `marg₂` (`Product`) — the product of s-finite measures, Fubini in both orders, rectangles, marginals.
+- `ΠQ`, `prodⁿ`, `∫-rectⁿ`, `margⁿ` (`FinProd`) — n-fold products of QBS and of measures.
+- `Indep₂`, `Indep`, `∫-indep`, `Ex-indep`, `Var-indep` (`Independence`) — independence: the law of the tuple is the product of the laws.
+- `IID`, `IIDSeq`, `IID-law`, `IID-map`, `IID-moments` (`IID`) — iid families; functions preserve iid.
+- `Exch`, `prodⁿ-exch`, `Exch-mix`, `condIID-exch` (`Exchangeable`) — invariance under adjacent transpositions; product laws and mixtures of them are exchangeable.
+- `coins-iid`, `coins-iidSeq`, `draws-iid` (`CoinCoordsJoint`) — the coordinates of the fair coin are mutually iid (`CoinCoords`: pairwise only).
+
 ### `QBS.Continuous.SFinite`, `QBS.Continuous.SFiniteStat`
 - `∫ᴹ`, `_≈ᴹ_` (`SFinite`) — weighted integral and equality of s-finite measures.
 - `continuousStat` (`SFiniteStat`, `module SFiniteStat lem`) — the complete `StatisticalInterface` for the continuous model.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`).
+-- Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`).
 --   * `mapM-id`, `mapM-comp`, `mapM-cong`, `mapM-ext`: push-forward composes, respects ≈ᴹ and pointwise equal maps;
 --   * `_×H_`: the map (x, y) ↦ (f x, g y), and `map-prod`: pushing s ⊗ t forward along f × g gives f₊s ⊗ g₊t;
 --   * `swapQ` and `swapM`: pushing s ⊗ t forward along (x, y) ↦ (y, x) gives t ⊗ s.

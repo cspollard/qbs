@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The digit code of `[0,∞]` into Cantor space, and its decoding (plan 03, "Uniqueness on the half-line").
+-- The digit code of `[0,∞]` into Cantor space, and its decoding (used for the uniqueness of measures on the half-line; measure-construction material that lives here for import reasons).
 -- `docs/UniquenessLit.md` has the route.  The work is in `Continuous/DigitStream` (the code), `Continuous/DigitDecode` (the
 -- decoding), `Analysis/DigitAlg` and `Continuous/DigitCut` (algebra and cut facts); this module assembles the statements.
 --   * `digits x`: the unary integer part `true^⌊x⌋ false`, then the binary digits of the fractional part of x (most

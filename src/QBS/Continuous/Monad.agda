@@ -4,6 +4,10 @@
 -- pair [α, m] of a random element α : R → X and a probability measure m on R, identified when
 -- all integrals of [0,1]-valued test functions agree.  A map R → T X is random when it is
 -- given by a *joint* probe ℛ × ℛ ⇒ X and a measurable kernel.
+-- `module Continuous A lem K` is generic in the class K of admissible measures (probability: `Integration.probClass`;
+-- sub-probability: all masses ≤ 1, see `SubProb`; the s-finite monad `SFinite*` reuses `Wit`/`Pre` with weights).  `Wit` is
+-- parametrised by the equivalence on measures (`≈ᵖ` here, `≈ᴹ` for s-finite).  The monad `TM` is written out rather than
+-- taken from the generic `IntegralMonad.Laws.TM`, which made `Strong` 17 % slower.
 module QBS.Continuous.Monad where
 
 open import Level using (lift; lower)
