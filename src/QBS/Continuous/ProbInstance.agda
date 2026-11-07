@@ -16,6 +16,7 @@ open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q)
 open import QBS.Exponential using (cartesianClosed)
 open import QBS.Probes using (ℛQ; probe; unprobe)
+open import QBS.CommMonad using (ProbMonad)
 open import QBS.Probability
 open import QBS.Borel.Core
 open import QBS.Borel.Source

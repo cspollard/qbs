@@ -9,7 +9,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 
 | module | lines | hyp | purpose |
 |---|---|---|---|
-| `QBS` | 143 |  | Quasi-Borel spaces in Agda: an overview of the library, one section per area. |
+| `QBS` | 148 |  | Quasi-Borel spaces in Agda: an overview of the library, one section per area. |
 
 ## Abstract layer
 
@@ -24,6 +24,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Classical` | 23 |  | Excluded middle, named once. |
 | `QBS.Classical.Decide` | 55 | lem | The classical decision toolkit: with `lem : LEM ℓ`, every proposition in `Set ℓ` has a Boolean truth value `dec P` that is `true` exactly when `P` holds. |
 | `QBS.Colimits` | 199 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
+| `QBS.CommMonad` | 24 |  | `braidedOf CC` and `ProbMonad CC`: the one spelling of "a commutative monad on a cartesian closed category", for the symmetric monoidal structure of its products. |
 | `QBS.Complete` | 173 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
 | `QBS.Core` | 213 |  | Quasi-Borel spaces over an abstract random source, as concrete sheaves on a one-object site. |
 | `QBS.Exponential` | 132 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
@@ -92,10 +93,11 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.IsQBSLike` | 32 |  | `IsQBSLike`: the minimal structure for probability the QBS way: probe object, cartesian closure, (countable) coproducts and products, and a `ProbabilityInterface`. |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 132 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 269 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Probability` | 168 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 32 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 231 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
+| `QBS.Statistical` | 229 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
+| `QBS.StrongPoint` | 136 |  | `StrongPoint CC cm`: the strength of a commutative monad `cm` on a cartesian category, evaluated at global elements. |
 
 ## Discrete model
 
@@ -328,7 +330,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.MonusAlg` | 107 | lem | Algebra of rationally bounded lower reals and truncated subtraction (plan 03, "Signed dominated convergence"). |
 | `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (plan 05, item 50; helper for `Inference/WeakLaw`). |
 | `QBS.Continuous.NullInf` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (plan 03, "Signed dominated convergence"). |
-| `QBS.Continuous.ProbInstance` | 130 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
+| `QBS.Continuous.ProbInstance` | 131 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (plan 05, item 44). |
 | `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (plan 05, helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (plan 07, item 59; helper for `Continuous/ExpFamilyAux`). |

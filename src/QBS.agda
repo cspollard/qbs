@@ -52,6 +52,11 @@ import QBS.Probes as Probes
 -- global elements `measure μ : 1 ⇒ T ℛ` are the probability measures on ℛ, with Fubini over a splitting ℛ ≅ ℛ × ℛ.
 import QBS.Probability as Probability
 
+-- `ProbMonad CC` (`CommMonad`): a commutative monad on a cartesian closed category.  `StrongPoint`: its strength at
+-- global elements, generic over any such monad.
+import QBS.CommMonad as CommMonad
+import QBS.StrongPoint as StrongPoint
+
 -- `StatisticalInterface`: weights (`CommutativeMonoidWithZero`), a measure monad with `score`, countable sums and
 -- scaling, and `normalize : M X ⇒ Prob X + 1`.  `StatisticalLemmas` has bind linear in the measure.
 import QBS.Statistical as Statistical

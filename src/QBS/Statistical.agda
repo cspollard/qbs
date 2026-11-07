@@ -29,6 +29,7 @@ open import Categories.Monad.Strong using (StrongMonad; Strength)
 import Categories.Morphism.Reasoning as MR
 import Categories.NaturalTransformation as NT
 
+open import QBS.CommMonad using (ProbMonad)
 open import QBS.Probability using (ProbabilityInterface)
 
 -- A commutative monoid object of weights, with an absorbing zero (`zero⇒ : ⊤ ⇒ W`, an absorbing element
@@ -53,11 +54,8 @@ record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Ca
     (P : ProbabilityInterface ℓ ℛ CC) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (_×_; ⟨_,_⟩; π₁; π₂)
-  private
-    cartesian = Canonical.CartesianClosed.isCartesian CC
-    braided = Symmetric.braided (CSM.symmetric C cartesian)
   field
-    commutativeMonad : CommutativeMonad braided
+    commutativeMonad : ProbMonad CC
   private
     module τM = NT.NaturalTransformation
       (Strength.strengthen (StrongMonad.strength (CommutativeMonad.strongMonad commutativeMonad)))
