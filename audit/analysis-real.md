@@ -217,3 +217,17 @@ re-proves positivity of reciprocals and `qC-mul` (about 60 lines of rational cut
    whether 4.3 is a drop-in replacement.
 5. Directory regrouping (section 3, item 2): is a one-off rename tolerable with dependent plans/ files and docs links?
 6. Does `Cauchy` belong with `Series` (lower-reals domain)? It is generic over `OmegaSemiring` and only `Exp` uses it.
+
+## Implementation status (2026-11-07)
+
+Agent 5 (`analysis-real`), tiers A, C and part of E; tiers B and D not started (out of budget).
+
+- **A. `Signed` header: done.** It now names the Grothendieck group completion delivered as a stdlib `CommutativeRing`, and says why `SubSemiring` is a predicate plus closure fields.
+- **A. `Interface.md` Deriv entry: done.** A preface plus one bullet per rule; the packs are named legacy there.
+- **C. `PolyExpCert.Ex.pack` (exponential moments): partly done.** `HalfLineMomentFact.moment-succ` now uses `OnHalfLine.glue-D` with `dvn` (formerly `DerivMoment.dvn`) from `DerivExp.xjE`.  `HalfLineMomentN.AtInterval` (the only consumer of `pack` there) and `DerivMoment` (now a duplicate) are deleted.  `Ex.pack` itself stays: `ExpRate` builds its rate-λ certificate from it.  `HalfLineMomentN` 49.6 s to 5.5 s, `HalfLineMomentFact` 26.6 s to 6.2 s.
+- **C. `GaussCert.pack` and `GaussCertM1.pack1`: done, both modules deleted.**  New rule `DerivGauss.Gx.DFgaussJ` (all powers `(xʲ⁺¹Φ)′ = (j+1)xʲΦ − xʲ⁺²Φ`; `DFgauss1` is its j = 0 case and is removed).  `GaussMoment.moment-succ` uses it via `glue-D`; `GaussMean.∫-xφ` uses `DFgauss` via `glue-D0` (the hand-written telescoping sum is gone).  Deleted: `GaussCert`, `GaussCertM1`, `GaussMeanUnit`, `DerivGaussMoment` (duplicate), `GaussHalfLine.AtInterval`, and the now unused `Gauss` module of `GaussExp`.  `GaussHalfLine` 11.7 s to 5.6 s; `GaussMoment` 6.1 s and `GaussMean` 6.4 s unchanged.  `Ea`/`Eb`/`Ec` moved from `DerivGaussMoment` to `GaussHalfLine`.
+- **C. `ExpRate`, `ExpRateExt` (and `ExpRateSigned`): skipped, marked legacy in headers.**  `ExpRateInt` and `ExpRateMoment` need rates `l > 1` through `ExpRateExt`'s halving extension; `Daff` requires `l ≤ 1`, so folding that extension into `Deriv` is new development (open question 3), not a migration.
+- **E. Merge `GaussTail` into `GaussExp`: done** (`AlgGT` now lives in `GaussExp`; three importers updated).
+- **E. Merge `ExpRateSigned` into `AffineAlg`; consolidate `SF` and `Bdd`; renames of `GeometricNorm`, `GeometricMoment2`, `SignedOmega`: not done.**
+- **B/D. Σ machinery on stdlib; universal property of `Signed`; "constant is finite" boilerplate: not done.**
+- **Not reached (no finding disproved):** report items 4.2, 4.3, 4.5 to 4.8 and the Signed `≃-refl` micro-simplification.
