@@ -16,7 +16,6 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda
 open import QBS.Borel.Merge
 open import QBS.Analysis.Omega

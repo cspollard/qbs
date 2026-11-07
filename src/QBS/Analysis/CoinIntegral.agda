@@ -24,7 +24,6 @@ import QBS.Classical.Decide as D
 open RL using (ℚᵘ; 0ℚᵘ; 1ℚᵘ; dense; ≤-<-trans; nat-nonneg)
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Model.Pairing using (unpair)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series

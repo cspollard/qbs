@@ -20,7 +20,6 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
 open import QBS.Borel.Source using (R₁)
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
 open import QBS.Analysis.Measure

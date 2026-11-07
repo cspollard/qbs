@@ -17,7 +17,6 @@ open ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Borel.Core
-open import QBS.Borel.Measure using (Disjoint)
 open import QBS.Borel.PiLambda using (∁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Series
