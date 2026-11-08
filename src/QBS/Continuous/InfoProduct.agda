@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities").  For base
+-- Additivity of KL divergence and entropy over independent products.  For base
 -- measures Q₁ on X and Q₂ on Y and densities p₁, p₂ that are normalised (∫ pᵢ dQᵢ ≈ 1) and pointwise strictly
 -- positive and finite (`SignedLog.PosQ`, `BndQ`), with the product density p₁ ⊗ p₂ = (x, y) ↦ p₁ x · p₂ y on
 -- Q₁ ⊗ Q₂ (`Product.prodPre`):

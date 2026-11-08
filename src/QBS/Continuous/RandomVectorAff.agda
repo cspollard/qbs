@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions
+-- Sums and affine images of random vectors (used by `RandomVector`; the definitions
 -- `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`).
 --   * `Int₂-sumV′`, `Var-sumV′`: the sum of the coordinates has finite second moment and Var Σᵢ Xᵢ ≃ Σᵢ Σⱼ Cov(Xᵢ, Xⱼ);
 --   * `RV-aff′`, `mean-aff′`, `cov-aff′`: the affine image A X + b is a random vector with mean A mean(X) + b and

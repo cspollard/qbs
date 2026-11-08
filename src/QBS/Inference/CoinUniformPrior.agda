@@ -47,7 +47,7 @@ open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.Uniform using (module Uniform)
 open import QBS.Continuous.Strong using (module Strength)
 open import QBS.Continuous.UniformMoment using (module UniformMoment)
@@ -69,7 +69,7 @@ module CoinUniformPrior (lem₁ : LEM₁) where
   open Integration A using (probClass)
   open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _≤_; _+_; 0#; 1#; refl; sym; trans)
   open Bounded A using (Sg; Bnd; finite; _+S_; _*S_; *S-cong; *S-comm; ι-+; ι-*; +S-cong; _≃_; ≃-trans; ≃-sym; ≃-refl; ι; mk≃)
-  open SignedTests (lemOf lem₁) using (CutQ; STest)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre; joinPre; TQ; _≈ᵖ_; TH; joinH)
   open Pre

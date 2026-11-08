@@ -1,13 +1,15 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random
--- variables (`Analysis/BoundedRing`).  See `plans/03-bayesian-frequentist.md`, "3c in detail".
+-- variables (`Analysis/BoundedRing`).  This is the bounded bridge from the discrete-style probability monad to the signed
+-- ring, used by the `Inference.Expectation*` modules; it is unrelated to the general unbounded signed tests `SgT` of
+-- `Continuous/SignedTest` (hence the name).
 --
 --   * `CutQ`: the QBS of lower cuts (values in [0,∞]) whose random elements are the measurable functions `Meas`.  Unlike the
 --     bounded signed values `Sg`, it has no boundedness requirement, so gluing is unproblematic.
 --   * `STest X`: a signed test on `X`, a pair of maps `X ⇒ CutQ` with a common natural bound; it stands for `pos − neg`.
 --   * `pullback g α pm`: the signed random variable `g ∘ α` on a probability space, for a random element `α`.
-module QBS.Continuous.SignedTests where
+module QBS.Continuous.BoundedSignedTests where
 
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Data.Nat.Base using (ℕ)
@@ -25,7 +27,7 @@ open import QBS.Analysis.BoundedRing using (module BoundedRing)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Classical using (LEM₀)
 
-module SignedTests (lem : LEM₀) where
+module BoundedSignedTests (lem : LEM₀) where
   open Lebesgue lem using (A; J; J-mono)
   open Meas lem using (Meas; Meas-ext; Meas-const; Meas-pre; Meas-glue)
   open Integration A using (Measure; IsProb)

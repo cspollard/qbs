@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Definitions for random vectors (plan 05, item 52; shared by `RandomVector` and `RandomVectorAff`).
+-- Definitions for random vectors (shared by `RandomVector` and `RandomVectorAff`).
 --   * `RV n X`: a random vector, i.e. coordinates with finite second moments;
 --   * `Int-mul`: the product of two square-integrable tests is integrable;
 --   * `meanV`, `covM`: the mean vector and the covariance matrix Cov(Xᵢ, Xⱼ) = E XᵢXⱼ − E Xᵢ E Xⱼ;

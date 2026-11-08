@@ -28,7 +28,7 @@ open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.Variance using (module Variance)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.FairCoin
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.Uniform using (module Uniform)
 open import QBS.Continuous.UniformVariance using (module UniformVariance)
 open import QBS.Continuous.UniformSample using (module UniformSample)
@@ -50,7 +50,7 @@ module UniformSampler (lem₁ : LEM₁) where
   open Expansion A half hh using (Fun-expansion)
   open UniformVariance lem₁ using (u; u⁺; u⁻; u-bdd; uu; varU; vf)
   open UniformSample lem₁ using (shift-sub)
-  open SignedTests (lemOf lem₁) using (STest; CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (STest; CutQ)
   open Sampler lem₁
 
   -- the sampler: forget the (trivial) parameter and read the binary expansion of the coin

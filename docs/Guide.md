@@ -211,6 +211,13 @@ with density `p` against a base measure `Q` is `densPre Q p`, and no Radon–Nik
 This is Gibbs' inequality: `KL ≥ 0` when `Q` and `p·Q` are probabilities. `Continuous.InfoProduct` proves that KL
 divergence and entropy add over independent products (`KL-⊗`, `Ent-⊗`), for normalised, positive, finite densities.
 
+**Exponential families, random vectors and sample estimators.** `Continuous.ExpFamily` builds the natural exponential
+family with base measure `h` and statistics `T` as `h` reweighted by `e^{⟨η, T⟩}`, normalised by the partition function
+`Z(η)`; `Continuous.ExpFamilyPost` proves conjugate updating: the prior `priorPre (χ, ν)` reweighted by the likelihood of
+`N` observations with summed statistic `ΣT` is `priorPre (χ + ΣT, ν + N)`. `Continuous.RandomVector` gives mean vectors
+and covariance matrices of square-integrable signed tests, with `Cov (A X + b) = A Cov(X) Aᵀ`, and `Continuous.SgSample`
+proves that the sample mean and the sample variance are unbiased. See `Interface.md` for the names.
+
 ## 6. Estimators and inference
 
 - **Frequentist** (`Inference.Frequentist`): an `Experiment Θ` gives observations for each parameter; a statistic is a

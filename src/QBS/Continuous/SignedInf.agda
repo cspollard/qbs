@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04).
+-- Signed values in (−∞, ∞].
 --   * `Sg∞`: a pair p − n with n finite (`Bnd`) and p any element of [0, ∞]; `x ≃∞ y` when p + n′ + c ≈ p′ + n + c for
 --     a finite c.  Addition is total (there is no −∞, so no ∞ − ∞), and the witness cannot collapse the type since
 --     n, n′ and c are finite.  Negation is not total.

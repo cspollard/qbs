@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for
+-- Pointwise and ring identities for the variance of signed tests (used by
 -- `SignedVar`).
 --   * the expansion `Sq f c = f² − 2c f + c²` of `(f − c)²` as a signed test, with `cen-eq` ((f − c)² ≐ Sq f c) and
 --     `cen-bnd` (the sums of the two parts agree pointwise), likewise `scl-eq`, `scl-bnd` for (c f)² and c² f²;

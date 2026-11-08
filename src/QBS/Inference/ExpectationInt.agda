@@ -29,7 +29,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.ExpectationResp as ER
 import QBS.Inference.Expectation as EX
 
@@ -39,7 +39,7 @@ module ExpectationInt (lem₁ : LEM₁) where
   open OmegaSemiring A using (_≈_; ⨆-cong; *-cong; +-cong; 0#; refl; sym; trans)
   open Bounded A using (Sg; Bnd; _≃_; mk≃; ≃-refl; ≃-trans; _+S_; _*S_; -S_; finite; _−_[_,_])
   open SignedIntegral (lemOf lem₁) using (SF; E; E-cong; E-+; E-neg; E-scale; _+SF_; -SF_; scaleSF; J-const)
-  open SignedTests (lemOf lem₁) using (CutQ; STest; pullback; J-bounded)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest; pullback; J-bounded)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫; mapPre; ηPre)
   open Pre

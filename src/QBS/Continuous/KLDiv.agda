@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Kullback–Leibler divergence (plan 03, "Information quantities").  For a base measure Q and a density p : X ⇒ WQ,
+-- Kullback–Leibler divergence (Gibbs' inequality is `KL-nonneg`).  For a base measure Q and a density p : X ⇒ WQ,
 -- P = p·Q (`Entropy.densPre`) and
 --   * `KL Q p i = E_P[log p] = ∫ p log p dQ ∈ (−∞, ∞]` (`SignedExpect.Ex∞` of `Entropy.logT p`), defined when
 --     ∫ p log⁻ p dQ is finite (`KLInt`); this holds whenever Q has finite mass (`KLInt-fin`), since

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`).
+-- Pointwise facts for products of signed tests (used by `RandomVector`).
 --   * `Int-mul`: for any s-finite measure, square-integrable tests have an integrable product;
 --   * `comm-eq`, `comm-sums`: f g ≐ g f, and the sums of the parts agree pointwise;
 --   * `sc-eq`: (c f)(d g) ≐ (c d)(f g);   `sh-eq`: (f + c)(g + d) ≐ (f g + d f) + (c g + c d).

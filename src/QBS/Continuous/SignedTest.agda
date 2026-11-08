@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer").
+-- Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻.
 --   * `SgT X = (X ⇒ WQ) × (X ⇒ WQ)`, with parts `posT`, `negT` and pointwise values `at⁺`, `at⁻`;
 --   * `f ≐ g`: f⁺ + g⁻ ≈ g⁺ + f⁻ pointwise; reflexive and symmetric, and transitive through a pointwise finite middle
 --     (parts may be infinite pointwise, where the cross-added equality says nothing); chains of `≐` between integrable
@@ -24,7 +24,7 @@ open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Weights using (module Weights)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.FatouAux using (module FatouAux)
 open import QBS.Continuous.RealLine using (module RealLine)
@@ -36,7 +36,7 @@ module SignedTest (lem₁ : LEM₁) where
   open Bounded A using (Bnd; Sg)
   open Sg
   open Weights (lemOf lem₁) using (WQ; constW)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   open SFiniteReweight (lemOf lem₁) using (mulH)
   open FatouAux lem₁ using (addX)
   open RealLine lem₁ using (RQ; copairH)

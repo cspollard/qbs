@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper).  For positive finite x, y:
+-- Pointwise facts for `InfoProduct` (used by `InfoProduct`).  For positive finite x, y:
 --   * `log-mul-pt` : log⁺(xy) + (log⁻ x + log⁻ y) ≈ (log⁺ x + log⁺ y) + log⁻(xy);
 --   * `logN-sub` : log⁻(xy) ≤ log⁻ x + log⁻ y, and `logP-sub` : log⁺(xy) ≤ log⁺ x + log⁺ y.
 -- Route: `log-mul-pt` is the cross-added `SignedLog.log-mul` with witness 0; `logN-sub`, `logP-sub` by `cut-total (xy) 1`:

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Push-forward of expectations along a map into any space (plan 05, item 55b; helper for `RandomVectorLaw`).
+-- Push-forward of expectations along a map into any space (used by `RandomVectorLaw`).
 --   * `∫-law`: ∫ f d(ιPre (mapPre h P)) ≈ ∫ f ∘ h d(ιPre P);
 --   * `Int-law`, `Int-law⁻`, `Ex-law`: integrability both ways, and the expectation of f against the image is that of f ∘ h.
 -- Route: `SFiniteIncl.ι-nat` then `SFinite.∫ᴹ-map`, as `GaussVarAux.∫-map` (there on the real line only); the rest is

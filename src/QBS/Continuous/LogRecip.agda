@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`):
+-- The reciprocal of a lower real, as a cut (used by `SignedLog`):
 --   q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition).
 --   * `recC-anti`, `recC-cong`;
 --   * `recC-mul : recC w ⊗ w ≋ 1` when w is bounded by a rational and has a positive element, the argument of

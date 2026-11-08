@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and
--- `Continuous/ExpFamily`), over an abstract commutative semiring.
+-- Semiring identities for exponential families, used by `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`, over an
+-- abstract commutative semiring.
 --   * `scale-+-alg`: p (a + b) + n (a′ + b′) ≈ (p a + n a′) + (p b + n b′), the parts of `scaleT c (f +T g)`;
 --   * `scale-0-alg`: p · 0 + n · 0 ≈ 0, `zero-scale-alg`: 0 · a + 0 · b ≈ 0, and `+-0-alg`: 0 ≈ 0 + 0;
 --   * `prodF N a = a₀ · (a₁ · (… · 1))` (the recursion of `FinProd.∏ⁿ`), with `prodF-mul` (∏ aᵢ · ∏ bᵢ ≈ ∏ aᵢ bᵢ),

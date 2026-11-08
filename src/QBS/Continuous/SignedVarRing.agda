@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities on parts of signed values over an abstract commutative semiring (plan 03, "Information quantities";
--- helper for `SignedVarAlg`).
+-- Ring identities on parts of signed values over an abstract commutative semiring (used by
+-- `SignedVarAlg`).
 --   * pairs `Pa` of elements (x⁺, x⁻) with the operations `_⊕ᵃ_`, `_⊗ᵃ_`, `ngᵃ` of signed sums, products and negation,
 --     and the cross-added / part-summed equations `crossᵃ`, `sumsᵃ`;
 --   * the identities behind `(f − c)² ≐ f² − 2c f + c²`, `(c f)² ≐ c² f²` and the variance laws (`cen-alg`, `cen-sums`,

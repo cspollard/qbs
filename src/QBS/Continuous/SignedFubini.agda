@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Fubini and independence for signed tests (plan 03, "Signed layer").
+-- Fubini and independence for signed tests.
 -- For s-finite s on X, t on Y and a signed test f on X × Y integrable against s ⊗ t (`Product.prodPre`):
 --   * `innerT s f`: y ↦ ∫ f(x, y) ds(x), as a signed test on Y, cut to where both inner integrals are finite
 --     (`IntegrableFinite.finχ`); `Int-inner`, and `Ex-fubini : Ex (s ⊗ t) f ≃ Ex t (innerT s f)`;

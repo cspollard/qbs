@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`):
+-- The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (used by `SignedLog`):
 -- logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1.
 --   * `logN-anti`, `logN-cong`, `logN-bndQ` (positive x gives a bounded logN x), `Meas-logN`;
 --   * `logN-ge` : logN x ≈ 0 for 1 ≤ x;

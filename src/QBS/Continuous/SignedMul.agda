@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Products respect `≐` (plan 05, item 55b; helper for `RandomVectorLaw`; the twin of `SignedSq`).
+-- Products respect `≐` (used by `RandomVectorLaw`; the twin of `SignedSq`).
 --   * `mul-alg`: a + d ≈ c + b and u + z ≈ w + v give (a u + b v) + (c z + d w) ≈ (c w + d z) + (a v + b u) in [0, ∞],
 --     including infinite values (f = (a, b), g = (c, d), f′ = (u, v), g′ = (w, z));
 --   * `mul-cong`: f ≐ g and f′ ≐ g′ give f *T f′ ≐ g *T g′.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Multiplicative cancellation and rearrangement identities for exponential weights (plan 07, item 58; helper for
+-- Multiplicative cancellation and rearrangement identities for exponential weights (used by
 -- `Continuous/ExpWeight`), over an abstract commutative monoid.
 --   * `cancel-mul`: cancellation of units;
 --   * `cancel-3`: 3-fold unit product cancellation;

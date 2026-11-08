@@ -31,7 +31,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.Strong using (module Strength)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.ExpDist using (module ExpDist)
 open import QBS.Inference.ExpDistMean using (module ExpDistMean)
@@ -96,7 +96,7 @@ module ProductMarginals (lem₁ : LEM₁) where
   open Bounded A using (_≃_; mk≃; ≃-trans; ≃-sym; _+S_; _*S_; -S_; 1S; +S-cong; -S-cong;
     *S-cong; finite; Bnd)
   open SubSemiring using (Is-resp; Is-0)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   open Weights (lemOf lem₁) using (WQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫; mapPre; ∫ᶠ; ∫-map; ∫-join)
   open Strength A (lemOf lem₁) probClass using (σPre; ∫-σ)

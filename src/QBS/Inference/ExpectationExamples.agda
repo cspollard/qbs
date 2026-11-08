@@ -45,7 +45,7 @@ open import QBS.Analysis.HalfOrder using (module HalfOrder)
 open import QBS.Analysis.Indicators using (module Indicators)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.FirstBit using (module FirstBit)
 open import QBS.Continuous.Uniform using (module Uniform)
@@ -64,7 +64,7 @@ module ExpectationExamples (lem₁ : LEM₁) where
   open LevelSets (lemOf lem₁) using (LS)
   open Bounded A using (Sg; Bnd; nat; _≃_; mk≃; ≃-trans; ≃-sym; _+S_; _*S_; finite; ι; ι-+; ι-*)
   open SignedIntegral (lemOf lem₁) using (J-const)
-  open SignedTests (lemOf lem₁) using (CutQ; STest)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; mk)
   open Pre

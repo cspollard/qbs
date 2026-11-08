@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Expectations of sums and of products of sums of signed tests (plan 05, item 52; helper for `RandomVector`).  For a
+-- Expectations of sums and of products of sums of signed tests (used by `RandomVector`).  For a
 -- probability P on Ω and tests with the stated integrable products:
 --   * `ExL`: E Σᵢ Gᵢ ≃ Σᵢ E Gᵢ (sums of `SgLinAlg`);
 --   * `ExR`: h Σⱼ Gⱼ is integrable and E (h Σⱼ Gⱼ) ≃ Σⱼ E (h Gⱼ);

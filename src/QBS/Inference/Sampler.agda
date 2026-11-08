@@ -3,7 +3,7 @@
 -- Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in
 -- detail").  A sampler is a joint probe `Θ × ℛ ⇒ X`: a parameter and a stream of coin flips give an observation, which is how
 -- a kernel `Θ ⇒ T X` is represented in this library (the fair coin supplies the measure).  For a bounded signed statistic g
--- (`Continuous/SignedTests`), the observations of an iid sample are `Xᵢ = g ∘ draw θ ∘ coordᵢ`, the coordinates of the coin
+-- (`Continuous/BoundedSignedTests`), the observations of an iid sample are `Xᵢ = g ∘ draw θ ∘ coordᵢ`, the coordinates of the coin
 -- of `Continuous/CoinCoords`.  The moments of the iid experiment (`Inference/Frequentist.Moments`) then follow from the
 -- moments of a single draw, so the unbiasedness theorems of the frequentist layer hold for every sampler.
 --
@@ -41,7 +41,7 @@ open import QBS.Continuous.FairCoin
 open import QBS.Continuous.CoinIndep using (module CoinIndep)
 open import QBS.Continuous.CoinCoords using (module CoinCoords)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Inference.Frequentist
 import QBS.Inference.ExpectationResp as ER
 
@@ -56,7 +56,7 @@ module Sampler (lem₁ : LEM₁) where
   open SignedIntegral (lemOf lem₁) using (E; E-cong)
   open Variance (lemOf lem₁) using (_*SF_[_])
   open BoundedRing (lemOf lem₁) using (BSF; boundedRing; E-B)
-  open SignedTests (lemOf lem₁) using (STest; pullback)
+  open BoundedSignedTests (lemOf lem₁) using (STest; pullback)
   open CoinCoords lem₁ using (coordSF; coordSF-bdd; E-coord; E-indep)
   open CoinIndep lem₁ using (fairCoin-prob)
   open FairCoin lem₁ using (fairCoin)

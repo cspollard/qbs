@@ -32,7 +32,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Continuous.Sample using (S; mergeR; merge-evens; merge-odds)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.Strong using (module Strength)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.ExpectationInt as EI
 import QBS.Inference.ExpectationProduct as EP
 
@@ -43,7 +43,7 @@ module ExpectationIntProduct (lem₁ : LEM₁) where
   open Integration A using (probClass)
   open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _+_; _*_; 0#; refl; sym; trans; +-cong; *-cong; *-comm)
   open Bounded A using (Sg; Bnd; finite; _≃_; mk≃; _*S_)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   module P₁ = Param A (lemOf lem₁) mergeC measurable-merge₁ Cyl-rect
   open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; mapPre; joinPre; TQ; Wit; sec; sec-random; mk)
   open Strength A (lemOf lem₁) probClass using (σPre)

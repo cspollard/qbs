@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The pointwise inequalities behind Gibbs' inequality (plan 03, "Information quantities", helper for `KLDiv`).
+-- The pointwise inequalities behind Gibbs' inequality (used by `KLDiv`).
 --   * `small` : for x ≤ 1, x + x log⁻ x ≤ 1 (so x log⁻ x ≤ 1);
 --   * `big` : for 1 ≤ x, x ≤ x log⁺ x + 1.
 -- Route: `small` by cases on `PosQ x`: `LogNeg.UD` gives x · e^{log⁻ x} ≈ e^{log⁺ x} = 1 and 1 + y ≤ e^y (`1+≤expC`)

@@ -31,7 +31,7 @@ open import QBS.Analysis.Threshold using (module Threshold)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 import QBS.Continuous.UniformCDF as UC
 import QBS.Inference.BoolDist as BD
@@ -43,7 +43,7 @@ module BernHalf (lem₁ : LEM₁) where
   open Integration A using (probClass; I; I-cong; I-add; I-scale)
   open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _≤_; _*_; _+_; 1#; refl; sym; trans; +-cong; *-cong;
     +-comm; *-comm; cancel; ≤-refl; +-identityʳ; +-identityˡ; *-identityʳ; zeroʳ)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫)
   open Pre

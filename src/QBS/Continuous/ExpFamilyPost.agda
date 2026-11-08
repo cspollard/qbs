@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A).
+-- Continuous conjugate updating and Bayesian sufficiency: a conjugate prior times an exponential-family likelihood is again conjugate.
 -- For a parameter space `Θ : QBS S` with base measure `μ_Θ : Pre (XW Θ)`, natural-parameter tests `η : Fin k → SgT Θ`
 -- and log-partition test `A-stat : SgT Θ`, all finite at every θ (`FinT`: Θ lies in the natural parameter space):
 --   * `priorTest (χ, ν) = ⟨χ, η⟩ − ν A`, `priorWeight p = e^{priorTest p}`, and the conjugate prior
@@ -19,7 +19,7 @@
 -- The unnormalised statements carry the content: ≈ᴹ measures have ≈ᴹ normalisations whatever the normalisers
 -- (`ExpFamilyPostAux.norm-cong`).  The posterior is the prior reweighted by the likelihood of the data, i.e. the density
 -- form of Bayes' rule; identifying it with a conditional of the Bayesian joint of `Inference/CondIID` is not done (it
--- needs the family as a kernel Θ ⇒ T X and disintegration; see plan 07).
+-- needs the family as a kernel Θ ⇒ T X and disintegration).
 -- Route: every test is finite, so it is evaluated at θ to a signed value (`ExpFamilyPostAux.atSg-*`, `FinT-*`) and the
 -- algebra is the ring identity `ExpFamilyPostAlg.expo-update` (or `expo-draw`) in `Signed.signedRing`; weights by
 -- `ExpWeight.expW-+` and `expW-cong`; measures by `ExpFamilyPostAux.reweight-reweight` and `ProdReweight.reweight-cong`.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (plan 03, "Signed layer", helper for
+-- The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (used by
 -- `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`).
 --   * `logP-mono`, `logP-cong`, `logP-le` (x ≤ 1 gives 0), `logP-bndQ` (bounded x gives bounded logP x), `Meas-logP`;
 --   * `logP-ge` : e^{logP x} ≈ x for 1 ≤ x bounded by a rational.

@@ -33,7 +33,7 @@ open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 
 module ExpectationResp (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A; J; J-irrel; J-fun; J-scale)
@@ -45,7 +45,7 @@ module ExpectationResp (lem₁ : LEM₁) where
   open LevelSets (lemOf lem₁) using (LS)
   open Bounded A using (Sg; nat; nat-+; _≃_; mk≃)
   open SignedIntegral (lemOf lem₁) using (E)
-  open SignedTests (lemOf lem₁) using (CutQ; STest; pullback)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest; pullback)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; _≈ᵖ_; ∫)
   open Pre

@@ -1,6 +1,8 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Expectations of signed tests against any s-finite measure (plan 03, "Signed layer").
+-- Expectations of signed tests against any s-finite measure.  Signed integration here is the standard Jordan-decomposition
+-- integral: for f = f⁺ − f⁻ it is ∫ f⁺ − ∫ f⁻, defined exactly when both integrals are finite (so `Ex` is linear on the
+-- integrable differences of positive tests, and `Ex-irr` is its well-definedness).
 --   * `Int p f`: both parts have finite integrals; `Ex p f i = ∫ f⁺ − ∫ f⁻ : Sg`.  The value never depends on the
 --     integrability proof (`Ex-irr`), so statements may use any proof;
 --   * `Ex-cong` (from `_≐_`), linearity (`Ex-+`, `Ex-neg`, `Ex-scale`), constants under a probability (`Ex-const`),

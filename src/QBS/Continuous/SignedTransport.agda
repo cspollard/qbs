@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer").
+-- Moving signed expectations along maps, scalings, and from the probability-monad API.
 --   * `Ex-map`: the expectation against a pushforward `mapM h p` is the expectation of the composite f ∘ h (with
 --     integrability both ways, `Int-map`, `Int-unmap`);
 --   * `Ex-scalePre`: against c · p (c finite) it is c times the expectation;
@@ -28,7 +28,7 @@ open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.SFiniteSum using (module SFiniteSum)
 open import QBS.Continuous.SFiniteIncl using (module SFiniteIncl)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.SignedTest using (module SignedTest)
 open import QBS.Continuous.SignedExpect using (module SignedExpect)
 import QBS.Inference.ExpectationInt as EI
@@ -44,7 +44,7 @@ module SignedTransport (lem₁ : LEM₁) where
   open import Algebra.Solver.Ring.NaturalCoefficients.Default commutativeSemiring
   open Lebesgue (lemOf lem₁) using (J; J-cong; J-irrel)
   open Weights (lemOf lem₁) using (WQ)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   open SFinite (lemOf lem₁) using (XW; ∫ᴹ; ∫ᴹ-map; ψ; mψ; mapM; module C)
   open SFiniteSum (lemOf lem₁) using (scalePre; ∫ᴹ-scale)
   open SFiniteIncl (lemOf lem₁) using (ιPre)

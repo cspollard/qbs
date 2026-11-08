@@ -24,7 +24,7 @@ import QBS.Inference.ExpectationExamples as EE
 open import QBS.Analysis.Measure using (module Integration)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.Signed using (SubSemiring)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.Monad using (module Continuous)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
@@ -81,7 +81,7 @@ module CoinPosterior (lem₁ : LEM₁) where
   open UniformMoment lem₁ using (Fun-e²; second-moment) renaming (m to m2)
   open Alg commutativeSemiring
   open Bounded A using (Bnd; finite; _+S_; +S-cong; _≃_; ≃-trans; ≃-sym; ≃-refl; ι; ι-+)
-  open SignedTests (lemOf lem₁) using (STest)
+  open BoundedSignedTests (lemOf lem₁) using (STest)
   open Continuous A (lemOf lem₁) (Integration.probClass A) using (Pre)
   open ER.ExpectationResp lem₁ using (E-at)
   open EE.ExpectationExamples lem₁ using (idT; E-at-ι; b1; zeroJ; ι-cong)

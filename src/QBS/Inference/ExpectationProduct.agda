@@ -35,7 +35,7 @@ open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Monad
 open import QBS.Continuous.Strong using (module Strength)
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.ExpectationResp as ER
 import QBS.Inference.Expectation as EX
 
@@ -48,7 +48,7 @@ module ExpectationProduct (lem₁ : LEM₁) where
   open Bounded A using (Sg; nat; _≃_; mk≃; ≃-refl; ≃-trans; ≃-sym; _*S_; *S-comm; *S-cong; finite)
   open Sg
   open SignedIntegral (lemOf lem₁) using (E-cong; E-scale; scaleSF)
-  open SignedTests (lemOf lem₁) using (CutQ; STest)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre; TQ; joinPre)
   open Strength A (lemOf lem₁) probClass using (σPre; σH)
   open ER.ExpectationResp lem₁ using (E-at)

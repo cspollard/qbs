@@ -32,7 +32,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.Signed using (SubSemiring)
 open import QBS.Continuous.Sample using (S; module UnitInterval)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.Uniform using (module Uniform)
 open import QBS.Continuous.Strong using (module Strength)
 open import QBS.Continuous.FairCoin using (module FairCoin)
@@ -54,7 +54,7 @@ module CoinUniformPriorN (lem₁ : LEM₁) where
     *-identityʳ; +-cong; 0-least; ≤-trans; ≤-reflexive; +-identityʳ)
   open Bounded A using (Sg; Bnd; finite; _+S_; _*S_; ι-+; ι-*; _≃_; ≃-trans; ≃-sym; ≃-refl; ι; mk≃; +S-cong; *S-cong;
     *S-comm; 0S)
-  open SignedTests (lemOf lem₁) using (CutQ; STest)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre; joinPre; TQ; TH; joinH)
   open LevelSets (lemOf lem₁) using (LS)

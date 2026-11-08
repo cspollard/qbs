@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Exponential weights of signed values and signed tests (plan 07, item 58; enabler for `Continuous/ExpFamily`).
+-- Exponential weights of signed values and signed tests (used by `Continuous/ExpFamily`).
 --   * `expW s = expC s⁺ ⊗ negExp s⁻` in `Cut` (the weight space `WQ`), with `expW-+` and `expW-0`;
 --   * `expWT f : Hom S X WQ` for a signed test `f : SgT X`;
 --   * `expW-cong` (under `≃`) and `expWT-cong` (under `≐`);

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Limits of signed expectations (plan 03, "Signed layer").
+-- Limits of signed expectations.
 --   * `SgConv a l`: signed values a n → l, as `ConvEps.SConv` on representatives (tolerance ½ᵏ, cross-added);
 --     it respects `≃` (`SgConv-cong`), adds (`SgConv-+`) and scales (`SgConv-scale`);
 --   * `dct-Ex`: dominated convergence in the vocabulary of `SignedExpect` (`DominatedSigned.dct-signed`);

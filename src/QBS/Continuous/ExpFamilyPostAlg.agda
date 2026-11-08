@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring algebra of conjugate exponents (plan 07, item 60; helper for `Continuous/ExpFamilyPost`), over any commutative
+-- Ring algebra of conjugate exponents (used by `Continuous/ExpFamilyPost`), over any commutative
 -- ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a point):
 --   * `·-cong`, `·-+V`: the dot product is a congruence and is additive in its first argument;
 --   * `expo χ ν e a = χ · e − ν a` (with ν a = `scaleA ν 1# * a`), the conjugate exponent ⟨χ, η(θ)⟩ − ν A(θ) at a

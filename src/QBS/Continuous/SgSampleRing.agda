@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities for the unbiased estimators of signed tests (plan 05, item 46; helper for `SgSampleAlg`, `SgSample`).
+-- Ring identities for the unbiased estimators of signed tests (used by `SgSampleAlg`, `SgSample`).
 --   * `SRing`, over an abstract commutative ring (instantiated at the signed values): the arithmetic of the induction
 --     steps for E Sₙ = n μ, E Sₙ² = n σ² + n² μ², Var Sₙ = n σ² and E (n Qₙ − Sₙ²) = (n² − n) σ² (`plus1`, `zero-S`,
 --     `var-step`, `var-final`, `ss-final`), as in `Analysis/Estimator`;

@@ -154,9 +154,9 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
-### `QBS.Continuous.SignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationIntProduct`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinPosterior`, `QBS.Inference.CoinUniformPriorN`, `QBS.Inference.BernHalf`, `QBS.Inference.CoinBayesRisk`
+### `QBS.Continuous.BoundedSignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationIntProduct`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinPosterior`, `QBS.Inference.CoinUniformPriorN`, `QBS.Inference.BernHalf`, `QBS.Inference.CoinBayesRisk`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
-- `STest X` (`SignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
+- `STest X` (`BoundedSignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.
 - `_+T_`, `-T_`, `scaleT c`, `constT c`, `precompT f`, `valT g x` (`Expectation`) — the algebra of signed tests.
 - `E-at-η` — `E-at (ηPre x) g ≃ valT g x`; `E-at-map` — `E-at (mapPre f p) g ≃ E-at p (precompT f g)`.
 - `E-at-+`, `E-at-neg`, `E-at-scale`, `E-at-const` — linearity in the test and constants.
@@ -388,6 +388,21 @@ bounded, such as `x`, `x²` or `log x`. Every module below takes the parameter `
 - `Var` — `Var P f i = E[f²] − (E f)²` as a signed value, for `f` with `f` and `f²` integrable (`Int₂`).
 - `cen`, `Ex-cen`, `Var-cen` — the centred test `f − c`; `E[(f − c)²] ≃ E[f²] − 2c E f + c²`; with `c = E f` this is the variance.
 - `Var-shift`, `Var-scale`, `Var-cong` — `Var (f + c) ≃ Var f`, `Var (c f) ≃ c² Var f`, respects `≐`.
+
+### Exponential families: `QBS.Continuous.ExpWeight`, `QBS.Continuous.ExpFamily`, `QBS.Continuous.ExpFamilyPost`
+- `expW`, `expWT`, `log-expW` (`ExpWeight`) — `expW s = e^{s⁺} · e^{−s⁻}` as a weight in `WQ`, `expWT f` for a signed test, and `log (expW s) = s`.
+- `dotT`, `weight`, `partition`, `probPre` (`ExpFamily`) — `⟨η, T⟩ = Σⱼ ηⱼ Tⱼ`, `e^{⟨η, T⟩}`, `Z(η) = ∫ e^{⟨η, T⟩} dh` and its normalisation: the natural exponential family with base measure `h`, statistics `T` and parameter `η`.
+- `weight-sumTⁿ`, `partition-sumTⁿ`, `product-expFam` — N iid draws: for finite statistics (`FinT`) the weight of the summed statistic is the product of the weights, `Z_N(η) ≈ Z(η)ᴺ`, and the law of N independent draws is again the family on `Xᴺ`.
+- `priorPre`, `likWeight` (`ExpFamilyPost`) — conjugate updating: the conjugate prior `priorPre (χ, ν)` reweighted by the likelihood `likWeight T` is `priorPre (χ + ΣT, ν + N)`.
+
+### Random vectors: `QBS.Continuous.RandomVector`, `QBS.Continuous.RandomVectorAff`, `QBS.Continuous.RandomVectorLaw`
+- `RV n X` — `n` signed tests with finite second moments on a probability `P`; `meanV`, `covM` — the mean vector and the covariance matrix over the signed ring.
+- `cov-aff′`, `mean-aff′`, `cov-indep` — `Cov (A X + b) = A Cov(X) Aᵀ`, the mean of an affine image, and the covariance of independent vectors (the primed names are the ones in `RandomVectorAff`; the unprimed ones in `RandomVector` are the same statements for `RV`).
+- `RV-law`, `mean-law`, `cov-law` (`RandomVectorLaw`) — `X` is a random vector under the push-forward law `mapPre h P` as soon as `X ∘ h` is one under `P`, with the same mean vector and covariance; `mean-≐`, `cov-≐` — the moment data depend on the tests only up to `_≐_`.
+
+### Sample estimators: `QBS.Continuous.SgMoments`, `QBS.Continuous.SgSample`
+- `Moments P n F μ σ²` (`SgMoments`) — `n` signed tests with `E Fᵢ ≃ μ`, `E Fᵢ² ≃ σ² + μ²` and, for `i ≢ j`, `E FᵢFⱼ ≃ μ²` (uncorrelated).
+- `Ex-sum`, `Var-sum`, `Ex-ss` (`SgSample`) — the sample mean is unbiased (`E Sₙ = n μ`, `Var Sₙ = n σ²`) and `E (n Qₙ − Sₙ²) = (n² − n) σ²`, so the sample variance is unbiased.
 
 ### Gaussians: `QBS.Inference.GaussScale`, `QBS.Inference.GaussShift`, `QBS.Inference.GaussVar`
 The standard Gaussian `gaussR` is in `QBS.Inference.GaussReal` (above); no value for `π` is ever used. Below, `s l ≈ 1` and `μ` is finite.

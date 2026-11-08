@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities on parts of signed values for random vectors (plan 05, item 52; helper for `RandomVectorAlg`).
+-- Ring identities on parts of signed values for random vectors (used by `RandomVectorAlg`).
 --   * `comm-cross`, `comm-sums`: the product of signed values commutes, on the parts;
 --   * `sc-cross`: (c f)(d g) = (c d)(f g) on the parts;
 --   * `sh-cross`: (f + c)(g + d) = (f g + d f) + (c g + c d) on the parts.

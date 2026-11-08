@@ -39,7 +39,7 @@ open import QBS.Continuous.UniformMoment using (module UniformMoment)
 import QBS.Analysis.Omega as Ω
 import QBS.BoolQ as BQ
 import QBS.Inference.BoolDist as BD
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.Expectation as EX
 import QBS.Inference.ExpectationResp as ER
 import QBS.Inference.ExpectationProduct as EP
@@ -168,7 +168,7 @@ module CoinBayesRisk (lem₁ : LEM₁) where
   open EP.ExpectationProduct lem₁ using (E-at-cong; _⊗T_; E-at-σ)
   open EE.ExpectationExamples lem₁ using (idT; sqT; E-at-uniform-id; E-at-uniform-sq; b1; fh; ι-cong)
   open CUP.CoinUniformPrior lem₁ using (coinKernel; E-at-kernel; ι≃id)
-  open SignedTests (lemOf lem₁) using (STest)
+  open BoundedSignedTests (lemOf lem₁) using (STest)
   open BD.BoolDist lem₁ using (indT)
 
   -- Opaque copies of the ring operations of `Sg`: the lemmas of `Alg` are applied to `ring′`, and since the operations are

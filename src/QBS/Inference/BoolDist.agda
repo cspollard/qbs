@@ -53,7 +53,7 @@ open import QBS.Analysis.Threshold using (module Threshold)
 open import QBS.Analysis.BinaryExpansion using (module Expansion)
 open import QBS.Continuous.Uniform using (module Uniform)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 open import QBS.Continuous.FairCoin using (module FairCoin)
 open import QBS.Continuous.FirstBit using (module FirstBit)
 import QBS.Inference.Expectation as EX
@@ -158,7 +158,7 @@ module BoolDist (lem₁ : LEM₁) where
   open OmegaSemiring A renaming (Carrier to ∣A∣) using (_≈_; _≤_; _*_; _+_; 0#; 1#; refl; sym; trans; +-cong; *-cong; ≤-refl;
     ≤-trans; ≤-reflexive; 0-least; *-identityʳ; +-identityʳ; zeroʳ; +-comm; +-identityˡ)
   open Bounded A using (Sg; Bnd; _≃_; ≃-trans; ≃-sym; _+S_; _*S_; finite; ι; ι-+; ι-*; +S-cong)
-  open SignedTests (lemOf lem₁) using (CutQ; STest)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest)
   open UnitInterval A using (AQ)
   open Continuous A (lemOf lem₁) probClass using (Pre; mk; mk-cong; mapPre; _≈ᵖ_)
   open Pre

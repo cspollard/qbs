@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The logarithm as a signed value (plan 03, "Signed layer").  For a cut x, log x = log⁺ x − log⁻ x with
+-- The logarithm as a signed value.  For a cut x, log x = log⁺ x − log⁻ x with
 --   * `logP x` = log (x ⊔ 1) ∈ [0, ∞] and `logN x` = log (1 / (x ⊓ 1)) ∈ [0, ∞], characterised by e^{logP x} ≈ x for
 --     1 ≤ x < ∞ and logP x ≈ 0 for x ≤ 1 (`logP-ge`, `logP-le`), e^{−logN x} ≈ x for 0 < x ≤ 1 and logN x ≈ 0 for
 --     1 ≤ x (`logN-le`, `logN-ge`);

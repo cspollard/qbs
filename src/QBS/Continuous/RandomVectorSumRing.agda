@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities for sums of covariances (plan 05, item 52; helper for `RandomVector`), over an abstract commutative
+-- Ring identities for sums of covariances (used by `RandomVector`), over an abstract commutative
 -- ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`.
 --   * `Σ-neg`, `row`, `rowʳ`: Σⱼ (aⱼ − m xⱼ) = Σ a − m Σ x, and Σᵢ (aᵢ − xᵢ T) = Σ a − (Σ x) T;
 --   * `var-sum-ring`: Σᵢ Σⱼ (aᵢⱼ − mᵢ mⱼ) = Σᵢ Σⱼ aᵢⱼ − (Σ m)²;

@@ -13,7 +13,7 @@
 --     (`E-at-expT`).  Its parts are `q ↦ 2ᴺ · ∫ q (2⁻ᴺ f)` (`expH`), measurable in `q` by `∫ᶠ`, and the rescaling of
 --     `Inference/ExpectationResp` (`∫-scale`) reduces everything to `∫-join`.
 --
--- For the algebraic laws the pulled-back signed function (`pullback`, `Continuous/SignedTests`) is equal *pointwise and
+-- For the algebraic laws the pulled-back signed function (`pullback`, `Continuous/BoundedSignedTests`) is equal *pointwise and
 -- definitionally* to the corresponding operation of `Analysis/SignedIntegral` (`+SF`, `-SF_`, `scaleSF`, `constSF`) applied
 -- to the pull-backs of the arguments, so `E-cong` plus the linearity of `E` there is all that is needed; no integral
 -- argument is repeated.
@@ -41,7 +41,7 @@ open import QBS.Analysis.LowerRealsArch using (lowerRealsArch)
 open import QBS.Analysis.BoundedCancel using (module BoundedCancel)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.ExpectationResp as ER
 
 module Expectation (lem₁ : LEM₁) where
@@ -54,7 +54,7 @@ module Expectation (lem₁ : LEM₁) where
   open Bounded A using (Sg; nat; nat-+; _≃_; mk≃; ≃-trans; _+S_; _*S_; -S_; finite; _−_[_,_])
   open Sg
   open SignedIntegral (lemOf lem₁) using (SF; E; E-cong; E-+; E-neg; E-scale; E-const; constSF; _+SF_; -SF_; scaleSF)
-  open SignedTests (lemOf lem₁) using (CutQ; STest; pullback)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ; STest; pullback)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre; ηPre; TQ; ∫; ∫ᶠ; joinPre; ∫-join)
   open Pre
   open QBS using (∣_∣)

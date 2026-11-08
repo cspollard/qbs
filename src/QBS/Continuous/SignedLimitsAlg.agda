@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements.
+-- Algebra behind `SignedLimits`: inequalities in an `OmegaSemiring` with finite elements.
 --   * `cancel-le`: c + x ≤ c + y gives x ≤ y for a finite c (`LowerRealsNear.cancel-bnd-⊑`);
 --   * `cong-le`: the tolerance form of `≃` invariance: from A + M ≤ L + B + h and the cross-added equalities of
 --     a ≃ a′ (witness c) and l ≃ l′ (witness d), A′ + M′ ≤ L′ + B′ + h (add the finite X = B + c + M + d, cancel);

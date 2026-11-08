@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Squares respect `≐` (plan 03, "Information quantities"; helper for `SignedVar`).
+-- Squares respect `≐` (used by `SignedVar`).
 --   * `sq-alg`: a + d ≈ c + b gives a² + b² + (c d + d c) ≈ c² + d² + (a b + b a) in [0, ∞], including infinite values;
 --   * `sq-cong`: f ≐ g gives f *T f ≐ g *T g.
 -- Route: all four values bounded: cross-add S₂ = (a + d)(b + d) + (c + b)(a + c) (the two sides differ by S₁ − S₂ and

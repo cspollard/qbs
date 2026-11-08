@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`).
+-- The exponential of a rational, as a cut (used by `SignedLog`).
 --   * `rc p` is the cut {t | t < p or t < 0}, the rational cut `qC p` for p > 0 (`rc≋qC`), defined for every p;
 --   * `E p = expC (rc p)`, with `E-add : E (p + η) ≋ E p ⊗ E η`, `E-mono`, the lower bound `E-lo` (every t < 1 + p is in
 --     E p) and the upper bound `E-hi` (every t ∈ E p is below 1 + (p + p²) for p ≤ 1);

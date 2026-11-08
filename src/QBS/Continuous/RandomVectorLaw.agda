@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Random vectors and their laws (plan 05, item 55a; enabler for `Inference/GaussVectorLaw`).  On a probability P on Ω:
+-- Random vectors and their laws (used by `Inference/GaussVectorLaw`).  On a probability P on Ω:
 --   * products of signed tests respect `_≐_`, including infinite values (`mul-cong`, as `SignedSq.sq-cong` for squares);
 --   * the moment data of a random vector depend on the tests only up to `_≐_` (`mean-≐`, `cov-≐`, given both witnesses),
 --     and ≐ transfers the random-vector property onto tests with one part zero at each point, such as pull-backs of

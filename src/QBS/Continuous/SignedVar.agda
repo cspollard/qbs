@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Variance of a signed test under a probability distribution (plan 03, "Information quantities").
+-- Variance of a signed test under a probability distribution.
 -- For P : Pre X, p = ιPre P and f with f and f² integrable (`Int₂`):
 --   * `Var P f i = E[f²] − (E f)²` as a signed value;
 --   * the centred test `cen f c = f − c`, its square is integrable (`Int-cen`), and

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Finite signed tests, their values, and reweighting (plan 07, item 60; helper for `Continuous/ExpFamilyPost`).
+-- Finite signed tests, their values, and reweighting (used by `Continuous/ExpFamilyPost`).
 -- On tests with both parts finite at every point (`FinT`) the cross-added `_≐_` is safe to chain; here such a test is
 -- evaluated at a point to a signed value (`ExpWeight.atSg`), where `≃` is a ring congruence, and the algebra is done
 -- on values:

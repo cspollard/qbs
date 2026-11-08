@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for
+-- Signed tests, weights and product measures for exponential families (used by
 -- `Continuous/ExpFamily`).
 --   * `f ≈T g`: both parts agree pointwise (`≈` on [0, ∞], so transitive even where the parts are infinite); it gives
 --     `f ≐ g` (`≈T⇒≐`) and equal weights `expWT f`, `expWT g` with no finiteness (`expWT-≈T`);

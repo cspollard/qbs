@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Finite samples of signed tests and their moment hypotheses (plan 05, items 46 and 50).  Definitions only, shared by
+-- Finite samples of signed tests and their moment hypotheses.  Definitions only, shared by
 -- `Continuous/SgSample` (unbiasedness), `Continuous/IID` (iid families satisfy the hypotheses) and `Inference/WeakLaw`.
 -- For a probability P on Ω and n signed tests F : Fin n → SgT Ω (unbounded, with E Fᵢ² finite):
 --   * `natS n`, the natural number n as a signed value; `sumT n F = F₀ + … + F_{n−1}`; `sqsT n F = F₀² + … + F_{n−1}²`;

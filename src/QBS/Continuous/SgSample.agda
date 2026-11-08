@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Unbiased estimators from moment hypotheses, for unbounded signed tests (plan 05, item 46).  For a probability P on Ω
+-- Unbiased estimators from moment hypotheses, for unbounded signed tests.  For a probability P on Ω
 -- and F : Fin n → SgT Ω with `SgMoments.Moments P n F μ σ²`:
 --   * the sum is integrable and E Sₙ ≃ n μ (`Int-sum`, `Ex-sum`): the sample mean is unbiased;
 --   * Sₙ² is integrable and Var Sₙ ≃ n σ² (`Int₂-sum`, `Var-sum`);

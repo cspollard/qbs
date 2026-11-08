@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise identities for sums of products of signed tests (plan 05, item 46; helper for `SgSample`).
+-- Pointwise identities for sums of products of signed tests (used by `SgSample`).
 --   * `dist-eq`, `dist-sums`: h (g + s) ≐ h g + h s, and the sums of the parts agree pointwise;
 --   * `zero-eq`, `zero-sums`: h · 0 ≐ 0.
 -- Route: parts of signed operations are polynomials in the parts (as in `IndepAlg`), so each is one solver call in

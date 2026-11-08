@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Random vectors, mean vectors and covariance matrices (plan 05, item 52).  On a probability P on Ω, a random vector
+-- Random vectors, mean vectors and covariance matrices.  On a probability P on Ω, a random vector
 -- is X : Fin n → SgT Ω with finite second moments (`RV n X`, unbounded signed tests); values are vectors and
 -- matrices over the signed ring (`Analysis/SgLinAlg` at `Bounded.signedRing`).
 --   * the product of two square-integrable tests is integrable (`Int-mul`, from 2|xy| ≤ x² + y²);

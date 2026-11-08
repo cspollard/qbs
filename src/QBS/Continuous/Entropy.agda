@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Log tests and entropy relative to a base measure (plan 03, "Information quantities").
+-- Log tests and entropy relative to a base measure.
 --   * `logPH`, `logNH : WQ ⇒ WQ`, the parts of the logarithm (`SignedLog.logP`, `logN`) as morphisms
 --     (`MonoTest.monoH`, `antiH`), and for a density p : X ⇒ WQ the signed tests `logT p = log p` and
 --     `nlogT p = −log p`;

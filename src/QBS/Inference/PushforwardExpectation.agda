@@ -24,7 +24,7 @@ open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SignedIntegral using (module SignedIntegral)
 open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.Monad
-open import QBS.Continuous.SignedTests using (module SignedTests)
+open import QBS.Continuous.BoundedSignedTests using (module BoundedSignedTests)
 import QBS.Inference.ExpectationInt as EI
 
 module PushforwardExpectation (lem₁ : LEM₁) where
@@ -35,7 +35,7 @@ module PushforwardExpectation (lem₁ : LEM₁) where
   open Bounded A using (Sg; Bnd; finite; _≃_; mk≃)
   open SubSemiring using (Is-resp; Is-0)
   open SignedIntegral (lemOf lem₁) using (SF; E-cong; J-const)
-  open SignedTests (lemOf lem₁) using (CutQ)
+  open BoundedSignedTests (lemOf lem₁) using (CutQ)
   open Meas (lemOf lem₁) using (Meas-const)
   open Continuous A (lemOf lem₁) probClass using (Pre; mapPre)
   open Pre

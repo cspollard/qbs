@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`).
+-- Continuous exponential families on quasi-Borel spaces (used by `ExpFamilyPost`).
 -- For a base measure `h : Pre (XW X)`, statistics `T : Fin k → SgT X` and a natural parameter `η : Vec k`:
 --   * `dotT k η T = Σⱼ ηⱼ Tⱼ`, linear in the statistics up to `ExpFamilyAux._≈T_` (`dotT-+`, `dotT-∘T`, `dotT-0`) and
 --     finite when the statistics are (`FinT-dotT`);

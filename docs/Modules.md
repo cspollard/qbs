@@ -232,6 +232,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | module | lines | hyp | purpose |
 |---|---|---|---|
 | `QBS.Continuous.BetaIntegral` | 192 | lem | The Beta integral for integer parameters under the uniform distribution: B(k,m) = ∫ uᵏ (1−u)ᵐ du,   (k+m+1)! · B(k,m) = k! · m!   (`beta-closed`, multiplied out, no division), and the conjugacy step (k+m+2) · B(k+1,m)... |
+| `QBS.Continuous.BoundedSignedTests` | 85 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
 | `QBS.Continuous.ChangeOfVariables` | 173 | lem | Monotone change of variables on the half-line with a derivative certificate. |
 | `QBS.Continuous.ChangeOfVariablesAlg` | 99 | lem | Pointwise facts for the change of variables (helper for `ChangeOfVariables`). |
 | `QBS.Continuous.ChangeOfVariablesFn` | 72 | lem | Change of variables from functions alone. |
@@ -247,21 +248,21 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.DigitStream` | 362 | lem | The digit stream of a point of `[0,∞]` (uniqueness of measures on the half-line; the engine of `Continuous/DigitCode`). |
 | `QBS.Continuous.Dominated` | 119 | lem | Monotone and dominated convergence for the Daniell integral `∫ᴹ p` on any source X. |
 | `QBS.Continuous.DominatedSigned` | 248 | lem | Dominated convergence for signed tests. |
-| `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure (plan 03, "Information quantities"). |
+| `QBS.Continuous.Entropy` | 107 | lem | Log tests and entropy relative to a base measure. |
 | `QBS.Continuous.Exchangeable` | 120 | lem | Exchangeable laws: product laws and mixtures of them are exchangeable (the easy half of de Finetti). |
 | `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMomentFact.∫-x²` through the density formula `ExpDist.∫-... |
-| `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
-| `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`), over an abstract commutative semiring. |
-| `QBS.Continuous.ExpFamilyAux` | 155 | lem | Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for `Continuous/ExpFamily`). |
-| `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency (plan 07, item 60; completing Phase A). |
-| `QBS.Continuous.ExpFamilyPostAlg` | 74 |  | Ring algebra of conjugate exponents (plan 07, item 60; helper for `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a... |
-| `QBS.Continuous.ExpFamilyPostAux` | 153 | lem | Finite signed tests, their values, and reweighting (plan 07, item 60; helper for `Continuous/ExpFamilyPost`). |
+| `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (used by `ExpFamilyPost`). |
+| `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families, used by `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`, over an abstract commutative semiring. |
+| `QBS.Continuous.ExpFamilyAux` | 155 | lem | Signed tests, weights and product measures for exponential families (used by `Continuous/ExpFamily`). |
+| `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency: a conjugate prior times an exponential-family likelihood is again conjugate. |
+| `QBS.Continuous.ExpFamilyPostAlg` | 74 |  | Ring algebra of conjugate exponents (used by `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a point): * `·-cong`, ... |
+| `QBS.Continuous.ExpFamilyPostAux` | 153 | lem | Finite signed tests, their values, and reweighting (used by `Continuous/ExpFamilyPost`). |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
-| `QBS.Continuous.ExpWeight` | 230 | lem | Exponential weights of signed values and signed tests (plan 07, item 58; enabler for `Continuous/ExpFamily`). |
-| `QBS.Continuous.ExpWeightAlg` | 79 |  | Multiplicative cancellation and rearrangement identities for exponential weights (plan 07, item 58; helper for `Continuous/ExpWeight`), over an abstract commutative monoid. |
+| `QBS.Continuous.ExpWeight` | 230 | lem | Exponential weights of signed values and signed tests (used by `Continuous/ExpFamily`). |
+| `QBS.Continuous.ExpWeightAlg` | 79 |  | Multiplicative cancellation and rearrangement identities for exponential weights (used by `Continuous/ExpWeight`), over an abstract commutative monoid. |
 | `QBS.Continuous.ExtNatModel` | 23 | lem | The continuous model instantiated at the extended naturals: the hypotheses of the model are satisfiable. |
 | `QBS.Continuous.FTCDyadic` | 140 | lem | The fundamental theorem of calculus on every dyadic interval, from `Deriv` data. |
 | `QBS.Continuous.FTCDyadicPiece` | 126 | lem | The unit piece [j, j+1) of the half-line as a fair-coin integral (helper for `FTCDyadic`). |
@@ -292,12 +293,12 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.IndepRing` | 47 |  | Ring identities on parts of signed values for the variance of independent sums (helper for `IndepAlg`). |
 | `QBS.Continuous.Independence` | 184 | lem | Independence of random variables (independence means the law of the tuple is the product of the laws; this is a strong definition, with `Ex-indep`/`Var-indep` as consequences). |
 | `QBS.Continuous.InfAlg` | 136 | lem | Facts about +∞ in [0, ∞] used by the signed layer. |
-| `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products (plan 03, "Information quantities"). |
-| `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (plan 03, "Information quantities", helper). |
+| `QBS.Continuous.InfoProduct` | 154 | lem | Additivity of KL divergence and entropy over independent products. |
+| `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (used by `InfoProduct`). |
 | `QBS.Continuous.IntegrableFinite` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (an integrable test is finite almost everywhere). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (used by the half-line uniqueness theorem). |
 | `QBS.Continuous.JoinKernel` | 58 | lem | Shared kernel construction for the join of the probability and s-finite monads: given a witness that a random family of measures on X has outer kernel `g` and, at each merged parameter, inner kernel `G`, the join is r... |
-| `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (plan 03, "Information quantities"). |
+| `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (Gibbs' inequality is `KL-nonneg`). |
 | `QBS.Continuous.LebPlane` | 105 | lem | Lebesgue measure on the plane ℝ × ℝ (the product Lebesgue measure). |
 | `QBS.Continuous.LebesgueDyadic` | 218 | lem | Lebesgue measure of the dyadic intervals (step towards `LebesgueInterval`). |
 | `QBS.Continuous.LebesgueDyadicAlg` | 297 | lem | Algebra of the shifted binary expansion `natE j + expansion r` against dyadic intervals (for `LebesgueDyadic`). |
@@ -309,10 +310,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.LebesgueShiftAlg` | 199 | lem | The interval computations for the translation of Lebesgue measure (`LebesgueShift`), at the level of the integrals of the tests `χ[a,b)` and `χ{∞}` against a pre-measure. |
 | `QBS.Continuous.LipTest` | 91 | lem | Locally Lipschitz functions are tests, and so is everything with `Deriv` data. |
 | `QBS.Continuous.LipTestAlg` | 248 | lem | Helper for `LipTest`: arithmetic of the tolerances ½ⁿ against a bounded Lipschitz constant, and the difference of cuts. |
-| `QBS.Continuous.LogCore` | 280 | lem | The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (plan 03, "Signed layer", helper for `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`). |
-| `QBS.Continuous.LogNeg` | 155 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (plan 03, "Signed layer", helper for `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
-| `QBS.Continuous.LogRat` | 163 | lem | The exponential of a rational, as a cut (plan 03, "Signed layer", helper for `SignedLog`). |
-| `QBS.Continuous.LogRecip` | 130 | lem | The reciprocal of a lower real, as a cut (plan 03, "Signed layer", helper for `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
+| `QBS.Continuous.LogCore` | 280 | lem | The positive part of the logarithm, `logP x = log (x ⊔ 1)` as a lower real (used by `SignedLog`):  q ∈ logP x  iff  q < 0, or some p > q and s ∈ x have e^p ≤ s (`Le p s`, from `LogRat`). |
+| `QBS.Continuous.LogNeg` | 155 | lem | The negative part of the logarithm, `logN x = log (1 / (x ⊓ 1))` (used by `SignedLog`): logN x = logP (recC (x ⊓ 1)), the positive logarithm of the reciprocal of the part of x below 1. |
+| `QBS.Continuous.LogRat` | 163 | lem | The exponential of a rational, as a cut (used by `SignedLog`). |
+| `QBS.Continuous.LogRecip` | 130 | lem | The reciprocal of a lower real, as a cut (used by `SignedLog`): q ∈ recC w  iff  ∃ p > q, ∀ s ∈ w, p · s < 1      (so recC (expC x) = negExp x by definition). |
 | `QBS.Continuous.Monad` | 422 | lem | The probability monad on quasi-Borel spaces over Cantor space (HKSV, §V): a measure on X is a pair [α, m] of a random element α : R → X and a probability measure m on R, identified when all integrals of [0,1]-valued t... |
 | `QBS.Continuous.MonoTest` | 65 | lem | Monotone functions are tests. |
 | `QBS.Continuous.MonoTestAlg` | 116 | lem | Helper for `MonoTest`: an up-set V of [0,∞] (respecting ≈) pulls threshold-measurable maps back to Borel sets. |
@@ -324,15 +325,15 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (helper for `Continuous/ExpFamilyAux`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (the double strength of the s-finite monad, at the integral level). |
-| `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices (plan 05, item 52). |
-| `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (plan 05, item 52; helper for `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
-| `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (plan 05, item 52; helper for `RandomVector`). |
-| `QBS.Continuous.RandomVectorDefs` | 64 | lem | Definitions for random vectors (plan 05, item 52; shared by `RandomVector` and `RandomVectorAff`). |
-| `QBS.Continuous.RandomVectorLaw` | 104 | lem | Random vectors and their laws (plan 05, item 55a; enabler for `Inference/GaussVectorLaw`). |
-| `QBS.Continuous.RandomVectorLawAux` | 51 | lem | Push-forward of expectations along a map into any space (plan 05, item 55b; helper for `RandomVectorLaw`). |
-| `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (plan 05, item 52; helper for `RandomVectorAlg`). |
-| `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (plan 05, item 52; helper for `RandomVector`). |
-| `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (plan 05, item 52; helper for `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
+| `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices. |
+| `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (used by `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
+| `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (used by `RandomVector`). |
+| `QBS.Continuous.RandomVectorDefs` | 64 | lem | Definitions for random vectors (shared by `RandomVector` and `RandomVectorAff`). |
+| `QBS.Continuous.RandomVectorLaw` | 104 | lem | Random vectors and their laws (used by `Inference/GaussVectorLaw`). |
+| `QBS.Continuous.RandomVectorLawAux` | 51 | lem | Push-forward of expectations along a map into any space (used by `RandomVectorLaw`). |
+| `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (used by `RandomVectorAlg`). |
+| `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (used by `RandomVector`). |
+| `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (used by `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
 | `QBS.Continuous.RealAffine` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ, each a QBS morphism. |
 | `QBS.Continuous.RealAffineAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RealAffine`, over [0, ∞]. |
 | `QBS.Continuous.RealDensity` | 88 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |
@@ -354,24 +355,23 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFiniteStrong` | 113 | lem | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 252 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
 | `QBS.Continuous.Sample` | 165 |  | Cantor space as a sample space: splitting into even and odd bits (the isomorphism ℛ ≅ ℛ × ℛ in QBS), and the unit interval [0,1] as a QBS whose random elements are the measurable functions. |
-| `QBS.Continuous.SgMoments` | 63 | lem | Finite samples of signed tests and their moment hypotheses (plan 05, items 46 and 50). |
-| `QBS.Continuous.SgSample` | 135 | lem | Unbiased estimators from moment hypotheses, for unbounded signed tests (plan 05, item 46). |
-| `QBS.Continuous.SgSampleAlg` | 53 | lem | Pointwise identities for sums of products of signed tests (plan 05, item 46; helper for `SgSample`). |
-| `QBS.Continuous.SgSampleRing` | 93 |  | Ring identities for the unbiased estimators of signed tests (plan 05, item 46; helper for `SgSampleAlg`, `SgSample`). |
-| `QBS.Continuous.SignedExpect` | 159 | lem | Expectations of signed tests against any s-finite measure (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedFubini` | 106 | lem | Fubini and independence for signed tests (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedInf` | 214 | lem | Signed values in (−∞, ∞] (plan 03, "Signed layer"; decided 2026-11-04). |
-| `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits` (plan 03, "Signed layer"): inequalities in an `OmegaSemiring` with finite elements. |
-| `QBS.Continuous.SignedLog` | 150 | lem | The logarithm as a signed value (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedMul` | 226 | lem | Products respect `≐` (plan 05, item 55b; helper for `RandomVectorLaw`; the twin of `SignedSq`). |
-| `QBS.Continuous.SignedSq` | 120 | lem | Squares respect `≐` (plan 03, "Information quantities"; helper for `SignedVar`). |
-| `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻ (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedTests` | 83 | lem | Bounded signed test functions on a QBS, and their pull-back along a random element to the ring of bounded signed random variables (`Analysis/BoundedRing`). |
-| `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API (plan 03, "Signed layer"). |
-| `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution (plan 03, "Information quantities"). |
-| `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (plan 03, "Information quantities"; helper for `SignedVar`). |
-| `QBS.Continuous.SignedVarRing` | 112 |  | Ring identities on parts of signed values over an abstract commutative semiring (plan 03, "Information quantities"; helper for `SignedVarAlg`). |
+| `QBS.Continuous.SgMoments` | 63 | lem | Finite samples of signed tests and their moment hypotheses. |
+| `QBS.Continuous.SgSample` | 135 | lem | Unbiased estimators from moment hypotheses, for unbounded signed tests. |
+| `QBS.Continuous.SgSampleAlg` | 53 | lem | Pointwise identities for sums of products of signed tests (used by `SgSample`). |
+| `QBS.Continuous.SgSampleRing` | 93 |  | Ring identities for the unbiased estimators of signed tests (used by `SgSampleAlg`, `SgSample`). |
+| `QBS.Continuous.SignedExpect` | 161 | lem | Expectations of signed tests against any s-finite measure. |
+| `QBS.Continuous.SignedFubini` | 106 | lem | Fubini and independence for signed tests. |
+| `QBS.Continuous.SignedInf` | 214 | lem | Signed values in (−∞, ∞]. |
+| `QBS.Continuous.SignedLimits` | 136 | lem | Limits of signed expectations. |
+| `QBS.Continuous.SignedLimitsAlg` | 91 | lem | Algebra behind `SignedLimits`: inequalities in an `OmegaSemiring` with finite elements. |
+| `QBS.Continuous.SignedLog` | 150 | lem | The logarithm as a signed value. |
+| `QBS.Continuous.SignedMul` | 226 | lem | Products respect `≐` (used by `RandomVectorLaw`; the twin of `SignedSq`). |
+| `QBS.Continuous.SignedSq` | 120 | lem | Squares respect `≐` (used by `SignedVar`). |
+| `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻. |
+| `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API. |
+| `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution. |
+| `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (used by `SignedVar`). |
+| `QBS.Continuous.SignedVarRing` | 112 |  | Ring identities on parts of signed values over an abstract commutative semiring (used by `SignedVarAlg`). |
 | `QBS.Continuous.Strong` | 189 | lem | Strength and commutativity of the continuous probability monad. |
 | `QBS.Continuous.SubModel` | 65 | lem | The sub-probability monad of the continuous model over the real values `[0,∞]`, with soft conditioning of the uniform distribution: draw `u ~ U[0,1]` and weight the run by `u`. |
 | `QBS.Continuous.SubProb` | 67 | lem | The sub-probability monad of the continuous model: the generic construction of `Continuous/Monad` instantiated with the class of all (mass ≤ 1) measures, with its strength and commutativity (Fubini), the failure measu... |
@@ -396,7 +396,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (a π–λ uniqueness theorem; `docs/UniquenessLit.md`). |
 | `QBS.Continuous.Weights` | 55 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
-| `QBS.Continuous.XLog` | 107 | lem | The pointwise inequalities behind Gibbs' inequality (plan 03, "Information quantities", helper for `KLDiv`). |
+| `QBS.Continuous.XLog` | 107 | lem | The pointwise inequalities behind Gibbs' inequality (used by `KLDiv`). |
 
 ## Examples
 
