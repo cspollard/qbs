@@ -107,3 +107,17 @@ The two headline results of the exponential-family block (conjugacy and N-draw s
 4. May `SignedSq` be removed in favour of `SignedMul`, and `RandomVectorLawAux` in favour of `SignedTransport.Ex-map`?
 5. Does anything outside the domain need `Entropy.densPre` by that name (so a rename to `withDensity` is cheap)?
 6. `SignedTests` vs `SignedTest`: rename now, before more `Inference.*` modules import it?
+
+## Implementation status (2026-11-08)
+
+Tiers A and B done in part; C, D and E not done (reasons below).
+
+- Rec. Documentation (§3), done: plan numbers removed from every header of the domain (replaced by "used by" links; the `ExpFamilyKL` mention is dropped); `SignedExpect`'s header says signed integration is the Jordan-decomposition integral and that `Ex-irr` is well-definedness; new `Interface.md` entries (exponential families, random vectors, sample estimators) and a `Guide.md` paragraph.
+- Rename `SignedTests` → `BoundedSignedTests` (module and inner module), 26 importers updated, done. Header says it is the bounded bridge, unrelated to `SgT`. Other §3 renames (`SgSample`, `XLog`, `ProdReweight`): skipped (churn without a reader benefit once the headers say what they are).
+- Rec. 2/4 (`FinTest` into `SignedTest`), done: `FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T` now live in `SignedTest`; `FinTest` deleted; the re-exports of `ExpFamilyAux`/`ExpFamilyPostAux` point to `SignedTest`.
+- Rec. 4 (`FinTs`), done: `SignedTest.FinTs T = ∀ j → FinT (T j)` replaces the 16 spelled-out hypotheses in `ExpFamily`, `ExpFamilyPost`, `ExpFamilyPostAux`. The `FinT-dotT`/`FinT-sumTⁿ` pair was not merged (different statements: one is `dotT`, the other the summed statistic).
+- Rec. 4 (`L²` alias): already present as `SignedVar.Int₂`; nothing to add. A record for `Int` was not tried (compile-time note).
+- Rec. 8 (`SignedSq` from `SignedMul`): skipped. The dependency runs the other way: `SignedMul` imports `sum-top`, `inL`, `inR` from `SignedSq`, so `SignedSq` cannot be deleted without moving those, and `SignedVar` and `GaussVarAux` would then import the heavier `SignedMul` (`InfAlg.TopMulPos`) just for `sq-cong`.
+- Rec. 2 (`Int-mul` twice), 3 (`comm-sums`), §5 (`Ex-law` = `Ex-map`): skipped as wrong or not exact, as global-cleanup found: `RandomVectorDefs.Int-mul` is an adapter on `Int₂` pairs; `Ex-law` is about `ιPre (mapPre h P)`, and `Ex-map` about `mapM h p`.
+- Rec. 5 and tier D (`withDensity`): skipped. Agent 8 did not create a `withDensity` (it documented `DensityDist.densDist` as the recipe and left `expDist` alone), so there is no shared name to adopt; `Entropy.densPre μ p = reweightPre p μ` is already the single operation (11 uses), and moving `ProdReweight`/the composition lemma into `SFiniteReweight` would change the `continuous-core` import graph for no proof gain.
+- Rec. 1 and tier E (merging `*Alg`/`*Aux` helpers, the `via-cross`/`via-sums` transport, `LogRecip` into `NegExp`, primed names): not done (budget). The merge candidates and the solver-isolation caveat stand as written in §4.

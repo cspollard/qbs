@@ -137,5 +137,5 @@ Agent 0 (`global-cleanup`), one commit per item or group.  Every module touched 
 5. **Signed duplicates: wrong.**  `RandomVectorDefs.Int-mul` is an adapter taking `Int₂` pairs and passing the second components
    to `RandomVectorAlg.Int-mul`, not a re-statement.  `RandomVectorLawAux.Ex-law` is about `ιPre (mapPre h P)`, while
    `SignedTransport.Ex-map` is about `mapM h p`; they differ and linking them needs `ι-nat` and `Ex-≈`.  Both left for
-   `continuous-signed-info`.
+   `continuous-signed-info`, which confirmed the same and left both alone (see `continuous-signed-info.md`, status).
 6. **`smallprod`: done**, now in `RationalLemmas`.
