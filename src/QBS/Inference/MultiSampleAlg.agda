@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Observations of iid random vectors, transported along their law (plan 05, item 54; helper for `MultiSample`).  For a
+-- Observations of iid random vectors, transported along their law (helper for `MultiSample`; plan 05 item 54).  For a
 -- probability law ν on Y, observations Xs : Fin n → Ω ⇒ Y iid with law ν under a probability P on Ω, and signed tests
 -- u, v on Y with finite second moments (`Obs`, with `Pair` for the two tests):
 --   * `Tint`, `Tint₂`, `Tex`, `Tcov`: integrability and expectations of u ∘ Xₖ and (u v) ∘ Xₖ are those of u and u v

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and
+-- Pointwise and N(0, s²) facts behind the variance of N(μ, s²) in `GaussVar` (plan 03 "Information quantities"), for finite s, l (s l ≈ 1) and
 -- finite μ ≥ 0.
 --   * `Lq`: Q2 ∘ shift ∘ refl ∘ shift ≈ Q2 pointwise on RQ (so (x ↦ x − μ) ∘ (x ↦ x + μ) is the identity for Q2), by cases on
 --     the point and on x ≤ μ with `Monus.monus-add`, `monus-zero`, `monus-+` and `BoundedCancel.cancel-bnd`;

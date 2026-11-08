@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05, item 50).  On a probability P on Ω:
+-- Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05 item 50 in `plans/`).  On a probability P on Ω:
 --   * `a ≤ᵛ x`: a value a ∈ [0, ∞] below a signed value x, cross-added (a + x⁻ ≤ x⁺); respects `≃` (`≤ᵛ-cong`);
 --   * `geW c`, the indicator of [c, ∞] on [0, ∞] (1 when c ≤ x, 0 otherwise), monotone, so a test `geH c`
 --     (`MonoTest.monoH`) with no measurability proof;

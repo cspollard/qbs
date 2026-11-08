@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Scaled symmetric distributions on the real line, and N(0, s²) (plan 03, "Tests and the real line").
+-- Scaled symmetric distributions on the real line, and N(0, s²) (plan 03 "Tests and the real line").
 -- For s, l finite with s l ≈ 1 (l = 1/s):
 --   * `push-sym`: the pushforward of `RealDensity.Sym.symDist d` along x ↦ s x (`RealScale.scaleRH s`) integrates every
 --     test like the symmetric distribution with the scaled density `scD d = y ↦ l d(l y)` (`ScaleDensity.scD`), with the

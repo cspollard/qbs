@@ -154,6 +154,25 @@ Signed values and signed integrals (plan 2, step 1). No cancellation or classica
 - `ContinuousSub` (`SubProb`) — the sub-probability monad; `scoreH` — soft conditioning by a measurable likelihood in `[0,1]`.
 - `QBS.Analysis.Cone` (`Cone A`) — measures as a cone: `zeroM`, `scaleM c c≤1 μ`, `addM μ₁ μ₂ (mass μ₁ + mass μ₂ ≤ 1)`; `Mixture.mix` is `addM` of two `scaleM`s.
 
+### Inference: read first
+The `QBS.Inference.*` modules (statistics on top of the discrete and continuous models) fall into four strands. Start here.
+
+| want | read first |
+|---|---|
+| expectation of a signed or unbounded statistic | `Inference.ExpectationInt` (`E-atᴵ`); bounded tests: `Inference.Expectation` (`E-at`) |
+| independence, `E[f(X)g(Y)] = E f · E g` | `Inference.ExpectationProduct`, `ExpectationIntProduct` |
+| change of variables, `E_{f∗p} g = E_p (g∘f)` | `Inference.PushforwardExpectation` |
+| Bayes' rule and posteriors | `Inference.CoinPosterior` (`posterior`, `bayes`, general for s-finite measures) and `Example.Bayes` (discrete) |
+| conjugacy for exponential families | `Inference.ExpFamily` (discrete) and `Continuous.ExpFamilyPost` (continuous) |
+| conditionally iid kernels, coin with unknown bias | `Inference.CondIID`, `CondIIDCoin`, `CoinUniformPriorN` |
+| unbiased estimators, Chebyshev, weak law of large numbers | `Inference.Frequentist`, `Sampler`, `IIDLaw`, `WeakLaw` |
+| exponential and half-normal moments | `Inference.ExpMomentN`, `HalfNormal`, `HalfNormalMean` |
+| Gaussian laws | `Inference.GaussShift`, `GaussVar`, `GaussVectorLaw` |
+
+Strands: expectation calculus (`Expectation*`, `Domination`, `Poly*`), named distributions (`Exp*`, `Gauss*`, `HalfNormal*`), Bayesian
+inference (`Bayesian`, `ExpFamily`, `Coin*`, `CondIID*`) and frequentist inference (`Frequentist`, `Sampler`, `Uniform*`, `IIDLaw`,
+`MultiSample*`, `WeakLaw*`).  Module headers cite the plan item in `plans/` only after the theorem they prove.
+
 ### `QBS.Continuous.BoundedSignedTests`, `QBS.Inference.ExpectationResp`, `QBS.Inference.Expectation`, `QBS.Inference.ExpectationProduct`, `QBS.Inference.ExpectationInt`, `QBS.Inference.ExpectationIntProduct`, `QBS.Inference.ExpectationExamples`, `QBS.Inference.BoolDist`, `QBS.BoolQ`, `QBS.Inference.CoinUniformPrior`, `QBS.Inference.CoinPosterior`, `QBS.Inference.CoinUniformPriorN`, `QBS.Inference.BernHalf`, `QBS.Inference.CoinBayesRisk`
 Expectations of bounded signed statistics under the monad's measures (module parameter `lem₁ : LEM₁`).
 - `STest X` (`BoundedSignedTests`) — a bounded signed test `pos − neg` (parts `Hom X CutQ`, common natural bound); `pullback`; `E-at p g` (`ExpectationResp`) — its expectation under `p : Pre X`, a signed value; `E-resp` — `p ≈ᵖ q → E-at p g ≃ E-at q g`.

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05, item 50).
+-- Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05 item 50).
 --   * `cong-≤`: a + y⁻ ≤ y⁺ from a + x⁻ ≤ x⁺ and x ≃ y (add the finite x⁻ + k, cancel with `SignedLimitsAlg.cancel-le`);
 --   * `natS-parts`: the parts of the signed natural n are nat n and 0;
 --   * `rate-alg`: from (N e)² ∫χ ≤ᵛ N σ² (N = nat (m + 1)) to N e² ∫χ ≤ᵛ σ², cancelling N (`NatCancel.cancel-nat`).

@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring identities for samples of random vectors (plan 05, item 54; helper for `MultiSample`), over an abstract
+-- Ring identities for samples of random vectors (helper for `MultiSample`; plan 05 item 54), over an abstract
 -- commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`.
 --   * `nt n`, the natural number n in the ring; `Σ-const`: Σᵢ x = n x;
 --   * `dbl`: a double sum Σᵢ Σⱼ Eᵢⱼ with Eᵢᵢ = e and Eᵢⱼ = m for i ≢ j is N e + (N² − N) m, for N ≈ n;

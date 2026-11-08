@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The posterior as an actual distribution: Bayes' rule by reweighting and normalising
--- (`plans/03-bayesian-frequentist.md`).
+-- Bayes' rule for s-finite measures (the general `posterior` and `bayes`), with the Beta(2,1) coin example: the posterior as an
+-- actual distribution, by reweighting and normalising (`plans/03-bayesian-frequentist.md`).
 --
 --   * Bayes' rule in general: for a prior `p : C.Pre Θ` and a likelihood `ℓ : Θ ⇒ WQ`, the unnormalised posterior is
 --     `reweightPre ℓ (ιPre p)` (`Continuous/SFiniteReweight`), of mass `∫ ℓ dp` (`massP-rw`); given `(∫ ℓ dp) * n ≈ 1`

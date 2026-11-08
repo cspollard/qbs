@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03, "Translation and
+-- The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03 "Translation and
 -- products").  `gaussμ = mapPre (x ↦ x + μ) (GaussScale.gaussσ)` for μ ≥ 0 and `gaussμ⁻` with x ↦ x − μ, so
 --   * `∫-gaussμ f : ∫ f dN(μ, s²) ≈ ∫ f(x + μ) dN(0, s²)` (`SFiniteIncl.ι-nat`, `SFinite.∫ᴹ-map`);
 --   * the mean without subtraction: `mean : E[X⁺] ≈ μ + E[X⁻]` (X⁺ = `Xp`, X⁻ = `Xn` of `GaussReal`), and

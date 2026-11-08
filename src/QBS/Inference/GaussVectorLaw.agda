@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55).  On a probability P on Ω:
+-- The law of a Gaussian vector as a measure on RQᵐ, with the affine rule Cov(AZ+b) = A Cov Z Aᵀ (plan 05 item 55).  On a probability P on Ω:
 --   * `coordT n i = idT ∘ projᵢ`, the coordinates on RQⁿ, and the law of A Z + b for any map Z : Ω ⇒ RQⁿ whose coordinates
 --     form a random vector (`affLaw`, the push-forward along `RealAffine.affRH A b ∘ Z`): its coordinates are a random vector
 --     (`affLaw-RV`) with mean A mean(Z) + b (`affLaw-mean`) and covariance A Cov(Z) Aᵀ (`affLaw-cov`), the affine rule of

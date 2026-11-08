@@ -220,6 +220,10 @@ proves that the sample mean and the sample variance are unbiased. See `Interface
 
 ## 6. Estimators and inference
 
+- **Where to start** (full table in `Interface.md`, "Inference: read first"): Bayes' rule is `Inference.CoinPosterior`
+  (`posterior`, `bayes`) and `Example.Bayes`; conjugacy for exponential families is `Inference.ExpFamily` (discrete) and
+  `Continuous.ExpFamilyPost` (continuous); `Inference.CondIID` and `CondIIDCoin` give conditionally iid observations;
+  `Inference.IIDLaw` and `WeakLaw` give the moments of iid sums, Chebyshev and the weak law of large numbers.
 - **Frequentist** (`Inference.Frequentist`): an `Experiment Θ` gives observations for each parameter; a statistic is a
   ring term in them; `bias`, `variance` and `mse` use the signed expectation. `sample-mean-unbiased` and
   `sample-variance-unbiased` hold generically. `Inference.UniformExperiment` and `Inference.Sampler`

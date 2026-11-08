@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables").
+-- Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03 "Change of variables").
 -- For c, l finite with c l ≈ 1 and a normalised density g:
 --   * `push-dens : ∫ (mapPre (x ↦ c x) (densDist g)) f ≈ ∫ (densDist (y ↦ l g(l y))) f`  for every test f; proof:
 --     ∫ g(x) f(c x) dx = c ∫ l g(l c x) f(c x) dx = ∫ l g(l y) f(y) dy, which is `LebesgueScale.∫-scale` at c;

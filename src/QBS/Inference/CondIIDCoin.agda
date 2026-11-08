@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05, items 48–49).  The
+-- The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05 items 48–49).  The
 -- hand-built kernel `CoinUniformPriorN.Kn n : AQ ⇒ T (Fl n)` of the probability monad, moved to the s-finite measures
 -- (`SFiniteIncl.ιH`) and to Boolⁿ⁺¹ (`flat`, Fl n ≅ ΠQ (n + 1) Bool):
 --   * `KnS n`, θ ↦ the n + 1 flips, is conditionally iid with the one-flip kernel `coinK` (`Kn-iid`):

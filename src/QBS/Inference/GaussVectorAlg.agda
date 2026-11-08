@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Ring-level lemmas on the identity matrix and matrix congruences (plan 05, item 53; helper for `GaussVector`).
+-- Ring-level lemmas on the identity matrix and matrix congruences (helper for `GaussVector`; plan 05 item 53).
 --   * `idM-diag`, `idM-off`, `idM-sym`: the entries of `idM` (1 on the diagonal, 0 off it, symmetric);
 --   * `*M-idM`: A I ≈ A; `*Mv-0`: A 0 ≈ 0; `*Mv-cong`, `*M-cong`: congruence of the products in their arguments;
 --   * `var-cancel`, `unvar`: (v + m m) − m m ≈ v and (x − e e) + e e ≈ x, relating variance and second moment;

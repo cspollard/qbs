@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Multiplicative exponential families in the discrete model (plan 07, item 57; generalising `Bayesian.Bernoulli`).
+-- Conjugacy for multiplicative exponential families in the discrete model, generalising `Bayesian.Bernoulli`
+-- (plan 07 item 57 in `plans/`).
 -- For parameters θ in Θ with natural parameters θⱼ, normaliser c(θ), base weight h(x), and statistic T(x) : Fin k → ℕ:
 --   * `lik1 x θ = h x * (∏ⱼ θⱼ^{Tⱼ(x)} * c(θ))`, the likelihood of a single draw;
 --   * `likSeq xs`, product likelihood of independent draws;

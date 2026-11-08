@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- A constant test integrates to the constant times the mass (plan 05, item 48 helper):
+-- A constant test integrates to the constant times the mass:
 --   `∫-constW`: ∫ c dq ≈ c · ∫ 1 dq, for an s-finite measure q (compare `SFiniteSum.∫ᴹ-scale`).
 -- Used by `CondIID.joint-fst`.
 -- Route: `J-cong` pointwise on the samples (w · c ≈ (c · w) · 1) against `scalePre c q`, then `∫ᴹ-scale`.

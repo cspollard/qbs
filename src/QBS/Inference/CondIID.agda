@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Conditionally iid observations given a parameter (plan 05, item 48).  For a kernel K : Θ ⇒ T X of s-finite measures
+-- Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`).  For a kernel K : Θ ⇒ T X of s-finite measures
 -- (`SFinite.TQ`):
 --   * `ψH`, Kock's double strength T X × T Y ⇒ T (X × Y) as a morphism, agreeing with `Product.prodPre` (`ψ-at`);
 --   * the kernel power `kpow n K : Θ ⇒ T (Xⁿ)`, θ ↦ (K θ)^{⊗n} (`ψH` against `kpow`, ending in δ on 1);

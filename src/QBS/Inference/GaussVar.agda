@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities").  For finite s, l (s l ≈ 1)
+-- The variance of N(μ, s²) under the measure itself (plan 03 "Information quantities").  For finite s, l (s l ≈ 1)
 -- and finite μ ≥ 0, with `gaussμ` (mean μ) and `gaussμ⁻` (mean −μ) from `Inference/GaussShift`:
 --   * centred second moments as values in [0, ∞]: ∫ (x − μ)² dN(μ, s²) ≈ s² (`cvar`) and ∫ (x + μ)² dN(−μ, s²) ≈ s²
 --     (`cvar⁻`);

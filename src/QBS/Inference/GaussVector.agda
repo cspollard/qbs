@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Gaussian vectors (plan 05, item 53).  On a probability P on Ω:
+-- Gaussian vectors: mean and covariance of iid coordinates, and their affine images (plan 05 item 53 in `plans/`).  On a probability P on Ω:
 --   * for an iid family Zs : Fin n → Ω ⇒ Y with law μ and a signed test f with mean m and variance v under μ, the
 --     coordinates f ∘ Zᵢ (`IIDLaw.obs`) form a random vector (`RV-iid`, `Continuous/RandomVector`) with mean vector
 --     (m, …, m) (`mean-iid`), covariance v I (`cov-iid`) and E Σᵢ (f ∘ Zᵢ)² ≃ n (v + m²) (`norm2-iid`); the affine image

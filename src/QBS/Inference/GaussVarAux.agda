@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Generic helpers for `GaussVar` (plan 03, "Information quantities"): signed tests with a vanishing part, and
+-- Generic helpers for `GaussVar` (plan 03 "Information quantities"): signed tests with a vanishing part, and
 -- push-forward of expectations.
 --   * `norm-le`: a + d ≈ c + b with b ≈ 0 or a ≈ 0 gives a + b ≤ c + d; `Int-norm`: if f ≐ g with g integrable and one part
 --     of f zero at every point, then f is integrable (`Int-dom` against g⁺ + g⁻);

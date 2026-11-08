@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The estimator theorems for iid families (plan 05, item 46b).  On a probability P on Ω, for an iid family
+-- Moments of sums of iid draws: E Sₙ = n m, Var Sₙ = n s (plan 05 item 46b in `plans/`).  On a probability P on Ω, for an iid family
 -- Xs : Fin n → Ω ⇒ Y with law μ (`Continuous/IID`) and a signed test f with ∫ f ≃ m and ∫ f² ≃ s + m² under μ, the
 -- observations f ∘ Xᵢ (`obs`) satisfy the moment hypotheses (`mom`, which is `IID.IID-moments`), so:
 --   * E Sₙ ≃ n m (`iid-mean`), Var Sₙ ≃ n s (`iid-var`), E (n Qₙ − Sₙ²) ≃ (n² − n) s (`iid-ss`);

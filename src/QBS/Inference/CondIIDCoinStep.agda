@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- One step of the coin kernel through the inclusion into s-finite measures (plan 05, item 48a helper).
+-- One step of the coin kernel through the inclusion into s-finite measures (helper for `CondIIDCoin`; plan 05 item 48a).
 --   * `nextK-ι`: for K : AQ ⇒ T F of the probability monad, the law `nextK K θ` (one more flip in front, then the flips
 --     of K) integrates, through `SFiniteIncl.ιPre`, like the iterated integral over the first flip b ~ coinKernel θ of
 --     ∫ h(b, ·) dK(θ), the s-finite product of `coinKernel θ` and `K θ` in the order of `Product.∫-prod′`.

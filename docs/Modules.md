@@ -35,19 +35,19 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.BoolDist` | 348 | lem | Bernoulli(½) on a genuine Boolean QBS (`QBS.BoolQ`, `BoolQ = 1Q +Q 1Q`), in which indicators are measurable. |
 | `QBS.Inference.CoinBayesRisk` | 382 | lem | The decision-theoretic bridge: Bayes risk of two estimators of a coin's bias, under a uniform prior on θ (`plans/03-bayesian-frequentist.md`, 3e). |
 | `QBS.Inference.CoinBias` | 77 | lem | A worked Bayesian example with numbers: is the coin fair or two-headed?  The prior is a fair coin flip between the two hypotheses (`true` = two-headed, `false` = fair); the data is one head, with likelihood 1 under "t... |
-| `QBS.Inference.CoinPosterior` | 224 | lem | The posterior as an actual distribution: Bayes' rule by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
+| `QBS.Inference.CoinPosterior` | 224 | lem | Bayes' rule for s-finite measures (the general `posterior` and `bayes`), with the Beta(2,1) coin example: the posterior as an actual distribution, by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 225 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 214 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
-| `QBS.Inference.CondIID` | 138 | lem | Conditionally iid observations given a parameter (plan 05, item 48). |
-| `QBS.Inference.CondIIDCoin` | 145 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05, items 48–49). |
-| `QBS.Inference.CondIIDCoinStep` | 73 | lem | One step of the coin kernel through the inclusion into s-finite measures (plan 05, item 48a helper). |
-| `QBS.Inference.CondIIDConst` | 39 | lem | A constant test integrates to the constant times the mass (plan 05, item 48 helper): `∫-constW`: ∫ c dq ≈ c · ∫ 1 dq, for an s-finite measure q (compare `SFiniteSum.∫ᴹ-scale`). |
+| `QBS.Inference.CondIID` | 138 | lem | Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`). |
+| `QBS.Inference.CondIIDCoin` | 145 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05 items 48–49). |
+| `QBS.Inference.CondIIDCoinStep` | 73 | lem | One step of the coin kernel through the inclusion into s-finite measures (helper for `CondIIDCoin`; plan 05 item 48a). |
+| `QBS.Inference.CondIIDConst` | 39 | lem | A constant test integrates to the constant times the mass: `∫-constW`: ∫ c dq ≈ c · ∫ 1 dq, for an s-finite measure q (compare `SFiniteSum.∫ᴹ-scale`). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 75 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.ExpDistPair` | 138 | lem | Two independent exponential draws, through the product law `E-atᴵ-⊗` of `Inference/ExpectationIntProduct`. |
 | `QBS.Inference.ExpDistVar` | 89 | lem | The second moment and the variance of the exponential distribution through the expectation API of `Inference/ExpectationInt` (continuing `Inference/ExpDistMean`). |
-| `QBS.Inference.ExpFamily` | 381 |  | Multiplicative exponential families in the discrete model (plan 07, item 57; generalising `Bayesian.Bernoulli`). |
+| `QBS.Inference.ExpFamily` | 382 |  | Conjugacy for multiplicative exponential families in the discrete model, generalising `Bayesian.Bernoulli` (plan 07 item 57 in `plans/`). |
 | `QBS.Inference.ExpMomentN` | 79 | lem | Every moment of the exponential distribution through the expectation API: `E[Xⁿ] ≃ n!` under `densDist negExpH`. |
 | `QBS.Inference.ExpPushforward` | 155 | lem | The exponential distribution with scale `c` as a pushforward of Exp(1), with no new integral (item B of `plans/03`). |
 | `QBS.Inference.ExpPushforwardAgree` | 97 | lem | Validation of the dyadic scaling (`Continuous/HalfLineScale`): the pushforward Exp(c = ½) of `Inference/ExpPushforward` and the density distribution of `2 e^{−2x}` have the same integral for every non-negative test `f... |
@@ -63,32 +63,32 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussAffine` | 70 | lem | The Gaussian N(μ, σ²) from the standard one by the affine statistic `x ↦ μ + σx` (item B of `plans/03`), with no new integral. |
 | `QBS.Inference.GaussReal` | 213 | lem | The standard Gaussian on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`), with `E[X] ≃ 0` and `E[X²] ≃ 1`, and no value for `π` (nor for `Z = ∫₀^∞ e^{−x²/2}`): the density is the symmetric `[φ , φ]`, `φ = ... |
 | `QBS.Inference.GaussRealAbs` | 98 | lem | The Gaussian absolute moment on the real line: `E\|X\| ≃ n′ (1 + 1)`, where `n′ = n · ½` is the normaliser of `gaussR` (`(Z + Z) · n′ ≈ 1`, `Inference/GaussReal`), so `(Z + Z) · E\|X\| ≃ 2` (`√(2/π)` classically). |
-| `QBS.Inference.GaussScale` | 132 | lem | Scaled symmetric distributions on the real line, and N(0, s²) (plan 03, "Tests and the real line"). |
-| `QBS.Inference.GaussShift` | 227 | lem | The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03, "Translation and products"). |
-| `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03, "Information quantities"). |
-| `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03, "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
-| `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind `GaussVar` (plan 03, "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
-| `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors (plan 05, item 53). |
-| `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (plan 05, item 53; helper for `GaussVector`). |
-| `QBS.Inference.GaussVectorLaw` | 161 | lem | The law of a Gaussian vector as a measure on RQᵐ (plan 05, item 55). |
+| `QBS.Inference.GaussScale` | 132 | lem | Scaled symmetric distributions on the real line, and N(0, s²) (plan 03 "Tests and the real line"). |
+| `QBS.Inference.GaussShift` | 227 | lem | The Gaussian N(μ, s²) on the real line for every finite mean μ and scale s, and its mean (plan 03 "Translation and products"). |
+| `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03 "Information quantities"). |
+| `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03 "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
+| `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind the variance of N(μ, s²) in `GaussVar` (plan 03 "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
+| `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors: mean and covariance of iid coordinates, and their affine images (plan 05 item 53 in `plans/`). |
+| `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (helper for `GaussVector`; plan 05 item 53). |
+| `QBS.Inference.GaussVectorLaw` | 161 | lem | The law of a Gaussian vector as a measure on RQᵐ, with the affine rule Cov(AZ+b) = A Cov Z Aᵀ (plan 05 item 55). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
-| `QBS.Inference.IIDLaw` | 127 | lem | The estimator theorems for iid families (plan 05, item 46b). |
-| `QBS.Inference.MultiSample` | 118 | lem | Samples of random vectors (plan 05, item 54). |
-| `QBS.Inference.MultiSampleAlg` | 149 | lem | Observations of iid random vectors, transported along their law (plan 05, item 54; helper for `MultiSample`). |
-| `QBS.Inference.MultiSampleRing` | 94 |  | Ring identities for samples of random vectors (plan 05, item 54; helper for `MultiSample`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
+| `QBS.Inference.IIDLaw` | 127 | lem | Moments of sums of iid draws: E Sₙ = n m, Var Sₙ = n s (plan 05 item 46b in `plans/`). |
+| `QBS.Inference.MultiSample` | 118 | lem | Samples of random vectors: sample mean and covariance estimators (plan 05 item 54 in `plans/`). |
+| `QBS.Inference.MultiSampleAlg` | 149 | lem | Observations of iid random vectors, transported along their law (helper for `MultiSample`; plan 05 item 54). |
+| `QBS.Inference.MultiSampleRing` | 94 |  | Ring identities for samples of random vectors (helper for `MultiSample`; plan 05 item 54), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
 | `QBS.Inference.PolyDominationOdd` | 109 | lem | Polynomial domination of every degree under the half-normal (extends `Inference/PolyDomination`, which has even degree only). |
 | `QBS.Inference.ProductMarginals` | 240 | lem | Marginals of the product measure `p ⊗ᵖ q` (`Inference/ExpectationProduct`), and the sum of two exponential draws. |
 | `QBS.Inference.PushforwardExpectation` | 84 | lem | Expectations of pushforwards are expectations of composites, through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Sampler` | 174 | lem | Statistical models as samplers, and the bridge to the frequentist layer (`plans/03-bayesian-frequentist.md`, "3c in detail"). |
-| `QBS.Inference.ScaleDensity` | 125 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03, "Change of variables"). |
+| `QBS.Inference.ScaleDensity` | 125 | lem | Pushforwards of density distributions under scaling, for every finite invertible scale (plan 03 "Change of variables"). |
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 58 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 93 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
-| `QBS.Inference.WeakLaw` | 155 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05, item 50). |
-| `QBS.Inference.WeakLawAlg` | 69 | lem | Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05, item 50). |
-| `QBS.Inference.WeakLawCheb` | 69 | lem | The core of Chebyshev's inequality about any centre c ≃ E g (plan 05, item 50; helper for `Inference/WeakLaw`). |
+| `QBS.Inference.WeakLaw` | 155 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05 item 50 in `plans/`). |
+| `QBS.Inference.WeakLawAlg` | 69 | lem | Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05 item 50). |
+| `QBS.Inference.WeakLawCheb` | 69 | lem | The core of Chebyshev's inequality about any centre c ≃ E g (helper for `Inference/WeakLaw`; plan 05 item 50). |
 | `QBS.Instance` | 48 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
 | `QBS.IntegralMonad` | 222 |  | A monad on quasi-Borel spaces presented by its integral. |
 | `QBS.IsQBSLike` | 36 |  | `IsQBSLike ℓ C`: what a category `C` must provide for QBS-style probabilistic programming: cartesian closure (higher-order programs), binary and ℕ-indexed coproducts (branching, discrete data), ℕ-indexed products (inf... |

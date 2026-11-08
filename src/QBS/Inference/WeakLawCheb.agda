@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- The core of Chebyshev's inequality about any centre c ≃ E g (plan 05, item 50; helper for `Inference/WeakLaw`).
+-- The core of Chebyshev's inequality about any centre c ≃ E g (helper for `Inference/WeakLaw`; plan 05 item 50).
 --   * `Ex-dev`: E (g − c)² ≃ Var g when c ≃ E g (`SignedVar.Ex-cen`, then the ring identity of `Var-cen`);
 --   * `chebyshev-at`: if e² χ + (g − c)²⁻ ≤ (g − c)²⁺ pointwise, then e² ∫χ + Var⁻ ≤ Var⁺ (i.e. e² ∫χ ≤ᵛ Var g).
 -- Route: `SignedExpect.Ex-mono` on fromW (e² χ) and (g − c)², with `Product.cmul` and `Dominated.prob-mass`, then

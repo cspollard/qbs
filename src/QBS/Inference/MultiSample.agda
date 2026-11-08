@@ -1,6 +1,6 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Samples of random vectors (plan 05, item 54).  For a probability law ν on Y and d features F : Fin d → SgT Y with
+-- Samples of random vectors: sample mean and covariance estimators (plan 05 item 54 in `plans/`).  For a probability law ν on Y and d features F : Fin d → SgT Y with
 -- finite second moments under ν (`RandomVector.RV`; population mean vector `meanV ν d F` and covariance matrix
 -- `covM ν d F`), and observations Xs : Fin n → Ω ⇒ Y iid with law ν under a probability P on Ω (`Continuous/IID`):
 --   * each observed vector Xₖ = F ∘ Xs k (`obsV`) is a random vector with the population mean and covariance
