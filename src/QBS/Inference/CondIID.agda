@@ -17,8 +17,7 @@
 -- from `∫ᴹ-join`, `∫ᴹ-map` and `FinProd.margⁿ` pointwise in θ.
 module QBS.Inference.CondIID where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Fin.Base using (Fin)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
 open import Function.Bundles using (_⟨$⟩_)

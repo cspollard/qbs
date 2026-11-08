@@ -8,7 +8,6 @@
 -- Route: `Int-mul` is `RandomVectorAlg.Int-mul` (`SignedExpect.Int-dom` with the dominating test f² + g²).
 module QBS.Continuous.RandomVectorDefs where
 
-open import Data.Nat.Base using (ℕ)
 open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (proj₁; proj₂)
 

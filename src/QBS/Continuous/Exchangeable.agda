@@ -15,14 +15,14 @@
 -- (the projection to coordinate k after the swap is the projection to k + 1), `ProdMap.mapM-comp` and `mapM-ext`.
 module QBS.Continuous.Exchangeable where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Fin.Base using (Fin; zero; suc; inject₁)
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (proj₂)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import QBS.Core
-open import QBS.Limits using (_×Q_; fstQ; sndQ; pairQ)
+open import QBS.Limits using (fstQ; sndQ; pairQ)
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)

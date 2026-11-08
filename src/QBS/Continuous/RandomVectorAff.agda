@@ -9,8 +9,6 @@
 -- (f + c)(g + d) and (c f)(d g); the double-sum arithmetic is `RandomVectorSumRing.var-sum-ring` and `cov-ring`.
 module QBS.Continuous.RandomVectorAff where
 
-open import Data.Nat.Base using (ℕ)
-open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 
 open import QBS.Core

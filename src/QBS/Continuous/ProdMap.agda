@@ -9,7 +9,6 @@
 module QBS.Continuous.ProdMap where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Product.Base using (_,_)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import QBS.Core

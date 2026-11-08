@@ -12,7 +12,7 @@ module QBS.Analysis.CoinIntegral where
 import Level as L
 import Data.Nat.Properties as ℕₚ
 open import Level using (Lift; lift)
-open import Data.Bool.Base using (Bool; true; false)
+open import Data.Bool.Base using (true)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)

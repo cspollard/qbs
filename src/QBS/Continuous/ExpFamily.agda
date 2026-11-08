@@ -30,7 +30,7 @@ module QBS.Continuous.ExpFamily where
 
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_; proj₂)
 open import Data.Unit.Polymorphic.Base using (tt)
 open import Function.Bundles using (Func; _⟨$⟩_)
 

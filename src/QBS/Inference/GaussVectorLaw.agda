@@ -16,18 +16,15 @@
 -- covariance term is ever compared; unify only through the lemmas); `Nᴬ-mass` is `ProdBridge.ι-mass`.
 module QBS.Inference.GaussVectorLaw where
 
-open import Data.Nat.Base using (ℕ)
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Fin.Base using (Fin)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
-open import QBS.Limits using (_×Q_)
 open import QBS.Analysis.Omega using (module OmegaSemiring)
 open import QBS.Analysis.CoinIntegral using (lemOf)
 open import QBS.Analysis.Lebesgue using (module Lebesgue)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
-open import Data.Product.Base using (proj₁)
 open import QBS.Analysis.SignedOmega using (module Bounded)
 open import QBS.Analysis.SgLinAlg using (module SgLinAlg)
 open import QBS.Continuous.Sample using (S)

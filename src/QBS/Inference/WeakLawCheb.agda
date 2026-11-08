@@ -8,7 +8,7 @@
 module QBS.Inference.WeakLawCheb where
 
 open import Function.Bundles using (_⟨$⟩_)
-open import Data.Product.Base using (proj₁; proj₂)
+open import Data.Product.Base using (proj₁)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)

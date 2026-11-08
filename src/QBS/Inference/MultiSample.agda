@@ -18,7 +18,6 @@
 -- identity (`MultiSampleRing`), packaged as `MultiSampleAlg.Pair.cov-sum-eq`, `ss-eq`.
 module QBS.Inference.MultiSample where
 
-open import Data.Nat.Base using (ℕ)
 open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (proj₁)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)

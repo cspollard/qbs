@@ -12,7 +12,6 @@ module QBS.Continuous.RandomVectorSumRing where
 
 open import Algebra using (CommutativeRing)
 open import Data.Fin.Base using (Fin)
-open import Data.Nat.Base using (ℕ)
 import Algebra.Properties.Ring
 import Algebra.Properties.AbelianGroup
 import Algebra.Solver.Ring.NaturalCoefficients.Default as Solver

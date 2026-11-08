@@ -12,7 +12,7 @@
 -- its law is the embedding (`ProdMap.mapM-ext`, `∫ᴹ-map`), then `ι-prodⁿ`.
 module QBS.Continuous.FinProdProb where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Product.Base using (_,_)
 open import Function.Bundles using (_⟨$⟩_)

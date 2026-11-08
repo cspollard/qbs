@@ -12,7 +12,6 @@
 module QBS.Continuous.ExpFamilyPostAlg where
 
 open import Algebra.Bundles using (CommutativeRing)
-open import Data.Fin.Base using (Fin)
 open import Data.Nat.Base using (ℕ; suc)
 import Data.Nat.Base as Nat
 

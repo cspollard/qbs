@@ -7,7 +7,7 @@
 -- by monotonicity and associativity of `*`.
 module QBS.Continuous.NatCancel where
 
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

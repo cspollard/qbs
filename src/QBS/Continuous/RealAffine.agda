@@ -41,8 +41,8 @@ open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
 open import QBS.Colimits using (_+Q_; Piece; ev)
-open import QBS.Limits using (_×Q_; 1Q; fstQ; sndQ; pairQ)
-open import QBS.Borel.Core using (Pred; Partition; Borel; resp; union₂; inter₂)
+open import QBS.Limits using (_×Q_; fstQ; sndQ; pairQ)
+open import QBS.Borel.Core using (Pred; Borel; resp; union₂; inter₂)
 open import QBS.Analysis.LevelSets using (module LevelSets)
 open import QBS.Analysis.LowerReals using (Cut; module Cut; _⊑_)
 open import Data.Rational.Unnormalised.Base using (_<_) renaming (_+_ to _+q_)

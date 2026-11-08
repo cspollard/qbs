@@ -8,7 +8,6 @@ module QBS.Continuous.JoinKernel where
 
 import Level as L
 open import Level using (lower)
-open import Function.Bundles using (_⟨$⟩_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Borel.Core using (Measurable; measurable-∘)

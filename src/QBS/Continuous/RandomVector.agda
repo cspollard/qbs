@@ -19,9 +19,7 @@
 module QBS.Continuous.RandomVector where
 
 open import Algebra using (CommutativeRing)
-open import Data.Nat.Base using (ℕ)
-open import Data.Fin.Base using (Fin)
-open import Data.Product.Base using (proj₁; proj₂)
+open import Data.Product.Base using (proj₁)
 open import Relation.Binary.PropositionalEquality.Core using (_≢_)
 
 open import QBS.Core

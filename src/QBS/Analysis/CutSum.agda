@@ -13,7 +13,7 @@ import Level as L
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Sum.Properties using (inj₁-injective; inj₂-injective)
-open import Data.Bool.Base using (Bool; true; false)
+open import Data.Bool.Base using (true)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Rational.Unnormalised.Base using (_+_; _*_; _<_; _≤_)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; sym; trans; cong)

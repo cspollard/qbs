@@ -7,7 +7,7 @@
 -- Route: ring identities by the natural-coefficient solver, with the parts of N σ² computed by `natS-parts`.
 module QBS.Inference.WeakLawAlg where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 
 open import QBS.Classical using (LEM₁)

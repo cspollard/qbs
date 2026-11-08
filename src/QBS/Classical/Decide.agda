@@ -10,7 +10,7 @@ module QBS.Classical.Decide where
 open import Level using (Level; suc; zero; lift)
 open import Data.Bool.Base using (Bool; true; false)
 open import Data.Empty.Polymorphic using (⊥)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂; map)
+open import Data.Sum.Base using (inj₁; inj₂; map)
 open import Function.Base using (id)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 

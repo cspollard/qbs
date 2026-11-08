@@ -10,7 +10,7 @@ import Level as L
 open import Function.Base using (case_of_)
 open import Function.Bundles using (Inverse)
 open import Algebra.Bundles using (CommutativeSemiring)
-open import Data.Bool.Base using (Bool; true; false)
+open import Data.Bool.Base using (true)
 open import Data.Empty.Polymorphic using (⊥)
 import Data.Empty as E
 open import Data.Unit.Polymorphic.Base using (tt)

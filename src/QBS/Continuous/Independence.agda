@@ -17,7 +17,7 @@
 module QBS.Continuous.Independence where
 
 open import Data.Fin.Base using (Fin)
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (_,_)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≢_)
 open import QBS.Core

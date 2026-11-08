@@ -15,7 +15,6 @@ import Categories.Category.CartesianClosed.Canonical as Canonical
 import Categories.Category.Cartesian.Monoidal as CM
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
-open import Categories.Monad.Strong using (StrongMonad; Strength; RightStrength)
 import Categories.NaturalTransformation as NT
 import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR

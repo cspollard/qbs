@@ -10,7 +10,7 @@
 -- `Ex-scale`, and identities in the signed ring (`Bounded.signedRing`), as in `Analysis/Estimator`.
 module QBS.Continuous.SgSample where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality.Core using (refl)

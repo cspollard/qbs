@@ -7,7 +7,7 @@
 module QBS.Continuous.TailFTCExp where
 
 import Level as L
-open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+open import Data.Product.Base using (_×_; proj₁; proj₂)
 
 open import QBS.Classical using (LEM₁)
 open import QBS.Analysis.Omega using (module OmegaSemiring)

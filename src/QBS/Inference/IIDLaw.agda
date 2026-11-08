@@ -12,9 +12,9 @@
 -- `SFinite.∫ᴹ-map` and `ProdBridge.ι-mass`.
 module QBS.Inference.IIDLaw where
 
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Fin.Base using (Fin; toℕ)
-open import Data.Product.Base using (proj₁; proj₂)
+open import Data.Product.Base using (proj₁)
 open import Function.Bundles using (_⟨$⟩_)
 
 open import QBS.Core

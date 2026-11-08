@@ -11,7 +11,7 @@ module QBS.Inference.GaussVectorAlg where
 
 open import Algebra.Bundles using (CommutativeRing)
 open import Data.Fin.Base using (Fin; zero; suc)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Relation.Binary.PropositionalEquality.Core using (_≢_; refl)
 open import QBS.Analysis.SgLinAlg using (module SgLinAlg)
 

@@ -13,7 +13,7 @@ module QBS.Continuous.ExpFamilyAlg where
 open import Algebra.Bundles using (CommutativeSemiring)
 open import Algebra.Properties.CommutativeSemigroup using (interchange)
 open import Data.Fin.Base using (Fin; zero; suc)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 
 module ExpFamilyAlg {c ℓ} (R : CommutativeSemiring c ℓ) where
   open CommutativeSemiring R using (Carrier; _≈_; _+_; _*_; 0#; 1#; refl; trans; *-cong; *-identityˡ;

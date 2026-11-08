@@ -13,7 +13,7 @@ module QBS.Continuous.FinProd where
 
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Fin.Base using (Fin; zero; suc)
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)

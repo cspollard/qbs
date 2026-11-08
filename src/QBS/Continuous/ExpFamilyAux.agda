@@ -19,7 +19,7 @@ module QBS.Continuous.ExpFamilyAux where
 
 open import Data.Nat.Base using (zero; suc)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
-open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Bundles using (Func)
 open import Algebra.Properties.CommutativeSemigroup using (interchange)
 
 open import QBS.Core

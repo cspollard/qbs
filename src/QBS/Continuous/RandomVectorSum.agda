@@ -9,7 +9,7 @@
 -- (`RandomVectorAlg.comm-eq`) and swapping the double sum (`SgLinAlg.Σ-swap`).
 module QBS.Continuous.RandomVectorSum where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Product.Base using (_,_; proj₁; proj₂) renaming (Σ to Sig)
 

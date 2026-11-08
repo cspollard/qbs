@@ -21,8 +21,6 @@
 module QBS.Inference.GaussVector where
 
 open import Algebra using (CommutativeRing)
-open import Data.Nat.Base using (ℕ)
-open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Data.Fin.Properties using (_≟_)
 open import Relation.Nullary.Decidable.Core using (Dec; yes; no)

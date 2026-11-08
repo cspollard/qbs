@@ -14,7 +14,7 @@
 -- cross-product by `SgSample.Ex-sumG` and `MultiSampleRing.ss-final`.
 module QBS.Inference.MultiSampleAlg where
 
-open import Data.Nat.Base using (ℕ; zero; suc)
+open import Data.Nat.Base using (zero; suc)
 open import Data.Fin.Base using (Fin)
 open import Data.Product.Base using (_,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality.Core using (_≢_)

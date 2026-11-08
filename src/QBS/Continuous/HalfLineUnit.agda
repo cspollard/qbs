@@ -12,7 +12,7 @@ module QBS.Continuous.HalfLineUnit where
 
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (_,_; proj₁; proj₂)
+open import Data.Product.Base using (proj₁; proj₂)
 open import Data.Bool.Base using (true; false)
 
 open import QBS.Borel.Source using (R₁)

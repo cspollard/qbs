@@ -7,9 +7,8 @@
 -- (`ProdMap.swapM`); (i+1, j+1) pushes forward along snd (`FinProd.snd-law`) and recurses.
 module QBS.Continuous.FinProdPair where
 
-open import Function.Bundles using (_⟨$⟩_)
 open import Data.Fin.Base using (Fin; zero; suc)
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Empty using (⊥-elim)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≢_; refl; cong)

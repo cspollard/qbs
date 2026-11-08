@@ -19,7 +19,7 @@
 -- `SgSample.Var-sum`; `weak-law-rate` cancels the finite nonzero factor n (a helper on lower reals).
 module QBS.Inference.WeakLaw where
 
-open import Data.Nat.Base using (ℕ; suc)
+open import Data.Nat.Base using (suc)
 open import Data.Fin.Base using (Fin)
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
@@ -43,7 +43,6 @@ open import QBS.Continuous.MonoTest using (module MonoTest)
 open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.SupTest using (module SupTest)
 open import QBS.Continuous.Product using (module Product)
-open import QBS.Continuous.Dominated using (module Dominated)
 open import QBS.Inference.WeakLawAlg using (module WeakLawAlg)
 open import QBS.Inference.WeakLawCheb using (module WeakLawCheb)
 open import QBS.Continuous.SgSample using (module SgSample)
