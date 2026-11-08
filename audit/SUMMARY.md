@@ -139,3 +139,26 @@ Agent 0 (`global-cleanup`), one commit per item or group.  Every module touched 
    `SignedTransport.Ex-map` is about `mapM h p`; they differ and linking them needs `ι-nat` and `Ex-≈`.  Both left for
    `continuous-signed-info`, which confirmed the same and left both alone (see `continuous-signed-info.md`, status).
 6. **`smallprod`: done**, now in `RationalLemmas`.
+
+## Overall implementation status (2026-11-08)
+
+Written by `reader-guide` from the per-domain "Implementation status" sections.  Every domain did tier A (documentation).
+`docs/Guide.md` now opens with a reader's map and `docs/Interface.md` is in layer order.
+
+| Domain | Done | Remains |
+|---|---|---|
+| global-cleanup | `QBS.Classical.Decide`; `negExp-cong`, `bd1`, `hm`, `half≤1`, `mapM-id`, `smallprod` shared; `Borel.Measure` deleted | generic `two`, `fact` (not duplicates) |
+| abstract | `CommMonad`, `StrongPoint`, `Bind` added; headers; layer map | `StatisticalLemmas` rename (open question) |
+| discrete | `StatInstance` split into `StatWeights`/`StatNormalize`/`StatInstance`; three models folded into `Model.Instances` | tiers C/D, `Pairing`/`Cantor` merge |
+| lower-reals | layering documented; `ring₁..ring₇` renamed | merges skipped with reasons |
+| measure-construction | roadmap; `CoinSets`, `Mixture` folded; `Daniell.*` renames | `CoinIntegral` split/rename (179 importers), `Coin*` renames |
+| analysis-real | `GaussCert`, `GaussCertM1` retired onto `DerivGauss`; `GaussTail` merged into `GaussExp` | `ExpRate*` legacy packs, other merges and renames, tiers B/D |
+| continuous-core | roadmap and Guide entry; generic `fixH`; `JoinKernel`; `begin` chains | generic double strength, `IndepAlg`/`IndepRing` merge |
+| continuous-lebesgue | roadmap; renames `UniquenessCantor`, `RealAffine`, `IntegrableFinite`; three merges | ℕ/ℚ lemma relocation, `UniquenessRQ` duplication |
+| continuous-distributions | recipe entry; `HalfLineMean`, `HalfLineMoment2`, `GeometricMoment2` retired | `ExpRateMoment` onto `Deriv`, location-scale law, Gaussian tower, uniform moments, Guide distribution table |
+| continuous-signed-info | `SignedTests` renamed `BoundedSignedTests`; `FinTest` merged; `FinTs` | `*Alg`/`*Aux` merges, `withDensity`, other renames |
+| inference | read-first table; `CondIIDConst`, `CondIIDCoinStep` folded | abstract Bayes package, directory split, `Inference.Prelude`, renames |
+
+Known leftover: about two dozen headers in `Analysis/SgLinAlg`, `ExpFamAlg`, `Borel/Cells` and `Inference/*` (`IIDLaw`,
+`WeakLaw*`, `GaussVector*`, `MultiSample*`, `GaussVar*`, `GaussScale`, `ExpFamily`, `CondIID*`, `Frequentist`) still cite
+"plan N item M" (pointing into `plans/`); `reader-guide` edits no Agda, so these remain.

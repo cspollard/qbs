@@ -5,6 +5,24 @@ together see [Architecture.md](Architecture.md); for one line per module see [Mo
 Code blocks that start with `-- from: path` are verbatim excerpts of that file; `scripts/doccheck.py` checks
 that they are still there (run `make doccheck`).
 
+## Reader's map
+
+The library in layer order, with the headline result of each layer and where to read it. `Interface.md` follows
+the same order; `Modules.md` has one line per module.
+
+| Layer | Headline result | Read |
+|---|---|---|
+| Abstract: quasi-Borel spaces over a random source | `QBSCat S` is complete, cocomplete, cartesian closed | `QBS.Core`, `QBS.Category`, `QBS.Exponential` |
+| Abstract: probability and soft conditioning | a commutative strong monad with Fubini (`ProbabilityInterface`), plus scoring and sums (`StatisticalInterface`); Kleisli vocabulary in `QBS.Bind` | `QBS.Probability`, `QBS.Statistical`, `QBS.CommMonad`, `QBS.IsStatisticalQBSLike` |
+| Discrete model | weighted programs over any complete semiring; Bayes' rule and rejection; `discreteStatisticalQBSLike` | `QBS.Model.Discrete`, `QBS.Example.Program`, `QBS.Example.Recipes` |
+| Lower reals | `[0,∞]` as lower cuts of ℚ: Ω, then Arch/Min, then series and instances | `QBS.Analysis.Omega` (header), `QBS.Analysis.LowerReals` |
+| Measure construction | the fair coin on Cantor space as a Daniell functional, with uniqueness and regularity | `QBS.Analysis.CoinIntegral`, `QBS.Analysis.Daniell.Facts`, `QBS.Analysis.Uniqueness`, `QBS.Continuous.FairCoin` |
+| s-finite measures | monad, strength, products, iid and exchangeability | `QBS.Continuous.Monad`, `QBS.Continuous.SFinite`, `QBS.Continuous.Product`, `QBS.Continuous.IID` |
+| Lebesgue measure and convergence | `leb-unique` (one uniqueness lemma, then shift, scale, change of variables `push-eq`), `fatou`, `dct` | `QBS.Continuous.LebesgueInterval`, `QBS.Continuous.UniquenessCantor`, `QBS.Continuous.ChangeOfVariables`, `QBS.Continuous.Fatou`, `QBS.Continuous.Dominated` |
+| Distributions | one density recipe `densDist`; uniform, exponential, Gaussian moments (certificate calculus `QBS.Analysis.Deriv*`) | `QBS.Continuous.DensityDist`, `QBS.Continuous.Uniform`, `QBS.Continuous.HalfLineMomentFact`, `QBS.Analysis.Deriv` |
+| Signed layer and information | signed tests and expectations, variance, KL divergence | `QBS.Analysis.Signed`, `QBS.Continuous.SignedTest`, `QBS.Continuous.SignedExpect`, `QBS.Continuous.KLDiv` |
+| Inference | Bayes' rule for s-finite measures (`bayes`), conjugacy, conditionally iid data, Chebyshev and the weak law | `QBS.Inference.CoinPosterior`, `QBS.Inference.ExpFamily`, `QBS.Inference.CondIID`, `QBS.Inference.WeakLaw` (table "Inference: read first" in `Interface.md`) |
+
 ## 0. Which model do I use?
 
 There is one abstract interface and two concrete models of it.

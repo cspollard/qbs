@@ -123,7 +123,7 @@ Information quantities:
 | Read | For |
 |---|---|
 | [src/QBS.agda](src/QBS.agda) | the library overview: one section per area, importing its main modules |
-| [docs/Guide.md](docs/Guide.md) | task-oriented tour: which model to use, write a program, condition, continuous integrals, signed expectations, Gaussians, information quantities |
+| [docs/Guide.md](docs/Guide.md) | starts with the reader's map (layers, headline theorem of each, where to read it); then a task-oriented tour: which model to use, write a program, condition, continuous integrals, signed expectations, Gaussians, information quantities |
 | [docs/Interface.md](docs/Interface.md) | the public names, by module, with one-line meanings |
 | [docs/Architecture.md](docs/Architecture.md) | layers, dependencies, hypotheses, compile time, where to add things |
 | [docs/Contributing.md](docs/Contributing.md) | code philosophy and style, checking, plans; a section for LLM agents |
