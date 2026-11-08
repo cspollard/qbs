@@ -4,7 +4,7 @@
 -- On tests with both parts finite at every point (`FinT`) the cross-added `_≐_` is safe to chain; here such a test is
 -- evaluated at a point to a signed value (`ExpWeight.atSg`), where `≃` is a ring congruence, and the algebra is done
 -- on values:
---   * re-exported from `Continuous/FinTest`: `FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT` (`FinT` is closed
+--   * re-exported from `Continuous/SignedTest`: `FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT` (`FinT` is closed
 --     under the test operations; for `ExpFamily.dotT`, `ExpFamily.FinT-dotT`);
 --   * `atSg-irr`, `atSg-+`, `atSg-neg`, `atSg-scale`, `atSg-const`, `atSg-dot`: evaluation commutes with the
 --     operations, `atSg (dotT k χ T) x ≃ χ · (Tⱼ(x))ⱼ`; `≐-atSg`: tests with ≃ values are `≐`;
@@ -40,7 +40,6 @@ open import QBS.Continuous.SFiniteIncl using (module SFiniteIncl)
 open import QBS.Continuous.ExpWeight using (module ExpWeight)
 open import QBS.Continuous.ExpFamily using (module ExpFamily)
 open import QBS.Continuous.InfAlg using (module InfAlg)
-open import QBS.Continuous.FinTest using (module FinTest)
 open import QBS.Continuous.ProdReweight using (module ProdReweight)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
@@ -65,7 +64,7 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   open InfAlg lem₁ using (cancel-bnd)
   open ExpWeight lem₁ using (expW; expWT; atSg)
   open ExpFamily lem₁ using (dotT; FinT-dotT)
-  open FinTest lem₁ public using (FinT-+T; FinT-negT; FinT-scaleT; FinT-constT)
+  open SignedTest lem₁ public using (FinT-+T; FinT-negT; FinT-scaleT; FinT-constT)
   open ProdReweight lem public using (reweight-cong)
   open Hom
 

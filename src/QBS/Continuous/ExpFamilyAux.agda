@@ -8,7 +8,7 @@
 --     `scaleT-0`), and the zero scalar kills every test (`scaleT-0S`), all up to `≈T`;
 --   * weights of sums: `expWT-+T` (e^{f + g} ≈ e^{f} e^{g} pointwise, for `FinT f`, `FinT g`) and `expWT-0`;
 --   * re-exported from `Continuous/ProdReweight`: `prod-reweight`, `prod-scale`, `reweight-cong`; and from
---     `Continuous/FinTest`: `FinT-+T`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`;
+--     `Continuous/SignedTest`: `FinT-+T`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`;
 --   * logarithms: `PosQ-resp`, `BndQ-resp`, `logS-cong` (any proofs), and `logS-∏ⁿ`, log xᴺ ≃ N · log x
 --     (`ExpFamAlg.scaleA`), with `PosQ-∏ⁿ`, `BndQ-∏ⁿ`.
 -- Route: the part identities are `ExpFamilyAlg.scale-+-alg` pointwise; `expWT-+T` is `ExpWeight.expW-+` at the
@@ -41,7 +41,6 @@ open import QBS.Continuous.FinProd using (module FinProd)
 open import QBS.Continuous.ExpWeight using (module ExpWeight)
 open import QBS.Continuous.ExpFamilyAlg using (module ExpFamilyAlg)
 open import QBS.Continuous.ProdReweight using (module ProdReweight)
-open import QBS.Continuous.FinTest using (module FinTest)
 
 module ExpFamilyAux (lem₁ : LEM₁) where
   private
@@ -61,7 +60,7 @@ module ExpFamilyAux (lem₁ : LEM₁) where
   open ExpFamAlg signedRing using (scaleA)
   open ExpFamilyAlg commutativeSemiring using (scale-+-alg; scale-0-alg; zero-scale-alg; +-0-alg)
   open ProdReweight lem public using (reweight-cong; prod-reweight; prod-scale)
-  open FinTest lem₁ public using (FinT-+T; FinT-scaleT; FinT-constT; FinT-∘T)
+  open SignedTest lem₁ public using (FinT-+T; FinT-scaleT; FinT-constT; FinT-∘T)
   open Hom
   open _⊑_
 

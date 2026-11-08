@@ -255,10 +255,10 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMomentFact.∫-x²` through the density formula `ExpDist.∫-... |
 | `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (used by `ExpFamilyPost`). |
 | `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families, used by `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`, over an abstract commutative semiring. |
-| `QBS.Continuous.ExpFamilyAux` | 155 | lem | Signed tests, weights and product measures for exponential families (used by `Continuous/ExpFamily`). |
+| `QBS.Continuous.ExpFamilyAux` | 154 | lem | Signed tests, weights and product measures for exponential families (used by `Continuous/ExpFamily`). |
 | `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency: a conjugate prior times an exponential-family likelihood is again conjugate. |
 | `QBS.Continuous.ExpFamilyPostAlg` | 74 |  | Ring algebra of conjugate exponents (used by `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a point): * `·-cong`, ... |
-| `QBS.Continuous.ExpFamilyPostAux` | 153 | lem | Finite signed tests, their values, and reweighting (used by `Continuous/ExpFamilyPost`). |
+| `QBS.Continuous.ExpFamilyPostAux` | 152 | lem | Finite signed tests, their values, and reweighting (used by `Continuous/ExpFamilyPost`). |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
 | `QBS.Continuous.ExpWeight` | 230 | lem | Exponential weights of signed values and signed tests (used by `Continuous/ExpFamily`). |
@@ -272,7 +272,6 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (n-fold products and their marginals). |
 | `QBS.Continuous.FinProdPair` | 99 | lem | Two-coordinate marginals of the n-fold product measure (helper for `Independence.Indep-pair`). |
 | `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (the probability-monad counterpart of `FinProd.prodⁿ`; enabler for `Inference/GaussVector`). |
-| `QBS.Continuous.FinTest` | 47 | lem | Finite signed tests are closed under the test operations (plan 07, items 59 and 60; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamilyPostAux`). |
 | `QBS.Continuous.FirstBit` | 153 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 61 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
 | `QBS.Continuous.GaussFinite` | 86 | lem | The Gaussian normaliser is finite: `Z = ∫₀^∞ e^{−x²/2} dλ ≤ 4` (its value `√(π/2) ≈ 1.25` is not used). |
@@ -367,7 +366,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedLog` | 150 | lem | The logarithm as a signed value. |
 | `QBS.Continuous.SignedMul` | 226 | lem | Products respect `≐` (used by `RandomVectorLaw`; the twin of `SignedSq`). |
 | `QBS.Continuous.SignedSq` | 120 | lem | Squares respect `≐` (used by `SignedVar`). |
-| `QBS.Continuous.SignedTest` | 159 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻. |
+| `QBS.Continuous.SignedTest` | 180 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻. |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API. |
 | `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution. |
 | `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (used by `SignedVar`). |

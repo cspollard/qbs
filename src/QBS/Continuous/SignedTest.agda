@@ -7,6 +7,9 @@
 --     tests go through the expectation instead (`SignedExpect.Ex-cong`);
 --   * pointwise operations `_+T_`, `-T_`, `scaleT` (a signed constant), `_*T_`, `constT`, `fromW` (a nonnegative
 --     test), precomposition `_∘T_`, and on the real line `idT` (x⁺ − x⁻) and `sqT = idT *T idT`;
+--   * `FinT f`: both parts of f are finite at every point; closed under `_+T_`, `-T_`, `scaleT c`, `constT c` and
+--     precomposition (`FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`), and the hypothesis that makes `≐`
+--     transitive (`≐-trans`);
 --   * the bridge between the two QBSs of [0, ∞]: `toW : (X ⇒ CutQ) → (X ⇒ WQ)` and `toCut`, both the identity pointwise.
 -- Route: everything is pointwise from `FatouAux.addX`, `SFiniteReweight.mulH`, `Weights.constW` and `_∘H_`; the bridge
 -- because `CutQ` and `WQ` have the same carrier and the same random elements (`Meas`).  Transitivity of `≐` through a
@@ -48,7 +51,7 @@ module SignedTest (lem₁ : LEM₁) where
   open import Relation.Binary.Reasoning.Setoid (OmegaSemiring.setoid A)
   open Bounded A using (finite)
   open import QBS.Analysis.Signed using (SubSemiring)
-  open SubSemiring finite using (Is-+)
+  open SubSemiring finite using (Is-+; Is-*)
 
   -- transitivity through a finite middle: a + d ≈ c + b and c + k ≈ e + d give a + k ≈ e + b
   trans-core : ∀ a b c d e k → Bnd c → Bnd d → a + d ≈ c + b → c + k ≈ e + d → a + k ≈ e + b
@@ -156,3 +159,21 @@ module SignedTest (lem₁ : LEM₁) where
 
   toCut-pt : ∀ {X : QBS S} (f : Hom S X WQ) x → map (toCut f) ⟨$⟩ x ≈ map f ⟨$⟩ x
   toCut-pt f x = refl
+
+  -- Finite tests (`FinT`) are closed under the test operations: pointwise from `SubSemiring.Is-+` and `Is-*`
+  -- for `Bounded.finite` (signed constants have finite parts).
+  FinT-+T : ∀ {X : QBS S} {f g : SgT X} → FinT f → FinT g → FinT (f +T g)
+  FinT-+T ff fg x = Is-+ (proj₁ (ff x)) (proj₁ (fg x)) , Is-+ (proj₂ (ff x)) (proj₂ (fg x))
+
+  FinT-negT : ∀ {X : QBS S} {f : SgT X} → FinT f → FinT (-T f)
+  FinT-negT ff x = proj₂ (ff x) , proj₁ (ff x)
+
+  FinT-scaleT : ∀ {X : QBS S} (c : Sg) {f : SgT X} → FinT f → FinT (scaleT c f)
+  FinT-scaleT c ff x = Is-+ (Is-* (pos-fin c) (proj₁ (ff x))) (Is-* (neg-fin c) (proj₂ (ff x)))
+                     , Is-+ (Is-* (pos-fin c) (proj₂ (ff x))) (Is-* (neg-fin c) (proj₁ (ff x)))
+
+  FinT-constT : ∀ {X : QBS S} (c : Sg) → FinT (constT {X} c)
+  FinT-constT c x = pos-fin c , neg-fin c
+
+  FinT-∘T : ∀ {X Y : QBS S} {f : SgT Y} (φ : Hom S X Y) → FinT f → FinT (f ∘T φ)
+  FinT-∘T φ ff x = ff (map φ ⟨$⟩ x)
