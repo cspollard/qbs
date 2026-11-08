@@ -27,8 +27,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
   open QBS
   open Hom
 
+  -- the sub-category is `subcat` of the source's `MeasurableMaps`
   MeasSubCat : SubCat (Setoids ℓ ℓ) (⊤ {ℓ})
-  MeasSubCat = record { U = λ _ → Rˢ ; R = Meas ; Rid = meas-id ; _∘R_ = meas-∘ }
+  MeasSubCat = subcat
 
   -- one object, homs the measurable setoid maps R → R
   MeasCat : Category ℓ ℓ ℓ

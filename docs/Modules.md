@@ -22,13 +22,13 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Category.Cartesian` | 26 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
 | `QBS.Category.Concrete` | 181 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
 | `QBS.Category.Forget` | 33 |  | The forgetful functor `QBSCat S → Setoids`. |
-| `QBS.Category.Measurable` | 57 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
+| `QBS.Category.Measurable` | 58 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
 | `QBS.Classical` | 23 |  | Excluded middle, named once. |
 | `QBS.Classical.Decide` | 55 | lem | The classical decision toolkit: with `lem : LEM ℓ`, every proposition in `Set ℓ` has a Boolean truth value `dec P` that is `true` exactly when `P` holds. |
 | `QBS.Colimits` | 199 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.CommMonad` | 24 |  | `braidedOf CC` and `ProbMonad CC`: the one spelling of "a commutative monad on a cartesian closed category", for the symmetric monoidal structure of its products. |
 | `QBS.Complete` | 173 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
-| `QBS.Core` | 215 |  | Quasi-Borel spaces over an abstract random source. |
+| `QBS.Core` | 226 |  | Quasi-Borel spaces over an abstract random source. |
 | `QBS.Exponential` | 132 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 132 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.BernHalf` | 117 | lem | The biased coin at θ = ½ is the fair coin: `bernθ ½ ≈ᵖ bernB` (both of `Inference/BoolDist`). |
@@ -39,7 +39,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinPosterior` | 224 | lem | Bayes' rule for s-finite measures (the general `posterior` and `bayes`), with the Beta(2,1) coin example: the posterior as an actual distribution, by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 225 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 214 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
-| `QBS.Inference.CondIID` | 150 | lem | Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`). |
+| `QBS.Inference.CondIID` | 149 | lem | Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`). |
 | `QBS.Inference.CondIIDCoin` | 173 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05 items 48–49). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
@@ -67,13 +67,13 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.GaussVar` | 94 | lem | The variance of N(μ, s²) under the measure itself (plan 03 "Information quantities"). |
 | `QBS.Inference.GaussVarAux` | 141 | lem | Generic helpers for `GaussVar` (plan 03 "Information quantities"): signed tests with a vanishing part, and push-forward of expectations. |
 | `QBS.Inference.GaussVarPt` | 189 | lem | Pointwise and N(0, s²) facts behind the variance of N(μ, s²) in `GaussVar` (plan 03 "Information quantities"), for finite s, l (s l ≈ 1) and finite μ ≥ 0. |
-| `QBS.Inference.GaussVector` | 211 | lem | Gaussian vectors: mean and covariance of iid coordinates, and their affine images (plan 05 item 53 in `plans/`). |
+| `QBS.Inference.GaussVector` | 209 | lem | Gaussian vectors: mean and covariance of iid coordinates, and their affine images (plan 05 item 53 in `plans/`). |
 | `QBS.Inference.GaussVectorAlg` | 64 |  | Ring-level lemmas on the identity matrix and matrix congruences (helper for `GaussVector`; plan 05 item 53). |
-| `QBS.Inference.GaussVectorLaw` | 161 | lem | The law of a Gaussian vector as a measure on RQᵐ, with the affine rule Cov(AZ+b) = A Cov Z Aᵀ (plan 05 item 55). |
+| `QBS.Inference.GaussVectorLaw` | 158 | lem | The law of a Gaussian vector as a measure on RQᵐ, with the affine rule Cov(AZ+b) = A Cov Z Aᵀ (plan 05 item 55). |
 | `QBS.Inference.HalfNormal` | 120 | lem | The half-normal distribution, normalised by an abstract inverse of `Z = ∫₀^∞ e^{−x²/2} dλ` (so `√(π/2)` is not used). |
 | `QBS.Inference.HalfNormalMean` | 78 | lem | The mean of the half-normal distribution: `E[X] ≃ n` where `n = proj₁ Z-inv` is the normaliser (`Z · n ≈ 1`). |
 | `QBS.Inference.IIDLaw` | 127 | lem | Moments of sums of iid draws: E Sₙ = n m, Var Sₙ = n s (plan 05 item 46b in `plans/`). |
-| `QBS.Inference.MultiSample` | 118 | lem | Samples of random vectors: sample mean and covariance estimators (plan 05 item 54 in `plans/`). |
+| `QBS.Inference.MultiSample` | 117 | lem | Samples of random vectors: sample mean and covariance estimators (plan 05 item 54 in `plans/`). |
 | `QBS.Inference.MultiSampleAlg` | 149 | lem | Observations of iid random vectors, transported along their law (helper for `MultiSample`; plan 05 item 54). |
 | `QBS.Inference.MultiSampleRing` | 94 |  | Ring identities for samples of random vectors (helper for `MultiSample`; plan 05 item 54), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
 | `QBS.Inference.PolyDomination` | 165 | lem | Polynomial growth gives integrability, by `Inference/Domination`. |
@@ -85,7 +85,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.SymExpectation` | 97 | lem | Expectations under a symmetric density on the real line `RQ` (`Continuous/RealDensity`), through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.UniformExperiment` | 58 | lem | The first instance of `Inference/Frequentist`: independent draws uniform on an interval. |
 | `QBS.Inference.UniformSampler` | 93 | lem | Validation of `Inference/Sampler`: the uniform distribution on [0,1] as a sampler. |
-| `QBS.Inference.WeakLaw` | 155 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05 item 50 in `plans/`). |
+| `QBS.Inference.WeakLaw` | 154 | lem | Markov's and Chebyshev's inequalities and the weak law of large numbers (plan 05 item 50 in `plans/`). |
 | `QBS.Inference.WeakLawAlg` | 69 | lem | Order algebra on [0, ∞] and the signed values for `Inference/WeakLaw` (plan 05 item 50). |
 | `QBS.Inference.WeakLawCheb` | 69 | lem | The core of Chebyshev's inequality about any centre c ≃ E g (helper for `Inference/WeakLaw`; plan 05 item 50). |
 | `QBS.Instance` | 48 |  | `isQBSLike S` / `isStatisticalQBSLike S`: `QBSCat S` is QBS-like for every random source S, given the probability (resp. |
@@ -93,9 +93,9 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.IsQBSLike` | 36 |  | `IsQBSLike ℓ C`: what a category `C` must provide for QBS-style probabilistic programming: cartesian closure (higher-order programs), binary and ℕ-indexed coproducts (branching, discrete data), ℕ-indexed products (inf... |
 | `QBS.IsStatisticalQBSLike` | 21 |  | `IsStatisticalQBSLike`: `IsQBSLike` plus a `StatisticalInterface` (soft conditioning and normalisation). |
 | `QBS.Limits` | 132 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
-| `QBS.Probability` | 161 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
+| `QBS.Probability` | 160 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 32 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 198 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `Weights`        weights W: a c... |
+| `QBS.Statistical` | 197 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `Weights`        weights W: a c... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 | `QBS.StrongPoint` | 136 |  | `StrongPoint CC cm`: the strength of a commutative monad `cm` on a cartesian category, evaluated at global elements. |
 
@@ -107,15 +107,15 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.BoolSemiring` | 116 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
 | `QBS.Model.Cantor` | 53 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 24 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
-| `QBS.Model.DiscreteSource` | 49 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
+| `QBS.Model.DiscreteSource` | 48 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
 | `QBS.Model.Instances` | 34 | lem | Non-vacuity witnesses for the discrete statistical model: `IsStatisticalQBSLike` instances with Boolean (possibilistic), Viterbi (max, ×) and additive [0,∞] weights, so the abstract interfaces and the model are not em... |
 | `QBS.Model.Monad` | 284 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 123 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 51 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
-| `QBS.Model.StatInstance` | 223 |  | The discrete measure monad is a model of `StatisticalInterface`: assembles `StatWeights` (weights, inclusion, score, countable sums) and `StatNormalize` (`normH`) and proves the laws; packaged at `discreteStat`. |
-| `QBS.Model.StatNormalize` | 253 |  | Normalisation of the discrete model: `normH : M X ⇒ Prob X + 1`, built from a decision on the invertibility of the mass (`InvDec`), with its invariance lemmas (`normProb`, `normZero`, `normScale`). |
-| `QBS.Model.StatWeights` | 217 |  | Weights, inclusion, score and countable sums of the discrete model: the weights object `WQ`, the inclusion of probability measures into all measures (`inclusion`), `scoreE` and the countable sums `sumKH`. |
+| `QBS.Model.StatInstance` | 220 |  | The discrete measure monad is a model of `StatisticalInterface`: assembles `StatWeights` (weights, inclusion, score, countable sums) and `StatNormalize` (`normH`) and proves the laws; packaged at `discreteStat`. |
+| `QBS.Model.StatNormalize` | 247 |  | Normalisation of the discrete model: `normH : M X ⇒ Prob X + 1`, built from a decision on the invertibility of the mass (`InvDec`), with its invariance lemmas (`normProb`, `normZero`, `normScale`). |
+| `QBS.Model.StatWeights` | 210 |  | Weights, inclusion, score and countable sums of the discrete model: the weights object `WQ`, the inclusion of probability measures into all measures (`inclusion`), `scoreE` and the countable sums `sumKH`. |
 | `QBS.Model.Strong` | 139 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
 | `QBS.Model.SubProb` | 77 |  | Sub-probability measures: the weight class "total mass ≤ 1" (mass + defect = 1). |
 | `QBS.Model.Sums` | 112 |  | Derived facts about sums in a complete semiring: additivity, Tonelli-style swapping of iterated sums, pushforward of weights along a function, and Dirac masses. |
@@ -133,7 +133,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Borel.Lead` | 155 | lem | A countable Borel partition of Cantor space with infinitely many pieces: `lead k` is the number of leading `true`s (0 for the constant `true` sequence, where it is a classical default). |
 | `QBS.Borel.Merge` | 112 |  | Bit interleaving on Cantor space: merge a b takes its even bits from a and its odd bits from b (defined by recursion, so that the tail of merge a b is merge b (tail a) by `refl`). |
 | `QBS.Borel.PiLambda` | 236 | lem | Dynkin's π–λ theorem for the Borel σ-algebra of Cantor space (Billingsley, Thm. |
-| `QBS.Borel.Source` | 97 |  | Cantor space with its Borel σ-algebra is a random source: quasi-Borel spaces over it are quasi-Borel spaces in the sense of Heunen–Kammar–Staton–Yang (Def. |
+| `QBS.Borel.Source` | 102 |  | Cantor space with its Borel σ-algebra is a random source: quasi-Borel spaces over it are quasi-Borel spaces in the sense of Heunen–Kammar–Staton–Yang (Def. |
 
 ## Analysis
 
@@ -256,7 +256,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families, used by `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`, over an abstract commutative semiring. |
 | `QBS.Continuous.ExpFamilyAux` | 154 | lem | Signed tests, weights and product measures for exponential families (used by `Continuous/ExpFamily`). |
 | `QBS.Continuous.ExpFamilyPost` | 252 | lem | Continuous conjugate updating and Bayesian sufficiency: a conjugate prior times an exponential-family likelihood is again conjugate. |
-| `QBS.Continuous.ExpFamilyPostAlg` | 74 |  | Ring algebra of conjugate exponents (used by `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a point): * `·-cong`, ... |
+| `QBS.Continuous.ExpFamilyPostAlg` | 73 |  | Ring algebra of conjugate exponents (used by `Continuous/ExpFamilyPost`), over any commutative ring R (used at `Signed.signedRing`, the values of the natural-parameter and log-partition tests at a point): * `·-cong`, ... |
 | `QBS.Continuous.ExpFamilyPostAux` | 152 | lem | Finite signed tests, their values, and reweighting (used by `Continuous/ExpFamilyPost`). |
 | `QBS.Continuous.ExpRateInt` | 154 | lem | `∫₀^∞ e^{−λx} dx = 1/λ` for every rate λ with a reciprocal, from the tail FTC (`Continuous/TailFTCHalfLine`) with `G = c e^{−λx}`. |
 | `QBS.Continuous.ExpRateMoment` | 259 | lem | All polynomial moments of the exponential with a rate λ (any rate with a reciprocal): `∫₀^∞ xⁿ e^{−λx} dx = cⁿ⁺¹ n!`, where `c` is the reciprocal of the rate (`l c ≈ 1`, `l ≤ natE (suc μ)`, `c ≤ natE (suc ν)`). |
@@ -269,7 +269,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Fatou` | 278 | lem | Downward monotone convergence and Fatou's lemma in both directions, for tests on any X. |
 | `QBS.Continuous.FatouAux` | 87 | lem | Auxiliary tests and lemmas for downward monotone convergence (helper for `Continuous/Fatou`). |
 | `QBS.Continuous.FinProd` | 126 | lem | Finite products of quasi-Borel spaces and of s-finite measures (n-fold products and their marginals). |
-| `QBS.Continuous.FinProdPair` | 99 | lem | Two-coordinate marginals of the n-fold product measure (helper for `Independence.Indep-pair`). |
+| `QBS.Continuous.FinProdPair` | 98 | lem | Two-coordinate marginals of the n-fold product measure (helper for `Independence.Indep-pair`). |
 | `QBS.Continuous.FinProdProb` | 88 | lem | Finite products of probability measures (the probability-monad counterpart of `FinProd.prodⁿ`; enabler for `Inference/GaussVector`). |
 | `QBS.Continuous.FirstBit` | 153 | lem | First-bit decomposition of the fair coin: for every measurable function h, ∫ h dμ = ½ ∫ h(true :: s) dμ(s) + ½ ∫ h(false :: s) dμ(s), by uniqueness of measures (both sides are probability measures with the same values... |
 | `QBS.Continuous.FirstBitInf` | 61 | lem | The first-bit split of the fair coin for unbounded measurable tests (`Continuous/FirstBit` has it for bounded `Fun`s): J fairCoin φ ≈ ½ J fairCoin (φ ∘ (true ::)) + ½ J fairCoin (φ ∘ (false ::)) for every `Meas φ`. |
@@ -295,7 +295,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.InfoProductAux` | 53 | lem | Pointwise facts for `InfoProduct` (used by `InfoProduct`). |
 | `QBS.Continuous.IntegrableFinite` | 219 | lem | Where an integrable test is infinite nothing is seen by the integral (an integrable test is finite almost everywhere). |
 | `QBS.Continuous.Intervals` | 184 | lem | Interval tests on `WQ = [0,∞]` (used by the half-line uniqueness theorem). |
-| `QBS.Continuous.JoinKernel` | 58 | lem | Shared kernel construction for the join of the probability and s-finite monads: given a witness that a random family of measures on X has outer kernel `g` and, at each merged parameter, inner kernel `G`, the join is r... |
+| `QBS.Continuous.JoinKernel` | 57 | lem | Shared kernel construction for the join of the probability and s-finite monads: given a witness that a random family of measures on X has outer kernel `g` and, at each merged parameter, inner kernel `G`, the join is r... |
 | `QBS.Continuous.KLDiv` | 125 | lem | Kullback–Leibler divergence (Gibbs' inequality is `KL-nonneg`). |
 | `QBS.Continuous.LebPlane` | 105 | lem | Lebesgue measure on the plane ℝ × ℝ (the product Lebesgue measure). |
 | `QBS.Continuous.LebesgueDyadic` | 218 | lem | Lebesgue measure of the dyadic intervals (step towards `LebesgueInterval`). |
@@ -320,18 +320,18 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.NatCancel` | 36 | lem | Cancelling a positive natural factor in the order of the lower reals (lower-real arithmetic, misfiled here; helper for `Inference/WeakLaw`). |
 | `QBS.Continuous.ProbInstance` | 131 | lem | The continuous probability monad over Cantor space is a model of `ProbabilityInterface`. |
 | `QBS.Continuous.ProdBridge` | 61 | lem | The probability monad's product and push-forward inside the s-finite measures (so that iid, independence and exchangeability can be stated on the s-finite side only). |
-| `QBS.Continuous.ProdMap` | 85 | lem | Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`). |
+| `QBS.Continuous.ProdMap` | 84 | lem | Push-forward of s-finite measures along maps and products (helper for `Independence` and `FinProdPair`). |
 | `QBS.Continuous.ProdReweight` | 114 | lem | Densities and scalings of product measures (helper for `Continuous/ExpFamilyAux`). |
 | `QBS.Continuous.Product` | 117 | lem | Product measures and Fubini for tests on X × Y (the double strength of the s-finite monad, at the integral level). |
-| `QBS.Continuous.RandomVector` | 99 | lem | Random vectors, mean vectors and covariance matrices. |
-| `QBS.Continuous.RandomVectorAff` | 135 | lem | Sums and affine images of random vectors (used by `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
+| `QBS.Continuous.RandomVector` | 97 | lem | Random vectors, mean vectors and covariance matrices. |
+| `QBS.Continuous.RandomVectorAff` | 133 | lem | Sums and affine images of random vectors (used by `RandomVector`; the definitions `RV`, `meanV`, `covM`, `affT` are in `RandomVectorDefs`). |
 | `QBS.Continuous.RandomVectorAlg` | 95 | lem | Pointwise facts for products of signed tests (used by `RandomVector`). |
-| `QBS.Continuous.RandomVectorDefs` | 64 | lem | Definitions for random vectors (shared by `RandomVector` and `RandomVectorAff`). |
+| `QBS.Continuous.RandomVectorDefs` | 63 | lem | Definitions for random vectors (shared by `RandomVector` and `RandomVectorAff`). |
 | `QBS.Continuous.RandomVectorLaw` | 104 | lem | Random vectors and their laws (used by `Inference/GaussVectorLaw`). |
 | `QBS.Continuous.RandomVectorLawAux` | 51 | lem | Push-forward of expectations along a map into any space (used by `RandomVectorLaw`). |
 | `QBS.Continuous.RandomVectorRing` | 52 |  | Ring identities on parts of signed values for random vectors (used by `RandomVectorAlg`). |
 | `QBS.Continuous.RandomVectorSum` | 83 | lem | Expectations of sums and of products of sums of signed tests (used by `RandomVector`). |
-| `QBS.Continuous.RandomVectorSumRing` | 90 |  | Ring identities for sums of covariances (used by `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
+| `QBS.Continuous.RandomVectorSumRing` | 89 |  | Ring identities for sums of covariances (used by `RandomVector`), over an abstract commutative ring (instantiated at the signed values), with the finite sums of `Analysis/SgLinAlg`. |
 | `QBS.Continuous.RealAffine` | 399 | lem | Addition and signed scaling on the real line `RQ = WQ +Q WQ` as morphisms, and affine maps RQⁿ ⇒ RQᵐ, each a QBS morphism. |
 | `QBS.Continuous.RealAffineAlg` | 195 | lem | The value-level algebra behind the `idT` laws of `RealAffine`, over [0, ∞]. |
 | `QBS.Continuous.RealDensity` | 88 | lem | Densities on the whole real line `RQ = WQ +Q WQ` (`Continuous/RealLine`) built from half-line densities. |

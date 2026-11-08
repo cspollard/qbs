@@ -3,7 +3,8 @@
 -- Quasi-Borel spaces over an abstract random source.  Elementarily: a QBS is a setoid X together with a set of
 -- "random elements" ℛ → X, closed under precomposition with measurable maps, constants, and countable measurable
 -- case splits.  Equivalently (the rest of this header): concrete sheaves on a one-object site.
---   Measurability  : a monoid 𝕄 of setoid maps Rˢ → Rˢ (closed under ≈, containing the constants).
+--   MeasurableMaps Rˢ : a monoid 𝕄 of setoid maps Rˢ → Rˢ, an `EndoSubmonoid` of `Setoids` containing the constants;
+--                    `subcat` is the one-object sub-category of `Setoids` it forms.
 --   Probes M X     : a sub-𝕄-set of the setoid maps Rˢ → X, closed under ≈ and containing the constants;
 --                    i.e. a subpresheaf of Setoid(Rˢ, X) on 𝕄.
 --   Partitions     : the measurable countable partitions R → ℕ, the probes of discrete ℕ.  With `idx-glue`
@@ -22,6 +23,9 @@ open import Function.Base using (const)
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Relation.Binary.Bundles using (Setoid)
+open import Data.Nat.Properties.Pairing using (NatPairing)
+open import Categories.Category.Instance.Setoids using (Setoids)
+import Categories.Category.SubCategory.EndoSubmonoid as Endo
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; sym; subst)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
@@ -51,23 +55,25 @@ glueₛ {B = B} j α = record
 
 -- The parameters of the theory: a "random source" R (the reals) together with the measurable maps
 -- R → R, the measurable countable partitions of R, and a pairing of ℕ.  Three small pieces make up
--- a `RandomSource`; all their fields are re-exported by it.
+-- an `IsRandomSource` on a setoid Rˢ, and `RandomSource` bundles it with Rˢ; all their fields are re-exported.
 
--- the monoid 𝕄 ⊆ End(Rˢ) of measurable maps
-record Measurability (ℓ : Level) : Set (suc ℓ) where
-  field
-    Rˢ : Setoid ℓ ℓ
+-- the monoid 𝕄 ⊆ End(Rˢ) of measurable maps on a setoid Rˢ: a submonoid of the endomorphisms of Rˢ in `Setoids`
+-- (so `subcat` is the one-object sub-category they form) that contains the constants
+record MeasurableMaps {ℓ} (Rˢ : Setoid ℓ ℓ) : Set (suc ℓ) where
   open Setoid Rˢ public using () renaming (Carrier to R; _≈_ to _≈ᴿ_)
   field
-    Meas : Func Rˢ Rˢ → Set ℓ
-    meas-ext : ∀ {f g} → (∀ r → f ⟨$⟩ r ≈ᴿ g ⟨$⟩ r) → Meas f → Meas g
-    meas-id : Meas (Id.function Rˢ)
-    meas-∘ : ∀ {f g} → Meas f → Meas g → Meas (f ∘ₛ g)
+    endo : Endo.EndoSubmonoid (Setoids ℓ ℓ) {p = ℓ} Rˢ
+  open Endo.EndoSubmonoid endo public renaming (P to Meas; P-id to meas-id; P-∘ to meas-∘)
+  field
     meas-const : ∀ r → Meas (constₛ r)
 
+  -- the equality of maps in `Setoids` is pointwise
+  meas-ext : ∀ {f g} → (∀ r → f ⟨$⟩ r ≈ᴿ g ⟨$⟩ r) → Meas f → Meas g
+  meas-ext e = P-resp-≈ (λ {x} → e x)
+
 -- Probes of a setoid X: the 𝕄-set of "random elements" Rˢ → X.
-module _ {ℓ} (M : Measurability ℓ) where
-  open Measurability M
+module _ {ℓ} {Rˢ : Setoid ℓ ℓ} (M : MeasurableMaps Rˢ) where
+  open MeasurableMaps M
 
   record Probes {c e} (X : Setoid c e) : Set (suc ℓ ⊔ c ⊔ e) where
     open Setoid X using (_≈_)
@@ -93,8 +99,8 @@ module _ {ℓ} (M : Measurability ℓ) where
     { Random = Meas ; random-resp = meas-ext ; const-random = meas-const ; pre-random = meas-∘ }
 
 -- the measurable countable partitions R → ℕ, the probes of discrete ℕ, along which measurable maps glue
-record Partitions {ℓ} (M : Measurability ℓ) : Set (suc ℓ) where
-  open Measurability M
+record Partitions {ℓ} {Rˢ : Setoid ℓ ℓ} (M : MeasurableMaps Rˢ) : Set (suc ℓ) where
+  open MeasurableMaps M
   field
     partitions : Probes M ℕˢ
   open Probes partitions public using () renaming
@@ -102,33 +108,38 @@ record Partitions {ℓ} (M : Measurability ℓ) : Set (suc ℓ) where
   field
     meas-glue : ∀ {j f} → Idx j → (∀ n → Meas (f n)) → Meas (glueₛ j f)
 
--- a bijection ℕ × ℕ ≅ ℕ
-record NatPairing : Set where
-  field
-    pair : ℕ → ℕ → ℕ
-    unpair : ℕ → ℕ × ℕ
-    unpair-pair : ∀ n m → unpair (pair n m) ≡ (n , m)
+-- the pairing as setoid maps: `pairₛ n`, and the composite cover `refineₛ j i` of `j` by the `i n`,
+-- r ↦ pair (j r) (i (j r) r)
+module NatPairingₛ (P : NatPairing) where
+  open NatPairing P
 
   pairₛ : ℕ → Func ℕˢ ℕˢ
   pairₛ n = ⇑ (pair n)
 
-  -- the composite cover of j by the i n: r ↦ pair (j r) (i (j r) r)
   refineₛ : ∀ {a b} {A : Setoid a b} → Func A ℕˢ → (ℕ → Func A ℕˢ) → Func A ℕˢ
   refineₛ j i = glueₛ j (λ n → pairₛ n ∘ₛ i n)
 
-record RandomSource (ℓ : Level) : Set (suc ℓ) where
+-- the laws of a random source on the setoid Rˢ
+record IsRandomSource {ℓ} (Rˢ : Setoid ℓ ℓ) : Set (suc ℓ) where
   field
-    measurable : Measurability ℓ
-  open Measurability measurable public
+    measurable : MeasurableMaps Rˢ
+  open MeasurableMaps measurable public
   field
     covering : Partitions measurable
   open Partitions covering public
   field
     pairing : NatPairing
   open NatPairing pairing public
+  open NatPairingₛ pairing public
   field
     -- covers compose: refining each piece of j by i n is again a partition
     idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)
+
+record RandomSource (ℓ : Level) : Set (suc ℓ) where
+  field
+    Rˢ : Setoid ℓ ℓ
+    isRandomSource : IsRandomSource Rˢ
+  open IsRandomSource isRandomSource public
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S

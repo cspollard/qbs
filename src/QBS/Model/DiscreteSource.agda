@@ -17,25 +17,24 @@ open import QBS.Model.Pairing
 
 discreteSource : ∀ ℓ → RandomSource ℓ
 discreteSource ℓ = record
-  { measurable = record
-    { Rˢ = setoid (Lift ℓ ℕ)
-    ; Meas = λ _ → ⊤
-    ; meas-id = tt
-    ; meas-∘ = λ _ _ → tt
-    ; meas-ext = λ _ _ → tt
-    ; meas-const = λ _ → tt
-    }
-  ; covering = record
-    { partitions = record
-      { Random = λ _ → ⊤
-      ; random-resp = λ _ _ → tt
-      ; const-random = λ _ → tt
-      ; pre-random = λ _ _ → tt
+  { Rˢ = setoid (Lift ℓ ℕ)
+  ; isRandomSource = record
+    { measurable = record
+      { endo = record { P = λ _ → ⊤ ; P-resp-≈ = λ _ _ → tt ; P-id = tt ; P-∘ = λ _ _ → tt }
+      ; meas-const = λ _ → tt
       }
-    ; meas-glue = λ _ _ → tt
+    ; covering = record
+      { partitions = record
+        { Random = λ _ → ⊤
+        ; random-resp = λ _ _ → tt
+        ; const-random = λ _ → tt
+        ; pre-random = λ _ _ → tt
+        }
+      ; meas-glue = λ _ _ → tt
+      }
+    ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
+    ; idx-glue = λ _ _ → tt
     }
-  ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
-  ; idx-glue = λ _ _ → tt
   }
 
 -- One shared name for `discreteSource ℓ`.  Modules that each defined their own private alias

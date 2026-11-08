@@ -74,23 +74,28 @@ idxₛ i pi = record { to = i ; cong = λ {r} {r′} e → sym (proj₁ (borel-�
 
 cantorSource : RandomSource (suc zero)
 cantorSource = record
-  { measurable = record
-    { Rˢ = R₁ˢ
-    ; Meas = λ f → Measurable (down (f ⟨$⟩_))
-    ; meas-id = measurable-id
-    ; meas-∘ = λ mf mg → measurable-∘ mg mf
-    ; meas-ext = λ e mf → measurable-ext (λ x → lower (e (lift x))) mf
-    ; meas-const = λ r → measurable-const (lower r)
-    }
-  ; covering = record
-    { partitions = record
-      { Random = λ i → Partition (downℕ (i ⟨$⟩_))
-      ; random-resp = λ e pi k → resp (λ x → (λ q → trans (sym (e (lift x))) q) , (λ q → trans (e (lift x)) q)) (pi k)
-      ; const-random = λ n k → borel-eq n k
-      ; pre-random = λ pi mf k → preimage mf (pi k)
+  { Rˢ = R₁ˢ
+  ; isRandomSource = record
+    { measurable = record
+      { endo = record
+        { P = λ f → Measurable (down (f ⟨$⟩_))
+        ; P-resp-≈ = λ e mf → measurable-ext (λ x → lower (e {lift x})) mf
+        ; P-id = measurable-id
+        ; P-∘ = λ mf mg → measurable-∘ mg mf
+        }
+      ; meas-const = λ r → measurable-const (lower r)
       }
-    ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ (j ⟨$⟩_)} {λ k → down (f k ⟨$⟩_)} pj mf
+    ; covering = record
+      { partitions = record
+        { Random = λ i → Partition (downℕ (i ⟨$⟩_))
+        ; random-resp = λ e pi k →
+            resp (λ x → (λ q → trans (sym (e (lift x))) q) , (λ q → trans (e (lift x)) q)) (pi k)
+        ; const-random = λ n k → borel-eq n k
+        ; pre-random = λ pi mf k → preimage mf (pi k)
+        }
+      ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ (j ⟨$⟩_)} {λ k → down (f k ⟨$⟩_)} pj mf
+      }
+    ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
+    ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
     }
-  ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
-  ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
   }
