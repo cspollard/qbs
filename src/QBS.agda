@@ -57,7 +57,7 @@ import QBS.Probability as Probability
 import QBS.CommMonad as CommMonad
 import QBS.StrongPoint as StrongPoint
 
--- `StatisticalInterface`: weights (`CommutativeMonoidWithZero`), a measure monad with `score`, countable sums and
+-- `StatisticalInterface`: weights (`Weights`, a commutative monoid with zero), a measure monad with `score`, countable sums and
 -- scaling, and `normalize : M X ⇒ Prob X + 1`.  `StatisticalLemmas` has bind linear in the measure.
 import QBS.Statistical as Statistical
 import QBS.StatisticalLemmas as StatisticalLemmas

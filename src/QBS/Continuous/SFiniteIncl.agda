@@ -11,6 +11,8 @@ open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
+import Categories.Category.Monoidal.Symmetric.Algebra as Algebra
+
 open import QBS.Core
 open import QBS.Category
 open import QBS.Limits using (_×Q_; 1Q; pairQ; !Q)
@@ -39,7 +41,8 @@ module SFiniteIncl (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zero⇒)
+  open Weights lem using (WQ; constW; continuousWeights)
+  module CW = Algebra.CommutativeMonoidWithZero continuousWeights
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -206,7 +209,7 @@ module SFiniteIncl (lem : LEM₀) where
   zeroPre = scorePre 0#
 
   zeroH : Hom S (1Q S) (TQ (1Q S))
-  zeroH = _∘H_ S {1Q S} {WQ} {TQ (1Q S)} scoreH zero⇒
+  zeroH = _∘H_ S {1Q S} {WQ} {TQ (1Q S)} scoreH CW.zero⇒
 
   zero-bind : ∀ (k : Hom S (1Q S) (TQ (1Q S))) (pt : ∣ 1Q S ∣) (h : Hom S (1Q S) WQ) →
     ∫ᴹ {1Q S} (joinPre {1Q S} (mapM {1Q S} {TQ (1Q S)} k zeroPre)) h ≈ ∫ᴹ {1Q S} zeroPre h

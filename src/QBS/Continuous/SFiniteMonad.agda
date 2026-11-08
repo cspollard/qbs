@@ -15,7 +15,7 @@ open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable; measurable-∘)
-open import QBS.Borel.Source using (R₁; down)
+open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Merge using (measurable-merge; measurable-merge₁)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Fun
@@ -38,7 +38,7 @@ module SFiniteMonad (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zero⇒)
+  open Weights lem using (WQ; constW; continuousWeights)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A

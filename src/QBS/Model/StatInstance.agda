@@ -8,11 +8,9 @@ open import Level using (Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
+open import Data.Product.Base using (Σ; _,_)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
-open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open ≡ using (_≡_)
@@ -25,16 +23,16 @@ open import Categories.Monad using (Monad)
 import Categories.Monad.Strong as CMS
 import Categories.Category.CartesianClosed.Canonical as Canonical
 import Categories.Category.Cocartesian as Cocartesian
-open import QBS.Colimits using (cocartesian; _+Q_; Piece; ev)
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import QBS.Colimits using (cocartesian)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; !Q)
+open import QBS.Limits using (1Q; !Q)
 open import QBS.Exponential using (cartesianClosed)
 open import QBS.Probes using (ℛQ; probe)
 open import QBS.Probability
 open import QBS.Statistical
+open import QBS.CartesianAlgebra using (fromPointwise)
 open import QBS.Model.Pairing
 open import QBS.Model.DiscreteSource
 open import QBS.Model.Semiring
@@ -124,17 +122,12 @@ module _ {ℓ} (N : NormalizableSemiring ℓ) where
 
   open Laws
 
-  discreteWeights : CommutativeMonoidWithZero (QBSCat S) (cartesianClosed S)
-  discreteWeights = record
-    { W = WQ
-    ; mulW = mulH
-    ; oneW = constH 1#
-    ; zero⇒ = constH 0#
-    ; mul-assoc = λ a b c {z} → *-assoc _ _ _
-    ; mul-comm = λ a b {z} → *-comm _ _
-    ; mul-one = λ a {z} → *-identityʳ _
-    ; mul-zero = λ a {z} → zeroʳ _
-    }
+  discreteWeights : Weights (cartesianClosed S)
+  discreteWeights = fromPointwise (cartesianClosed S) WQ mulH (constH 1#) (constH 0#)
+    (λ a b c {z} → *-assoc _ _ _)
+    (λ a b {z} → *-comm _ _)
+    (λ a {z} → *-identityʳ _)
+    (λ a {z} → zeroʳ _)
 
   discreteMeasures : SubMonad (discreteProb A)
   discreteMeasures = record

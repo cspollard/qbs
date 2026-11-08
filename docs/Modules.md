@@ -17,6 +17,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 |---|---|---|---|
 | `QBS.Bind` | 115 |  | `Bind M`: the one spelling of bind and Kleisli composition for a monad `M`, so that proofs about measures read as monad calculations. |
 | `QBS.BoolQ` | 57 |  | The Boolean QBS `BoolQ = 1Q +Q 1Q`, the coproduct (`Colimits`) of two points, over any random source. |
+| `QBS.CartesianAlgebra` | 161 |  | Algebra in a cartesian closed category, for the symmetric monoidal structure of its products (`Categories.Category.Monoidal.Symmetric.Algebra`), so that instances state the familiar pointwise laws and need no monoidal... |
 | `QBS.Category` | 38 |  | `QBSCat S`: quasi-Borel spaces and homs as an agda-categories `Category` (homs equal when pointwise equal). |
 | `QBS.Category.Cartesian` | 26 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
 | `QBS.Category.Concrete` | 181 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
@@ -94,7 +95,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Limits` | 132 |  | Finite limits in QBSCat S: terminal object, binary products, equalizers (`FinitelyComplete`). |
 | `QBS.Probability` | 161 |  | `ProbabilityInterface`: an abstract probability monad over a cartesian closed category with a probe object ℛ. |
 | `QBS.Probes` | 32 |  | The space ℛQ of random sources, and the correspondence between random elements of X and probes ℛQ ⇒ X. |
-| `QBS.Statistical` | 204 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `CommutativeMonoidWithZero`   w... |
+| `QBS.Statistical` | 198 |  | `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from small structures, each with the laws it needs and the operations derivable from it: `Weights`        weights W: a c... |
 | `QBS.StatisticalLemmas` | 43 |  | Linearity of bind (in the measure argument): the Kleisli extension of a kernel preserves countable sums and scaling of measures. |
 | `QBS.StrongPoint` | 136 |  | `StrongPoint CC cm`: the strength of a commutative monad `cm` on a cartesian category, evaluated at global elements. |
 
@@ -112,7 +113,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
 | `QBS.Model.ProbInstance` | 123 |  | The discrete probability monad is a model of `ProbabilityInterface`. |
 | `QBS.Model.Semiring` | 51 |  | Complete commutative semirings (Golan, *Semirings and their Applications*, §1): semirings with sums over arbitrary index sets, associative over partitions and distributing over multiplication. |
-| `QBS.Model.StatInstance` | 227 |  | The discrete measure monad is a model of `StatisticalInterface`: assembles `StatWeights` (weights, inclusion, score, countable sums) and `StatNormalize` (`normH`) and proves the laws; packaged at `discreteStat`. |
+| `QBS.Model.StatInstance` | 223 |  | The discrete measure monad is a model of `StatisticalInterface`: assembles `StatWeights` (weights, inclusion, score, countable sums) and `StatNormalize` (`normH`) and proves the laws; packaged at `discreteStat`. |
 | `QBS.Model.StatNormalize` | 253 |  | Normalisation of the discrete model: `normH : M X ⇒ Prob X + 1`, built from a decision on the invertibility of the mass (`InvDec`), with its invariance lemmas (`normProb`, `normZero`, `normScale`). |
 | `QBS.Model.StatWeights` | 217 |  | Weights, inclusion, score and countable sums of the discrete model: the weights object `WQ`, the inclusion of probability measures into all measures (`inclusion`), `scoreE` and the countable sums `sumKH`. |
 | `QBS.Model.Strong` | 139 |  | Strength of the measure monad: σ_{X,Y} : X × T Y → T (X × Y), (x, q) ↦ T (x, –) q. |
@@ -343,11 +344,11 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SFinite` | 334 | lem | The s-finite measure monad of the continuous model. |
 | `QBS.Continuous.SFiniteCommute` | 233 | lem | Commutativity of the s-finite measure monad: Fubini for unbounded integrands (`Analysis/JFubini`). |
 | `QBS.Continuous.SFiniteDecomp` | 437 | lem | Every s-finite measure is a countable sum of scaled laws of probability measures: the `scaled-laws` field of `StatisticalInterface`. |
-| `QBS.Continuous.SFiniteIncl` | 217 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
+| `QBS.Continuous.SFiniteIncl` | 220 | lem | Prob is a sub-monad of the s-finite measures (`inclusion`: weight 1), the zero measure and `score`. |
 | `QBS.Continuous.SFiniteMonad` | 222 | lem | The monad structure of the s-finite measures (`Continuous/SFinite`): functor, unit, join and the monad laws. |
 | `QBS.Continuous.SFiniteNorm` | 498 | lem | Normalisation `M X ⇒ Prob X + 1` of s-finite measures, with its three laws. |
 | `QBS.Continuous.SFiniteReweight` | 58 | lem | Reweighting an s-finite measure by a density: `reweightPre d p` multiplies the weight of every sample of `p : Pre (XW X)` by `d x`, where `d : X ⇒ WQ`. |
-| `QBS.Continuous.SFiniteStat` | 168 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
+| `QBS.Continuous.SFiniteStat` | 156 | lem | The s-finite measure monad `TM` over the continuous model is a model of `StatisticalInterface` (soft conditioning). |
 | `QBS.Continuous.SFiniteStatBridge` | 280 | lem | Pre-measure bridge lemmas for `SFiniteStat`: each field of `StatisticalInterface` for the s-finite measure monad is stated here at the category-theoretic form of the field (unifying `…-lem _ f` against the field type ... |
 | `QBS.Continuous.SFiniteStrong` | 113 | lem | Strength and commutativity of the s-finite measure monad. |
 | `QBS.Continuous.SFiniteSum` | 252 | lem | Scaling by weights and countable sums of s-finite measures, and the laws of `StatisticalInterface` for them. |
@@ -392,7 +393,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.UniquenessRQ` | 158 | lem | Uniqueness of measures on the whole real line `RQ = WQ +Q WQ` (`uniqRQ`). |
 | `QBS.Continuous.UniquenessRQAlg` | 41 | lem | Additivity of the integral in the test, over any space `X` (`Inference/Domination.∫ᴹ-add` is the case `X = WQ`). |
 | `QBS.Continuous.UniquenessWQ` | 89 | lem | Uniqueness of measures on the half-line `WQ = [0,∞]` (a π–λ uniqueness theorem; `docs/UniquenessLit.md`). |
-| `QBS.Continuous.Weights` | 55 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication. |
+| `QBS.Continuous.Weights` | 65 | lem | The object of weights of the s-finite monad: `[0,∞]` (lower cuts) as a quasi-Borel space whose random elements are the threshold-measurable functions (`Analysis/Meas`), with the monoid structure of multiplication (`co... |
 | `QBS.Continuous.XLog` | 107 | lem | The pointwise inequalities behind Gibbs' inequality (used by `KLDiv`). |
 
 ## Examples

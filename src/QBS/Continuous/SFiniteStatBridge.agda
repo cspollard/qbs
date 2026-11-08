@@ -53,7 +53,7 @@ module SFiniteStatBridge (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; mulW; constW; oneW; zero⇒)
+  open Weights lem using (WQ; constW; continuousWeights)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A

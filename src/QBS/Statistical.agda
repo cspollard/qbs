@@ -2,7 +2,7 @@
 
 -- `StatisticalInterface`: abstract soft conditioning on top of a `ProbabilityInterface`, assembled from
 -- small structures, each with the laws it needs and the operations derivable from it:
---   `CommutativeMonoidWithZero`   weights W: a commutative monoid object with an absorbing zero
+--   `Weights`        weights W: a commutative monoid object with an absorbing zero (`Monoidal.Symmetric.Algebra`)
 --   `SubMonad`       a commutative strong monad M of measures containing Prob as a sub-monad
 --   `Score`          the zero measure and `score : W ⇒ M 1`, multiplicative; it defines `scaleM`, scaling of a
 --                    global measure by a weight (a bind through `score`), and proves its laws
@@ -10,7 +10,7 @@
 --   `Normalization` `normalize : M X ⇒ Prob X + 1`, homogeneous under invertible weights
 -- The interface adds that every measure is a countable sum of scaled laws (`scaled-laws`, the only field outside
 -- the five sub-records, and the place where s-finiteness lives).
--- `zero⇒` of the weights is an absorbing element of the multiplication, not a zero object.
+-- `zero⇒` (the weight 0) is an absorbing element of the multiplication, not a zero object.
 -- Linearity: `bind-sumK` is linear in the kernel; `sum-nat`/`sum-join` are linear in the measure.  They are separate
 -- axioms, not derivable from one another without a unit measure.
 -- Bind vocabulary: a bind is `μ ∘ M k ∘ t` for a global measure `t` and kernel `k`.  It is named once, in `QBS.Bind`
@@ -24,11 +24,11 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_)
 
 open import Categories.Category.Core using (Category)
+import Categories.Category.Monoidal.Symmetric.Algebra as Algebra
 import Categories.Category.CartesianClosed.Canonical as Canonical
 import Categories.Category.Cocartesian as Cocartesian
 import Categories.Category.Cartesian.Monoidal as CM
 import Categories.Category.Cartesian.SymmetricMonoidal as CSM
-open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
 open import Categories.Monad.Morphism using (Monad⇒-id)
@@ -40,22 +40,15 @@ open import QBS.CommMonad using (ProbMonad)
 open import QBS.Bind using (module Bind)
 open import QBS.Probability using (ProbabilityInterface)
 
--- A commutative monoid object of weights, with an absorbing zero (`zero⇒ : ⊤ ⇒ W`, an absorbing element
--- of the multiplication, not a zero object of the category).
--- Kept local: agda-categories' `Categories.Object.Monoid` has no commutativity field, so a commutative monoid
--- object (and the absorbing zero) would have to be added on top of it anyway.
-record CommutativeMonoidWithZero {o h e} (C : Category o h e) (CC : Canonical.CartesianClosed C) : Set (o ⊔ h ⊔ e) where
-  open Category C
-  open Canonical.CartesianClosed CC using (⊤; _×_; !; ⟨_,_⟩)
-  field
-    W : Obj
-    mulW : W × W ⇒ W
-    oneW zero⇒ : ⊤ ⇒ W
-    mul-assoc : ∀ {Z} (a b c : Z ⇒ W) →
-      mulW ∘ ⟨ mulW ∘ ⟨ a , b ⟩ , c ⟩ ≈ mulW ∘ ⟨ a , mulW ∘ ⟨ b , c ⟩ ⟩
-    mul-comm : ∀ {Z} (a b : Z ⇒ W) → mulW ∘ ⟨ a , b ⟩ ≈ mulW ∘ ⟨ b , a ⟩
-    mul-one : ∀ {Z} (a : Z ⇒ W) → mulW ∘ ⟨ a , oneW ∘ ! ⟩ ≈ a
-    mul-zero : ∀ {Z} (a : Z ⇒ W) → mulW ∘ ⟨ a , zero⇒ ∘ ! ⟩ ≈ zero⇒ ∘ !
+-- Weights: a commutative monoid object with an absorbing zero (`Categories.Category.Monoidal.Symmetric.Algebra`) for
+-- the symmetric monoidal structure of the products of `CC`.  `Mul` is the multiplication, whose unit is the weight 1;
+-- `zero⇒` is the weight 0, absorbing for `Mul` (`zeroʳ`).  Soft conditioning needs no addition of weights.
+Weights : ∀ {o h e} {C : Category o h e} → Canonical.CartesianClosed C → Set (o ⊔ h ⊔ e)
+Weights {C = C} CC = Algebra.CommutativeMonoidWithZero (CSM.symmetric C (Canonical.CartesianClosed.isCartesian CC))
+
+-- Weights that can also be added (e.g. `[0,∞]`): a commutative semiring; `commutativeMonoidWithZero` forgets to `Weights`.
+SemiringWeights : ∀ {o h e} {C : Category o h e} → Canonical.CartesianClosed C → Set (o ⊔ h ⊔ e)
+SemiringWeights {C = C} CC = Algebra.CommutativeSemiring (CSM.symmetric C (Canonical.CartesianClosed.isCartesian CC))
 
 -- A commutative strong monad M of measures containing the probability monad as a sub-monad.
 record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
@@ -81,10 +74,10 @@ record SubMonad {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Ca
 -- conditioning `score : W ⇒ M 1`, multiplicative, with weight 0 the zero measure and weight 1 the unit.
 -- Scaling a global measure by a weight is derived: `scaleM a t` is `t` bound through `score a`.
 record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ ℛ CC} (WM : CommutativeMonoidWithZero C CC) (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
+    {P : ProbabilityInterface ℓ ℛ CC} (WM : Weights CC) (SM : SubMonad P) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤; _×_; !; ⟨_,_⟩; !-unique)
-  open CommutativeMonoidWithZero WM
+  open Algebra.CommutativeMonoidWithZero WM renaming (Carrier to W)
   private module M = Monad (CommutativeMonad.M (SubMonad.commutativeMonad SM))
   open Bind (CommutativeMonad.M (SubMonad.commutativeMonad SM))
   field
@@ -93,9 +86,9 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
     zero-bind : ∀ (k : ⊤ ⇒ M.F.F₀ ⊤) → M.μ.η ⊤ ∘ M.F.F₁ k ∘ zero ≈ zero
     score : W ⇒ M.F.F₀ ⊤
     score-zero : score ∘ zero⇒ ≈ zero
-    score-one : score ∘ oneW ≈ M.η.η ⊤
+    score-one : score ∘ Mul.η ≈ M.η.η ⊤
     score-mul : ∀ (a b : ⊤ ⇒ W) →
-      score ∘ mulW ∘ ⟨ a , b ⟩ ≈ M.μ.η ⊤ ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
+      score ∘ Mul.μ ∘ ⟨ a , b ⟩ ≈ M.μ.η ⊤ ∘ M.F.F₁ (score ∘ b ∘ !) ∘ score ∘ a
 
   -- scaling a global measure by a global weight
   scaleM : ∀ {X} → (⊤ ⇒ W) → (⊤ ⇒ M.F.F₀ X) → ⊤ ⇒ M.F.F₀ X
@@ -107,11 +100,11 @@ record Score {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canon
     ∘!≈ : ∀ {A} (b : ⊤ ⇒ A) → b ∘ ! ≈ b
     ∘!≈ b = (refl⟩∘⟨ !-unique id) ○ identityʳ
 
-  scale-one : ∀ {X} (t : ⊤ ⇒ M.F.F₀ X) → scaleM oneW t ≈ t
+  scale-one : ∀ {X} (t : ⊤ ⇒ M.F.F₀ X) → scaleM Mul.η t ≈ t
   scale-one t = bind-cong Equiv.refl (score-one ○ ⟺ identityʳ) ○ bind-η t id ○ identityʳ
 
   scale-mul : ∀ {X} (a b : ⊤ ⇒ W) (t : ⊤ ⇒ M.F.F₀ X) →
-    scaleM (mulW ∘ ⟨ a , b ⟩) t ≈ scaleM a (scaleM b t)
+    scaleM (Mul.μ ∘ ⟨ a , b ⟩) t ≈ scaleM a (scaleM b t)
   scale-mul a b t =
     bind-cong Equiv.refl (score-mul a b) ○ bind-assoc t (score ∘ b ∘ !) (score ∘ a)
       ○ bind-cong (bind-cong Equiv.refl (refl⟩∘⟨ ∘!≈ b)) Equiv.refl
@@ -154,11 +147,11 @@ record CountableSums {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC
 -- invertible weight does not change the result; the degenerate infinite-mass case is left unspecified.
 record Normalization {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
     {P : ProbabilityInterface ℓ ℛ CC} (CP : Cocartesian.BinaryCoproducts C)
-    {WM : CommutativeMonoidWithZero C CC} {SM : SubMonad P} (Sc : Score WM SM) : Set (o ⊔ h ⊔ e) where
+    {WM : Weights CC} {SM : SubMonad P} (Sc : Score WM SM) : Set (o ⊔ h ⊔ e) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤; _×_; ⟨_,_⟩)
   open Cocartesian.BinaryCoproducts CP using (_+_; i₁; i₂)
-  open CommutativeMonoidWithZero WM
+  open Algebra.CommutativeMonoidWithZero WM renaming (Carrier to W)
   open Score Sc
   private
     module M = Monad (CommutativeMonad.M (SubMonad.commutativeMonad SM))
@@ -167,7 +160,7 @@ record Normalization {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC
     normalize : ∀ X → M.F.F₀ X ⇒ Pr.F.F₀ X + ⊤
     normalize-prob : ∀ X → normalize X ∘ Monad⇒-id.α.η (SubMonad.inclusion SM) X ≈ i₁
     normalize-zero : ∀ {X} (x : ⊤ ⇒ X) → normalize X ∘ M.F.F₁ x ∘ zero ≈ i₂
-    normalize-scale : ∀ {X} (a b : ⊤ ⇒ W) → mulW ∘ ⟨ a , b ⟩ ≈ oneW →
+    normalize-scale : ∀ {X} (a b : ⊤ ⇒ W) → Mul.μ ∘ ⟨ a , b ⟩ ≈ Mul.η →
       ∀ (t : ⊤ ⇒ M.F.F₀ X) → normalize X ∘ scaleM a t ≈ normalize X ∘ t
 
 -- Soft conditioning, abstractly.  On top of a `ProbabilityInterface`: weights, a measure monad containing
@@ -179,11 +172,11 @@ record StatisticalInterface {o h e} ℓ (C : Category o h e) (ℛ : Category.Obj
   open Category C
   open Canonical.CartesianClosed CC using (⊤)
   field
-    weights : CommutativeMonoidWithZero C CC
+    weights : Weights CC
     measures : SubMonad P
     scoring : Score weights measures
     sums : CountableSums measures
-  open CommutativeMonoidWithZero weights public
+  open Algebra.CommutativeMonoidWithZero weights renaming (Carrier to W) public
   open SubMonad measures public
   open Score scoring public
   open CountableSums sums public
