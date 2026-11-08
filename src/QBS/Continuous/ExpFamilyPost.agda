@@ -67,7 +67,7 @@ module ExpFamilyPost (lem₁ : LEM₁) where
   open SgLinAlg signedRing using (Vec; _≈V_; _+V_; _·_)
   open ExpFamAlg signedRing using (Param; _≈P_; updateSample; sumV; scaleA)
   open ExpFamilyPostAlg signedRing using (expo; expo-cong; expo-update; expo-zero; expo-draw)
-  open SignedTest lem₁ using (SgT; _+T_; -T_; scaleT; FinT; _≐_)
+  open SignedTest lem₁ using (SgT; _+T_; -T_; scaleT; FinT; FinTs; _≐_)
   open SFinite lem using (module C; XW; _≈ᴹ_; ∫ᴹ)
   open C using (Pre)
   open SFiniteReweight lem using (reweightPre)
@@ -81,7 +81,7 @@ module ExpFamilyPost (lem₁ : LEM₁) where
   open Hom
 
   -- the statistic of a point x of X, for finite statistic tests
-  statAt : ∀ {X : QBS S} {k : ℕ} (Tst : Fin k → SgT X) → (∀ j → FinT (Tst j)) → Setoid.Carrier (QBS.Carrier X) → Vec k
+  statAt : ∀ {X : QBS S} {k : ℕ} (Tst : Fin k → SgT X) → FinTs Tst → Setoid.Carrier (QBS.Carrier X) → Vec k
   statAt Tst finT x j = atSg (Tst j) (finT j) x
 
   module Posteriors
@@ -90,7 +90,7 @@ module ExpFamilyPost (lem₁ : LEM₁) where
       {k : ℕ}
       (η : Fin k → SgT Θ)
       (A-stat : SgT Θ)
-      (finη : ∀ j → FinT (η j))
+      (finη : FinTs η)
       (finA : FinT A-stat) where
 
     private

@@ -366,7 +366,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.SignedLog` | 150 | lem | The logarithm as a signed value. |
 | `QBS.Continuous.SignedMul` | 226 | lem | Products respect `≐` (used by `RandomVectorLaw`; the twin of `SignedSq`). |
 | `QBS.Continuous.SignedSq` | 120 | lem | Squares respect `≐` (used by `SignedVar`). |
-| `QBS.Continuous.SignedTest` | 180 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻. |
+| `QBS.Continuous.SignedTest` | 186 | lem | Signed tests: pairs of [0, ∞]-valued tests standing for f⁺ − f⁻. |
 | `QBS.Continuous.SignedTransport` | 112 | lem | Moving signed expectations along maps, scalings, and from the probability-monad API. |
 | `QBS.Continuous.SignedVar` | 116 | lem | Variance of a signed test under a probability distribution. |
 | `QBS.Continuous.SignedVarAlg` | 155 | lem | Pointwise and ring identities for the variance of signed tests (used by `SignedVar`). |

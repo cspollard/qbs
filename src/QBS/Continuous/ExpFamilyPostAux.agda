@@ -54,7 +54,7 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   open import QBS.Analysis.Signed using (SubSemiring)
   open SubSemiring finite using (Is-0)
   open SgLinAlg signedRing using (Vec; _·_)
-  open SignedTest lem₁ using (SgT; _+T_; -T_; scaleT; constT; FinT; _≐_; at⁺; at⁻)
+  open SignedTest lem₁ using (SgT; _+T_; -T_; scaleT; constT; FinT; FinTs; _≐_; at⁺; at⁻)
   open SetoidReasoning (OmegaSemiring.setoid A)
   open SFinite lem using (module C; XW; _≈ᴹ_; ≈ᵖ⇒≈ᴹ; ∫ᴹ; ∫ᴹ-cong)
   open C using (Pre)
@@ -92,7 +92,7 @@ module ExpFamilyPostAux (lem₁ : LEM₁) where
   atSg-const : ∀ {X : QBS S} (c : Sg) x → atSg (constT {X} c) (FinT-constT c) x ≃ c
   atSg-const c x = ≃-by _ _ refl
 
-  atSg-dot : ∀ {X : QBS S} k (χ : Vec k) {T : Fin k → SgT X} (fT : ∀ j → FinT (T j)) x →
+  atSg-dot : ∀ {X : QBS S} k (χ : Vec k) {T : Fin k → SgT X} (fT : FinTs T) x →
     atSg (dotT k χ T) (FinT-dotT k χ T fT) x ≃ χ · (λ j → atSg (T j) (fT j) x)
   atSg-dot zero χ fT x = ≃-by _ _ refl
   atSg-dot (suc k) χ {T} fT x = ≃-trans (atSg-+ (FinT-scaleT (χ zero) (fT zero)) (FinT-dotT k χ′ T′ fT′) x)

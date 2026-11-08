@@ -7,7 +7,7 @@
 --     tests go through the expectation instead (`SignedExpect.Ex-cong`);
 --   * pointwise operations `_+T_`, `-T_`, `scaleT` (a signed constant), `_*T_`, `constT`, `fromW` (a nonnegative
 --     test), precomposition `_∘T_`, and on the real line `idT` (x⁺ − x⁻) and `sqT = idT *T idT`;
---   * `FinT f`: both parts of f are finite at every point; closed under `_+T_`, `-T_`, `scaleT c`, `constT c` and
+--   * `FinT f`: both parts of f are finite at every point (`FinTs T` for a family of statistics); closed under `_+T_`, `-T_`, `scaleT c`, `constT c` and
 --     precomposition (`FinT-+T`, `FinT-negT`, `FinT-scaleT`, `FinT-constT`, `FinT-∘T`), and the hypothesis that makes `≐`
 --     transitive (`≐-trans`);
 --   * the bridge between the two QBSs of [0, ∞]: `toW : (X ⇒ CutQ) → (X ⇒ WQ)` and `toCut`, both the identity pointwise.
@@ -18,6 +18,8 @@ module QBS.Continuous.SignedTest where
 
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin)
 
 open import QBS.Core
 open import QBS.Classical using (LEM₁)
@@ -159,6 +161,10 @@ module SignedTest (lem₁ : LEM₁) where
 
   toCut-pt : ∀ {X : QBS S} (f : Hom S X WQ) x → map (toCut f) ⟨$⟩ x ≈ map f ⟨$⟩ x
   toCut-pt f x = refl
+
+  -- a family of finite statistics, `∀ j → FinT (T j)`
+  FinTs : ∀ {X : QBS S} {k : ℕ} → (Fin k → SgT X) → Set₁
+  FinTs T = ∀ j → FinT (T j)
 
   -- Finite tests (`FinT`) are closed under the test operations: pointwise from `SubSemiring.Is-+` and `Is-*`
   -- for `Bounded.finite` (signed constants have finite parts).

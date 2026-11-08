@@ -90,7 +90,7 @@ module ExpFamily (lem₁ : LEM₁) where
   open Bounded A using (Sg; _≃_; Bnd; 0S; -S_; 1S; ι; signedRing; ≃-trans)
   open SgLinAlg signedRing using (Vec)
   open ExpFamAlg signedRing using (scaleA)
-  open SignedTest lem₁ using (SgT; _+T_; scaleT; constT; FinT; fromW; _∘T_; idT)
+  open SignedTest lem₁ using (SgT; _+T_; scaleT; constT; FinT; FinTs; fromW; _∘T_; idT)
   open SignedLog lem₁ using (PosQ; logS)
   open SFinite lem using (module C; XW; ∫ᴹ; ∫ᴹ-cong; _≈ᴹ_; ∫ᴹ-η)
   open C using (Pre)
@@ -186,7 +186,7 @@ module ExpFamily (lem₁ : LEM₁) where
   weight-0S : ∀ {X : QBS S} (k : ℕ) (T : Fin k → SgT X) x → map (weight k (λ _ → 0S) T) ⟨$⟩ x ≈ 1#
   weight-0S k T x = trans (expWT-≈T (dotT-0S k T) {x}) (expWT-0 x)
 
-  FinT-dotT : ∀ {X : QBS S} (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → (∀ j → FinT (T j)) → FinT (dotT k η T)
+  FinT-dotT : ∀ {X : QBS S} (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → FinTs T → FinT (dotT k η T)
   FinT-dotT zero η T fin = FinT-constT 0S
   FinT-dotT (suc k) η T fin =
     FinT-+T (FinT-scaleT (η zero) (fin zero)) (FinT-dotT k (λ j → η (suc j)) (λ j → T (suc j)) (λ j → fin (suc j)))
@@ -231,7 +231,7 @@ module ExpFamily (lem₁ : LEM₁) where
       ih : _≈T_ {Xⁿ (suc N) X} (sumTⁿ N k T j ∘T sndQ S) (sumT N F ∘T sndQ S)
       ih x = sumTⁿ-proj N k T j (proj₂ x)
 
-  FinT-sumTⁿ : ∀ {X : QBS S} (N : ℕ) (k : ℕ) (T : Fin k → SgT X) → (∀ j → FinT (T j)) → ∀ j → FinT (sumTⁿ N k T j)
+  FinT-sumTⁿ : ∀ {X : QBS S} (N : ℕ) (k : ℕ) (T : Fin k → SgT X) → FinTs T → FinTs (sumTⁿ N k T)
   FinT-sumTⁿ zero k T fin j = FinT-constT 0S
   FinT-sumTⁿ (suc N) k T fin j = FinT-+T (FinT-∘T (fstQ S) (fin j)) (FinT-∘T (sndQ S) (FinT-sumTⁿ N k T fin j))
 
@@ -241,7 +241,7 @@ module ExpFamily (lem₁ : LEM₁) where
   product-partition h N k η T = ∫-rectⁿ N (λ _ → _) (λ _ → h) (λ _ → weight k η T)
 
   -- The weight of the summed statistic is the product of the weights: e^{⟨η, Σᵢ T(xᵢ)⟩} ≈ ∏ᵢ e^{⟨η, T(xᵢ)⟩}
-  weight-sumTⁿ : ∀ {X : QBS S} (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → (∀ j → FinT (T j)) →
+  weight-sumTⁿ : ∀ {X : QBS S} (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → FinTs T →
     _≈H_ S (weight k η (sumTⁿ N k T)) (prodT N (λ _ → X) (λ _ → weight k η T))
   weight-sumTⁿ zero k η T fin {x} = trans (expWT-≈T (dotT-0 k η) {x}) (expWT-0 x)
   weight-sumTⁿ {X} (suc N) k η T fin {x} = trans (expWT-≈T (dotT-+ k η F G) {x})
@@ -255,7 +255,7 @@ module ExpFamily (lem₁ : LEM₁) where
       fG = λ j → FinT-∘T (sndQ S) (FinT-sumTⁿ N k T fin j)
 
   -- Z_N(η) ≈ Z(η)ᴺ
-  partition-sumTⁿ : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → (∀ j → FinT (T j)) →
+  partition-sumTⁿ : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) → FinTs T →
     partition (baseⁿ N h) k η (sumTⁿ N k T) ≈ ∏ⁿ N (λ _ → partition h k η T)
   partition-sumTⁿ h N k η T fin =
     trans (∫ᴹ-cong (baseⁿ N h) (λ x → weight-sumTⁿ N k η T fin {x})) (product-partition h N k η T)
@@ -267,14 +267,14 @@ module ExpFamily (lem₁ : LEM₁) where
 
   -- the normaliser of N draws is nᴺ
   product-norm : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) (n : Cut) →
-    (∀ j → FinT (T j)) → partition h k η T * n ≈ 1# → partition (baseⁿ N h) k η (sumTⁿ N k T) * ∏ⁿ N (λ _ → n) ≈ 1#
+    FinTs T → partition h k η T * n ≈ 1# → partition (baseⁿ N h) k η (sumTⁿ N k T) * ∏ⁿ N (λ _ → n) ≈ 1#
   product-norm h N k η T n fin hn =
     trans (*-cong (trans (partition-sumTⁿ h N k η T fin) (sym (prodF-∏ⁿ N _))) (sym (prodF-∏ⁿ N _)))
     (trans (prodF-mul N (λ _ → partition h k η T) (λ _ → n)) (trans (prodF-cong N (λ _ → hn)) (prodF-one N)))
 
   private
     expFam-zero : ∀ {X : QBS S} (h : Pre (XW X)) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) (n : Cut)
-      (fin : ∀ j → FinT (T j)) (hn : partition h k η T * n ≈ 1#) →
+      (fin : FinTs T) (hn : partition h k η T * n ≈ 1#) →
       _≈ᴹ_ {Xⁿ 0 X} (prodⁿ 0 (λ _ → X) (λ _ → probPre h k η T n hn))
         (probPre (baseⁿ 0 h) k η (sumTⁿ 0 k T) 1# (product-norm h 0 k η T n fin hn))
     expFam-zero h k η T n fin hn g = sym (trans (∫ᴹ-scale 1# (reweightPre w0 _) g)
@@ -283,7 +283,7 @@ module ExpFamily (lem₁ : LEM₁) where
       where
         w0 = weight k η (sumTⁿ zero k T)
 
-    weight-split : ∀ {X : QBS S} (N k : ℕ) (η : Vec k) (T : Fin k → SgT X) → (∀ j → FinT (T j)) →
+    weight-split : ∀ {X : QBS S} (N k : ℕ) (η : Vec k) (T : Fin k → SgT X) → FinTs T →
       _≈H_ S (mulH {Xⁿ (suc N) X} (_∘H_ S (weight k η T) (fstQ S)) (_∘H_ S (weight k η (sumTⁿ N k T)) (sndQ S)))
         (weight k η (sumTⁿ (suc N) k T))
     weight-split N k η T fin {x} =
@@ -291,7 +291,7 @@ module ExpFamily (lem₁ : LEM₁) where
 
   -- the law of N independent draws from P_η is the family on Xᴺ with base h^{⊗N}, statistic Σᵢ T ∘ projᵢ, normaliser nᴺ
   product-expFam : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) (n : Cut)
-    (fin : ∀ j → FinT (T j)) (hn : partition h k η T * n ≈ 1#) →
+    (fin : FinTs T) (hn : partition h k η T * n ≈ 1#) →
     _≈ᴹ_ {Xⁿ N X} (prodⁿ N (λ _ → X) (λ _ → probPre h k η T n hn))
       (probPre (baseⁿ N h) k η (sumTⁿ N k T) (∏ⁿ N (λ _ → n)) (product-norm h N k η T n fin hn))
   product-expFam h zero k η T n fin hn = expFam-zero h k η T n fin hn
@@ -308,7 +308,7 @@ module ExpFamily (lem₁ : LEM₁) where
 
   -- the same for an iid family of random variables X₀, …, X_{N−1} with law P_η
   IID-expFam : ∀ {Ω X : QBS S} (P : C.Pre Ω) (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) (n : Cut)
-    (fin : ∀ j → FinT (T j)) (hn : partition h k η T * n ≈ 1#) (Xs : Fin N → Hom S Ω X) →
+    (fin : FinTs T) (hn : partition h k η T * n ≈ 1#) (Xs : Fin N → Hom S Ω X) →
     IID P (probPre h k η T n hn) N Xs →
     _≈ᴹ_ {Xⁿ N X} (law P (tupleQ N (λ _ → X) Xs))
       (probPre (baseⁿ N h) k η (sumTⁿ N k T) (∏ⁿ N (λ _ → n)) (product-norm h N k η T n fin hn))
@@ -316,18 +316,18 @@ module ExpFamily (lem₁ : LEM₁) where
 
   -- 0 < Z_N(η) < ∞ when 0 < Z(η) < ∞
   PosQ-partitionⁿ : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) →
-    (∀ j → FinT (T j)) → PosQ (partition h k η T) → PosQ (partition (baseⁿ N h) k η (sumTⁿ N k T))
+    FinTs T → PosQ (partition h k η T) → PosQ (partition (baseⁿ N h) k η (sumTⁿ N k T))
   PosQ-partitionⁿ h N k η T fin pz =
     PosQ-resp (sym (partition-sumTⁿ h N k η T fin)) (PosQ-∏ⁿ N {partition h k η T} pz)
 
   BndQ-partitionⁿ : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) →
-    (∀ j → FinT (T j)) → BndQ (partition h k η T) → BndQ (partition (baseⁿ N h) k η (sumTⁿ N k T))
+    FinTs T → BndQ (partition h k η T) → BndQ (partition (baseⁿ N h) k η (sumTⁿ N k T))
   BndQ-partitionⁿ h N k η T fin bz =
     BndQ-resp (sym (partition-sumTⁿ h N k η T fin)) (BndQ-∏ⁿ N {partition h k η T} bz)
 
   -- the log-partition of N draws is N · A(η)
   logPartition-sumTⁿ : ∀ {X : QBS S} (h : Pre (XW X)) (N : ℕ) (k : ℕ) (η : Vec k) (T : Fin k → SgT X) →
-    (fin : ∀ j → FinT (T j)) (pz : PosQ (partition h k η T)) (bz : BndQ (partition h k η T))
+    (fin : FinTs T) (pz : PosQ (partition h k η T)) (bz : BndQ (partition h k η T))
     (pzN : PosQ (partition (baseⁿ N h) k η (sumTⁿ N k T))) (bzN : BndQ (partition (baseⁿ N h) k η (sumTⁿ N k T))) →
     logPartition (baseⁿ N h) k η (sumTⁿ N k T) pzN bzN ≃ scaleA N (logPartition h k η T pz bz)
   logPartition-sumTⁿ h N k η T fin pz bz pzN bzN =
