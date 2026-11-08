@@ -203,3 +203,17 @@ which is how `GaussShift` and `GaussScale` should also be phrased (one `affine p
    (non-Inference) importers I could not check.
 5. Is a `Kleisli`-style named composition (`_>>=ᵖ_`) acceptable as an addition to `Continuous.Monad`, outside the Inference domain?
 6. Is there a compile-time budget per merged file (section 4 E would create files of 200-300 lines)?
+
+## Implementation status (2026-11-08)
+
+Tier A (done): module headers of CondIID, IIDLaw, WeakLaw*, GaussVector*, MultiSample*, GaussVar*, GaussScale, GaussShift,
+ScaleDensity, ExpFamily, CondIIDCoin* and GaussVectorLaw now lead with the theorem and cite `plans/` items after it;
+`CoinPosterior` is titled as Bayes' rule for s-finite measures; the read-first table is in `Interface.md` ("Inference: read first"),
+with a "Where to start" bullet in `Guide.md` section 6.
+Tier B:
+- `CondIIDConst` folded into `CondIID` (`∫-constW`), module deleted: done.
+- `CondIIDCoinStep` folded into `CondIIDCoin` (`nextK-pw`, `nextK-ι`), module deleted: done.
+- `GaussVectorAlg` fold: wrong finding, it has two importers (`GaussVector` and `GaussVectorLaw`) and is abstract over a ring; kept.
+- `WeakLawAlg`/`WeakLawCheb` into `WeakLaw`, `ExpDistMean`/`Var`/`ExpRateOne`, `PolyDomination` + `Odd`, `Inference.Prelude`: not done (budget).
+Tiers C, D, E (Bayes package at the abstract layer, directory split, renames): not done (budget).  Not verified: whether
+`IsStatisticalQBSLike` exposes reweighting.

@@ -9,7 +9,7 @@
 --     `KnS` (`margN-marg`), hence exchangeable (`margN-exch`), although the flips are not independent (Laplace's
 --     rule, `CoinUniformPriorN.succession`).
 -- Route: `Kn-iid` by induction on n through the integrals (`kn`): one step of `nextK` through `SFiniteIncl.ιPre` is
--- `CondIIDCoinStep.nextK-ι` (`ι-mult`, `ι-nat`, `ι-strong`, `∫ᴹ-join`, `∫ᴹ-map`, `∫ᴹ-σ`), compared with
+-- `nextK-ι` (`ι-mult`, `ι-nat`, `ι-strong`, `∫ᴹ-join`, `∫ᴹ-map`, `∫ᴹ-σ`), compared with
 -- `Product.∫-prod′` for μ ⊗ μ^{⊗(n+1)} (`intR-pt`); at n = 0 the product is with the Dirac measure (`∫ᴹ-η`).
 -- `margN-marg` from `ι-mult`, `ι-nat` and `∫ᴹ-map`; `margN-exch` is `Exchangeable.condIID-exch` with `Exch-≈`.
 module QBS.Inference.CondIIDCoin where
@@ -34,7 +34,8 @@ open import QBS.Continuous.Product using (module Product)
 open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
 open import QBS.Continuous.IID using (module IID)
 open import QBS.Inference.CondIID using (module CondIID)
-open import QBS.Inference.CondIIDCoinStep using (module CondIIDCoinStep)
+open import QBS.Analysis.Measure using (module Integration)
+open import QBS.Continuous.Strong using (module Strength)
 open import QBS.Classical using (LEM₁)
 open import Function.Bundles using (_⟨$⟩_)
 open import Data.Product.Base using (_,_)
@@ -50,19 +51,46 @@ module CondIIDCoin (lem₁ : LEM₁) where
   open Weights (lemOf lem₁) using (WQ)
   open SFinite (lemOf lem₁) using (XW; TQ; TH; ∫ᴹ; ∫ᶠ; ∫ᴹ-map; ∫ᴹ-join; ∫ᴹ-cong; ∫ᴹ-η; _≈ᴹ_; mapM; joinPre; module C)
   open Product (lemOf lem₁) using (prodPre; intR; intR-pt; ∫-prod′)
-  open SFiniteStrong (lemOf lem₁) using (fixH)
+  open SFiniteStrong (lemOf lem₁) using (σPre; ∫ᴹ-σ; fixH)
+  open Integration A using (probClass)
+  open Strength A (lemOf lem₁) probClass using () renaming (σPre to σPreC)
   open IID lem₁ using (≈ᴹ-sym)
-  open CondIIDCoinStep lem₁ using (nextK-ι)
-  open SFiniteIncl (lemOf lem₁) using (ιPre; ιH; ι-nat; ι-mult)
+  open SFiniteIncl (lemOf lem₁) using (ιPre; ιH; ι-nat; ι-mult; ι-strong)
   open ProdMap (lemOf lem₁) using (_×H_)
   open FinProd lem₁ using (ΠQ; prodⁿ)
   open Exchangeable lem₁ using (Exch; Exch-≈; condIID-exch)
   open CoinUniformPrior lem₁ using (coinKernel)
-  open CoinUniformPriorN lem₁ using (Fl; Kn; margN)
+  open CoinUniformPriorN lem₁ using (Fl; Kn; margN; nextK; flipPairN)
   open CondIID lem₁ using (CondIID; margM)
   open BoolOn S using (BoolQ)
   open QBS
   open Hom
+
+  -- one step of the coin kernel through the inclusion into s-finite measures: the integrand over the first flip
+  nextK-pw : ∀ {F : QBS S} (K : Hom S AQ (C.TQ F)) θ (h : Hom S (_×Q_ S BoolQ F) WQ) b →
+    map (fixH {AQ} {BoolQ} θ (_∘H_ S (_∘H_ S (∫ᶠ {_×Q_ S BoolQ F} h) (ιH (_×Q_ S BoolQ F))) (flipPairN K))) ⟨$⟩ b
+      ≈ map (intR {BoolQ} {F} (ιPre {F} (map K ⟨$⟩ θ)) h) ⟨$⟩ b
+  nextK-pw {F} K θ h b = trans (ι-strong {BoolQ} {F} b (map K ⟨$⟩ θ) h) (trans (∫ᴹ-σ {BoolQ} {F} b (ιPre {F} (map K ⟨$⟩ θ)) h)
+    (sym (intR-pt {BoolQ} {F} (ιPre {F} (map K ⟨$⟩ θ)) h b)))
+
+  nextK-ι : ∀ {F : QBS S} (K : Hom S AQ (C.TQ F)) θ (h : Hom S (_×Q_ S BoolQ F) WQ) →
+    ∫ᴹ {_×Q_ S BoolQ F} (ιPre {_×Q_ S BoolQ F} (map (nextK K) ⟨$⟩ θ)) h
+      ≈ ∫ᴹ {BoolQ} (ιPre {BoolQ} (map coinKernel ⟨$⟩ θ)) (intR {BoolQ} {F} (ιPre {F} (map K ⟨$⟩ θ)) h)
+  nextK-ι {F} K θ h = trans (ι-mult {BF} _ h)
+    (trans (∫ᴹ-join {BF} _ h)
+      (trans (ι-nat {C.TQ BF} {TQ BF} (ιH BF) _ (∫ᶠ {BF} h))
+        (trans (∫ᴹ-map {C.TQ BF} {TQ BF} (ιH BF) _ (∫ᶠ {BF} h))
+          (trans (ι-nat {AQ×B} {C.TQ BF} fp w T)
+            (trans (∫ᴹ-map {AQ×B} {C.TQ BF} fp (ιPre {AQ×B} w) T)
+              (trans (ι-strong {AQ} {BoolQ} θ (map coinKernel ⟨$⟩ θ) (_∘H_ S T fp))
+                (trans (∫ᴹ-σ {AQ} {BoolQ} θ (ιPre {BoolQ} (map coinKernel ⟨$⟩ θ)) (_∘H_ S T fp))
+                  (∫ᴹ-cong {BoolQ} (ιPre {BoolQ} (map coinKernel ⟨$⟩ θ)) (nextK-pw K θ h)))))))))
+    where
+      AQ×B = _×Q_ S AQ BoolQ
+      BF = _×Q_ S BoolQ F
+      fp = flipPairN K
+      w = σPreC {AQ} {BoolQ} (θ , map coinKernel ⟨$⟩ θ)
+      T = _∘H_ S (∫ᶠ {BF} h) (ιH BF)
 
   -- n + 1 flips as a point of Boolⁿ⁺¹
   flat : ∀ n → Hom S (Fl n) (ΠQ (suc n) (λ _ → BoolQ))

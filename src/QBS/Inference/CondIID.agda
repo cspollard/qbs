@@ -13,7 +13,7 @@
 --     `margM π K` (`marg-coord`): marginally the observations are identically distributed (not independent).
 -- Route: `ψ-at` is definitional (`ψH` unfolds to `prodPre`); `kpow-iid` by induction on n with `ψ-at` and `Product.prod-cong`;
 -- `∫-joint` from `∫ᴹ-join` and `∫ᴹ-map`; `joint-snd`/`joint-fst` are `∫-joint` at g ∘ snd and g ∘ fst, with the inner
--- integrals computed by `∫ᴹ-σ` (and, for the constant integrand of `joint-fst`, `CondIIDConst.∫-constW`); `marg-coord`
+-- integrals computed by `∫ᴹ-σ` (and, for the constant integrand of `joint-fst`, `∫-constW`: a constant integrates to the constant times the mass); `marg-coord`
 -- from `∫ᴹ-join`, `∫ᴹ-map` and `FinProd.margⁿ` pointwise in θ.
 module QBS.Inference.CondIID where
 
@@ -38,7 +38,8 @@ open import QBS.Continuous.SFiniteStrong using (module SFiniteStrong)
 open import QBS.Continuous.SFiniteCommute using (module SFiniteCommute)
 open import QBS.Continuous.Product using (module Product)
 open import QBS.Continuous.FinProd using (module FinProd)
-open import QBS.Inference.CondIIDConst using (module CondIIDConst)
+open import QBS.Continuous.SFiniteSum using (module SFiniteSum)
+open import QBS.Analysis.JParam using (module JParam)
 
 module CondIID (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
@@ -49,11 +50,22 @@ module CondIID (lem₁ : LEM₁) where
   open SFiniteStrong (lemOf lem₁) using (σH; σPre; ∫ᴹ-σ; fixH)
   open SFiniteCommute (lemOf lem₁) using (τH)
   open Product (lemOf lem₁) using (prodPre; prod-cong)
-  open CondIIDConst (lemOf lem₁) using (∫-constW)
   open FinProd lem₁ using (ΠQ; projQ; prodⁿ; margⁿ)
   open BoolOn S using (constQ)
   open QBS
   open Hom
+
+  -- a constant test integrates to the constant times the mass (compare `SFiniteSum.∫ᴹ-scale`): `J-cong` pointwise on
+  -- the samples (w · c ≈ (c · w) · 1) against `scalePre c q`, then `∫ᴹ-scale`
+  ∫-constW : ∀ {X : QBS S} (q : C.Pre (XW X)) (c : OmegaSemiring.Carrier A) →
+    ∫ᴹ {X} q (constW {X} c) ≈ c * ∫ᴹ {X} q (constW {X} 1#)
+  ∫-constW {X} q c = trans
+    (JParam.J-cong (lemOf lem₁) (C.Pre.m q) {SFinite.ψ (lemOf lem₁) {X} q (constW {X} c)}
+      {SFinite.ψ (lemOf lem₁) {X} (SFiniteSum.scalePre (lemOf lem₁) {X} c q) (constW {X} 1#)}
+      (SFinite.mψ (lemOf lem₁) {X} q (constW {X} c))
+      (SFinite.mψ (lemOf lem₁) {X} (SFiniteSum.scalePre (lemOf lem₁) {X} c q) (constW {X} 1#))
+      (λ r → trans (OmegaSemiring.*-comm A _ _) (sym (*-identityʳ _))))
+    (SFiniteSum.∫ᴹ-scale (lemOf lem₁) {X} c q (constW {X} 1#))
 
   -- the double strength T X × T Y ⇒ T (X × Y)
   ψH : ∀ X Y → Hom S (_×Q_ S (TQ X) (TQ Y)) (TQ (_×Q_ S X Y))

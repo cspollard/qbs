@@ -38,10 +38,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Inference.CoinPosterior` | 224 | lem | Bayes' rule for s-finite measures (the general `posterior` and `bayes`), with the Beta(2,1) coin example: the posterior as an actual distribution, by reweighting and normalising (`plans/03-bayesian-frequentist.md`). |
 | `QBS.Inference.CoinUniformPrior` | 225 | lem | The coin with a continuous uniform prior on its bias: the Beta(1,1)-Bernoulli model (`plans/03-bayesian-frequentist.md`, 3c/3d). |
 | `QBS.Inference.CoinUniformPriorN` | 214 | lem | n flips of the coin with a uniform prior on its bias, and Laplace's rule of succession (`plans/03-bayesian-frequentist.md`, 3c/3d; the continuation of `Inference/CoinUniformPrior`). |
-| `QBS.Inference.CondIID` | 138 | lem | Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`). |
-| `QBS.Inference.CondIIDCoin` | 145 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05 items 48–49). |
-| `QBS.Inference.CondIIDCoinStep` | 73 | lem | One step of the coin kernel through the inclusion into s-finite measures (helper for `CondIIDCoin`; plan 05 item 48a). |
-| `QBS.Inference.CondIIDConst` | 39 | lem | A constant test integrates to the constant times the mass: `∫-constW`: ∫ c dq ≈ c · ∫ 1 dq, for an s-finite measure q (compare `SFiniteSum.∫ᴹ-scale`). |
+| `QBS.Inference.CondIID` | 150 | lem | Conditionally iid observations given a parameter (plan 05 item 48 in `plans/`). |
+| `QBS.Inference.CondIIDCoin` | 173 | lem | The flips of a coin with unknown bias as an instance of `CondIID` and `Exchangeable` (plan 05 items 48–49). |
 | `QBS.Inference.DensityExpectation` | 136 | lem | Expectations under a normalised density on [0,∞) through the expectation API of `Inference/ExpectationInt`. |
 | `QBS.Inference.Domination` | 145 | lem | Integrability by domination. |
 | `QBS.Inference.ExpDistMean` | 75 | lem | The mean of the exponential distribution through the expectation API of `Inference/ExpectationInt`. |
