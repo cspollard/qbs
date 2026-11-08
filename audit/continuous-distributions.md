@@ -142,3 +142,15 @@ its own algebra. Recommendations, in order:
 3. Is `expDist` expected to stay a separate definition (stable API for `Inference.*`), or may it become `densDist negExpH`?
 4. Should Exp(lambda) / N(mu,sigma^2) be first-class distributions (with the location-scale lemma), or is the rate-1 / unit scale the intended scope?
 5. Where should the Beta/uniform recursion live: with the uniform distribution (`continuous-distributions`) or with the Bayesian examples that use it (Interface.md:142)?
+
+## Implementation status (2026-11-08)
+
+- Rec. 1 / tier C (exponential moments): partly done. `HalfLineMean`, `HalfLineMoment2` and `Analysis/GeometricMoment2` deleted. `xNegExpH`, `x²NegExpH` now live in `HalfLineMomentFact`, whose `∫-x`, `∫-x²` are the single route; `ExpDist`, `ExpDistSq` re-pointed. (The route is `HalfLineMomentFact`; there is no `DerivMoment` module, the calculus is `DerivBridge.glue-D`.) `GeometricNorm.GeoMean` is now unused (dead code left in place; `GeometricNorm.norm` is still used by `HalfLineNorm`/`HalfLineUnit`). Not done: `HalfLineMomentN`/`HalfLineUnit` are still needed (`HalfLineMomentN` supplies the tests and `Deriv` facts of `HalfLineMomentFact`, `HalfLineUnit` feeds `TailFTCExp`/`HalfLineNorm`), so they stay; its header now says so.
+- Rec. 2 (`ExpRateMoment` onto `Deriv`): skipped (budget; it is imported by `Inference.ExpRateDist` and needs a new certificate port).
+- Rec. 3 / tier D (`expDist = densDist negExpH`, generic recipe): partly done. The recipe is documented in a new "Distribution recipe" entry in `Interface.md` and `DensityDist`'s header (which wrongly said `ExpDist` imports it). The code change is skipped: `ExpDist`'s `expDist` is opaque and used by many importers, and rebuilding it on `densDist` risks the API and compile time.
+- Rec. 4 (location–scale law once): skipped (needs a new affine `Hom` layer, depends on agent 7's lemmas).
+- Rec. 5 (tiny helpers): `negExp-cong`, `bd1`, `hm`, `half≤1` already had a shared home after global-cleanup. `BetaIntegral.fact` vs `HalfLineMomentFact.fact`: wrong finding, they are not the same statement (`#` of `UniformMomentN.AlgN` over an abstract Archimedean semiring vs `natE` in the `lem₁` module), left alone.
+- Rec. 6, 7 (Gaussian tower, two tail-FTC routes, `TailFTCLipHalf.glue` vs `DerivBridge.glue-D`): skipped (not reached).
+- Rec. 8 (uniform moments from `UniformMomentN`): skipped. `UniformMean`, `UniformMoment` are imported by `Uniform`, `SubModel`, `UniformVariance`, `ExpectationExamples`, `CoinBayesRisk`, `CoinPosterior`, `CoinUniformPrior`, and `moment-N` (`(n+1)·M n ≈ 1`, over its own `pw`/`#`) is stated differently from `mean`/`second-moment`; the derivation is a non-trivial bridge.
+- Rec. 9 (`ExpRateInt` hypotheses): skipped.
+- Docs: tier A done for the recipe entry, `DensityDist`, `Uniform` (see-also line) and `HalfLineMomentN` headers. The Guide.md distribution table was not written.
