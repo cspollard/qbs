@@ -95,7 +95,9 @@ cantorSource = record
         }
       ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ (j ⟨$⟩_)} {λ k → down (f k ⟨$⟩_)} pj mf
       }
-    ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
-    ; idx-glue = λ {j} {i} pj pi → idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
+    ; common-refinement = λ {j} {i} pj pi →
+        let k = λ r → pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
+            pk = idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
+        in idxₛ k pk , pk , unpair , λ r → unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
     }
   }

@@ -7,9 +7,9 @@
 --                    `subcat` is the one-object sub-category of `Setoids` it forms.
 --   Probes M X     : a sub-𝕄-set of the setoid maps Rˢ → X, closed under ≈ and containing the constants;
 --                    i.e. a subpresheaf of Setoid(Rˢ, X) on 𝕄.
---   Partitions     : the measurable countable partitions R → ℕ, the probes of discrete ℕ.  With `idx-glue`
+--   Partitions     : the measurable countable partitions R → ℕ, the probes of discrete ℕ.  With `common-refinement`
 --                    they form a coverage J on 𝕄 (`idx-const` the trivial cover, `idx-pre` pullback,
---                    `idx-glue` composition of covers), and `meas-glue` says J is subcanonical.
+--                    `common-refinement` composition of covers), and `meas-glue` says J is subcanonical.
 --   QBS S          : a setoid with probes that glue along J (the sheaf condition).
 --   Hom X Y        : setoid maps preserving probes (natural transformations).  Also identity and composition.
 module QBS.Core where
@@ -23,7 +23,6 @@ open import Function.Base using (const)
 open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Relation.Binary.Bundles using (Setoid)
-open import Data.Nat.Properties.Pairing using (NatPairing)
 open import Categories.Category.Instance.Setoids using (Setoids)
 import Categories.Category.SubCategory.EndoSubmonoid as Endo
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; sym; subst)
@@ -54,7 +53,7 @@ glueₛ {B = B} j α = record
   }
 
 -- The parameters of the theory: a "random source" R (the reals) together with the measurable maps
--- R → R, the measurable countable partitions of R, and a pairing of ℕ.  Three small pieces make up
+-- R → R, and the measurable countable partitions of R.  Two small pieces make up
 -- an `IsRandomSource` on a setoid Rˢ, and `RandomSource` bundles it with Rˢ; all their fields are re-exported.
 
 -- the monoid 𝕄 ⊆ End(Rˢ) of measurable maps on a setoid Rˢ: a submonoid of the endomorphisms of Rˢ in `Setoids`
@@ -108,18 +107,9 @@ record Partitions {ℓ} {Rˢ : Setoid ℓ ℓ} (M : MeasurableMaps Rˢ) : Set (s
   field
     meas-glue : ∀ {j f} → Idx j → (∀ n → Meas (f n)) → Meas (glueₛ j f)
 
--- the pairing as setoid maps: `pairₛ n`, and the composite cover `refineₛ j i` of `j` by the `i n`,
--- r ↦ pair (j r) (i (j r) r)
-module NatPairingₛ (P : NatPairing) where
-  open NatPairing P
-
-  pairₛ : ℕ → Func ℕˢ ℕˢ
-  pairₛ n = ⇑ (pair n)
-
-  refineₛ : ∀ {a b} {A : Setoid a b} → Func A ℕˢ → (ℕ → Func A ℕˢ) → Func A ℕˢ
-  refineₛ j i = glueₛ j (λ n → pairₛ n ∘ₛ i n)
-
--- the laws of a random source on the setoid Rˢ
+-- the laws of a random source on the setoid Rˢ.  Covers compose through a common refinement: refining each piece
+-- of `j` by `i n` gives a partition `k` that determines the pair `(j r , i (j r) r)`, recovered by `decode`.
+-- (No pairing function of ℕ is fixed: each source chooses `k` and `decode`.)
 record IsRandomSource {ℓ} (Rˢ : Setoid ℓ ℓ) : Set (suc ℓ) where
   field
     measurable : MeasurableMaps Rˢ
@@ -128,12 +118,9 @@ record IsRandomSource {ℓ} (Rˢ : Setoid ℓ ℓ) : Set (suc ℓ) where
     covering : Partitions measurable
   open Partitions covering public
   field
-    pairing : NatPairing
-  open NatPairing pairing public
-  open NatPairingₛ pairing public
-  field
-    -- covers compose: refining each piece of j by i n is again a partition
-    idx-glue : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) → Idx (refineₛ j i)
+    common-refinement : ∀ {j} {i : ℕ → Func Rˢ ℕˢ} → Idx j → (∀ n → Idx (i n)) →
+      Σ (Func Rˢ ℕˢ) λ k → Idx k × Σ (ℕ → ℕ × ℕ) λ decode →
+        ∀ r → decode (k ⟨$⟩ r) ≡ (j ⟨$⟩ r , i (j ⟨$⟩ r) ⟨$⟩ r)
 
 record RandomSource (ℓ : Level) : Set (suc ℓ) where
   field
@@ -193,12 +180,14 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; glue-random = λ {j} ij α p →
         let i = λ n → proj₁ (p n)
             c = λ n → proj₁ (proj₂ (proj₂ (p n)))
-            c′ = λ k → c (proj₁ (unpair k)) (proj₂ (unpair k))
-        in refineₛ j i
-         , idx-glue ij (λ n → proj₁ (proj₂ (p n)))
+            ref = common-refinement ij (λ n → proj₁ (proj₂ (p n)))
+            u = proj₁ (proj₂ (proj₂ ref))
+            c′ = λ m → c (proj₁ (u m)) (proj₂ (u m))
+        in proj₁ ref
+         , proj₁ (proj₂ ref)
          , c′
          , λ r → subst (λ u → (α (j ⟨$⟩ r) ⟨$⟩ r) ≈ᶻ ev (c (proj₁ u) (proj₂ u)) r)
-                       (sym (unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)))
+                       (sym (proj₂ (proj₂ (proj₂ ref)) r))
                        (proj₂ (proj₂ (proj₂ (p (j ⟨$⟩ r)))) r)
     }
     where _≈ᶻ_ = Setoid._≈_ Z

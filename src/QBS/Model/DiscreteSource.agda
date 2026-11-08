@@ -8,11 +8,14 @@ module QBS.Model.DiscreteSource where
 
 open import Level using (Level; Lift)
 open import Data.Nat.Base using (ℕ)
+open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
-open import QBS.Core using (RandomSource)
+open import Function.Bundles using (_⟨$⟩_)
+
+open import QBS.Core using (RandomSource; ⇑)
 open import QBS.Model.Pairing
 
 discreteSource : ∀ ℓ → RandomSource ℓ
@@ -32,8 +35,9 @@ discreteSource ℓ = record
         }
       ; meas-glue = λ _ _ → tt
       }
-    ; pairing = record { pair = pair ; unpair = unpair ; unpair-pair = unpair-pair }
-    ; idx-glue = λ _ _ → tt
+    ; common-refinement = λ {j} {i} _ _ →
+        ⇑ (λ r → pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)) , tt , unpair
+          , λ r → unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
     }
   }
 
