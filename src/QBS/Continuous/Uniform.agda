@@ -1,7 +1,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- The uniform distribution on [0,1] as an element of the continuous probability monad: the
--- fair coin pushed forward along the binary expansion map.
+-- fair coin pushed forward along the binary expansion map.  See also: `UniformCDF` (`F t = t`), `UniformMean`,
+-- `UniformMoment`, `UniformMomentN` (moments), `UniformVariance`, `BetaIntegral`, and `UniformSample`/`UniformInterval`
+-- (sampling and estimation on [a,b]).
 module QBS.Continuous.Uniform where
 
 import Level as L

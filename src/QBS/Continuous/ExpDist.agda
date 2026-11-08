@@ -6,7 +6,7 @@
 --   * `massP-expW : massP expW ≈ 1#` from `HalfLineNorm.∫ᴹ-leb-negExp-norm`;
 --   * `expDist = normPre expW 1# _ : C.Pre WQ`, with `∫-expDist : ∫ᴹ (ιPre expDist) f ≈ ∫ᴹ lebPre (e^{−x} · f)`;
 --   * the total mass `∫-expDist-one ≈ 1#` and the mean `∫-expDist-id ≈ 1#` (the identity statistic), from
---     `HalfLineMean.∫ᴹ-leb-xNegExp`.
+--     `HalfLineMomentFact.∫-x`.
 -- Values are lower reals (no subtraction), so these are the multiplied-out statements.
 module QBS.Continuous.ExpDist where
 
@@ -25,7 +25,7 @@ open import QBS.Continuous.SFiniteReweight using (module SFiniteReweight)
 open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.HalfLineNegExp using (module HalfLineNegExp)
 open import QBS.Continuous.HalfLineNorm using (module HalfLineNorm)
-open import QBS.Continuous.HalfLineMean using (module HalfLineMean)
+open import QBS.Continuous.HalfLineMomentFact using (module HalfLineMomentFact)
 
 module ExpDist (lem₁ : LEM₁) where
   open Lebesgue (lemOf lem₁) using (A)
@@ -38,7 +38,7 @@ module ExpDist (lem₁ : LEM₁) where
   open HalfLine lem₁ using (lebPre)
   open HalfLineNegExp lem₁ using (negExpH)
   open HalfLineNorm lem₁ using (∫ᴹ-leb-negExp-norm)
-  open HalfLineMean lem₁ using (xNegExpH; ∫ᴹ-leb-xNegExp)
+  open HalfLineMomentFact lem₁ using (xNegExpH; ∫-x)
   open QBS
   open Hom
 
@@ -80,4 +80,4 @@ module ExpDist (lem₁ : LEM₁) where
   -- the mean: `∫ x e^{−x} dx = 1`
   ∫-expDist-id : ∫ᴹ {WQ} (ιPre {WQ} expDist) idW ≈ 1#
   ∫-expDist-id = trans (∫-expDist idW)
-    (trans (∫ᴹ-cong {WQ} lebPre {mulH {WQ} negExpH idW} {xNegExpH} (λ x → *-comm _ _)) ∫ᴹ-leb-xNegExp)
+    (trans (∫ᴹ-cong {WQ} lebPre {mulH {WQ} negExpH idW} {xNegExpH} (λ x → *-comm _ _)) ∫-x)

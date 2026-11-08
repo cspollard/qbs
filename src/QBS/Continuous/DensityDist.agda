@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
--- Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`).
+-- Any normalised density on [0,∞) as a probability `Pre` (the general recipe of which `Continuous/ExpDist` is the hand-spelled instance `d = negExpH`; `ExpDist` does not import this module).
+-- See the "Distribution recipe" entry of `docs/Interface.md`.
 --   * for `d : Hom S WQ WQ` with `nrm : ∫ᴹ lebPre d ≈ 1#`, `densDist d nrm = normPre (reweightPre d lebPre) 1# _`;
 --   * `∫-dens : ∫ᴹ (ιPre (densDist d nrm)) f ≈ ∫ᴹ lebPre (d · f)` for every non-negative `f`;
 --   * `∫-dens-one`: the total mass `∫ᴹ (ιPre (densDist d nrm)) 1 ≈ 1#`.

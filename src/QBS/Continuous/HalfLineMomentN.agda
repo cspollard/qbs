@@ -1,6 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- All polynomial moments of the exponential: the tests (part 1; part 2 is `HalfLineMomentFact`).
+-- Reader: this is the toolbox for `HalfLineMomentFact`; go there for the theorem `∫ xⁿ e^{−x} = n!`.
 --   * `pwNegExpH i : WQ ⇒ WQ`, the test `x ↦ xⁱ e^{−x}`, and `kH j`, the test `x ↦ (j+1) xʲ e^{−x}`;
 --   * `facts`, `eadd`: the first-order exponential facts `y + w y ≤ 1 ≤ y + w` (from `1 + w ≤ eʷ ≤ 1 + w + w²`) and the
 --     addition law of `e^{−x}` on `[0, N]`, the inputs of the certificate calculus `Analysis/Deriv*`.

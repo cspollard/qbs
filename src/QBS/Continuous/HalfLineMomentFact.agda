@@ -2,8 +2,9 @@
 
 -- All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n.
 --   * `∫ᴹ-pw-moment : ∫ᴹ lebPre (pwNegExpH n) ≈ fact n`, with `fact 0 = 1`, `fact (n+1) = (n+1) · fact n`;
---   * `∫-x`, `∫-x²`: the cases n = 1, 2, with the statements of `HalfLineMean` (`∫ x e^{−x} = 1`) and
---     `HalfLineMoment2` (`∫ x² e^{−x} = 2`), re-derived here without their self-similarity recursions.
+--   * `∫-x`, `∫-x²`: the cases n = 1, 2 (`∫ x e^{−x} = 1`, `∫ x² e^{−x} = 2`) for the tests `xNegExpH`, `x²NegExpH`.
+--     (This is the single route to the exponential moments; the self-similarity modules `HalfLineMean` and
+--     `HalfLineMoment2`, and `Analysis/GeometricMoment2`, were deleted as superseded.)
 -- The step `∫ xʲ⁺¹ e^{−x} = (j+1) ∫ xʲ e^{−x}` is `DerivBridge.OnHalfLine.glue-D` (integration by parts on the half-line)
 -- applied to `dvn j n = DerivExp.xjE`, the certificate `G′ = k − h` for `G = h = xʲ⁺¹ e^{−x}` built from the rules of
 -- `Analysis/Deriv*` on `[0, n+1]`, with `G 0 = 0` and `G(N) → 0` along the multiples of j+2 (`Analysis/ExpTail`).
@@ -35,8 +36,7 @@ open import QBS.Continuous.Weights using (module Weights)
 open import QBS.Continuous.SFinite using (module SFinite)
 open import QBS.Continuous.HalfLine using (module HalfLine)
 open import QBS.Continuous.HalfLineNegExp using (module HalfLineNegExp)
-open import QBS.Continuous.HalfLineMean using (module HalfLineMean)
-open import QBS.Continuous.HalfLineMoment2 using (module HalfLineMoment2)
+open import QBS.Continuous.Sample using (S)
 open import QBS.Continuous.HalfLineMomentN using (module HalfLineMomentN)
 open import QBS.Continuous.TailFTC using (module TailFTC)
 open import QBS.Continuous.DerivBridge using (module DerivBridge)
@@ -50,7 +50,7 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   open AlgTail A R using (module Tail)
   open Exp A using (natE)
   open Series A using (∑ᶠ; ∑ᶠ-cong; ∑ᶠ-scale)
-  open NegExp (lemOf lem₁) using (negExp; negExp≤1; negExp-anti; negExp-expC-nat; negExp-zero; negExp-cong)
+  open NegExp (lemOf lem₁) using (negExp; negExp≤1; Meas-negExp;negExp-anti; negExp-expC-nat; negExp-zero; negExp-cong)
   open Lebesgue (lemOf lem₁) using (J; J-irrel; J-scale)
   open Meas (lemOf lem₁) using (Meas-⊗; Meas-const)
   open Weights (lemOf lem₁) using (WQ)
@@ -63,10 +63,20 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   open AlgDE A R using (module Expo)
   open DerivBridge lem₁ using (module OnHalfLine)
   open TailFTCExpHalf lem₁ using (∫-negExp)
-  open HalfLineMean lem₁ using (xNegExpH)
-  open HalfLineMoment2 lem₁ using (x²NegExpH)
   open QBS
   open Hom
+
+  -- the tests `x ↦ x e^{−x}` and `x ↦ x² e^{−x}` (for the mean and second moment of Exp(1))
+  xNegExpH : Hom S WQ WQ
+  xNegExpH = record
+    { map = record { to = λ x → x * negExp x ; cong = λ e → *-cong e (negExp-cong e) }
+    ; map-random = λ {γ} m → Meas-⊗ {γ ⟨$⟩_} {λ r → negExp (γ ⟨$⟩ r)} m (Meas-negExp {γ ⟨$⟩_} m) }
+
+  x²NegExpH : Hom S WQ WQ
+  x²NegExpH = record
+    { map = record { to = λ x → (x * x) * negExp x ; cong = λ e → *-cong (*-cong e e) (negExp-cong e) }
+    ; map-random = λ {γ} m → Meas-⊗ {λ r → (γ ⟨$⟩ r) * (γ ⟨$⟩ r)} {λ r → negExp (γ ⟨$⟩ r)}
+        (Meas-⊗ {γ ⟨$⟩_} {γ ⟨$⟩_} m m) (Meas-negExp {γ ⟨$⟩_} m) }
 
   fact : ℕ → ∣A∣
   fact zero = 1#
@@ -119,7 +129,7 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   ∫ᴹ-pw-moment zero = trans (∫ᴹ-cong lebPre {pwNegExpH 0} {negExpH} (λ x → *-identityˡ (negExp x))) ∫-negExp
   ∫ᴹ-pw-moment (suc j) = trans (moment-succ j) (*-cong refl (∫ᴹ-pw-moment j))
 
-  -- n = 1: `∫ x e^{−x} = 1` (the statement of `HalfLineMean.∫ᴹ-leb-xNegExp`)
+  -- n = 1: `∫ x e^{−x} = 1`
   fact-1 : fact 1 ≈ 1#
   fact-1 = trans (*-identityʳ _) (+-identityˡ 1#)
 
@@ -127,7 +137,7 @@ module HalfLineMomentFact (lem₁ : LEM₁) where
   ∫-x = trans (∫ᴹ-cong lebPre {xNegExpH} {pwNegExpH 1} (λ x → *-cong (sym (*-identityʳ x)) refl))
     (trans (∫ᴹ-pw-moment 1) fact-1)
 
-  -- n = 2: `∫ x² e^{−x} = 2` (the statement of `HalfLineMoment2.∫ᴹ-leb-x²NegExp`)
+  -- n = 2: `∫ x² e^{−x} = 2`
   ∫-x² : ∫ᴹ {WQ} lebPre x²NegExpH ≈ 1# + 1#
   ∫-x² = trans (∫ᴹ-cong lebPre {x²NegExpH} {pwNegExpH 2} (λ x → *-cong (*-cong refl (sym (*-identityʳ x))) refl))
     (trans (∫ᴹ-pw-moment 2) (trans (*-cong refl fact-1) (trans (*-identityʳ _) (+-cong (+-identityˡ 1#) refl))))

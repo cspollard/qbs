@@ -178,7 +178,6 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Analysis.Fun` | 262 | lem | Measurable functions R → A on Cantor space with values in an `OmegaSemiring`: the class generated from weighted indicators of Borel sets by sums, suprema of increasing sequences and complements (x ↦ 1 - h x). |
 | `QBS.Analysis.Functional` | 105 | lem | From a Borel probability measure ν (a σ-additive set function) to a Daniell functional on all measurable functions: the Lebesgue integral as a supremum of integrals of simple minorants (`Analysis/CoinIntegral.agda`, g... |
 | `QBS.Analysis.GaussExp` | 77 |  | Small algebra for the Gaussian exponential facts `E u + u E u ≤ 1 ≤ E u + u` (`E = e^{−x}`), over an abstract Archimedean ω-semiring A. |
-| `QBS.Analysis.GeometricMoment2` | 357 |  | The algebra behind the second moment `∫₀^∞ x² e^{−x} dx = 2` (in an abstract `OmegaSemiring` with an Archimedean structure), the sequel to `GeometricNorm`. |
 | `QBS.Analysis.GeometricNorm` | 475 |  | The algebra behind `∫₀^∞ e^{−x} dx = 1`, in an abstract `OmegaSemiring` with an Archimedean structure (`Arch`). |
 | `QBS.Analysis.Half` | 84 |  | Powers of ½ in an `OmegaSemiring` with a half (`half + half ≈ 1`): `hp n = ½ⁿ` is the stdlib power `half ^ n` (so `hp (suc n) = half * hp n` holds by definition), with `½ (x + x) = x`, the doubling law `½ⁿ⁺¹ + ½ⁿ⁺¹ = ... |
 | `QBS.Analysis.HalfOrder` | 61 |  | Order facts about ½ and the affine maps s ↦ ½s and s ↦ ½ + ½s, in any semiring with a half (`Arch`): the inequalities behind the self-similarity of the binary expansion. |
@@ -240,7 +239,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.CoinCoordsJoint` | 175 | lem | The coin coordinates are mutually independent and identically distributed (mutual independence; `CoinCoords` only has the pairwise version). |
 | `QBS.Continuous.CoinIndep` | 124 | lem | Independence of the even and odd bits of the fair coin: the product of two fair coins, interleaved by `mergeC`, is the fair coin (`tensor₁ fairCoin fairCoin ≈ fairCoin` on every measurable function). |
 | `QBS.Continuous.ConvEps` | 202 | lem | Convergence with explicit tolerances, and convergence of differences (helper for `DominatedSigned`). |
-| `QBS.Continuous.DensityDist` | 64 | lem | Any normalised density on [0,∞) as a probability `Pre` (generalising `Continuous/ExpDist`). |
+| `QBS.Continuous.DensityDist` | 65 | lem | Any normalised density on [0,∞) as a probability `Pre` (the general recipe of which `Continuous/ExpDist` is the hand-spelled instance `d = negExpH`; `ExpDist` does not import this module). |
 | `QBS.Continuous.DerivBridge` | 151 | lem | The certificate calculus (`Analysis/Deriv`) feeds the tail FTC: from `Deriv` data to integration by parts. |
 | `QBS.Continuous.DigitCode` | 104 | lem | The digit code of `[0,∞]` into Cantor space, and its decoding (used for the uniqueness of measures on the half-line; measure-construction material that lives here for import reasons). |
 | `QBS.Continuous.DigitCut` | 49 | lem | Two facts about cuts that the digit code of `[0,∞]` needs (`Continuous/DigitCode`), both from `Analysis/ExpLower`: `natE (n+1)` and `m / 2ⁿ` are rational cuts, so a point is either above a dyadic threshold or below it. |
@@ -252,7 +251,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.Exchangeable` | 120 | lem | Exchangeable laws: product laws and mixtures of them are exchangeable (the easy half of de Finetti). |
 | `QBS.Continuous.ExchangeableSwap` | 91 | lem | Swapping the first two factors of a triple product (helper for `Exchangeable`). |
 | `QBS.Continuous.ExpDist` | 84 | lem | The exponential distribution `e^{−x} dλ(x)` on [0,∞) as a probability `Pre`. |
-| `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMoment2.∫ᴹ-leb-x²NegExp` through the density formula `Ex... |
+| `QBS.Continuous.ExpDistSq` | 51 | lem | The second moment of the exponential distribution: `∫ x² d(expDist) ≈ 1# + 1#` (that is, `E[X²] = 2`), for the squaring statistic `sqW : x ↦ x·x`, from `HalfLineMomentFact.∫-x²` through the density formula `ExpDist.∫-... |
 | `QBS.Continuous.ExpFamily` | 453 | lem | Continuous exponential families on quasi-Borel spaces (plan 07, item 59; enabler for `ExpFamilyPost`, `ExpFamilyKL`). |
 | `QBS.Continuous.ExpFamilyAlg` | 53 |  | Semiring identities for exponential families (plan 07, item 59; helper for `Continuous/ExpFamilyAux` and `Continuous/ExpFamily`), over an abstract commutative semiring. |
 | `QBS.Continuous.ExpFamilyAux` | 155 | lem | Signed tests, weights and product measures for exponential families (plan 07, item 59; helper for `Continuous/ExpFamily`). |
@@ -281,10 +280,8 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.GaussMean` | 119 | lem | Gaussian first moment on the half-line: `∫₀^∞ x e^{−x²/2} dx = 1` (no π, no abstract normaliser). |
 | `QBS.Continuous.GaussMoment` | 139 | lem | Gaussian moments on the half-line, without π (part 2): `∫₀^∞ xʲ⁺² e^{−x²/2} = (j+1) ∫₀^∞ xʲ e^{−x²/2}`. |
 | `QBS.Continuous.HalfLine` | 91 | lem | Lebesgue measure on [0,∞) as an s-finite measure: the countable sum of the unit intervals shifted to n, `λ = ∑ₙ (n + U)` with `U` uniform on [0,1] (`Continuous/Uniform`). |
-| `QBS.Continuous.HalfLineMean` | 243 | lem | The mean of the exponential distribution, `∫₀^∞ x e^{−x} dλ(x) = 1`, multiplied out (no subtraction). |
-| `QBS.Continuous.HalfLineMoment2` | 298 | lem | The second moment of the exponential distribution, `∫₀^∞ x² e^{−x} dλ(x) = 2`, multiplied out (no subtraction). |
-| `QBS.Continuous.HalfLineMomentFact` | 134 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
-| `QBS.Continuous.HalfLineMomentN` | 80 | lem | All polynomial moments of the exponential: the tests (part 1; part 2 is `HalfLineMomentFact`). |
+| `QBS.Continuous.HalfLineMomentFact` | 144 | lem | All polynomial moments of the exponential (part 2): `∫₀^∞ xⁿ e^{−x} dλ(x) = n!`, multiplied out, for every n. |
+| `QBS.Continuous.HalfLineMomentN` | 81 | lem | All polynomial moments of the exponential: the tests (part 1; part 2 is `HalfLineMomentFact`). |
 | `QBS.Continuous.HalfLineNegExp` | 118 | lem | `∫ e^{−x} dλ(x)` over [0,∞) against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
 | `QBS.Continuous.HalfLineNorm` | 69 | lem | Normalisation of the exponential density: `∫₀^∞ e^{−x} dλ(x) = 1`, multiplied out (there is no subtraction): with `g = e^{−1}` and `I = ∫₀¹ e^{−u} du`, * `negExp-pw : e^{−n} = gⁿ`; * `norm-from : I + g ≈ 1 → ∫ e^{−x} ... |
 | `QBS.Continuous.HalfLineRate` | 86 | lem | The tests for the exponential with a rate λ against the Lebesgue measure `lebPre` of `Continuous/HalfLine`. |
@@ -386,7 +383,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Continuous.TailFTCLip` | 223 | lem | The tail-form fundamental theorem of calculus with Lipschitz errors and integration by parts, on the unit interval (part 2: the measure side; the algebra is `Analysis/TailFTCLip`). |
 | `QBS.Continuous.TailFTCLipHalf` | 92 | lem | Integration by parts on the half-line, from the unit-interval identities (`Continuous/TailFTCLipJ`). |
 | `QBS.Continuous.TailFTCLipJ` | 137 | lem | The Lipschitz tail-form fundamental theorem (`Continuous/TailFTCLip`) for integrands of any size, in the unbounded integral `J`. |
-| `QBS.Continuous.Uniform` | 55 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
+| `QBS.Continuous.Uniform` | 57 | lem | The uniform distribution on [0,1] as an element of the continuous probability monad: the fair coin pushed forward along the binary expansion map. |
 | `QBS.Continuous.UniformCDF` | 192 | lem | The cumulative distribution function of the uniform distribution on [0,1]: `P(u ≤ t) = t`, the integral of the indicator of `[0,t]`, for every t ≤ 1. |
 | `QBS.Continuous.UniformInterval` | 114 | lem | Estimation from independent draws uniform on an interval: `Yᵢ = a + c · Xᵢ` with `Xᵢ` the uniform draws of `UniformSample` (`c = b − a` for the interval [a, b]; `a` and `c` are any signed values). |
 | `QBS.Continuous.UniformMean` | 107 | lem | The mean of the uniform distribution on [0,1] is ½: ∫ expansion dμ = ½, by self-similarity (split off the first bit, as `UniformMoment` and `SelfSimilar` do) and cancellation. |
