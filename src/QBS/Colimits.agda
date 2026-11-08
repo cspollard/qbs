@@ -3,9 +3,10 @@
 -- Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`).
 module QBS.Colimits where
 
+open import Level using (lift; lower)
 open import Function.Base using (id; const)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Data.Empty.Polymorphic using (⊥)
+open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
 open import Data.Product.Base using (Σ; _,_; _×_; proj₁; proj₂)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂; [_,_]′)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
@@ -15,6 +16,8 @@ import Relation.Binary.Construct.Closure.Equivalence as EqC
 open import Relation.Binary.Construct.Closure.Symmetric using (fwd)
 open import Relation.Binary.Core using (Rel)
 import Relation.Binary.PropositionalEquality.Core as ≡
+open import Categories.Category.Instance.Setoids using (Setoids)
+import Categories.Category.SubCategory.SubHom as SH
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (ε; _◅_)
 
@@ -25,10 +28,13 @@ open import Categories.Object.Coproduct using (Coproduct)
 open import Categories.Diagram.Coequalizer using (Coequalizer)
 
 open import QBS.Core
+open import QBS.Glued
+open import QBS.Pieces
 open import QBS.Category
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open QBS
   open Hom
 
@@ -36,13 +42,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
   0Q : QBS S
   0Q = record
     { Carrier = setoid (⊥ {ℓ})
-    ; probes = record
-        { Random = λ _ → ⊥ {ℓ}
-        ; random-resp = λ _ p → p
-        ; const-random = λ ()
-        ; pre-random = λ p _ → p
-        }
-    ; glue-random = λ _ α p → p 0
+    ; probes = fromPred measurable (setoid (⊥ {ℓ})) (λ _ → ⊥ {ℓ}) (λ ()) (λ p _ → p)
+    ; glue-random = λ _ α p → ⊥-elim (proj₂ (probe (p 0)))
     }
 
   module _ (X Y : QBS S) where
@@ -51,25 +52,25 @@ module _ {ℓ} (S : RandomSource ℓ) where
     Piece : Set ℓ
     Piece = Σ (Func Rˢ (Carrier X)) (Random X) ⊎ Σ (Func Rˢ (Carrier Y)) (Random Y)
 
-    ev : Piece → R → ∣ X ∣ ⊎ ∣ Y ∣
-    ev (inj₁ (a , _)) r = inj₁ (a ⟨$⟩ r)
-    ev (inj₂ (b , _)) r = inj₂ (b ⟨$⟩ r)
+    ⊎S : Setoid ℓ ℓ
+    ⊎S = ⊎ʳ.⊎-setoid (Carrier X) (Carrier Y)
+
+    ev : Piece → Func Rˢ ⊎S
+    ev (inj₁ (a , _)) = record { to = λ r → inj₁ (a ⟨$⟩ r) ; cong = λ e → ⊎ʳ.inj₁ (Func.cong a e) }
+    ev (inj₂ (b , _)) = record { to = λ r → inj₂ (b ⟨$⟩ r) ; cong = λ e → ⊎ʳ.inj₂ (Func.cong b e) }
 
     pre : ∀ {f} → Piece → Meas f → Piece
     pre {f} (inj₁ (a , p)) m = inj₁ (a ∘ₛ f , pre-random X p m)
     pre {f} (inj₂ (b , p)) m = inj₂ (b ∘ₛ f , pre-random Y p m)
 
-    ⊎S : Setoid ℓ ℓ
-    ⊎S = ⊎ʳ.⊎-setoid (Carrier X) (Carrier Y)
-
-    ev-pre : ∀ {f} (c : Piece) (m : Meas f) r → Setoid._≈_ ⊎S (ev (pre c m) r) (ev c (f ⟨$⟩ r))
+    ev-pre : ∀ {f} (c : Piece) (m : Meas f) r → Setoid._≈_ ⊎S (ev (pre c m) ⟨$⟩ r) (ev c ⟨$⟩ (f ⟨$⟩ r))
     ev-pre (inj₁ (a , _)) _ r = ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
     ev-pre (inj₂ (b , _)) _ r = ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
 
   _+Q_ : QBS S → QBS S → QBS S
   X +Q Y = GluedQBS S (⊎S X Y) (Piece X Y) (ev X Y) (pre X Y) (ev-pre X Y) pt
     where
-      pt : ∀ z → Σ (Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (ev X Y c r) z
+      pt : ∀ z → Σ (Piece X Y) λ c → ∀ r → Setoid._≈_ (⊎S X Y) (ev X Y c ⟨$⟩ r) z
       pt (inj₁ a) = inj₁ (constₛ a , const-random X a) , λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
       pt (inj₂ b) = inj₂ (constₛ b , const-random Y b) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
 
@@ -97,7 +98,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       ; cong = λ { (⊎ʳ.inj₁ e) → Func.cong (map f) e ; (⊎ʳ.inj₂ e) → Func.cong (map g) e }
       }
 
-    pm-ev : ∀ c r → Setoid._≈_ (Carrier Z) (copair-fun ⟨$⟩ ev X Y c r) (pm c ⟨$⟩ r)
+    pm-ev : ∀ c r → Setoid._≈_ (Carrier Z) (copair-fun ⟨$⟩ (ev X Y c ⟨$⟩ r)) (pm c ⟨$⟩ r)
     pm-ev (inj₁ _) _ = Setoid.refl (Carrier Z)
     pm-ev (inj₂ _) _ = Setoid.refl (Carrier Z)
 
@@ -105,10 +106,13 @@ module _ {ℓ} (S : RandomSource ℓ) where
     copair : Hom S (X +Q Y) Z
     copair = record
       { map = copair-fun
-      ; map-random = λ {α} (i , ii , c , q) →
+      ; map-random = λ m →
+          let i = proj₁ (probe m)
+              ii = proj₁ (proj₂ (probe m))
+              c = proj₂ (proj₂ (probe m)) in
           random-resp Z
-            (λ r → Setoid.sym (Carrier Z)
-              (Setoid.trans (Carrier Z) (Func.cong copair-fun (q r)) (pm-ev (c (i ⟨$⟩ r)) r)))
+            (λ r → Setoid.trans (Carrier Z) (Setoid.sym (Carrier Z) (pm-ev (c (lower (i ⟨$⟩ r))) r))
+                     (Func.cong copair-fun (reads m {r})))
             (glue-random Z ii (λ n → pm (c n)) (λ n → pm-random (c n)))
       }
 
@@ -118,12 +122,12 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; i₁ = record
         { map = record { to = inj₁ ; cong = ⊎ʳ.inj₁ }
         ; map-random = λ {α} p →
-            constₛ 0 , idx-const 0 , const (inj₁ (α , p)) , λ _ → ⊎ʳ.inj₁ (Setoid.refl (Carrier X))
+            mem (constₛ (lift 0) , idx-const (lift 0) , const (inj₁ (α , p))) (⊎ʳ.inj₁ (Setoid.refl (Carrier X)))
         }
     ; i₂ = record
         { map = record { to = inj₂ ; cong = ⊎ʳ.inj₂ }
         ; map-random = λ {α} p →
-            constₛ 0 , idx-const 0 , const (inj₂ (α , p)) , λ _ → ⊎ʳ.inj₂ (Setoid.refl (Carrier Y))
+            mem (constₛ (lift 0) , idx-const (lift 0) , const (inj₂ (α , p))) (⊎ʳ.inj₂ (Setoid.refl (Carrier Y)))
         }
     ; [_,_] = copair
     ; inject₁ = λ {C} → Setoid.refl (Carrier C)
@@ -150,7 +154,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
     -- Locally on a measurable countable partition, a random element of Y.
     CoeqQ : QBS S
-    CoeqQ = GluedQBS S CoeqS (Σ (Func Rˢ (Carrier Y)) (Random Y)) (λ c r → proj₁ c ⟨$⟩ r)
+    CoeqQ = GluedQBS S CoeqS (Σ (Func Rˢ (Carrier Y)) (Random Y))
+      (λ c → record { to = proj₁ c ⟨$⟩_ ; cong = λ e → fwd (inj₁ (Func.cong (proj₁ c) e)) ◅ ε })
       (λ c m → proj₁ c ∘ₛ _ , pre-random Y (proj₂ c) m)
       (λ _ _ _ → Setoid.refl CoeqS)
       (λ x → (constₛ x , const-random Y x) , λ _ → Setoid.refl CoeqS)
@@ -159,7 +164,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     coeq-arr = record
       { map = record { to = id ; cong = λ e → fwd (inj₁ e) ◅ ε }
       ; map-random = λ {α} p →
-          constₛ 0 , idx-const 0 , const (α , p) , λ _ → Setoid.refl CoeqS
+          mem (constₛ (lift 0) , idx-const (lift 0) , const (α , p)) (Setoid.refl CoeqS)
       }
 
     module _ {Z : QBS S} (h : Hom S Y Z) (eq : _≈H_ S (_∘H_ S h f) (_∘H_ S h g))
@@ -177,9 +182,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
       coeq-hom : Hom S CoeqQ Z
       coeq-hom = record
         { map = coeq-fun
-        ; map-random = λ {α} (i , ii , c , q) →
-            random-resp Z (λ r → Setoid.sym (Carrier Z) (lift-gen (q r)))
-              (glue-random Z ii (λ n → map h ∘ₛ proj₁ (c n)) (λ n → map-random h (proj₂ (c n))))
+        ; map-random = λ m →
+            random-resp Z (λ r → lift-gen (reads m {r}))
+              (glue-random Z (proj₁ (proj₂ (probe m))) (λ n → map h ∘ₛ proj₁ (proj₂ (proj₂ (probe m)) n))
+                (λ n → map-random h (proj₂ (proj₂ (proj₂ (probe m)) n))))
         }
 
   coequalizer : ∀ {X Y} (f g : Hom S X Y) → Coequalizer (QBSCat S) f g

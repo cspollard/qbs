@@ -90,8 +90,8 @@ module SFiniteSum (lem : LEM₀) where
   lead-≗ : ∀ {x y : R₁} → x R≈.≈ y → lead (lower x) ≡.≡ lead (lower y)
   lead-≗ {x} {y} e = ≡.sym (proj₁ (borel-≗ (lead-partition (lead (lower x))) {lower x} {lower y} (lower e)) ≡.refl)
 
-  leadₛ : Func Rˢ ℕˢ
-  leadₛ = record { to = λ r → lead (lower r) ; cong = lead-≗ }
+  leadₛ : Func Rˢ (ℕˢ {L.suc L.zero})
+  leadₛ = record { to = λ r → lift (lead (lower r)) ; cong = λ e → ≡.cong lift (lead-≗ e) }
 
   -- the discrete probability measure with mass hp (n+1) at the point trueⁿ false false …
   νI : Measure

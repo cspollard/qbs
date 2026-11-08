@@ -17,7 +17,7 @@ module QBS.Model.Monad where
 open import Level using (suc; Lift; lift; lower)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (_×_; proj₁; proj₂)
+open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Function.Construct.Composition as Comp
@@ -25,7 +25,11 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 open ≡ using (_≡_)
 
+open import Categories.Category.Instance.Setoids using (Setoids)
+import Categories.Category.SubCategory.SubHom as SH
+
 open import QBS.Core
+open import QBS.Pieces
 open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Model.DiscreteSource
 open import QBS.Model.Semiring
@@ -52,7 +56,8 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   private
     open DS ℓ using (S)
     R = Lift ℓ ℕ
-  open RandomSource S using (Rˢ)
+  open RandomSource S using (Rˢ; measurable; meas₀)
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open Cantor A using (φ; ιR; ρR; push-pair-∑)
   open QBS
 
@@ -116,28 +121,30 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   TQ : QBS S → QBS S
   TQ X = record
     { Carrier = PreS X
-    ; probes = record
-        { Random = λ β → Wit (β ⟨$⟩_)
-        ; random-resp = λ e w → record
-            { wαₛ = wαₛ w ; wα-random = wα-random w ; wg = wg w ; wg-ok = wg-ok w
-            ; w-eq = λ r f → Setoid.trans Aˢ (Setoid.sym Aˢ (e r f)) (w-eq w r f) }
-        ; const-random = λ x → record
-            { wαₛ = αₛ x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
-            ; w-eq = λ _ f → Setoid.refl Aˢ }
-        ; pre-random = λ {_} {h} w _ → record
-            { wαₛ = wαₛ w ; wα-random = wα-random w ; wg = λ r → wg w (h ⟨$⟩ r)
-            ; wg-ok = λ r → wg-ok w (h ⟨$⟩ r) ; w-eq = λ r → w-eq w (h ⟨$⟩ r) }
-        }
-    ; glue-random = λ {i} _ β w → record
-        { wαₛ = glueₛ (⇑ ι) (λ n → wαₛ (w n) ∘ₛ ⇑ ρR)
-        ; wα-random = QBS.glue-random X {⇑ ι} tt (λ n → wαₛ (w n) ∘ₛ ⇑ ρR)
-            (λ n → QBS.pre-random X (wα-random (w n)) tt)
-        ; wg = λ r → push (φ (i ⟨$⟩ r)) (wg (w (i ⟨$⟩ r)) r)
-        ; wg-ok = λ r → ok-push (φ (i ⟨$⟩ r)) (wg-ok (w (i ⟨$⟩ r)) r)
-        ; w-eq = λ r f →
-            Setoid.trans Aˢ (w-eq (w (i ⟨$⟩ r)) r f)
-              (Setoid.sym Aˢ (push-pair-∑ (i ⟨$⟩ r) (wg (w (i ⟨$⟩ r)) r) (λ u → f ⟨$⟩ B w u)))
-        }
+    ; probes = fromPred measurable (PreS X) (λ β → Wit (β ⟨$⟩_))
+        (λ x → record
+          { wαₛ = αₛ x ; wα-random = α-random x ; wg = λ _ → μ x ; wg-ok = λ _ → μ-ok x
+          ; w-eq = λ _ f → Setoid.refl Aˢ })
+        (λ {_} {h} w _ → record
+          { wαₛ = wαₛ w ; wα-random = wα-random w ; wg = λ r → wg w (h ⟨$⟩ r)
+          ; wg-ok = λ r → wg-ok w (h ⟨$⟩ r) ; w-eq = λ r → w-eq w (h ⟨$⟩ r) })
+    ; glue-random = λ {i} _ β w →
+        let β′ = λ n → proj₁ (probe (w n))
+            ww = λ n → proj₂ (probe (w n)) in
+        mem ( glueₛ i β′
+            , record
+                { wαₛ = glueₛ (⇑ℕ ι) (λ n → wαₛ (ww n) ∘ₛ ⇑ ρR)
+                ; wα-random = QBS.glue-random X {⇑ℕ ι} (mem (⇑ℕ ι , tt) (Setoid.refl ℕˢ))
+                    (λ n → wαₛ (ww n) ∘ₛ ⇑ ρR)
+                    (λ n → QBS.pre-random X (wα-random (ww n)) (meas₀ {⇑ ρR} tt))
+                ; wg = λ r → push (φ (lower (i ⟨$⟩ r))) (wg (ww (lower (i ⟨$⟩ r))) r)
+                ; wg-ok = λ r → ok-push (φ (lower (i ⟨$⟩ r))) (wg-ok (ww (lower (i ⟨$⟩ r))) r)
+                ; w-eq = λ r f →
+                    Setoid.trans Aˢ (w-eq (ww (lower (i ⟨$⟩ r))) r f)
+                      (Setoid.sym Aˢ (push-pair-∑ (lower (i ⟨$⟩ r)) (wg (ww (lower (i ⟨$⟩ r))) r)
+                        (λ u → f ⟨$⟩ B ww u)))
+                } )
+          (λ {r} → reads (w (lower (i ⟨$⟩ r))) {r})
     }
     where
       B : ∀ {β : ℕ → R → Pre X} → (∀ n → Wit (β n)) → ℕ × ℕ → ∣ X ∣
@@ -155,19 +162,23 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- ∫ (mapPre f p) g ≡ ∫ p (g ∘ f)   (definitionally)
 
   TH : ∀ {X Y} → Hom S X Y → Hom S (TQ X) (TQ Y)
-  TH {X} {Y} f = record
-    { map = record
-        { to = mapPre f
-        ; cong = λ e g → e (Comp.function (map f) g)
-        }
-    ; map-random = λ w → record
-        { wαₛ = map f ∘ₛ wαₛ w
-        ; wα-random = map-random f (wα-random w)
-        ; wg = wg w
-        ; wg-ok = wg-ok w
-        ; w-eq = λ r g → w-eq w r (Comp.function (map f) g)
-        }
-    }
+  TH {X} {Y} f = record { map = THF ; map-random = THR }
+    where
+      THF : Func (PreS X) (PreS Y)
+      THF = record { to = mapPre f ; cong = λ e g → e (Comp.function (map f) g) }
+
+      THR : ∀ {α} → Random (TQ X) α → Random (TQ Y) (THF ∘ₛ α)
+      THR {α} m =
+        let w = proj₂ (probe m) in
+        mem ( THF ∘ₛ proj₁ (probe m)
+            , record
+                { wαₛ = map f ∘ₛ wαₛ w
+                ; wα-random = map-random f (wα-random w)
+                ; wg = wg w
+                ; wg-ok = wg-ok w
+                ; w-eq = λ r g → w-eq w r (Comp.function (map f) g)
+                } )
+          (λ {r} → Func.cong THF (reads m {r}))
 
   ----------------------------------------------------------------------------
   -- unit
@@ -180,21 +191,27 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   ∫-η {X} x f = dirac-∑ r₀ (λ _ → f ⟨$⟩ x)
 
   ηH : ∀ X → Hom S X (TQ X)
-  ηH X = record
-    { map = record
+  ηH X = record { map = ηF ; map-random = ηR }
+    where
+      ηF : Func (Carrier X) (PreS X)
+      ηF = record
         { to = ηPre
         ; cong = λ {x} {y} e f → Setoid.trans Aˢ (∫-η {X} x f)
             (Setoid.trans Aˢ (Func.cong f e) (Setoid.sym Aˢ (∫-η {X} y f)))
         }
-    ; map-random = λ {a} p → record
-        { wαₛ = a
-        ; wα-random = p
-        ; wg = λ r → dirac r
-        ; wg-ok = λ r → ok-dirac r
-        ; w-eq = λ r f → Setoid.trans Aˢ (∫-η {X} (a ⟨$⟩ r) f)
-            (Setoid.sym Aˢ (dirac-∑ r (λ k → f ⟨$⟩ (a ⟨$⟩ k))))
-        }
-    }
+
+      ηR : ∀ {a} → Random X a → Random (TQ X) (ηF ∘ₛ a)
+      ηR {a} p =
+        mem ( ηF ∘ₛ a
+            , record
+                { wαₛ = a
+                ; wα-random = p
+                ; wg = λ r → dirac r
+                ; wg-ok = λ r → ok-dirac r
+                ; w-eq = λ r f → Setoid.trans Aˢ (∫-η {X} (a ⟨$⟩ r) f)
+                    (Setoid.sym Aˢ (dirac-∑ r (λ k → f ⟨$⟩ (a ⟨$⟩ k))))
+                } )
+          (λ {r} f → Setoid.refl Aˢ)
 
   ----------------------------------------------------------------------------
   -- join
@@ -202,7 +219,7 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   joinPre : ∀ {X} → Pre (TQ X) → Pre X
   joinPre p = mk (wαₛ w) (wα-random w)
                  (λ k → ∑ (λ r → μ p r * wg w r k)) (ok-bind (μ-ok p) (wg-ok w))
-    where w = α-random p
+    where w = proj₂ (probe (α-random p))
 
   -- the integral of f, as a test function on the measure space
   ∫ᶠ : ∀ {X} → Func (Carrier X) Aˢ → Func (Carrier (TQ X)) Aˢ
@@ -220,34 +237,41 @@ module Measures {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     ∑ (λ r → ∑ (λ k → μ p r * (wg w r k * z k)))
       ≈⟨ ∑-cong (λ r → ∑-scale (μ p r) (λ k → wg w r k * z k)) ⟩
     ∑ (λ r → μ p r * ∑ (λ k → wg w r k * z k))
-      ≈⟨ ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (Setoid.sym Aˢ (w-eq w r f))) ⟩
+      ≈⟨ ∑-cong (λ r → *-cong (Setoid.refl Aˢ) (Setoid.trans Aˢ (Setoid.sym Aˢ (w-eq w r f)) (reads (α-random p) {r} f))) ⟩
     ∑ (λ r → μ p r * ∫ (α p r) f)
       ∎
     where
       open SetoidReasoning Aˢ
-      w = α-random p
+      w = proj₂ (probe (α-random p))
       z = λ k → f ⟨$⟩ wα w k
 
   joinH : ∀ X → Hom S (TQ (TQ X)) (TQ X)
-  joinH X = record
-    { map = record
+  joinH X = record { map = joinF ; map-random = joinR }
+    where
+      joinF : Func (PreS (TQ X)) (PreS X)
+      joinF = record
         { to = joinPre
         ; cong = λ {p} {q} e f →
             Setoid.trans Aˢ (∫-join p f)
               (Setoid.trans Aˢ (e (∫ᶠ f)) (Setoid.sym Aˢ (∫-join q f)))
         }
-    ; map-random = λ {β} w →
-        let w₂ = wα-random w in record
-          { wαₛ = wαₛ w₂
-          ; wα-random = wα-random w₂
-          ; wg = λ r k → ∑ (λ r′ → wg w r r′ * wg w₂ r′ k)
-          ; wg-ok = λ r → ok-bind (wg-ok w r) (wg-ok w₂)
-          ; w-eq = λ r f →
-              Setoid.trans Aˢ (∫-join (β ⟨$⟩ r) f)
-                (Setoid.trans Aˢ (w-eq w r (∫ᶠ f))
-                  (Setoid.sym Aˢ (∫-join (mk (wαₛ w) (wα-random w) (wg w r) (wg-ok w r)) f)))
-          }
-    }
+
+      joinR : ∀ {β} → Random (TQ (TQ X)) β → Random (TQ X) (joinF ∘ₛ β)
+      joinR {β} m =
+        let w = proj₂ (probe m)
+            w₂ = proj₂ (probe (wα-random w)) in
+        mem ( joinF ∘ₛ proj₁ (probe m)
+            , record
+                { wαₛ = wαₛ w₂
+                ; wα-random = wα-random w₂
+                ; wg = λ r k → ∑ (λ r′ → wg w r r′ * wg w₂ r′ k)
+                ; wg-ok = λ r → ok-bind (wg-ok w r) (wg-ok w₂)
+                ; w-eq = λ r f →
+                    Setoid.trans Aˢ (∫-join (proj₁ (probe m) ⟨$⟩ r) f)
+                      (Setoid.trans Aˢ (w-eq w r (∫ᶠ f))
+                        (Setoid.sym Aˢ (∫-join (mk (wαₛ w) (wα-random w) (wg w r) (wg-ok w r)) f)))
+                } )
+          (λ {r} → Func.cong joinF (reads m {r}))
 
   ----------------------------------------------------------------------------
   -- the monad

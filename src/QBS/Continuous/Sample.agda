@@ -20,7 +20,10 @@ open ≡ using (_≡_)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_)
+open import QBS.Limits using (_×Q_; rand-fst; rand-snd; rand-pair)
+open import QBS.Pieces
+import Categories.Category.SubCategory.SubHom as SH
+open import Categories.Category.Instance.Setoids using (Setoids)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source
@@ -31,6 +34,9 @@ open import QBS.Analysis.Fun
 S = cantorSource
 R = R₁
 
+open RandomSource S using (Meas; meas₀; meas-∘; measurable)
+open SH (Setoids (L.suc L.zero) (L.suc L.zero)) using (mem; probe; reads)
+
 -- Partial application of a morphism on a product: `fixL x f = y ↦ f (x , y)` and `fixR y f = x ↦ f (x , y)`, into any
 -- value space V (the test functions `AQ`/`WQ` of the probability and s-finite strengths are the two uses).
 fixL : ∀ {X Y V : QBS S} → QBS.∣ X ∣ → Hom S (_×Q_ S X Y) V → Hom S Y V
@@ -38,7 +44,7 @@ fixL {X} {Y} x f = record
   { map = record
       { to = λ y → Hom.map f ⟨$⟩ (x , y)
       ; cong = λ e → Func.cong (Hom.map f) (Setoid.refl (QBS.Carrier X) , e) }
-  ; map-random = λ {γ} rγ → Hom.map-random f {< constₛ x , γ >ₛ} (QBS.const-random X x , rγ)
+  ; map-random = λ {γ} rγ → Hom.map-random f {< constₛ x , γ >ₛ} (rand-pair S {X} {Y} {< constₛ x , γ >ₛ} (QBS.const-random X x) rγ)
   }
 
 fixR : ∀ {X Y V : QBS S} → QBS.∣ Y ∣ → Hom S (_×Q_ S X Y) V → Hom S X V
@@ -46,7 +52,7 @@ fixR {X} {Y} y f = record
   { map = record
       { to = λ x → Hom.map f ⟨$⟩ (x , y)
       ; cong = λ e → Func.cong (Hom.map f) (e , Setoid.refl (QBS.Carrier Y)) }
-  ; map-random = λ {γ} rγ → Hom.map-random f {< γ , constₛ y >ₛ} (rγ , QBS.const-random Y y)
+  ; map-random = λ {γ} rγ → Hom.map-random f {< γ , constₛ y >ₛ} (rand-pair S {X} {Y} {< γ , constₛ y >ₛ} rγ (QBS.const-random Y y))
   }
 
 ----------------------------------------------------------------------------
@@ -105,13 +111,27 @@ reassocR = record
   { to = λ p → mergeR (proj₁ p) (evensR (proj₂ p)) , oddsR (proj₂ p)
   ; cong = λ (e₁ , e₂) → mergeR-cong e₁ (evensR-cong e₂) , oddsR-cong e₂ }
 
+-- the raw measurability of the map read by a random element of ℛ
+raw : ∀ {f} → Meas f → Measurable (down (f ⟨$⟩_))
+raw m = measurable-ext (λ x → lower (reads m {lift x})) (proj₂ (probe m))
+
+-- an index map that is random is a Borel partition
+idxPart : ∀ {i} → RandomSource.Idx S i → Partition (downℕ (λ r → lower (i ⟨$⟩ r)))
+idxPart {i} pi = part-resp {a = proj₁ (probe pi)} {b = i} (λ r → reads pi {r}) (proj₂ (probe pi))
+
+evensₛ oddsₛ : Func (RandomSource.Rˢ S) (RandomSource.Rˢ S)
+evensₛ = record { to = evensR ; cong = evensR-cong }
+oddsₛ = record { to = oddsR ; cong = oddsR-cong }
+
 -- the isomorphism ℛ ≅ ℛ × ℛ in QBS
 fromH : Hom S (Probes.ℛQ S) (_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S))
 fromH = record
   { map = record
       { to = λ r → evensR r , oddsR r
       ; cong = λ e → evensR-cong e , oddsR-cong e }
-  ; map-random = λ {α} mα → measurable-∘ mα measurable-evens , measurable-∘ mα measurable-odds
+  ; map-random = λ {α} mα →
+      rand-pair S {Probes.ℛQ S} {Probes.ℛQ S} {< evensₛ , oddsₛ >ₛ ∘ₛ α}
+        (meas-∘ (meas₀ {evensₛ} measurable-evens) mα) (meas-∘ (meas₀ {oddsₛ} measurable-odds) mα)
   }
 
 toH : Hom S (_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)) (Probes.ℛQ S)
@@ -119,7 +139,9 @@ toH = record
   { map = record
       { to = λ p → mergeR (proj₁ p) (proj₂ p)
       ; cong = λ (e₁ , e₂) → mergeR-cong e₁ e₂ }
-  ; map-random = λ {α} (m₁ , m₂) → measurable-merge m₁ m₂
+  ; map-random = λ {α} m →
+      meas₀ (measurable-merge (raw (rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {α} m))
+                              (raw (rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {α} m)))
   }
 
 -- the round trips, up to `≈ᴿ` (pointwise equality of sequences): no function extensionality
@@ -154,11 +176,18 @@ module UnitInterval (A : OmegaSemiring (L.suc L.zero)) where
   AQ : QBS S
   AQ = record
     { Carrier = 𝕀
-    ; probes = record
-        { Random = λ h → Fun (λ r → proj₁ (h ⟨$⟩ r))
-        ; random-resp = λ e f → Fun-ext e f
-        ; const-random = λ x → Fun-const (proj₁ x) (proj₂ x)
-        ; pre-random = λ f mf → Fun-pre f mf
-        }
-    ; glue-random = λ {i} pi hs fs → glueU {i ⟨$⟩_} pi (λ n r → proj₁ (hs n ⟨$⟩ r)) fs
+    ; probes = fromPred measurable 𝕀 (λ h → Fun (λ r → proj₁ (h ⟨$⟩ r)))
+        (λ x → Fun-const (proj₁ x) (proj₂ x)) (λ f mf → Fun-pre f mf)
+    ; glue-random = λ {i} pi hs fs →
+        let q = λ n → probe (fs n)
+            β = λ n → proj₁ (q n) in
+        mem (glueₛ i β , glueU {λ r → lower (i ⟨$⟩ r)} (idxPart pi) (λ n r → proj₁ (β n ⟨$⟩ r)) (λ n → proj₂ (q n)))
+          (λ {r} → reads (fs (lower (i ⟨$⟩ r))) {r})
     }
+
+  -- random elements of AQ are the measurable functions (up to the pointwise equality in the reading)
+  rand-Fun : ∀ {h : Func (RandomSource.Rˢ S) 𝕀} → QBS.Random AQ h → Fun (λ r → proj₁ (h ⟨$⟩ r))
+  rand-Fun m = Fun-ext (λ r → reads m {r}) (proj₂ (probe m))
+
+  Fun-rand : ∀ {h : Func (RandomSource.Rˢ S) 𝕀} → Fun (λ r → proj₁ (h ⟨$⟩ r)) → QBS.Random AQ h
+  Fun-rand {h} f = mem (h , f) refl

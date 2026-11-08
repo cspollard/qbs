@@ -164,7 +164,7 @@ module StatNormalize {ℓ} (N : NormalizableSemiring ℓ) where
 
     -- normalisation of a random family of measures is random in Prob + 1
     normRandomᵈ : QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (⇑ (λ r → normC′ (β r) (d r)))
-    normRandomᵈ = ⇑ idxᵈ , tt , c , eq
+    normRandomᵈ = ⇑ℕ idxᵈ , tt , c , eq
       where
         c : ℕ → Piece S (MP.TQ X) (1Q S)
         c ℕ.zero = inj₁ (⇑ (λ r → γ′ r (d r)) , Wγ)

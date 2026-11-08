@@ -32,7 +32,7 @@ open import Categories.Monad using (Monad)
 open import QBS.Core
 open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
-open import QBS.Limits using (_×Q_)
+open import QBS.Limits using (_×Q_; rand-fst; rand-snd; rand-pair)
 import QBS.Probes as Probes
 open import QBS.Borel.Core
 open import QBS.Borel.Source
@@ -75,7 +75,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
 
   -- integral of a [0,1]-valued test function
   ∫ : ∀ {X : QBS S} → Pre X → Hom S X AQ → ∣A∣
-  ∫ {X} p f = I (m p) (λ r → proj₁ (map f ⟨$⟩ (α p ⟨$⟩ r))) (map-random f (α-random p))
+  ∫ {X} p f = I (m p) (λ r → proj₁ (map f ⟨$⟩ (α p ⟨$⟩ r))) (rand-Fun (map-random f (α-random p)))
 
   _≈ᵖ_ : ∀ {X : QBS S} → Pre X → Pre X → Set₁
   _≈ᵖ_ {X} p q = ∀ f → ∫ p f ≈ ∫ q f
@@ -94,12 +94,12 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   -- the proof that α is random does not affect the integrals
   rand-irrel : ∀ {X : QBS S} {α : Func Rˢ (Carrier X)} (r₁ r₂ : Random X α) (n : Measure) (o : Ok n) →
     _≈ᵖ_ {X} (mk {X} α r₁ n o) (mk {X} α r₂ n o)
-  rand-irrel {X} {α} r₁ r₂ n o f = I-cong n (λ x → Setoid.refl Aˢ) (map-random f r₁) (map-random f r₂)
+  rand-irrel {X} {α} r₁ r₂ n o f = I-cong n (λ x → Setoid.refl Aˢ) (rand-Fun (map-random f r₁)) (rand-Fun (map-random f r₂))
 
   -- pre-measures with pointwise equivalent probes and the same measure are equivalent
   mk-cong : ∀ {X : QBS S} {α₁ α₂ : Func Rˢ (Carrier X)} (r₁ : Random X α₁) (r₂ : Random X α₂) (n : Measure) (o : Ok n) →
     (∀ s → Setoid._≈_ (Carrier X) (α₁ ⟨$⟩ s) (α₂ ⟨$⟩ s)) → _≈ᵖ_ {X} (mk {X} α₁ r₁ n o) (mk {X} α₂ r₂ n o)
-  mk-cong {X} r₁ r₂ n o e f = I-cong n (λ s → Func.cong (map f) (e s)) (map-random f r₁) (map-random f r₂)
+  mk-cong {X} r₁ r₂ n o e f = I-cong n (λ s → Func.cong (map f) (e s)) (rand-Fun (map-random f r₁)) (rand-Fun (map-random f r₂))
 
   -- joint probes and their sections
   Joint : QBS S → Set₁
@@ -113,7 +113,7 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   sec a r = map a ∘ₛ at r
 
   sec-random : ∀ {X : QBS S} (a : Joint X) r → Random X (sec a r)
-  sec-random a r = map-random a {at r} (measConst r , measId)
+  sec-random a r = map-random a {at r} (rand-pair S {Probes.ℛQ S} {Probes.ℛQ S} {at r} (measConst r) measId)
 
   -- witness that β : R → Pre X is a random family of measures, up to an equivalence ≋ of
   -- pre-measures containing `≈ᵖ` (`≈ᵖ` here, the weighted `≈ᴹ` in `Continuous/SFinite`)
@@ -137,28 +137,36 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
   sndJ : ∀ {X : QBS S} (α : Func Rˢ (Carrier X)) → Random X α → Joint X
   sndJ {X} α rα = record
     { map = α ∘ₛ proj₂ₛ
-    ; map-random = λ {γ} (m₁ , m₂) → pre-random X rα m₂
+    ; map-random = λ {γ} m → pre-random X rα (rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m)
     }
 
   fstJ : ∀ {X : QBS S} (α : Func Rˢ (Carrier X)) → Random X α → Joint X
   fstJ {X} α rα = record
     { map = α ∘ₛ proj₁ₛ
-    ; map-random = λ {γ} (m₁ , m₂) → pre-random X rα m₁
+    ; map-random = λ {γ} m → pre-random X rα (rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m)
     }
 
   -- reparametrise the first coordinate by a measurable map
   preJ : ∀ {X : QBS S} {f : Func Rˢ Rˢ} → Meas f → Joint X → Joint X
   preJ {X} {f} mf a = record
     { map = map a ∘ₛ (f ×-function Id.function Rˢ)
-    ; map-random = λ {γ} (m₁ , m₂) → map-random a {(f ×-function Id.function Rˢ) ∘ₛ γ} (measComp {f} {proj₁ₛ ∘ₛ γ} mf m₁ , m₂)
+    ; map-random = λ {γ} m →
+        map-random a {(f ×-function Id.function Rˢ) ∘ₛ γ}
+          (rand-pair S {Probes.ℛQ S} {Probes.ℛQ S} {(f ×-function Id.function Rˢ) ∘ₛ γ}
+            (measComp {f} {proj₁ₛ ∘ₛ γ} mf (rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m))
+            (rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m))
     }
 
   -- glue a family of joint probes along a measurable partition of the first coordinate
   glueJ : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → Idx i → (ℕ → Joint X) → Joint X
   glueJ {X} {i} pi a = record
     { map = glueₛ (i ∘ₛ proj₁ₛ) (λ n → map (a n))
-    ; map-random = λ {γ} (m₁ , m₂) → random-glue-pre X (λ n → map (a n)) γ
-        (glue-random X {i ∘ₛ (proj₁ₛ ∘ₛ γ)} (idxPre {i} {proj₁ₛ ∘ₛ γ} pi m₁) (λ n → map (a n) ∘ₛ γ) (λ n → map-random (a n) (m₁ , m₂)))
+    ; map-random = λ {γ} m →
+        let m₁ = rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m
+            m₂ = rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m in
+        random-resp X (glueₛ-pre {j = i} (λ n → map (a n)) γ)
+          (glue-random X {i ∘ₛ (proj₁ₛ ∘ₛ γ)} (idxPre {i} {proj₁ₛ ∘ₛ γ} pi m₁) (λ n → map (a n) ∘ₛ γ)
+            (λ n → map-random (a n) m))
     }
 
   const-eq : ∀ {X : QBS S} (p : Pre X) r →
@@ -195,15 +203,15 @@ module Continuous (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Integra
             (g w (f ⟨$⟩ r)) (g-pr w (f ⟨$⟩ r)) (λ s → Setoid.refl (Carrier Y)))) }
 
     TQ-glue : ∀ {i : Func Rˢ ℕˢ} → Idx i → (β : ℕ → R → Pre Y) →
-      (∀ n → Wit _≋_ (β n)) → Wit _≋_ (λ r → β (i ⟨$⟩ r) r)
+      (∀ n → Wit _≋_ (β n)) → Wit _≋_ (λ r → β (lower (i ⟨$⟩ r)) r)
     TQ-glue {i} pi β ws = record
       { a = glueJ {i = i} pi (λ n → a (ws n))
-      ; g = λ r → g (ws (i ⟨$⟩ r)) r
-      ; g-ok = λ {h} fh → Glue.Fun-glue (i ⟨$⟩_) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
-      ; g-pr = λ r → g-pr (ws (i ⟨$⟩ r)) r
-      ; w-eq = λ r → ≋-trans (w-eq (ws (i ⟨$⟩ r)) r)
-          (incl (mk-cong {Y} (sec-random (a (ws (i ⟨$⟩ r))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
-            (g (ws (i ⟨$⟩ r)) r) (g-pr (ws (i ⟨$⟩ r)) r) (λ s → Setoid.refl (Carrier Y)))) }
+      ; g = λ r → g (ws (lower (i ⟨$⟩ r))) r
+      ; g-ok = λ {h} fh → Glue.Fun-glue (λ r → lower (i ⟨$⟩ r)) pi (λ n r → I (g (ws n) r) h fh) (λ n → g-ok (ws n) fh)
+      ; g-pr = λ r → g-pr (ws (lower (i ⟨$⟩ r))) r
+      ; w-eq = λ r → ≋-trans (w-eq (ws (lower (i ⟨$⟩ r))) r)
+          (incl (mk-cong {Y} (sec-random (a (ws (lower (i ⟨$⟩ r)))) r) (sec-random (glueJ {i = i} pi (λ n → a (ws n))) r)
+            (g (ws (lower (i ⟨$⟩ r))) r) (g-pr (ws (lower (i ⟨$⟩ r))) r) (λ s → Setoid.refl (Carrier Y)))) }
 
   module WitP (X : QBS S) = WitProbes {X} _≈ᵖ_ (λ {p q} e → Setoid.sym (PreS X) {p} {q} e)
     (λ {p q r} e e′ → Setoid.trans (PreS X) {p} {q} {r} e e′) (λ {p q} e → e)

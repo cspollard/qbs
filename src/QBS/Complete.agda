@@ -9,11 +9,13 @@ open import Level using (Lift; lift; lower)
 open import Function.Base using (const)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product.Base using (Σ; _,_)
+open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl; subst)
 import Relation.Binary.PropositionalEquality.Core as ≡
 
+open import Categories.Category.Instance.Setoids using (Setoids)
+import Categories.Category.SubCategory.SubHom as SH
 open import Categories.Category.Complete using (Complete)
 open import Categories.Category.Cocomplete using (Cocomplete)
 open import Categories.Category.Complete.Properties.Construction using (AllProducts×Equalizer⇒Complete)
@@ -22,12 +24,15 @@ open import Categories.Object.Product.Indexed using (IndexedProductOf)
 open import Categories.Object.Coproduct.Indexed using (IndexedCoproductOf)
 
 open import QBS.Core
+open import QBS.Glued
+open import QBS.Pieces
 open import QBS.Category
 open import QBS.Limits
 open import QBS.Colimits
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open QBS
   open Hom
 
@@ -51,14 +56,15 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ΠQ : QBS S
     ΠQ = record
       { Carrier = ΠS
-      ; probes = record
-          { Random = λ α → ∀ i → Random (P i) (πₛ i ∘ₛ α)
-          ; random-resp = λ e p i → random-resp (P i) (λ r → e r i) (p i)
-          ; const-random = λ x i → const-random (P i) (x i)
-          ; pre-random = λ p m i → pre-random (P i) (p i) m
-          }
-      ; glue-random = λ ij α p i →
-          random-glue-∘ (P i) (πₛ i) α (glue-random (P i) ij (λ n → πₛ i ∘ₛ α n) (λ n → p n i))
+      ; probes = fromPred measurable ΠS (λ α → ∀ i → Random (P i) (πₛ i ∘ₛ α))
+          (λ x i → const-random (P i) (x i)) (λ p m i → pre-random (P i) (p i) (meas₀ m))
+      ; glue-random = λ {j} ij α p →
+          let q = λ n → probe (p n)
+              β = λ n → proj₁ (q n) in
+          mem (glueₛ j β
+              , λ i → random-resp (P i) (glueₛ-∘ {j = j} (πₛ i) β)
+                        (glue-random (P i) ij (λ n → πₛ i ∘ₛ β n) (λ n → proj₂ (q n) i)))
+            (λ {r} → reads (p (lower (j ⟨$⟩ r))) {r})
       }
 
     indexedProduct : IndexedProductOf (QBSCat S) P
@@ -66,14 +72,18 @@ module _ {ℓ} (S : RandomSource ℓ) where
       { X = ΠQ
       ; π = λ i → record
           { map = πₛ i
-          ; map-random = λ p → p i
+          ; map-random = λ {α} p → random-resp (P i) (λ r → reads p {r} i) (proj₂ (probe p) i)
           }
       ; ⟨_⟩ = λ f → record
           { map = record
               { to = λ x i → map (f i) ⟨$⟩ x
               ; cong = λ e i → Func.cong (map (f i)) e
               }
-          ; map-random = λ p i → map-random (f i) p
+          ; map-random = λ {α} p →
+              mem ( record { to = λ r i → map (f i) ⟨$⟩ (α ⟨$⟩ r)
+                           ; cong = λ e i → Func.cong (map (f i)) (Func.cong α e) }
+                  , λ i → map-random (f i) p)
+                (λ {r} i → Setoid.refl (Carrier (P i)))
           }
       ; commute = λ {_} {f} {i} → Setoid.refl (Carrier (P i))
       ; unique = λ p {x} i → Setoid.sym (Carrier (P i)) (p {i} {x})
@@ -99,8 +109,8 @@ module _ {ℓ} (S : RandomSource ℓ) where
     PieceΣ : Set ℓ
     PieceΣ = Σ I λ i → Σ (Func Rˢ (Carrier (P i))) (Random (P i))
 
-    evΣ : PieceΣ → R → Σ I (λ i → ∣ P i ∣)
-    evΣ (i , a , _) r = i , a ⟨$⟩ r
+    evΣ : PieceΣ → Func Rˢ ΣS
+    evΣ (i , a , _) = record { to = λ r → i , a ⟨$⟩ r ; cong = λ e → refl , Func.cong a e }
 
     preΣ : ∀ {f} → PieceΣ → Meas f → PieceΣ
     preΣ {f} (i , a , p) m = i , a ∘ₛ f , pre-random (P i) p m
@@ -124,10 +134,11 @@ module _ {ℓ} (S : RandomSource ℓ) where
     copairΣ : ∀ {Y} → (∀ i → Hom S (P i) Y) → Hom S ΣQ Y
     copairΣ {Y} f = record
       { map = copairΣ-fun f
-      ; map-random = λ (i , ii , c , q) →
+      ; map-random = λ m →
+          let c = proj₂ (proj₂ (probe m)) in
           random-resp Y
-            (λ r → Setoid.sym (Carrier Y) (Func.cong (copairΣ-fun f) (q r)))
-            (glue-random Y ii (λ n → pmΣ f (c n)) (λ n → pmΣ-random f (c n)))
+            (λ r → Func.cong (copairΣ-fun f) (reads m {r}))
+            (glue-random Y (proj₁ (proj₂ (probe m))) (λ n → pmΣ f (c n)) (λ n → pmΣ-random f (c n)))
       }
 
     indexedCoproduct : IndexedCoproductOf (QBSCat S) P
@@ -136,7 +147,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
       ; ι = λ i → record
           { map = record { to = i ,_ ; cong = λ e → refl , e }
           ; map-random = λ {α} p →
-              constₛ 0 , idx-const 0 , const (i , α , p) , λ _ → Setoid.refl ΣS
+              mem (constₛ (lift 0) , idx-const (lift 0) , const (i , α , p)) (Setoid.refl ΣS)
           }
       ; [_] = copairΣ
       ; commute = λ {Y} {f} {i} → Setoid.refl (Carrier Y)

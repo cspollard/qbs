@@ -15,7 +15,13 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_; _≗_; refl
 open import Relation.Binary.Bundles using (Setoid)
 open import Function.Bundles using (Func; _⟨$⟩_)
 
-open import QBS.Core using (RandomSource; ℕˢ)
+open import Data.Unit.Polymorphic.Base using (⊤)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.SubCategory using (SubCat)
+import Categories.Category.SubCategory.SubHom as SH
+
+open import QBS.Core using (RandomSource; MeasurableMaps; Probes; ℕˢ)
+open import QBS.Pieces
 open import QBS.Model.Pairing
 open import QBS.Borel.Core
 
@@ -69,35 +75,50 @@ R₁ˢ = record
 measₛ : (f : R₁ → R₁) → Measurable (down f) → Func R₁ˢ R₁ˢ
 measₛ f mf = record { to = f ; cong = λ e → lift (measurable-≗ {down f} mf (lower e)) }
 
-idxₛ : (i : R₁ → ℕ) → Partition (downℕ i) → Func R₁ˢ ℕˢ
-idxₛ i pi = record { to = i ; cong = λ {r} {r′} e → sym (proj₁ (borel-≗ (pi (i r)) {lower r} {lower r′} (lower e)) refl) }
+idxₛ : (i : R₁ → ℕ) → Partition (downℕ i) → Func R₁ˢ (ℕˢ {suc zero})
+idxₛ i pi = record
+  { to = λ r → lift (i r)
+  ; cong = λ {r} {r′} e → cong lift (sym (proj₁ (borel-≗ (pi (i r)) {lower r} {lower r′} (lower e)) refl))
+  }
+
+-- Partitions respect pointwise equality of the index map
+part-resp : ∀ {a b : Func R₁ˢ (ℕˢ {suc zero})} → (∀ r → Setoid._≈_ ℕˢ (a ⟨$⟩ r) (b ⟨$⟩ r)) →
+  Partition (downℕ (λ r → lower (a ⟨$⟩ r))) → Partition (downℕ (λ r → lower (b ⟨$⟩ r)))
+part-resp e pi k =
+  resp (λ x → (λ q → trans (sym (cong lower (e (lift x)))) q) , (λ q → trans (cong lower (e (lift x))) q)) (pi k)
 
 cantorSource : RandomSource (suc zero)
 cantorSource = record
-  { Rˢ = R₁ˢ
+  { subcat = sc
   ; isRandomSource = record
-    { measurable = record
-      { endo = record
-        { P = λ f → Measurable (down (f ⟨$⟩_))
-        ; P-resp-≈ = λ e mf → measurable-ext (λ x → lower (e {lift x})) mf
-        ; P-id = measurable-id
-        ; P-∘ = λ mf mg → measurable-∘ mg mf
-        }
-      ; meas-const = λ r → measurable-const (lower r)
-      }
+    { measurable = M
     ; covering = record
-      { partitions = record
-        { Random = λ i → Partition (downℕ (i ⟨$⟩_))
-        ; random-resp = λ e pi k →
-            resp (λ x → (λ q → trans (sym (e (lift x))) q) , (λ q → trans (e (lift x)) q)) (pi k)
-        ; const-random = λ n k → borel-eq n k
-        ; pre-random = λ pi mf k → preimage mf (pi k)
-        }
-      ; meas-glue = λ {j} {f} pj mf → measurable-glue {downℕ (j ⟨$⟩_)} {λ k → down (f k ⟨$⟩_)} pj mf
+      { partitions = P
+      ; Meas₀-glue = λ {j} {f} pj mf →
+          measurable-glue {downℕ (λ r → lower (j ⟨$⟩ r))} {λ k → down (f k ⟨$⟩_)} (part pj) mf
       }
     ; common-refinement = λ {j} {i} pj pi →
-        let k = λ r → pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
-            pk = idx-glue-borel (downℕ (j ⟨$⟩_)) (λ n → downℕ (i n ⟨$⟩_)) pj pi
-        in idxₛ k pk , pk , unpair , λ r → unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
+        let jℕ = λ r → lower (j ⟨$⟩ r)
+            iℕ = λ n r → lower (i n ⟨$⟩ r)
+            k = λ r → pair (jℕ r) (iℕ (jℕ r) r)
+            pk = idx-glue-borel (downℕ jℕ) (λ n → downℕ (iℕ n)) (part pj) (λ n → part (pi n))
+        in idxₛ k pk , mem (idxₛ k pk , pk) (Setoid.refl (ℕˢ {suc zero}))
+             , unpair , λ r → unpair-pair (jℕ r) (iℕ (jℕ r) r)
     }
   }
+  where
+    open SH (Setoids (suc zero) (suc zero)) using (_∈_; mem; probe; reads)
+    sc : SubCat (Setoids (suc zero) (suc zero)) {ℓ′ = suc zero} (⊤ {suc zero})
+    sc = record
+      { U = λ _ → R₁ˢ
+      ; R = λ f → Measurable (down (f ⟨$⟩_))
+      ; Rid = measurable-id
+      ; _∘R_ = λ mf mg → measurable-∘ mg mf
+      }
+    M : MeasurableMaps sc
+    M = record { Meas₀-const = λ r → measurable-const (lower r) }
+    P : Probes M (ℕˢ {suc zero})
+    P = fromPred M (ℕˢ {suc zero}) (λ i → Partition (downℕ (λ r → lower (i ⟨$⟩ r))))
+      (λ n k → borel-eq (lower n) k) (λ pi mf k → preimage mf (pi k))
+    part : ∀ {j} → j ∈ Probes.subhom P → Partition (downℕ (λ r → lower (j ⟨$⟩ r)))
+    part {j} m = part-resp {a = proj₁ (probe m)} {b = j} (λ r → reads m {r}) (proj₂ (probe m))

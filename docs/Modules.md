@@ -22,14 +22,14 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Category.Cartesian` | 26 |  | The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once. |
 | `QBS.Category.Concrete` | 181 |  | `QBSCat S` is a concrete category over setoids, in three precise senses. |
 | `QBS.Category.Forget` | 33 |  | The forgetful functor `QBSCat S → Setoids`. |
-| `QBS.Category.Measurable` | 58 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
+| `QBS.Category.Measurable` | 73 |  | The measurable maps R → R as a one-object `SubCategory` of `Setoids`, and the Yoneda-style embedding of that one-object site into `QBSCat S` (the object goes to `ℛQ`): a full and faithful functor, compatible with `For... |
 | `QBS.Classical` | 23 |  | Excluded middle, named once. |
 | `QBS.Classical.Decide` | 55 | lem | The classical decision toolkit: with `lem : LEM ℓ`, every proposition in `Set ℓ` has a Boolean truth value `dec P` that is `true` exactly when `P` holds. |
-| `QBS.Colimits` | 199 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
+| `QBS.Colimits` | 200 |  | Finite colimits in QBSCat S: initial object, binary coproducts, coequalizers (`FinitelyCocomplete`). |
 | `QBS.CommMonad` | 24 |  | `braidedOf CC` and `ProbMonad CC`: the one spelling of "a commutative monad on a cartesian closed category", for the symmetric monoidal structure of its products. |
 | `QBS.Complete` | 173 |  | Indexed products and coproducts over any `I : Set ℓ`; with equalizers/coequalizers, `Complete` and `Cocomplete` (all small limits and colimits). |
-| `QBS.Core` | 215 |  | Quasi-Borel spaces over an abstract random source. |
-| `QBS.Exponential` | 132 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
+| `QBS.Core` | 321 |  | Quasi-Borel spaces over an abstract random source. |
+| `QBS.Exponential` | 133 |  | Function spaces `Y^X` (random elements: maps R → Y^X that uncurry to a hom ℛ × X ⇒ Y) and the canonical `CartesianClosed (QBSCat S)`. |
 | `QBS.Inference.Bayesian` | 132 |  | Bayesian inference over the discrete model (see `plans/03-bayesian-frequentist.md`, stage 3b). |
 | `QBS.Inference.BernHalf` | 117 | lem | The biased coin at θ = ½ is the fair coin: `bernθ ½ ≈ᵖ bernB` (both of `Inference/BoolDist`). |
 | `QBS.Inference.BernoulliCompare` | 141 | lem | The two views of inference on one model: is the coin fair or two-headed?  (`plans/03-bayesian-frequentist.md`, 3c.) Bayesian (`Inference/CoinBias`): the likelihood `heads` of a head is 1 under "two-headed" and ½ under... |
@@ -107,7 +107,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Model.BoolSemiring` | 116 | lem | The Boolean semiring ({false, true}, ∨, ∧) as a normalisable complete semiring: sums are existential quantifiers (decided classically). |
 | `QBS.Model.Cantor` | 53 |  | Reindexing sums over R = ℕ by pairs, through the Cantor pairing. |
 | `QBS.Model.Discrete` | 24 |  | The discrete model: QBS over the discrete random source R = ℕ, with weights in any normalisable complete semiring (the extended non-negative reals are the intended one), is a statistical QBS-like category, with *no re... |
-| `QBS.Model.DiscreteSource` | 52 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
+| `QBS.Model.DiscreteSource` | 51 |  | The discrete random source: R = ℕ with every function measurable and every function R → ℕ a measurable partition. |
 | `QBS.Model.Instances` | 34 | lem | Non-vacuity witnesses for the discrete statistical model: `IsStatisticalQBSLike` instances with Boolean (possibilistic), Viterbi (max, ×) and additive [0,∞] weights, so the abstract interfaces and the model are not em... |
 | `QBS.Model.Monad` | 284 |  | The measure monad on QBS over the discrete random source R = ℕ, for a class K of admissible weights (probability measures, or all measures). |
 | `QBS.Model.Pairing` | 70 |  | Cantor's pairing function ℕ × ℕ ≅ ℕ: `pair a b = tri (a + b) + b`, and `unpair` walks the diagonals one step at a time. |
@@ -133,7 +133,7 @@ through imports (see `Classical.md`).  The first sentence of the header is shown
 | `QBS.Borel.Lead` | 155 | lem | A countable Borel partition of Cantor space with infinitely many pieces: `lead k` is the number of leading `true`s (0 for the constant `true` sequence, where it is a classical default). |
 | `QBS.Borel.Merge` | 112 |  | Bit interleaving on Cantor space: merge a b takes its even bits from a and its odd bits from b (defined by recursion, so that the tail of merge a b is merge b (tail a) by `refl`). |
 | `QBS.Borel.PiLambda` | 236 | lem | Dynkin's π–λ theorem for the Borel σ-algebra of Cantor space (Billingsley, Thm. |
-| `QBS.Borel.Source` | 104 |  | Cantor space with its Borel σ-algebra is a random source: quasi-Borel spaces over it are quasi-Borel spaces in the sense of Heunen–Kammar–Staton–Yang (Def. |
+| `QBS.Borel.Source` | 109 |  | Cantor space with its Borel σ-algebra is a random source: quasi-Borel spaces over it are quasi-Borel spaces in the sense of Heunen–Kammar–Staton–Yang (Def. |
 
 ## Analysis
 

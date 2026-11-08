@@ -4,10 +4,13 @@
 module QBS.Exponential where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
+open import Level using (lower)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
 import Function.Construct.Identity as Id
+open import Categories.Category.Instance.Setoids using (Setoids)
+import Categories.Category.SubCategory.SubHom as SH
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (refl)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -20,9 +23,11 @@ open import QBS.Core
 open import QBS.Category
 open import QBS.Limits
 open import QBS.Probes using (ℛQ; probe)
+open import QBS.Pieces
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S
+  open SH (Setoids ℓ ℓ) using (mem; reads) renaming (probe to witness)
   open QBS
   open Hom
   open Product
@@ -52,27 +57,29 @@ module _ {ℓ} (S : RandomSource ℓ) where
       glueRX : ∀ {j} → Idx j → (u : ℕ → Hom S RX Y) → Hom S RX Y
       glueRX {j} ij u = record
         { map = glueₛ (j ∘ₛ proj₁ₛ) (λ n → map (u n))
-        ; map-random = λ {α} (pβ , pγ) →
-            random-glue-pre Y (λ n → map (u n)) α
-              (glue-random Y (idx-pre ij pβ) (λ n → map (u n) ∘ₛ α) (λ n → map-random (u n) (pβ , pγ)))
+        ; map-random = λ {α} m →
+            let pβ = rand-fst S {ℛQ S} {X} {α} m
+                pγ = rand-snd S {ℛQ S} {X} {α} m in
+            random-resp Y (glueₛ-pre {j = j ∘ₛ proj₁ₛ} (λ n → map (u n)) α)
+              (glue-random Y (idx-pre ij pβ) (λ n → map (u n) ∘ₛ α)
+                (λ n → map-random (u n) (rand-pair S {ℛQ S} {X} {α} pβ pγ)))
         }
 
     -- Y^X: a map R → Y^X is random when it uncurries to a morphism ℛ × X → Y.
     _⇨Q_ : QBS S
     _⇨Q_ = record
       { Carrier = HomS
-      ; probes = record
-          { Random = λ α → Σ (Hom S RX Y) λ u →
-              ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α ⟨$⟩ r) ⟨$⟩ x)
-          ; random-resp = λ e (u , q) →
-              u , λ r x → Setoid.trans (Carrier Y) (q r x) (e r {x})
-          ; const-random = λ φ →
-              _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y)
-          ; pre-random = λ (u , q) m →
-              _∘H_ S u (preRX m) , λ r x → q _ x
-          }
+      ; probes = fromPred measurable HomS
+          (λ α → Σ (Hom S RX Y) λ u →
+              ∀ r x → Setoid._≈_ (Carrier Y) (map u ⟨$⟩ (r , x)) (map (α ⟨$⟩ r) ⟨$⟩ x))
+          (λ φ → _∘H_ S φ (π₂ (product S {ℛQ S} {X})) , λ r x → Setoid.refl (Carrier Y))
+          (λ (u , q) m → _∘H_ S u (preRX (meas₀ m)) , λ r x → q _ x)
       ; glue-random = λ {j} ij α p →
-          glueRX ij (λ n → proj₁ (p n)) , λ r x → proj₂ (p (j ⟨$⟩ r)) r x
+          let q = λ n → witness (p n) in
+          mem (glueₛ j (λ n → proj₁ (q n))
+              , glueRX ij (λ n → proj₁ (proj₂ (q n)))
+              , λ r x → proj₂ (proj₂ (q (lower (j ⟨$⟩ r)))) r x)
+            (λ {r} → reads (p (lower (j ⟨$⟩ r))) {r})
       }
 
   open Category (QBSCat S)
@@ -84,27 +91,37 @@ module _ {ℓ} (S : RandomSource ℓ) where
         ; cong = λ { {φ , x} {φ′ , x′} (e , ex) →
             Setoid.trans (Carrier Y) (e {x}) (Func.cong (map φ′) ex) }
         }
-    ; map-random = λ {α} ((u , q) , pγ) →
-        random-resp Y (λ r → q r (proj₂ (α ⟨$⟩ r)))
-          (map-random u {< Id.function Rˢ , proj₂ₛ ∘ₛ α >ₛ} (meas-id , pγ))
+    ; map-random = λ {α} m →
+        let a = rand-fst S {_⇨Q_ X Y} {X} m
+            pγ = rand-snd S {_⇨Q_ X Y} {X} m
+            u = proj₁ (proj₂ (witness a))
+            q = proj₂ (proj₂ (witness a)) in
+        random-resp Y
+          (λ r → Setoid.trans (Carrier Y) (q r (proj₂ (α ⟨$⟩ r))) (reads a {r} {proj₂ (α ⟨$⟩ r)}))
+          (map-random u {< Id.function Rˢ , proj₂ₛ ∘ₛ α >ₛ} (rand-pair S {ℛQ S} {X} meas-id pγ))
     }
 
   curryQ : ∀ {C X Y} → Hom S (_×Q_ S C X) Y → Hom S C (_⇨Q_ X Y)
-  curryQ {C} {X} {Y} g = record
-    { map = record
+  curryQ {C} {X} {Y} g = record { map = curryF ; map-random = curryR }
+    where
+      curryF : Func (Carrier C) (HomS X Y)
+      curryF = record
         { to = λ c → record
             { map = record
                 { to = λ x → map g ⟨$⟩ (c , x)
                 ; cong = λ e → Func.cong (map g) (Setoid.refl (Carrier C) , e)
                 }
-            ; map-random = λ p → map-random g (const-random C c , p)
+            ; map-random = λ {α} p → map-random g (rand-pair S {C} {X} {< constₛ c , α >ₛ} (const-random C c) p)
             }
         ; cong = λ e {x} → Func.cong (map g) (e , Setoid.refl (Carrier X))
         }
-    ; map-random = λ {α} p →
-        _∘H_ S g (pairQ S {_×Q_ S (ℛQ S) X} {C} {X} (_∘H_ S (probe S p) (fstQ S {ℛQ S} {X})) (sndQ S {ℛQ S} {X}))
-        , λ r x → Setoid.refl (Carrier Y)
-    }
+
+      curryR : ∀ {α} → Random C α → Random (_⇨Q_ X Y) (curryF ∘ₛ α)
+      curryR {α} p =
+        mem ( curryF ∘ₛ α
+            , _∘H_ S g (pairQ S {_×Q_ S (ℛQ S) X} {C} {X} (_∘H_ S (probe S p) (fstQ S {ℛQ S} {X})) (sndQ S {ℛQ S} {X}))
+            , λ r x → Setoid.refl (Carrier Y))
+          (λ {r} {x} → Setoid.refl (Carrier Y))
 
   curry-uniq : ∀ {C X Y : QBS S} (f : Hom S C (_⇨Q_ X Y)) (g : Hom S (_×Q_ S C X) Y) →
     _≈H_ S (_∘H_ S evalQ (pairQ S (_∘H_ S f (fstQ S {C} {X})) (_∘H_ S (idH S) (sndQ S {C} {X})))) g →

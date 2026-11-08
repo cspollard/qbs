@@ -147,7 +147,7 @@ module SFinite (lem : LEM₀) where
     TQ-pre {X} {β} {f} = WP.TQ-pre {X} {β} {f}
 
     TQ-glue : ∀ {X : QBS S} {i : Func Rˢ ℕˢ} → RandomSource.Idx S i → (β : ℕ → R₁ → Pre (XW X)) →
-      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (i ⟨$⟩ r) r)
+      (∀ n → WitM {X} (β n)) → WitM {X} (λ r → β (lower (i ⟨$⟩ r)) r)
     TQ-glue {X} {i} = WP.TQ-glue {X} {i}
 
   -- the weighted test function of a joint probe at the merged parameter

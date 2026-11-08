@@ -28,6 +28,7 @@ open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 open import QBS.Core
+open import QBS.Limits using (CodiscQ)
 open import QBS.Model.DiscreteSource using (module DS)
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
@@ -73,7 +74,7 @@ module Programs {ℓ : L.Level} (A : CompleteSemiring ℓ) (K : WeightClass A)
   kernel {T} {U} k = record
     { map = record { to = k ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
     ; map-random = λ {β} _ →
-        glue-random (TQ (Disc U)) {i = record { to = lower ; cong = ≡.cong lower }} tt
+        glue-random (TQ (Disc U)) {i = record { to = λ x → x ; cong = λ e → e }} tt
           (λ n → constₛ (k (β ⟨$⟩ lift n)))
           (λ n → const-random (TQ (Disc U)) (k (β ⟨$⟩ lift n)))
     }

@@ -34,11 +34,15 @@ open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 
 open import QBS.Core
+open import QBS.Glued
+import Categories.Category.SubCategory.SubHom as SH
+open import QBS.Limits using (CodiscQ; codisc-random)
 open import QBS.Category
 open import QBS.Category.Forget
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open QBS
   open Hom
 
@@ -103,13 +107,13 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- the discrete QBS: random = locally constant along a measurable countable partition
   DiscQ : Setoid ℓ ℓ → QBS S
-  DiscQ A = GluedQBS S A (Setoid.Carrier A) (λ a _ → a) (λ a _ → a) (λ _ _ _ → Setoid.refl A)
+  DiscQ A = GluedQBS S A (Setoid.Carrier A) constₛ (λ a _ → a) (λ _ _ _ → Setoid.refl A)
     λ x → x , λ _ → Setoid.refl A
 
   Codisc : Functor (Setoids ℓ ℓ) (QBSCat S)
   Codisc = record
     { F₀ = CodiscQ S
-    ; F₁ = λ f → record { map = f ; map-random = λ _ → tt }
+    ; F₁ = λ f → record { map = f ; map-random = λ _ → codisc-random S _ _ }
     ; identity = λ {A} → Setoid.refl A
     ; homomorphism = λ {_} {_} {C} → Setoid.refl C
     ; F-resp-≈ = λ p → p
@@ -120,7 +124,9 @@ module _ {ℓ} (S : RandomSource ℓ) where
     { F₀ = DiscQ
     ; F₁ = λ f → record
         { map = f
-        ; map-random = λ (j , ix , a , h) → j , ix , (λ n → f ⟨$⟩ a n) , λ r → Func.cong f (h r)
+        ; map-random = λ m →
+            mem (proj₁ (probe m) , proj₁ (proj₂ (probe m)) , λ n → f ⟨$⟩ proj₂ (proj₂ (probe m)) n)
+              (λ {r} → Func.cong f (reads m {r}))
         }
     ; identity = λ {A} → Setoid.refl A
     ; homomorphism = λ {_} {_} {C} → Setoid.refl C
@@ -130,7 +136,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   Forget⊣Codisc : Forget S ⊣ Codisc
   Forget⊣Codisc = record
     { unit = ntHelper record
-        { η = λ X → record { map = Id.function (Carrier X) ; map-random = λ _ → tt }
+        { η = λ X → record { map = Id.function (Carrier X) ; map-random = λ _ → codisc-random S _ _ }
         ; commute = λ {_} {Y} f → Setoid.refl (Carrier Y)
         }
     ; counit = ntHelper record
@@ -150,9 +156,10 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; counit = ntHelper record
         { η = λ X → record
             { map = Id.function (Carrier X)
-            ; map-random = λ {α} (j , ix , a , h) →
-                random-resp X (λ r → Setoid.sym (Carrier X) (h r))
-                  (glue-random X ix (λ n → constₛ (a n)) (λ n → const-random X (a n)))
+            ; map-random = λ m →
+                random-resp X (λ r → reads m {r})
+                  (glue-random X (proj₁ (proj₂ (probe m))) (λ n → constₛ (proj₂ (proj₂ (probe m)) n))
+                    (λ n → const-random X (proj₂ (proj₂ (probe m)) n)))
             }
         ; commute = λ {_} {Y} f → Setoid.refl (Carrier Y)
         }

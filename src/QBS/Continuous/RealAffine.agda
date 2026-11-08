@@ -28,7 +28,7 @@
 module QBS.Continuous.RealAffine where
 
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Level using (lift)
+open import Level using (lift; lower)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
 open import Data.Empty using (⊥; ⊥-elim)
@@ -136,7 +136,7 @@ module RealAffine (lem₁ : LEM₁) where
 
     c×rand : ∀ {α} → Random (_+Q_ S X Y) (proj₁ₛ ∘ₛ α) → Random Z (proj₂ₛ ∘ₛ α) → Random W (copair×ᶠ ∘ₛ α)
     c×rand {α} (i , ii , c , q) pB = random-resp W {glueₛ i (λ n → pieceFn (proj₂ₛ ∘ₛ α) (c n))} {copair×ᶠ ∘ₛ α}
-      (λ r → Setoid.sym (Carrier W) (pieceEq (c (i ⟨$⟩ r)) (proj₂ₛ ∘ₛ α) r (α ⟨$⟩ r) (q r) (Setoid.refl (Carrier Z))))
+      (λ r → Setoid.sym (Carrier W) (pieceEq (c (lower (i ⟨$⟩ r))) (proj₂ₛ ∘ₛ α) r (α ⟨$⟩ r) (q r) (Setoid.refl (Carrier Z))))
       (glue-random W ii (λ n → pieceFn (proj₂ₛ ∘ₛ α) (c n)) (λ n → pieceRand pB (c n)))
 
     -- a random pair is glued on the partition of its first coordinate; each piece is random in X ×Q Z or Y ×Q Z

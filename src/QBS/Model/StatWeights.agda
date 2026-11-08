@@ -26,7 +26,7 @@ open import Categories.NaturalTransformation using (NaturalTransformation)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q)
+open import QBS.Limits using (_×Q_; 1Q; CodiscQ)
 open import QBS.Probability
 open import QBS.Statistical
 open import QBS.Model.Pairing
@@ -170,8 +170,8 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- countable sums of measures: glue the probes through the Cantor pairing
   sumP : ∀ {X : QBS S} → (ℕ → Pre X) → Pre X
-  sumP {X} t = mk (glueₛ (⇑ (λ k → lower (ιR k))) (λ n → αₛ (t n) ∘ₛ ⇑ ρR))
-    (QBS.glue-random X {⇑ (λ k → lower (ιR k))} tt (λ n → αₛ (t n) ∘ₛ ⇑ ρR)
+  sumP {X} t = mk (glueₛ (⇑ℕ (λ k → lower (ιR k))) (λ n → αₛ (t n) ∘ₛ ⇑ ρR))
+    (QBS.glue-random X {⇑ℕ (λ k → lower (ιR k))} tt (λ n → αₛ (t n) ∘ₛ ⇑ ρR)
       (λ n → QBS.pre-random X (α-random (t n)) tt))
     (λ k → μ (t (lower (ιR k))) (ρR k)) tt
 

@@ -6,7 +6,7 @@
 -- probability.  It is the first concrete model for the abstract interfaces.
 module QBS.Model.DiscreteSource where
 
-open import Level using (Level; Lift)
+open import Level using (Level; Lift; lower)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
@@ -15,31 +15,37 @@ open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 
 open import Function.Bundles using (_⟨$⟩_)
 
-open import QBS.Core using (RandomSource; ⇑)
+open import Relation.Binary.Bundles using (Setoid)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.SubCategory using (SubCat)
+import Categories.Category.SubCategory.SubHom as SH
+
+open import QBS.Core using (RandomSource; MeasurableMaps; ℕˢ; ⇑ℕ)
+open import QBS.Pieces
+
 open import QBS.Model.Pairing
 
 discreteSource : ∀ ℓ → RandomSource ℓ
 discreteSource ℓ = record
-  { Rˢ = setoid (Lift ℓ ℕ)
+  { subcat = sc
   ; isRandomSource = record
-    { measurable = record
-      { endo = record { P = λ _ → ⊤ ; P-resp-≈ = λ _ _ → tt ; P-id = tt ; P-∘ = λ _ _ → tt }
-      ; meas-const = λ _ → tt
-      }
+    { measurable = M
     ; covering = record
-      { partitions = record
-        { Random = λ _ → ⊤
-        ; random-resp = λ _ _ → tt
-        ; const-random = λ _ → tt
-        ; pre-random = λ _ _ → tt
-        }
-      ; meas-glue = λ _ _ → tt
+      { partitions = fromPred M (ℕˢ {ℓ}) (λ _ → ⊤) (λ _ → tt) (λ _ _ → tt)
+      ; Meas₀-glue = λ _ _ → tt
       }
     ; common-refinement = λ {j} {i} _ _ →
-        ⇑ (λ r → pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)) , tt , unpair
-          , λ r → unpair-pair (j ⟨$⟩ r) (i (j ⟨$⟩ r) ⟨$⟩ r)
+        let k = ⇑ℕ (λ r → pair (lower (j ⟨$⟩ r)) (lower (i (lower (j ⟨$⟩ r)) ⟨$⟩ r))) in
+        k , mem (k , tt) (Setoid.refl (ℕˢ {ℓ})) , unpair
+          , λ r → unpair-pair (lower (j ⟨$⟩ r)) (lower (i (lower (j ⟨$⟩ r)) ⟨$⟩ r))
     }
   }
+  where
+    open SH (Setoids ℓ ℓ) using (mem)
+    sc : SubCat (Setoids ℓ ℓ) {ℓ′ = ℓ} (⊤ {ℓ})
+    sc = record { U = λ _ → setoid (Lift ℓ ℕ) ; R = λ _ → ⊤ ; Rid = tt ; _∘R_ = λ _ _ → tt }
+    M : MeasurableMaps sc
+    M = record { Meas₀-const = λ _ → tt }
 
 -- One shared name for `discreteSource ℓ`.  Modules that each defined their own private alias
 -- `S = discreteSource ℓ` made Agda compare the (large) cartesian-closed structures of `QBSCat S` through
