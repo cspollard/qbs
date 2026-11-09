@@ -79,14 +79,14 @@ record Score
   open Bind (CommutativeMonad.M (MeasureMonad.commutativeMonad MM))
   private
     -- the measure monad, and the writer monad of the weights
-    Meas = CommutativeMonad.M (MeasureMonad.commutativeMonad MM)
+    M = CommutativeMonad.M (MeasureMonad.commutativeMonad MM)
     W×- = Writer Mul.monoid
 
   field
     -- the monad morphism `W×- ⇒ Meas` (`Monad⇒-id` names its target first)
-    reweight : Monad⇒-id Meas W×-
+    score-moorphism : Monad⇒-id M W×-
 
-  private module α = Monad⇒-id reweight
+  private module α = Monad⇒-id score-moorphism
 
   score : W ⇒ M.F.F₀ ⊤
   score = α.α.η ⊤ ∘ Mon.unitorʳ.to
