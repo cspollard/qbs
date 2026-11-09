@@ -5,7 +5,7 @@ import subprocess
 import sys
 import unicodedata
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 MAX_WIDTH = 80
 INDENT = "  "
@@ -99,26 +99,109 @@ def visual_width(text: str) -> int:
   )
 
 
-def reflow_comment(line: str) -> List[str]:
-  if visual_width(line) <= MAX_WIDTH:
-    return [line]
-  m = re.match(r"^(\s*--\s*)(.*)$", line)
-  if not m:
-    return [line]
-  prefix, body = m.group(1), m.group(2)
-  words = body.split()
-  if not words:
-    return [line]
+COMMENT_RE = re.compile(r"^(\s*)--( *)(.*?)\s*$")
+BULLET_RE = re.compile(r"^([*+•-]|\d+[.)])\s")
 
-  out, cur = [], prefix + words[0]
-  for w in words[1:]:
-    cand = f"{cur} {w}"
-    if visual_width(cand) <= MAX_WIDTH:
+
+def set_width(width: int) -> None:
+  global MAX_WIDTH
+  MAX_WIDTH = width
+
+
+def is_comment_line(line: str) -> bool:
+  return line.strip().startswith("--")
+
+
+def is_verbatim_comment(body: str) -> bool:
+  """Comment bodies that must not be refilled: horizontal rules, `from:`
+  excerpt markers, and lines with aligned columns.  A double space after
+  sentence punctuation is prose; any other run of 2+ spaces is alignment."""
+  return (
+      bool(re.match(r"^-+$", body))
+      or body.startswith("from:")
+      or bool(re.search(r"[^.?!:;)] {2,}|\S {3,}", body))
+  )
+
+
+Word = Tuple[str, bool]  # (text, followed by a double space in the source)
+
+
+def split_words(body: str) -> List[Word]:
+  """Words of `body`, remembering sentence-style double spaces."""
+  return [
+      (m.group(1), len(m.group(2)) >= 2)
+      for m in re.finditer(r"(\S+)( *)", body)
+  ]
+
+
+def fill_words(
+    first: str, cont: str, words: List[Word], width: int
+) -> List[str]:
+  """Greedy fill; `first`/`cont` prefix the first/later lines.  A double
+  space after a word ending in `.`, `?` or `!` is kept inside a line."""
+  out: List[str] = []
+  cur, sep = first + words[0][0], words[0][1]
+  for text, dbl in words[1:]:
+    gap = "  " if sep and cur[-1] in ".?!" else " "
+    cand = cur + gap + text
+    if visual_width(cand) <= width:
       cur = cand
     else:
       out.append(cur)
-      cur = prefix + w
+      cur = cont + text
+    sep = dbl
   out.append(cur)
+  return out
+
+
+def reflow_comment_block(
+    lines: List[str], width: Optional[int] = None
+) -> List[str]:
+  """Refill a run of consecutive `--` lines (same leading whitespace) to
+  `width` columns.  Paragraphs (split at blank `--` lines), bullet items,
+  differently indented lines, rules and aligned lines are never merged."""
+  w_max: int = MAX_WIDTH if width is None else width
+  out: List[str] = []
+  # Pending paragraph: (first prefix, continuation prefix, words).
+  cur: Optional[Tuple[str, str, List[Word]]] = None
+
+  def flush() -> None:
+    nonlocal cur
+    if cur is not None:
+      first, cont, words = cur
+      out.extend(fill_words(first, cont, words, w_max))
+      cur = None
+
+  for line in lines:
+    m = COMMENT_RE.match(line)
+    if not m:
+      flush()
+      out.append(line)
+      continue
+    lead, sp, body = m.groups()
+    # Deep indentation (8+) marks a table row or its continuation: keep as is.
+    if not body or len(sp) >= 8 or is_verbatim_comment(body):
+      flush()
+      out.append(line.rstrip())
+      continue
+    base = f"{lead}--"
+    bm = BULLET_RE.match(body + " ")
+    if bm:
+      flush()
+      marker = bm.group(1)
+      first = f"{base}{sp}{marker} "
+      cont = f"{base}{sp}{' ' * (len(marker) + 1)}"
+      cur = (first, cont, split_words(body[len(marker):]))
+      if not cur[2]:
+        out.append(line.rstrip())
+        cur = None
+      continue
+    if cur is not None and cur[1] == f"{base}{sp}":
+      cur[2].extend(split_words(body))
+    else:
+      flush()
+      cur = (f"{base}{sp}", f"{base}{sp}", split_words(body))
+  flush()
   return out
 
 
@@ -211,8 +294,17 @@ def lint_with_agda(file_path: str, agda_bin: str = "agda") -> str:
 
     # Comment reflowing
     if stripped.startswith("--"):
-      result_lines.extend(reflow_comment(line))
-      i += 1
+      lead = line[: len(line) - len(line.lstrip())]
+      j = i
+      while (
+          j < n
+          and is_comment_line(raw_lines[j])
+          and raw_lines[j].startswith(lead)
+          and not raw_lines[j][len(lead) :].startswith((" ", "\t"))
+      ):
+        j += 1
+      result_lines.extend(reflow_comment_block(raw_lines[i:j]))
+      i = j
       continue
 
     # Records
@@ -273,7 +365,11 @@ def main(argv: Optional[List[str]] = None) -> int:
       help="exit 1 if any file would change; write nothing",
   )
   parser.add_argument("--agda", default="agda", help="agda executable")
+  parser.add_argument(
+      "--width", type=int, default=MAX_WIDTH, help="line width (default 80)"
+  )
   args = parser.parse_args(argv)
+  set_width(args.width)
 
   changed = False
   for path in args.files:
