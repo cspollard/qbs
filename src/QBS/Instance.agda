@@ -46,14 +46,14 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; fubini = F
     }
 
-  -- Likewise for conditioning: the measure monad, its inclusion of Prob, soft conditioning and countable sums
+  -- Likewise for conditioning: the measure monad, its inclusion of Prob, additive kernels and soft conditioning
   -- are hypotheses.
   isStatisticalQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
     (MM : MeasureMonad (ℛQ S) (cartesianClosed S)) →
     (inc : StrongMonad⇒ (ProbMonad.strongMonad P) (MeasureMonad.strongMonad MM)) →
     IsNormalizedInclusion inc →
     (SW : SemiringWeights (cartesianClosed S)) →
-    (CM : CountableSums (MeasureMonad.monad MM)) →
+    (CM : AdditiveKernels (MeasureMonad.monad MM)) →
     SoftConditioning SW CM →
     IsStatisticalQBSLike (QBSCat S)
   isStatisticalQBSLike P F MM inc isN SW CM SC = record
@@ -62,6 +62,6 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; probInclusion = inc
     ; probIsNormalized = isN
     ; weights = SW
-    ; countableSums = CM
+    ; additive = CM
     ; conditioning = SC
     }
