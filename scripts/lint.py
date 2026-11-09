@@ -1,13 +1,14 @@
+import argparse
 import json
 import re
 import subprocess
+import sys
 import unicodedata
 from dataclasses import dataclass
 from typing import List, Optional
 
 MAX_WIDTH = 80
 INDENT = "  "
-
 
 @dataclass
 class OperatorInfo:
@@ -255,3 +256,44 @@ def lint_with_agda(file_path: str, agda_bin: str = "agda") -> str:
     i += 1
 
   return "\n".join(result_lines) + ("\n" if src.endswith("\n") else "")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+  parser = argparse.ArgumentParser(
+      description="Reformat Agda files (prints the result unless --write)."
+  )
+  parser.add_argument("files", nargs="+", help="Agda files to lint")
+  parser.add_argument(
+      "-w", "--write", action="store_true", help="rewrite files in place"
+  )
+  parser.add_argument(
+      "-c",
+      "--check",
+      action="store_true",
+      help="exit 1 if any file would change; write nothing",
+  )
+  parser.add_argument("--agda", default="agda", help="agda executable")
+  args = parser.parse_args(argv)
+
+  changed = False
+  for path in args.files:
+    with open(path, encoding="utf-8") as f:
+      original = f.read()
+    result = lint_with_agda(path, args.agda)
+    if result != original:
+      changed = True
+    if args.check:
+      if result != original:
+        print(f"would reformat {path}", file=sys.stderr)
+    elif args.write:
+      if result != original:
+        with open(path, "w", encoding="utf-8") as f:
+          f.write(result)
+        print(f"reformatted {path}", file=sys.stderr)
+    else:
+      sys.stdout.write(result)
+  return 1 if (args.check and changed) else 0
+
+
+if __name__ == "__main__":
+  sys.exit(main())
