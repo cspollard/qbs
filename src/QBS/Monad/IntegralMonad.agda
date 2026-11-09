@@ -9,7 +9,7 @@
 -- (TAC 2012) for the embedding into the double dual, Jacobs' expectation monad, and Ścibior et al.,
 -- "Denotational validation of higher-order Bayesian inference" (POPL 2018) for the QBS monad
 -- presented this way.  No library has the continuation monad on setoids, so the record is local.
-module QBS.IntegralMonad where
+module QBS.Monad.IntegralMonad where
 
 open import Level using (Level; suc; _⊔_)
 open import Function.Bundles using (_⟨$⟩_)

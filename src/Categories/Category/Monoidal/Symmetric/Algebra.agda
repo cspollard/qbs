@@ -50,6 +50,10 @@ record IsCommutativeMonoid (X : Obj) : Set (h ⊔ e) where
   field
     comm : μ ∘ σ⇒ ≈ μ
 
+  -- the underlying monoid object, e.g. for `Categories.Monad.Writer`
+  monoid : Mon.Monoid
+  monoid = record { Carrier = X ; isMonoid = isMonoid }
+
 record IsCommutativeComonoid (X : Obj) : Set (h ⊔ e) where
   field
     isComonoid : Comon.IsMonoid X

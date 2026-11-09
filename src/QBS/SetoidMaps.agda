@@ -15,7 +15,6 @@ open import Data.Nat.Base using (ℕ)
 open import Relation.Binary.Bundles using (Setoid)
 open import Categories.Category.Instance.Setoids using (Setoids)
 import Categories.Morphism.Constant as Const
-open import Relation.Binary.PropositionalEquality.Core using (_≡_)
 import Relation.Binary.PropositionalEquality.Core as ≡
 open import Relation.Binary.PropositionalEquality.Properties using (setoid)
 

@@ -14,7 +14,8 @@ open import QBS.Limits
 open import QBS.Colimits
 open import QBS.Complete
 open import QBS.Exponential
-open import QBS.Probability
+open import QBS.Monad.Probability
+open import QBS.Monad.Fubini
 open import QBS.RandomElements
 open import QBS.IsQBSLike
 open import QBS.Statistical
@@ -27,20 +28,24 @@ module _ {ℓ} (S : RandomSource ℓ) where
 
   -- Everything but the probability monad holds for every random source; the
   -- monad is taken as a hypothesis until a concrete one is constructed.
-  isQBSLike : ProbabilityInterface ℓ (ℛQ S) (cartesianClosed S) →
-    IsQBSLike ℓ (QBSCat S)
-  isQBSLike P = record
+  FubiniOf : ProbMonad (ℛQ S) (cartesianClosed S) → Set _
+  FubiniOf P = IsFubini (ℛQ S) (cartesianClosed S) (ProbMonad.commutativeMonad P)
+
+  isQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
+    IsQBSLike (QBSCat S)
+  isQBSLike P F = record
     { ℛ = ℛQ S
     ; cartesianClosed = cartesianClosed S
     ; binaryCoproducts = Cocartesian.Cocartesian.coproducts (cocartesian S)
     ; countableProducts = countableProduct S
     ; countableCoproducts = countableCoproduct S
     ; prob = P
+    ; fubini = F
     }
 
   -- Likewise for conditioning: the measure monad is a hypothesis.
-  isStatisticalQBSLike : (P : ProbabilityInterface ℓ (ℛQ S) (cartesianClosed S)) →
-    StatisticalInterface ℓ (QBSCat S) (ℛQ S) (cartesianClosed S) P
+  isStatisticalQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
+    StatisticalInterface (ℛQ S) (cartesianClosed S) P
       (Cocartesian.Cocartesian.coproducts (cocartesian S)) →
-    IsStatisticalQBSLike ℓ (QBSCat S)
-  isStatisticalQBSLike P St = record { base = isQBSLike P ; statistical = St }
+    IsStatisticalQBSLike (QBSCat S)
+  isStatisticalQBSLike P F St = record { base = isQBSLike P F ; statistical = St }

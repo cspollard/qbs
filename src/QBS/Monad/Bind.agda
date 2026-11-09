@@ -9,7 +9,7 @@
 --                  `bind-pre`, `bind-nat`, `bind-map`, `bind-join` (interaction with `∘`, `M`, `μ`), `bind-cong`.
 -- It is the vocabulary of `Categories.Category.Construction.Kleisli` without that category: global elements
 -- `⊤ ⇒ M X` are bound through kernels `X ⇒ M Y`, and `scaleM a t` of `Statistical` is `bind t (score ∘ a)`.
-module QBS.Bind where
+module QBS.Monad.Bind where
 
 open import Level using (Level)
 

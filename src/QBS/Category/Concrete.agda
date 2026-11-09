@@ -16,7 +16,6 @@ open import Level using (suc)
 open import Function.Bundles using (Func; _⟨$⟩_)
 import Function.Construct.Identity as Id
 open import Data.Product.Base using (_,_; proj₁; proj₂)
-open import Data.Unit.Polymorphic.Base using (tt)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
 

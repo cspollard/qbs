@@ -11,7 +11,6 @@ open import Data.Product.Base using (Σ; _×_; _,_; proj₁; proj₂)
 open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.PropositionalEquality.Core using (sym; subst)
 open import Categories.Category.Instance.Setoids using (Setoids)
-open import Categories.Category.SubCategory using (SubCat)
 
 import Categories.Category.SubCategory.SubHom as SH
 

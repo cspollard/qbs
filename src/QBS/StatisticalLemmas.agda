@@ -13,12 +13,12 @@ open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.Probability using (ProbabilityInterface)
+open import QBS.Monad.Probability using (ProbMonad)
 open import QBS.Statistical
 
-module _ {o h e ℓ} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
-    {P : ProbabilityInterface ℓ ℛ CC} {CP : Cocartesian.BinaryCoproducts C}
-    (St : StatisticalInterface ℓ C ℛ CC P CP) where
+module _ {o h e} {C : Category o h e} {ℛ : Category.Obj C} {CC : Canonical.CartesianClosed C}
+    {P : ProbMonad ℛ CC} {CP : Cocartesian.BinaryCoproducts C}
+    (St : StatisticalInterface ℛ CC P CP) where
   open Category C
   open Canonical.CartesianClosed CC using (⊤)
   open StatisticalInterface St

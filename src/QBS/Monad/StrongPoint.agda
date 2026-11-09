@@ -8,7 +8,7 @@
 --   `σ-point`, `τ-point` strength at a global element on one side,
 --   `ψ-point`      the double strength of two global elements: bind the first, then the second.
 -- `σ` is the left strength X × T Y ⇒ T (X × Y) and `τ` the right one T X × Y ⇒ T (X × Y), as in agda-categories.
-module QBS.StrongPoint where
+module QBS.Monad.StrongPoint where
 
 open import Data.Product.Base using (_,_)
 
@@ -22,9 +22,9 @@ import Categories.NaturalTransformation as NT
 import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.CommMonad using (ProbMonad)
+open import QBS.Monad.CommMonad using (CartCommMonad)
 
-module Strength-at-points {o h e} {C : Category o h e} (CC : Canonical.CartesianClosed C) (cm : ProbMonad CC) where
+module Strength-at-points {o h e} {C : Category o h e} (CC : Canonical.CartesianClosed C) (cm : CartCommMonad CC) where
   open import Categories.Category.BinaryProducts C using (BinaryProducts; module BinaryProducts)
   open import Categories.Category.Cartesian C using (Cartesian)
   open Category C

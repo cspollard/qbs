@@ -26,7 +26,7 @@ open import Categories.Functor.Presheaf using (Presheaf)
 open import Categories.Functor.Properties using (Faithful)
 open import Categories.Functor.Representable using (Representable)
 open import Categories.NaturalTransformation.Core using (NaturalTransformation)
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; refl)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (refl)
 
 open Category C
 open Hom C using (Hom[-,_])
