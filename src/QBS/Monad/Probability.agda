@@ -18,11 +18,10 @@ open import Data.Product.Base using (_,_)
 open import Categories.Category.Core using (Category)
 import Categories.Category.CartesianClosed.Canonical as Canonical
 open import Categories.Monad using (Monad)
+import Categories.Monad.Notation as Notation
 open import Categories.Monad.Commutative using (CommutativeMonad)
-open import Categories.Monad.Morphism using (Monad⇒-id)
-open import Categories.Monad.Strong using (StrongMonad; Strength)
+open import Categories.Monad.Strong using (StrongMonad)
 import Categories.Morphism.Reasoning as MR
-import Categories.NaturalTransformation as NT
 
 open import QBS.Monad.CommMonad using (CartCommMonad)
 open import QBS.Monad.Measure using (IsMeasureMonad; MeasureMonad)
@@ -34,11 +33,11 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
   record IsProbMonad (cm : CartCommMonad CC) : Set (o ⊔ h ⊔ e) where
     open Category C
     open Canonical.CartesianClosed CC using (⊤; !)
-    private module T = Monad (CommutativeMonad.M cm)
+    private module T = Notation (CommutativeMonad.M cm)
     field
       isMeasure : IsMeasureMonad ℛ CC cm
       -- T 1 ≅ 1 (Fritz §3): the monad is affine
-      affine : IsTerminal (T.F.F₀ ⊤)
+      affine : IsTerminal (T.₀ ⊤)
 
     open IsMeasureMonad isMeasure public
 
@@ -46,16 +45,16 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
     open MR C
 
     -- every measure has total mass one
-    measure-total : ∀ (μ : ℛ-Measure) → T.F.F₁ ! ∘ μ ≈ T.η.η ⊤
+    measure-total : ∀ (μ : ℛ-Measure) → T.₁ ! ∘ μ ≈ T.η ⊤
     measure-total μ = Equiv.trans (Equiv.sym (IsTerminal.!-unique affine _)) (IsTerminal.!-unique affine _)
 
     -- return is the push-forward along a constant probe (HKSY Eq. 4: `η x = [λr.x, μ]`)
-    pushforward-const : ∀ {X} (x : ⊤ ⇒ X) μ → T.η.η X ∘ x ≈ pushforward (x ∘ !) μ
+    pushforward-const : ∀ {X} (x : ⊤ ⇒ X) μ → T.η X ∘ x ≈ pushforward (x ∘ !) μ
     pushforward-const x μ = begin
-      T.η.η _ ∘ x                          ≈⟨ Equiv.sym (T.η.sym-commute x) ⟩
-      T.F.F₁ x ∘ T.η.η ⊤                   ≈⟨ refl⟩∘⟨ Equiv.sym (measure-total μ) ⟩
-      T.F.F₁ x ∘ T.F.F₁ ! ∘ μ              ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
-      T.F.F₁ (x ∘ !) ∘ μ                   ∎
+      T.η _ ∘ x                          ≈⟨ Equiv.sym (T.η-sym-commute x) ⟩
+      T.₁ x ∘ T.η ⊤                   ≈⟨ refl⟩∘⟨ Equiv.sym (measure-total μ) ⟩
+      T.₁ x ∘ T.₁ ! ∘ μ              ≈⟨ pullˡ (Equiv.sym T.homomorphism) ⟩
+      T.₁ (x ∘ !) ∘ μ                   ∎
 
   -- a probability monad: a commutative monad with the property `IsProbMonad` (as `Monoid` and `IsMonoid`)
   record ProbMonad : Set (o ⊔ h ⊔ e) where
@@ -67,34 +66,9 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
     monad : Monad C
     monad = CommutativeMonad.M commutativeMonad
 
+    -- the underlying strong monad
+    strongMonad : StrongMonad _
+    strongMonad = CommutativeMonad.strongMonad commutativeMonad
+
     open IsProbMonad isProb public
 
-  -- the probability monad `P` is a sub-monad of the measure monad `M`: a monad morphism `P ⇒ M` (probability measures
-  -- are measures) that also respects the strength
-  record Inclusion (P : ProbMonad) (M : MeasureMonad ℛ CC) : Set (o ⊔ h ⊔ e) where
-    open Category C
-    open Canonical.CartesianClosed CC using (_×_; ⟨_,_⟩; π₁; π₂)
-    private
-      -- the two monads, `P` (probability measures) and `Meas` (measures)
-      Meas = MeasureMonad.monad M
-      Prob = ProbMonad.monad P
-      -- their strengths: `τ_{A,B} : A × T B ⇒ T (A × B)`
-      module τM = NT.NaturalTransformation
-        (Strength.strengthen (StrongMonad.strength (CommutativeMonad.strongMonad (MeasureMonad.commutativeMonad M))))
-      module τP = NT.NaturalTransformation
-        (Strength.strengthen (StrongMonad.strength (CommutativeMonad.strongMonad (ProbMonad.commutativeMonad P))))
-    field
-      -- a monad morphism `Prob ⇒ Meas` (`Monad⇒-id` names its target first)
-      inclusion : Monad⇒-id Meas Prob
-
-    private module ι-mor = Monad⇒-id inclusion
-
-    -- `ι X : Prob X ⇒ Meas X`: a probability measure on `X`, regarded as a measure
-    ι : ∀ X → Monad.F.F₀ Prob X ⇒ Monad.F.F₀ Meas X
-    ι X = ι-mor.α.η X
-
-    field
-      -- `ι` commutes with the strengths: pairing `a : A` with a probability measure `p` on `B`, then including,
-      -- is the same as including first:  ι_{A×B} ∘ τP = τM ∘ (id × ι_B)
-      inclusion-strong : ∀ A B →
-        ι (A × B) ∘ τP.η (A , B) ≈ τM.η (A , B) ∘ ⟨ π₁ , ι B ∘ π₂ ⟩

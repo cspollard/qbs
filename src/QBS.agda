@@ -11,7 +11,7 @@
 -- monad on that category.  The library states what a probability monad is once, abstractly, and builds two models.
 --
 --   Abstract layer   `QBSCat S` is complete, cocomplete and cartesian closed, for every random source S, with no
---                    hypotheses.  `ProbMonad` and `StatisticalInterface` describe the measure monads;
+--                    hypotheses.  `ProbMonad`, `MeasureMonad` and `QBS.Statistical` describe the measure monads;
 --                    `IsQBSLike` and `IsStatisticalQBSLike` bundle them with the category.
 --   Concrete models (discrete, continuous, inference, examples, Borel source) are stashed outside the build in
 --                    `reference/QBS/…` on this branch; they are not on the Agda include path.
@@ -61,8 +61,10 @@ import QBS.Monad.CommMonad as CommMonad
 import QBS.Monad.StrongPoint as StrongPoint
 import QBS.Monad.IntegralMonad as IntegralMonad
 
--- `StatisticalInterface`: weights (`Weights`, a commutative monoid with zero), a measure monad with `score`, the counting
--- measure (countable sums), and `normalize : M X ⇒ Prob X + 1`.
+-- Independent structures: `CountableSums` (countable sums of kernels), `SoftConditioning` (`score`, a semiring
+-- homomorphism from the weights to the scalars of the Kleisli category), and `IsNormalizedInclusion` (Prob as the
+-- mass-one part of a measure monad).
+-- `Normalization` (`normalize : M X ⇒ Prob X + 1`) is an optional extension.
 import QBS.Statistical as Statistical
 
 -- `IsQBSLike` and `IsStatisticalQBSLike`: the minimal structure for probability the QBS way, and for soft conditioning;

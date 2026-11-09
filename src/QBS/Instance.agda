@@ -17,6 +17,8 @@ open import QBS.Complete
 open import QBS.Exponential
 open import QBS.Monad.Probability
 open import QBS.Monad.Fubini
+open import QBS.Monad.Measure using (MeasureMonad)
+open import Categories.Monad.Morphism.Strong using (StrongMonad⇒)
 open import QBS.RandomElements
 open import QBS.IsQBSLike
 open import QBS.Statistical
@@ -44,10 +46,22 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; fubini = F
     }
 
-  -- Likewise for conditioning: the measure monad is a hypothesis.
+  -- Likewise for conditioning: the measure monad, its inclusion of Prob, soft conditioning and countable sums
+  -- are hypotheses.
   isStatisticalQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
-    StatisticalInterface (ℛQ S) (cartesianClosed S) P
-      (Cocartesian.Cocartesian.coproducts (cocartesian S))
-      (countableCoproduct S (λ _ → Canonical.CartesianClosed.⊤ (cartesianClosed S))) →
+    (MM : MeasureMonad (ℛQ S) (cartesianClosed S)) →
+    (inc : StrongMonad⇒ (ProbMonad.strongMonad P) (MeasureMonad.strongMonad MM)) →
+    IsNormalizedInclusion inc →
+    (SW : SemiringWeights (cartesianClosed S)) →
+    (CM : CountableSums (MeasureMonad.monad MM)) →
+    SoftConditioning SW CM →
     IsStatisticalQBSLike (QBSCat S)
-  isStatisticalQBSLike P F St = record { base = isQBSLike P F ; statistical = St }
+  isStatisticalQBSLike P F MM inc isN SW CM SC = record
+    { base = isQBSLike P F
+    ; measures = MM
+    ; probInclusion = inc
+    ; probIsNormalized = isN
+    ; weights = SW
+    ; countableSums = CM
+    ; conditioning = SC
+    }

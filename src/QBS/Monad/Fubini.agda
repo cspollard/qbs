@@ -47,59 +47,59 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
     open MR C
 
     -- the product measure: the monad's product of the two measures, transported along the splitting
-    tensor : (⊤ ⇒ T.F.F₀ ℛ) → (⊤ ⇒ T.F.F₀ ℛ) → (⊤ ⇒ T.F.F₀ ℛ)
-    tensor μ ν = T.F.F₁ (Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+    tensor : (⊤ ⇒ T.₀ ℛ) → (⊤ ⇒ T.₀ ℛ) → (⊤ ⇒ T.₀ ℛ)
+    tensor μ ν = T.₁ (Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
 
-    measure-tensor : ∀ μ ν → T.F.F₁ (Mor._≅_.from split) ∘ tensor μ ν ≈ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+    measure-tensor : ∀ μ ν → T.₁ (Mor._≅_.from split) ∘ tensor μ ν ≈ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
     measure-tensor μ ν = begin
-      T.F.F₁ (Mor._≅_.from split) ∘ T.F.F₁ (Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
-        ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
-      T.F.F₁ (Mor._≅_.from split ∘ Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
-        ≈⟨ T.F.F-resp-≈ (Mor.Iso.isoʳ (Mor._≅_.iso split)) ⟩∘⟨refl ⟩
-      T.F.F₁ id ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
-        ≈⟨ elimˡ T.F.identity ⟩
+      T.₁ (Mor._≅_.from split) ∘ T.₁ (Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+        ≈⟨ pullˡ (Equiv.sym T.homomorphism) ⟩
+      T.₁ (Mor._≅_.from split ∘ Mor._≅_.to split) ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+        ≈⟨ T.₁-resp-≈ (Mor.Iso.isoʳ (Mor._≅_.iso split)) ⟩∘⟨refl ⟩
+      T.₁ id ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+        ≈⟨ elimˡ T.identity ⟩
       ψ ℛ ℛ ∘ ⟨ μ , ν ⟩ ∎
 
     -- the kernel r ↦ T γ(r, –) ν of a two-variable probe is a morphism ℛ ⇒ T X
-    kernel : ∀ {X} → (ℛ × ℛ ⇒ X) → (⊤ ⇒ T.F.F₀ ℛ) → ℛ ⇒ T.F.F₀ X
-    kernel γ ν = T.F.F₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩
+    kernel : ∀ {X} → (ℛ × ℛ ⇒ X) → (⊤ ⇒ T.₀ ℛ) → ℛ ⇒ T.₀ X
+    kernel γ ν = T.₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩
 
     kernel-image : ∀ {X} (γ : ℛ × ℛ ⇒ X) ν (r : ⊤ ⇒ ℛ) →
-      kernel γ ν ∘ r ≈ T.F.F₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ ν
+      kernel γ ν ∘ r ≈ T.₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ ν
     kernel-image γ ν r = begin
-      (T.F.F₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩) ∘ r
+      (T.₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩) ∘ r
         ≈⟨ assoc ⟩
-      T.F.F₁ γ ∘ (σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩) ∘ r
+      T.₁ γ ∘ (σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩) ∘ r
         ≈⟨ refl⟩∘⟨ assoc ⟩
-      T.F.F₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩ ∘ r
+      T.₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩ ∘ r
         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩∘ ⟩
-      T.F.F₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id ∘ r , (ν ∘ !) ∘ r ⟩
+      T.₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ id ∘ r , (ν ∘ !) ∘ r ⟩
         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-cong₂ identityˡ (assoc ○ (Equiv.refl ⟩∘⟨ !-unique₂) ○ identityʳ) ⟩
-      T.F.F₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ r , ν ⟩
+      T.₁ γ ∘ σ.η (ℛ , ℛ) ∘ ⟨ r , ν ⟩
         ≈⟨ refl⟩∘⟨ σ-point r ν ⟩
-      T.F.F₁ γ ∘ T.F.F₁ ⟨ r ∘ ! , id ⟩ ∘ ν
-        ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
-      T.F.F₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ ν ∎
+      T.₁ γ ∘ T.₁ ⟨ r ∘ ! , id ⟩ ∘ ν
+        ≈⟨ pullˡ (Equiv.sym T.homomorphism) ⟩
+      T.₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ ν ∎
 
     -- Tγ commutes past the join (naturality of `μ`), and the kernel assembles from the strength
-    join-kernel : ∀ {X} (γ : ℛ × ℛ ⇒ X) ν (s : ⊤ ⇒ T.F.F₀ ℛ) →
-      T.F.F₁ γ ∘ T.μ.η (ℛ × ℛ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , ν ∘ ! ⟩ ∘ s
-        ≈ T.μ.η X ∘ T.F.F₁ (kernel γ ν) ∘ s
+    join-kernel : ∀ {X} (γ : ℛ × ℛ ⇒ X) ν (s : ⊤ ⇒ T.₀ ℛ) →
+      T.₁ γ ∘ T.μ (ℛ × ℛ) ∘ T.₁ (σ.η (ℛ , ℛ)) ∘ T.₁ ⟨ id , ν ∘ ! ⟩ ∘ s
+        ≈ T.μ X ∘ T.₁ (kernel γ ν) ∘ s
     join-kernel γ ν s =
-      (refl⟩∘⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism)) ○ extendʳ (T.μ.sym-commute γ)
-        ○ (refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism))
+      (refl⟩∘⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.homomorphism)) ○ extendʳ (T.μ-sym-commute γ)
+        ○ (refl⟩∘⟨ pullˡ (Equiv.sym T.homomorphism))
 
     join-tensor : ∀ {X} (γ : ℛ × ℛ ⇒ X) μ ν →
-      T.μ.η X ∘ T.F.F₁ (kernel γ ν) ∘ μ ≈ T.F.F₁ (γ ∘ Mor._≅_.from split) ∘ tensor μ ν
+      T.μ X ∘ T.₁ (kernel γ ν) ∘ μ ≈ T.₁ (γ ∘ Mor._≅_.from split) ∘ tensor μ ν
     join-tensor γ μ ν = Equiv.sym (begin
-      T.F.F₁ (γ ∘ Mor._≅_.from split) ∘ tensor μ ν
-        ≈⟨ T.F.homomorphism ⟩∘⟨refl ⟩
-      (T.F.F₁ γ ∘ T.F.F₁ (Mor._≅_.from split)) ∘ tensor μ ν
+      T.₁ (γ ∘ Mor._≅_.from split) ∘ tensor μ ν
+        ≈⟨ T.homomorphism ⟩∘⟨refl ⟩
+      (T.₁ γ ∘ T.₁ (Mor._≅_.from split)) ∘ tensor μ ν
         ≈⟨ assoc ⟩
-      T.F.F₁ γ ∘ T.F.F₁ (Mor._≅_.from split) ∘ tensor μ ν
+      T.₁ γ ∘ T.₁ (Mor._≅_.from split) ∘ tensor μ ν
         ≈⟨ refl⟩∘⟨ measure-tensor μ ν ⟩
-      T.F.F₁ γ ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
+      T.₁ γ ∘ ψ ℛ ℛ ∘ ⟨ μ , ν ⟩
         ≈⟨ refl⟩∘⟨ ψ-point μ ν ⟩
-      T.F.F₁ γ ∘ T.μ.η (ℛ × ℛ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , ν ∘ ! ⟩ ∘ μ
+      T.₁ γ ∘ T.μ (ℛ × ℛ) ∘ T.₁ (σ.η (ℛ , ℛ)) ∘ T.₁ ⟨ id , ν ∘ ! ⟩ ∘ μ
         ≈⟨ join-kernel γ ν μ ⟩
-      T.μ.η _ ∘ T.F.F₁ (kernel γ ν) ∘ μ ∎)
+      T.μ _ ∘ T.₁ (kernel γ ν) ∘ μ ∎)
