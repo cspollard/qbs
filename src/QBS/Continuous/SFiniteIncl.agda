@@ -7,6 +7,7 @@ module QBS.Continuous.SFiniteIncl where
 open import Level using (lower)
 import Level as L
 open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Base using (_$_)
 open import Data.Product.Base using (_,_)
 open import Data.Unit.Polymorphic.Base using (tt)
 import Relation.Binary.PropositionalEquality.Core as ≡
@@ -15,7 +16,7 @@ import Categories.Category.Monoidal.Symmetric.Algebra as Algebra
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; pairQ; !Q)
+open import QBS.Limits using (_×Q_; 1Q; pairQ; !Q; rand-pair)
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁)
@@ -41,7 +42,7 @@ module SFiniteIncl (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; constW; continuousWeights)
+  open Weights lem using (WQ; constW; continuousWeights; Meas-rand)
   module CW = Algebra.CommutativeMonoidWithZero continuousWeights
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
@@ -77,7 +78,8 @@ module SFiniteIncl (lem : LEM₀) where
     { map = record
         { to = ιPre {X}
         ; cong = λ {p} {q} e → ≈ᵖ⇒≈ᴹ {X} (ιPre {X} p) (ιPre {X} q) (ι-cong {X} {p} {q} e) }
-    ; map-random = λ {β} w → C.Wit-mono (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q) (map-random (C.TH {X} {XW X} (pairW {X})) {β} w)
+    ; map-random = λ {β} w → rwitM {X} $ C.Wit-mono (λ {p q} → ≈ᵖ⇒≈ᴹ {X} p q) $ C.witOf $
+        map-random (C.TH {X} {XW X} (pairW {X})) {β} w
     }
 
   ι-nat : ∀ {X Y : QBS S} (f : Hom S X Y) (p : C.Pre X) (h : Hom S Y WQ) →
@@ -94,16 +96,16 @@ module SFiniteIncl (lem : LEM₀) where
 
   -- the r-th section of the merged kernel in `ι-mult`, as an element of `Pre U`
   ι-kp : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) → R₁ → C.Pre U
-  ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r)
-    (sec-random {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)) r)
-    (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q) r) (C.Wit.g-pr {U} {_} {α q ⟨$⟩_} (α-random q) r)
+  ι-kp {U} q r = mk {U} (sec {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))) r)
+    (sec-random {U} (C.Wit.a {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))) r)
+    (C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q)) r) (C.Wit.g-pr {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q)) r)
 
   -- the data of `ι-mult-pw`: the outer kernel `gq`, the joint probe `a₀`, the integrand `Ψ` and the r-th section `kq r`
   module IMult {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) where
     gq : R₁ → Measure
-    gq = C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)
+    gq = C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))
     a₀ : C.Joint U
-    a₀ = C.Wit.a {U} {_} {α q ⟨$⟩_} (α-random q)
+    a₀ = C.Wit.a {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))
     Ψ : R₁ → ∣A∣
     Ψ = ψ {U} (ιPre {U} (C.joinPre {U} q)) h
     mΨ : Meas Ψ
@@ -129,12 +131,12 @@ module SFiniteIncl (lem : LEM₀) where
       ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
     step-kernel r = trans
       (sym (≈ᵖ⇒≈ᴹ {U} (ιPre {U} (α q ⟨$⟩ r)) (kq r)
-        (ι-cong {U} {α q ⟨$⟩ r} {ι-kp q r} (C.Wit.w-eq {U} {_} {α q ⟨$⟩_} (α-random q) r)) h))
+        (ι-cong {U} {α q ⟨$⟩ r} {ι-kp q r} (C.Wit.w-eq {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q)) r)) h))
       (sym (*-identityˡ _))
 
   -- pointwise in the outer parameter r: the merged kernel integrates ψ of the join to ψ of the pushed-forward ι q
   ι-mult-pw : ∀ {U : QBS S} (q : C.Pre (C.TQ U)) (h : Hom S U WQ) (r : R₁) →
-    J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h)
+    J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))) r) (ψ {U} (ιPre {U} (C.joinPre {U} q)) h)
         (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
       ≈ ψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h) r
   ι-mult-pw {U} q h r = trans (step-push r) (trans (step-section r) (step-kernel r))
@@ -144,15 +146,15 @@ module SFiniteIncl (lem : LEM₀) where
     ∫ᴹ {U} (ιPre {U} (C.joinPre {U} q)) h
       ≈ ∫ᴹ {U} (joinPre {U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q))) h
   ι-mult {U} q h = trans
-    (J-bind (m q) (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)))
-       (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (α-random q)))
+    (J-bind (m q) (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
+       (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
        {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)
-       (Meas-J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)))
-          (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (α-random q)))
+       (Meas-J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
+          (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
           {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h)))
     (trans (J-cong (m q)
-              (Meas-J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)))
-                (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (α-random q)} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (α-random q)))
+              (Meas-J (P₁.pushMerge (C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
+                (P₁.KernelOk-pushMerge {C.Wit.g {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))} (C.Wit.g-ok {U} {_} {α q ⟨$⟩_} (C.witOf {U} (α-random q))))
                 {ψ {U} (ιPre {U} (C.joinPre {U} q)) h} (mψ {U} (ιPre {U} (C.joinPre {U} q)) h))
               (mψ {TQ U} (ιPre {TQ U} (C.mapPre {C.TQ U} {TQ U} (ιH U) q)) (∫ᶠ {U} h))
               (ι-mult-pw q h))
@@ -182,7 +184,7 @@ module SFiniteIncl (lem : LEM₀) where
 
   -- a weight at a point: the measure on 1 with total mass w
   scorePre : ∣ WQ ∣ → Pre (XW (1Q S))
-  scorePre w = mk (constₛ (w , tt)) (Meas-const w , tt) (dirac r₀) (IsProb-dirac r₀)
+  scorePre w = mk (constₛ (w , tt)) (rand-pair S {WQ} {1Q S} {constₛ (w , tt)} (Meas-rand (Meas-const w)) (const-random (1Q S) tt)) (dirac r₀) (IsProb-dirac r₀)
 
   ∫ᴹ-score : ∀ (w : ∣ WQ ∣) (h : Hom S (1Q S) WQ) → ∫ᴹ {1Q S} (scorePre w) h ≈ w * (map h ⟨$⟩ tt)
   ∫ᴹ-score w h = J-dirac r₀ {ψ {1Q S} (scorePre w) h} (mψ {1Q S} (scorePre w) h)
@@ -192,7 +194,7 @@ module SFiniteIncl (lem : LEM₀) where
     { map = record
         { to = scorePre
         ; cong = λ {w} {w′} e h → trans (∫ᴹ-score w h) (trans (*-cong e refl) (sym (∫ᴹ-score w′ h))) }
-    ; map-random = λ {γ} mγ → record
+    ; map-random = λ {γ} mγ → rwitM {1Q S} record
         { a = pairQ S {_×Q_ S (Probes.ℛQ S) (Probes.ℛQ S)} {WQ} {1Q S} (fstJ {WQ} γ mγ) (!Q S)
         ; g = λ _ → dirac r₀
         ; g-ok = constK (dirac r₀)

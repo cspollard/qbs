@@ -25,8 +25,10 @@ import Categories.Category.Cocartesian as Cocartesian
 open import Categories.NaturalTransformation using (NaturalTransformation)
 
 open import QBS.Core
+import Categories.Category.SubCategory.SubHom as SH
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q; CodiscQ)
+open import QBS.Limits using (_×Q_; 1Q; CodiscQ; codisc-random)
 open import QBS.Probability
 open import QBS.Statistical
 open import QBS.Model.Pairing
@@ -49,6 +51,7 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
   open Cantor A
   module MA = Measures A (allClass A)
   module MP = Measures A (probClass A)
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open QBS
   open Hom
 
@@ -59,13 +62,13 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
   mulH : Hom S (_×Q_ S WQ WQ) WQ
   mulH = record
     { map = record { to = λ p → proj₁ p * proj₂ p ; cong = λ { (e₁ , e₂) → *-cong e₁ e₂ } }
-    ; map-random = λ _ → tt
+    ; map-random = λ _ → codisc-random S Aˢ _
     }
 
   constH : ∣A∣ → Hom S (1Q S) WQ
   constH a = record
     { map = record { to = λ _ → a ; cong = λ _ → Setoid.refl Aˢ }
-    ; map-random = λ _ → tt
+    ; map-random = λ _ → codisc-random S Aˢ _
     }
 
   ----------------------------------------------------------------------------
@@ -75,16 +78,23 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
   forgetPre p = MA.mk (MP.Pre.αₛ p) (MP.Pre.α-random p) (MP.Pre.μ p) tt
 
   inclH : ∀ X → Hom S (MP.TQ X) (MA.TQ X)
-  inclH X = record
-    { map = record { to = forgetPre ; cong = λ e f → e f }
-    ; map-random = λ {β} w → record
-        { wαₛ = MP.Wit.wαₛ w
-        ; wα-random = MP.Wit.wα-random w
-        ; wg = MP.Wit.wg w
-        ; wg-ok = λ _ → tt
-        ; w-eq = λ r f → MP.Wit.w-eq w r f
-        }
-    }
+  inclH X = record { map = inclF ; map-random = inclR }
+    where
+      inclF : Func (MP.PreS X) (MA.PreS X)
+      inclF = record { to = forgetPre ; cong = λ e f → e f }
+
+      inclR : ∀ {β} → Random (MP.TQ X) β → Random (MA.TQ X) (inclF ∘ₛ β)
+      inclR {β} m =
+        let w = proj₂ (probe m) in
+        mem ( inclF ∘ₛ proj₁ (probe m)
+            , record
+                { wαₛ = MP.Wit.wαₛ w
+                ; wα-random = MP.Wit.wα-random w
+                ; wg = MP.Wit.wg w
+                ; wg-ok = λ _ → tt
+                ; w-eq = λ r f → MP.Wit.w-eq w r f
+                } )
+          (λ {r} → Func.cong inclF (reads m {r}))
 
   inclN : NaturalTransformation MP.TF MA.TF
   inclN = record
@@ -109,7 +119,7 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
     r₀ : R
     r₀ = lift 0
 
-  open MA using (Pre; mk; α; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
+  open MA using (Pre; PreS; mk; α; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
   open MA.Pre
 
   -- constant elements ⊤ ⇒ M X
@@ -120,13 +130,13 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
     }
 
   zeroP : Pre (1Q S)
-  zeroP = mk (constₛ tt) tt (λ _ → 0#) tt
+  zeroP = mk (constₛ tt) (codisc-random S _ _) (λ _ → 0#) tt
 
   ∫-zero : ∀ f → ∫ zeroP f ≈ 0#
   ∫-zero f = ∑-zero _ (λ _ → zeroˡ _)
 
   scoreP : ∣A∣ → Pre (1Q S)
-  scoreP a = mk (constₛ tt) tt (λ r → a * dirac r₀ r) tt
+  scoreP a = mk (constₛ tt) (codisc-random S _ _) (λ r → a * dirac r₀ r) tt
 
   weight-sum : ∀ a c → ∑ (λ r → (a * dirac r₀ r) * c) ≈ a * c
   weight-sum a c = begin
@@ -140,19 +150,24 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
   ∫-score a f = weight-sum a (f ⟨$⟩ tt)
 
   scoreE : Hom S WQ (TQ (1Q S))
-  scoreE = record
-    { map = record
+  scoreE = record { map = scoreF ; map-random = λ {α} _ → scoreR α }
+    where
+      scoreF : Func (Carrier WQ) (PreS (1Q S))
+      scoreF = record
         { to = scoreP
         ; cong = λ e f → ∑-cong (λ r → *-cong (*-cong e refl) refl)
         }
-    ; map-random = λ {α} _ → record
-        { wαₛ = constₛ tt
-        ; wα-random = tt
-        ; wg = λ r k → (α ⟨$⟩ r) * dirac r₀ k
-        ; wg-ok = λ _ → tt
-        ; w-eq = λ r f → Setoid.refl Aˢ
-        }
-    }
+
+      scoreR : ∀ α → Random (TQ (1Q S)) (scoreF ∘ₛ α)
+      scoreR α = mem ( scoreF ∘ₛ α
+                     , record
+                         { wαₛ = constₛ tt
+                         ; wα-random = codisc-random S _ _
+                         ; wg = λ r k → (α ⟨$⟩ r) * dirac r₀ k
+                         ; wg-ok = λ _ → tt
+                         ; w-eq = λ r f → Setoid.refl Aˢ
+                         } )
+                   (λ {r} → Setoid.refl (PreS (1Q S)) {scoreP (α ⟨$⟩ r)})
 
   scaleP : ∀ {X : QBS S} → ∣A∣ → Pre X → Pre X
   scaleP c p = mk (αₛ p) (α-random p) (λ r → c * μ p r) tt
@@ -171,8 +186,9 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
   -- countable sums of measures: glue the probes through the Cantor pairing
   sumP : ∀ {X : QBS S} → (ℕ → Pre X) → Pre X
   sumP {X} t = mk (glueₛ (⇑ℕ (λ k → lower (ιR k))) (λ n → αₛ (t n) ∘ₛ ⇑ ρR))
-    (QBS.glue-random X {⇑ℕ (λ k → lower (ιR k))} tt (λ n → αₛ (t n) ∘ₛ ⇑ ρR)
-      (λ n → QBS.pre-random X (α-random (t n)) tt))
+    (QBS.glue-random X {⇑ℕ (λ k → lower (ιR k))} (mem (⇑ℕ (λ k → lower (ιR k)) , tt) (Setoid.refl ℕˢ))
+      (λ n → αₛ (t n) ∘ₛ ⇑ ρR)
+      (λ n → QBS.pre-random X (α-random (t n)) (RandomSource.meas₀ S {⇑ ρR} tt)))
     (λ k → μ (t (lower (ιR k))) (ρR k)) tt
 
   ∫-sum : ∀ {X : QBS S} (t : ℕ → Pre X) f →
@@ -184,26 +200,32 @@ module StatWeights {ℓ} (N : NormalizableSemiring ℓ) where
 
   -- countable sums of kernels: pointwise sums of measures, the witnesses glued through the pairing
   sumKH : ∀ {X Y : QBS S} → (ℕ → Hom S X (TQ Y)) → Hom S X (TQ Y)
-  sumKH {X} {Y} ks = record
-    { map = record
+  sumKH {X} {Y} ks = record { map = F ; map-random = λ {β} rβ → R′ rβ }
+    where
+      F : Func (Carrier X) (PreS Y)
+      F = record
         { to = λ x → sumP (λ n → map (ks n) ⟨$⟩ x)
         ; cong = λ {x} {y} e f →
             Setoid.trans Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ x) f)
               (Setoid.trans Aˢ (∑-cong (λ n → Func.cong (map (ks (lower n))) e f))
                 (Setoid.sym Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ y) f)))
         }
-    ; map-random = λ {β} rβ →
-        let w = λ n → map-random (ks n) rβ
-            t′ = λ (r : R) (n : ℕ) → mk {Y} (MA.Wit.wαₛ (w n)) (MA.Wit.wα-random (w n)) (MA.Wit.wg (w n) r) tt
-        in record
-          { wαₛ = αₛ (sumP (t′ r₀))
-          ; wα-random = α-random (sumP (t′ r₀))
-          ; wg = λ r → μ (sumP (t′ r))
-          ; wg-ok = λ _ → tt
-          ; w-eq = λ r f →
-              Setoid.trans Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ (β ⟨$⟩ r)) f)
-                (Setoid.trans Aˢ (∑-cong (λ n → MA.Wit.w-eq (w (lower n)) r f))
-                  (Setoid.sym Aˢ (∫-sum (t′ r) f)))
-          }
-    }
 
+      R′ : ∀ {β} → Random X β → Random (TQ Y) (F ∘ₛ β)
+      R′ {β} rβ =
+        let w = λ n → proj₂ (probe (map-random (ks n) rβ))
+            t′ = λ (r : R) (n : ℕ) → mk {Y} (MA.Wit.wαₛ (w n)) (MA.Wit.wα-random (w n)) (MA.Wit.wg (w n) r) tt
+        in mem ( F ∘ₛ β
+               , record
+                   { wαₛ = αₛ (sumP (t′ r₀))
+                   ; wα-random = α-random (sumP (t′ r₀))
+                   ; wg = λ r → μ (sumP (t′ r))
+                   ; wg-ok = λ _ → tt
+                   ; w-eq = λ r f →
+                       Setoid.trans Aˢ (∫-sum (λ n → map (ks n) ⟨$⟩ (β ⟨$⟩ r)) f)
+                         (Setoid.trans Aˢ
+                           (∑-cong (λ n → Setoid.trans Aˢ (Setoid.sym Aˢ (reads (map-random (ks (lower n)) rβ) {r} f))
+                                            (MA.Wit.w-eq (w (lower n)) r f)))
+                           (Setoid.sym Aˢ (∫-sum (t′ r) f)))
+                   } )
+             (λ {r} → Setoid.refl (PreS Y) {sumP (λ n → map (ks n) ⟨$⟩ (β ⟨$⟩ r))})

@@ -14,7 +14,7 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; pairQ)
+open import QBS.Limits using (_×Q_; pairQ; rand-fst; rand-snd; rand-pair)
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁)
@@ -43,7 +43,7 @@ module SFiniteCommute (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; constW; continuousWeights)
+  open Weights lem using (WQ; constW; continuousWeights; rand-Meas)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -99,16 +99,15 @@ module SFiniteCommute (lem : LEM₀) where
       mΦ : Meas Φ
       mΦ = Meas-⊗ {λ u → proj₁ (α s ⟨$⟩ (evensR u))} {λ u → proj₁ (α t ⟨$⟩ (oddsR u)) *
               (map g ⟨$⟩ (proj₂ (α s ⟨$⟩ (evensR u)) , proj₂ (α t ⟨$⟩ (oddsR u))))}
-             (Meas-pre {λ r → proj₁ (α s ⟨$⟩ r)} {evensR} (proj₁ (α-random s)) measurable-evens)
+             (Meas-pre {λ r → proj₁ (α s ⟨$⟩ r)} {evensR} (rand-Meas (rand-fst S {WQ} {X} (α-random s))) measurable-evens)
              (Meas-⊗ {λ u → proj₁ (α t ⟨$⟩ (oddsR u))} {λ u → map g ⟨$⟩ (proj₂ (α s ⟨$⟩ (evensR u)) , proj₂ (α t ⟨$⟩ (oddsR u)))}
-                (Meas-pre {λ r → proj₁ (α t ⟨$⟩ r)} {oddsR} (proj₁ (α-random t)) measurable-odds)
-                (map-random g {< proj₂ₛ ∘ₛ α s ∘ₛ evensₛ , proj₂ₛ ∘ₛ α t ∘ₛ oddsₛ >ₛ}
-                   (QBS.pre-random X {proj₂ₛ ∘ₛ α s} {evensₛ} (proj₂ (α-random s)) measurable-evens ,
-                    QBS.pre-random Y {proj₂ₛ ∘ₛ α t} {oddsₛ} (proj₂ (α-random t)) measurable-odds)))
-        where
-          evensₛ oddsₛ : Func Rˢ Rˢ
-          evensₛ = proj₁ₛ ∘ₛ map fromH
-          oddsₛ = proj₂ₛ ∘ₛ map fromH
+                (Meas-pre {λ r → proj₁ (α t ⟨$⟩ r)} {oddsR} (rand-Meas (rand-fst S {WQ} {Y} (α-random t))) measurable-odds)
+                (rand-Meas (map-random g {< proj₂ₛ ∘ₛ α s ∘ₛ evensₛ , proj₂ₛ ∘ₛ α t ∘ₛ oddsₛ >ₛ}
+                   (rand-pair S {X} {Y} {< proj₂ₛ ∘ₛ α s ∘ₛ evensₛ , proj₂ₛ ∘ₛ α t ∘ₛ oddsₛ >ₛ}
+                      (QBS.pre-random X {proj₂ₛ ∘ₛ α s} {evensₛ} (rand-snd S {WQ} {X} (α-random s))
+                         (rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {map fromH} (Probes.unprobe S fromH)))
+                      (QBS.pre-random Y {proj₂ₛ ∘ₛ α t} {oddsₛ} (rand-snd S {WQ} {Y} (α-random t))
+                         (rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {map fromH} (Probes.unprobe S fromH)))))))
 
     -- Φ at a merged pair of parameters
     Φ-merge : ∀ r r′ → Φ (mergeR r r′) ≈

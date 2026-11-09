@@ -14,6 +14,8 @@ open import QBS.Core
 open import QBS.IntegralMonad using (Integral; MonadData; module Laws)
 open import QBS.Category
 import QBS.Probes as Probes
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ)
+open import QBS.Limits using (rand-fst; rand-snd; rand-pair)
 open import QBS.Borel.Core using (Measurable; measurable-∘)
 open import QBS.Borel.Source using (R₁)
 open import QBS.Borel.Merge using (measurable-merge; measurable-merge₁)
@@ -38,13 +40,13 @@ module SFiniteMonad (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; constW; continuousWeights)
+  open Weights lem using (WQ; constW; continuousWeights; rand-Meas; Meas-rand)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
   open Tensor A lem using (constK)
   open UnitInterval A using (AQ)
-  open RandomSource S using (Rˢ) renaming (meas-id to measId)
+  open RandomSource S using (Rˢ; meas₀) renaming (meas-id to measId)
   open SFinite lem
   open WitM
   open C using (Pre; mk; Joint; sec; sec-random; sndJ; fstJ; preJ; glueJ; r₀)
@@ -64,7 +66,7 @@ module SFiniteMonad (lem : LEM₀) where
     νw k = proj₂ (map (a w) ⟨$⟩ (evensR k , oddsR k))
 
     w₂ : WitM {X} νw
-    w₂ = proj₂ (paJ {TQ X} (a w))
+    w₂ = witOfM (rand-snd S {WQ} {TQ X} (paJ {TQ X} (a w)))
 
     a₂ : Joint (XW X)
     a₂ = a w₂
@@ -90,15 +92,21 @@ module SFiniteMonad (lem : LEM₀) where
               Ww k * proj₁ (map a₂ ⟨$⟩ (k , u)) , proj₂ (map a₂ ⟨$⟩ (k , u))
           ; cong = λ (e₁ , e₂) → let ek = mergeR-cong e₁ (evensR-cong e₂) ; ca = Func.cong (map a₂) (ek , oddsR-cong e₂)
                                  in *-cong (Ww-cong ek) (proj₁ ca) , proj₂ ca }
-      ; map-random = λ {γ} (m₁ , m₂) →
-          let mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
+      ; map-random = λ {γ} m →
+          let m₁ = raw (rand-fst S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m)
+              m₂ = raw (rand-snd S {Probes.ℛQ S} {Probes.ℛQ S} {γ} m)
+              mκ = measurable-merge m₁ (measurable-∘ m₂ measurable-evens)
               mτ = measurable-∘ m₂ measurable-odds
-              pr = map-random a₂ {reassocR ∘ₛ γ} (mκ , mτ)
-          in Meas-⊗ {λ x → Ww (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))))}
-                {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))) , oddsR (proj₂ (γ ⟨$⟩ x))))}
-                (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x)))} (proj₁ (paJ {TQ X} (a w))) mκ)
-                (proj₁ pr)
-           , proj₂ pr
+              pr = map-random a₂ {reassocR ∘ₛ γ}
+                     (rand-pair S {Probes.ℛQ S} {Probes.ℛQ S} {reassocR ∘ₛ γ}
+                       (meas₀ {proj₁ₛ ∘ₛ (reassocR ∘ₛ γ)} mκ) (meas₀ {proj₂ₛ ∘ₛ (reassocR ∘ₛ γ)} mτ))
+          in rand-pair S {WQ} {X}
+               (Meas-rand (Meas-⊗ {λ x → Ww (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))))}
+                  {λ x → proj₁ (map a₂ ⟨$⟩ (mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x))) , oddsR (proj₂ (γ ⟨$⟩ x))))}
+                  (Meas-pre {Ww} {λ x → mergeR (proj₁ (γ ⟨$⟩ x)) (evensR (proj₂ (γ ⟨$⟩ x)))}
+                    (rand-Meas (rand-fst S {WQ} {TQ X} (paJ {TQ X} (a w)))) mκ)
+                  (rand-Meas (rand-fst S {WQ} {X} pr))))
+               (rand-snd S {WQ} {X} pr)
       }
 
     -- the inner integral at the merged parameter, as a parametric function
@@ -117,7 +125,7 @@ module SFiniteMonad (lem : LEM₀) where
       abstract
         mBf : ∀ r → Meas (Bf r)
         mBf r = Meas-pre {λ k → Ww k * Jσ k} {mergeR r}
-          (Meas-⊗ {Ww} {Jσ} (proj₁ (paJ {TQ X} (a w))) mJσ) (measurable-merge₁ (lower r))
+          (Meas-⊗ {Ww} {Jσ} (rand-Meas (rand-fst S {WQ} {TQ X} (paJ {TQ X} (a w)))) mJσ) (measurable-merge₁ (lower r))
 
       KP : R₁ → Pre (XW X)
       KP r = kerP {X} a′ g′ gpr′ r
@@ -182,7 +190,7 @@ module SFiniteMonad (lem : LEM₀) where
     { map = record
         { to = joinPre {X}
         ; cong = λ {p} {q} e f → trans (∫ᴹ-join p f) (trans (e (∫ᶠ f)) (sym (∫ᴹ-join q f))) }
-    ; map-random = λ {β} w → record
+    ; map-random = λ {β} w₀ → let w = witOfM w₀ in rwitM record
         { a = JoinWit.a′ {X} {β ⟨$⟩_} w ; g = JoinWit.g′ {X} {β ⟨$⟩_} w ; g-ok = JoinWit.gok′ {X} {β ⟨$⟩_} w
         ; g-pr = JoinWit.gpr′ {X} {β ⟨$⟩_} w ; w-eq = JoinWit.eq′ {X} {β ⟨$⟩_} w }
     }

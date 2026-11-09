@@ -15,7 +15,7 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 open import QBS.Core
 open import QBS.IntegralMonad using (IntegralStrength; module StrongLaws)
 open import QBS.Category
-open import QBS.Limits using (_×Q_; fstQ; sndQ; pairQ)
+open import QBS.Limits using (_×Q_; fstQ; sndQ; pairQ; rand-fst; rand-snd; rand-pair)
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Analysis.Omega
@@ -58,7 +58,10 @@ module SFiniteStrong (lem : LEM₀) where
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (XW (_×Q_ S X Y))
   σPre {X} {Y} (x , q) = mk < proj₁ₛ ∘ₛ α q , < constₛ x , proj₂ₛ ∘ₛ α q >ₛ >ₛ
-    (proj₁ (α-random q) , (const-random X x , proj₂ (α-random q))) (m q) (ok q)
+    (rand-pair S {WQ} {_×Q_ S X Y} {< proj₁ₛ ∘ₛ α q , < constₛ x , proj₂ₛ ∘ₛ α q >ₛ >ₛ}
+      (rand-fst S {WQ} {Y} {α q} (α-random q))
+      (rand-pair S {X} {Y} {< constₛ x , proj₂ₛ ∘ₛ α q >ₛ} (const-random X x)
+        (rand-snd S {WQ} {Y} {α q} (α-random q)))) (m q) (ok q)
 
   ∫ᴹ-σ : ∀ {X Y : QBS S} (x : ∣ X ∣) (q : Pre (XW Y)) (f : Hom S (_×Q_ S X Y) WQ) →
     ∫ᴹ {_×Q_ S X Y} (σPre {X} {Y} (x , q)) f ≈ ∫ᴹ {Y} q (fixH {X} {Y} x f)
@@ -84,7 +87,9 @@ module SFiniteStrong (lem : LEM₀) where
                           (λ y → Func.cong (map f) (ex , Setoid.refl (Carrier Y))))
                   (sym (∫ᴹ-σ {X} {Y} x′ q′ f))))
         }
-    ; map-random = λ {β} (pb , w) → record
+    ; map-random = λ {β} m →
+        let pb = rand-fst S {X} {TQ Y} {β} m
+            w = witOfM (rand-snd S {X} {TQ Y} {β} m) in rwitM record
         { a = σJ {X} {Y} {β} pb w
         ; g = g w
         ; g-ok = g-ok w

@@ -9,6 +9,12 @@ Build targets in brief: `make check` (strict, every module), `make progress` (sk
 
 ## Open
 
+- [ ] **`Continuous/Commutative` is slow: about 195 s (limit 100–170 s), almost all in the `commutative` record (145 s).**  The
+  field-type match is costly however the field is stated (`commutes′` or `commutesH` with the category's own `_≈_`); without the
+  abstract `strength` of `Continuous/Strong` it does not finish in 580 s.  `lhsEq`/`rhsEq` take 9 s and 35 s (composites such as
+  `map ((μ ∘ F₁ τ) ∘ σ) ⟨$⟩ p` against a stuck σ).  `--profile=definitions` works on a module that finishes.  Accepted for now;
+  next: state `commutes` without composites, or a core fix (cheaper `cartesianClosed`).  `--lossy-unification` as a pragma did not help.
+
 - [~] CI for `qbs`: `make check` typechecks every module (Agda 2.7.0.1, stdlib v2.3, agda-categories c2e7c13e; fails on output, postulates, holes). `.github/workflows/qbs.yml` runs `make doccheck` then `make check` on push, pull_request and manual dispatch. Verify the first run on GitHub.
 - [ ] Landing page for the GitHub Pages site.  Today `make html` copies `html/Everything.html` to `index.html`, a bare list of imports.
   - Write a literate `src/QBS/Index.lagda.md`, nicely formatted prose for new users.  It should cover what the library is (quasi-Borel spaces, lower reals, the probability interfaces), how to read it, the headline results with links to their modules, and where to start (`docs/Guide.md`, `docs/Interface.md`).  Its code blocks import the key modules, so the links are checked by Agda.
@@ -20,7 +26,12 @@ Build targets in brief: `make check` (strict, every module), `make progress` (sk
 - [ ] Multidimensional probability (plan 03, "Directions: multidimensional", proposed and not started): finite products `Xⁿ` and n-fold product measures; mean vectors and covariance matrices as signed values with the affine rule; Gaussian vectors `N(0, Iₙ)` and `N(μ, AAᵀ)` by construction. Out of scope there: rotation invariance and the density of `N(μ, Σ)` (need Jacobians), uniqueness of products from rectangles.
 - [ ] Compile time (see "Compile time" below): the 2026-10-25 baseline (117 modules, about 17 min) predates the signed layer; a cold `make check` on 2026-11-05 took 29 min (322 modules, 0 failures, 1.9 GB peak), with no per-module times. Re-measure per module with `make profile-tree` and `make profile-QBS.<Module>`; the success criterion is every module under 120 s, no definition above about 10 s. Do not run full cold checks casually.
 - [ ] (future) Constructive foundations: `lem` is a module parameter, so no theorem is an axiom, but it is used in the lower reals (`near-sup`: `complement`, `cancel`), the fan theorem (`Clopen.Fan`), Borel-membership case splits, resizing and UIP at `Set₁` (`CutSum`), and the signed layer's finiteness decisions. `docs/Classical.md` lists every use and which are inherent; `docs/ConstructiveLit.md` has the literature and routes (valuations on the Cantor locale first). Removing `lem` needs located reals (Cauchy/Dedekind) and a `Fun` without the `complF` constructor, which touches `Fun-scale`, `Mask` and the Riesz pipeline.
-- [ ] (future) Dedekind reals from ℚ (about 1.5–3k lines), if values below zero are needed in measures. Signed values on `[0,∞]` are done (see below); measures keep `[0,∞]` values.
+- [ ] (future) Dedekind reals from ℚ (about 1.5–3k lines), if values below zero
+  are needed in measures. Signed values on `[0,∞]` are done (see below);
+  measures keep `[0,∞]` values.
+
+- [ ] Better module layout. Analysis should be under Continuous (where
+  appropriate). Model -> Discrete. 
 
 ## Finished
 

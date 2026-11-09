@@ -24,6 +24,7 @@ import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import QBS.Core
 open import QBS.Category
+open import QBS.Limits using (rand-fst; rand-snd)
 import QBS.Probes as Probes
 open import QBS.Borel.Core using (Measurable)
 open import QBS.Borel.Source using (R₁; down)
@@ -68,7 +69,7 @@ module SFiniteDecomp (lem : LEM₀) where
   open JParam lem
   open Meas lem
   open Tonelli lem using (Meas-J; J-bind)
-  open Weights lem using (WQ; constW; continuousWeights)
+  open Weights lem using (WQ; constW; continuousWeights; rand-Meas)
   open OmegaSemiring A renaming (Carrier to ∣A∣; setoid to Aˢ)
   open Integration A
   open Measurable A
@@ -164,7 +165,7 @@ module SFiniteDecomp (lem : LEM₀) where
   wt p r = proj₁ (α p ⟨$⟩ r)
 
   wt-Meas : ∀ {X : QBS S} (p : Pre (XW X)) → Meas (wt p)
-  wt-Meas p = proj₁ (α-random p)
+  wt-Meas {X} p = rand-Meas (rand-fst S {WQ} {X} (α-random p))
 
   -- the bands: index 0 is `{w = ∞}` (weight ∞), index k+1 is `{k < w ≤ k+1}` (weight k+1)
   posNat : ∀ k → RL.0ℚᵘ ℚ.< RL.nat (ℕ.suc k)
@@ -314,7 +315,7 @@ module SFiniteDecomp (lem : LEM₀) where
 
   pieceψ-Meas : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) → Meas (pieceψ {X} p n f)
   pieceψ-Meas {X} p n f = Meas-⊗ {pieceDensity p n} {λ r → map f ⟨$⟩ proj₂ (α p ⟨$⟩ r)} (pieceDensity-Meas p n)
-      (map-random f (proj₂ (α-random p)))
+      (rand-Meas (map-random f (rand-snd S {WQ} {X} (α-random p))))
 
   -- the weighted n-th piece
   pieceTerm : ∀ {X : QBS S} (p : Pre (XW X)) (f : Hom S X WQ) (n : ℕ) → R₁ → Cut
@@ -338,7 +339,7 @@ module SFiniteDecomp (lem : LEM₀) where
 
   -- the probe of the X-component of `p`, as a morphism ℛ ⇒ X
   probeOf : ∀ {X : QBS S} → Pre (XW X) → Hom S (Probes.ℛQ S) X
-  probeOf {X} p = Probes.probe S {X} {proj₂ₛ ∘ₛ α p} (proj₂ (α-random p))
+  probeOf {X} p = Probes.probe S {X} {proj₂ₛ ∘ₛ α p} (rand-snd S {WQ} {X} (α-random p))
 
   -- the mass of a piece, and the piece as a probability measure (a fixed dummy when the mass is 0,
   -- `lem` decides which; `normM` otherwise)
@@ -403,10 +404,10 @@ module SFiniteDecomp (lem : LEM₀) where
   -- mass · (integral against the normalised piece) = integral against the piece; both sides vanish when the mass is 0
   pieceProb-int : ∀ {X : QBS S} (p : Pre (XW X)) (n : ℕ) (f : Hom S X WQ) →
     pieceMass p n * J (proj₁ (pieceProb p n)) (λ r → map f ⟨$⟩ proj₂ (α p ⟨$⟩ r))
-      (map-random f (proj₂ (α-random p)))
+      (rand-Meas (map-random f (rand-snd S {WQ} {X} (α-random p))))
     ≈ J (m p) (pieceψ {X} p n f) (pieceψ-Meas {X} p n f)
   pieceProb-int {X} p n f = probCase-int (m p) (pieceDensity p n) (pieceDensity-Meas p n) (pieceDensity≤1 p n)
-    (map-random f (proj₂ (α-random p))) (lem (Pos (pieceMass p n)))
+    (rand-Meas (map-random f (rand-snd S {WQ} {X} (α-random p)))) (lem (Pos (pieceMass p n)))
 
   ----------------------------------------------------------------------------
   -- 3. the decomposition
@@ -422,7 +423,7 @@ module SFiniteDecomp (lem : LEM₀) where
   decomp-term {X} p n f = trans (∫ᴹ-scale {X} (bandW n * pieceMass p n) (ιPre {X} (lawPre (probeOf p) (pieceProb p n))) f)
     (trans (*-cong refl (J-cong (proj₁ (pieceProb p n))
         (mψ {X} (ιPre {X} (lawPre (probeOf p) (pieceProb p n))) f)
-        (map-random f (proj₂ (α-random p))) (λ r → *-identityˡ _)))
+        (rand-Meas (map-random f (rand-snd S {WQ} {X} (α-random p)))) (λ r → *-identityˡ _)))
       (trans (*-assoc _ _ _) (*-cong refl (pieceProb-int {X} p n f))))
 
   scaledLawsPre : ∀ {X : QBS S} (p : Pre (XW X)) →

@@ -4,7 +4,7 @@
 module QBS.Model.ProbInstance where
 
 open import Level using (Lift; lift; lower)
-open import Function.Bundles using (Inverse; _⟨$⟩_)
+open import Function.Bundles using (Func; Inverse; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 open import Data.Product.Base using (Σ; _,_; proj₁; proj₂)
 open import Data.Unit.Polymorphic.Base using (tt)
@@ -15,8 +15,10 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 
 
 open import QBS.Core
+import Categories.Category.SubCategory.SubHom as SH
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import QBS.Category
-open import QBS.Limits using (_×Q_; 1Q)
+open import QBS.Limits using (_×Q_; 1Q; rand-pair)
 open import QBS.Exponential using (cartesianClosed)
 open import QBS.Probes using (ℛQ; probe; unprobe)
 open import QBS.Probability
@@ -39,6 +41,7 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
   open WeightClass K
   open Measures A K
   open Strength A K using (strongMonad; commutative; commutativeMonad)
+  open SH (Setoids ℓ ℓ) using (mem)
   open QBS
   open Hom
   open Pre
@@ -59,20 +62,27 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
 
     kerPre : ∀ {X : QBS S} → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X → Σ (R → ∣A∣) Ok → R → Pre X
     kerPre {X} γ (ν , ok) r =
-      mk (map γ ∘ₛ ⇑ (λ s → r , s)) (map-random γ {⇑ (λ s → r , s)} (tt , tt)) ν ok
+      mk (map γ ∘ₛ ⇑ (λ s → r , s)) (map-random γ {⇑ (λ s → r , s)}
+        (rand-pair S {ℛQ S} {ℛQ S} {⇑ (λ s → r , s)} (RandomSource.meas₀ S tt) (RandomSource.meas₀ S tt))) ν ok
 
     kerH : ∀ {X : QBS S} → Hom S (_×Q_ S (ℛQ S) (ℛQ S)) X → Σ (R → ∣A∣) Ok → Hom S (ℛQ S) (TQ X)
     kerH {X} γ m@(ν , ok) = record
-      { map = record { to = kerPre γ m ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
-      ; map-random = λ {α} _ → record
+      { map = kerF
+      ; map-random = λ {α} _ → mem (kerF ∘ₛ α , record
           { wαₛ = map γ ∘ₛ ⇑ (λ k → α ⟨$⟩ ιR k , ρR k)
-          ; wα-random = map-random γ {⇑ (λ k → α ⟨$⟩ ιR k , ρR k)} (tt , tt)
+          ; wα-random = map-random γ {⇑ (λ k → α ⟨$⟩ ιR k , ρR k)}
+            (rand-pair S {ℛQ S} {ℛQ S} {⇑ (λ k → α ⟨$⟩ ιR k , ρR k)}
+              (RandomSource.meas₀ S tt) (RandomSource.meas₀ S tt))
           ; wg = λ s → push (φ (lower s)) ν
           ; wg-ok = λ s → ok-push _ ok
           ; w-eq = λ s f → Setoid.sym Aˢ
               (push-pair-∑ (lower s) ν (λ u → f ⟨$⟩ (map γ ⟨$⟩ (α ⟨$⟩ lift (proj₁ u) , lift (proj₂ u)))))
-          }
+          })
+          (λ {r} → Setoid.refl (Carrier (TQ X)) {kerPre γ m (α ⟨$⟩ r)})
       }
+      where
+        kerF : Func (RandomSource.Rˢ S) (Carrier (TQ X))
+        kerF = record { to = kerPre γ m ; cong = λ { ≡.refl _ → Setoid.refl Aˢ } }
 
   discreteProbLaws : ProbLaws ℓ (ℛQ S) (cartesianClosed S) commutativeMonad
   discreteProbLaws = record
@@ -94,10 +104,10 @@ module _ {ℓ} (A : CompleteSemiring ℓ) where
     { split = record
         { from = record
             { map = record { to = Inverse.from cantorIso ; cong = λ { ≡.refl → ≡.refl , ≡.refl } }
-            ; map-random = λ _ → tt , tt }
+            ; map-random = λ _ → rand-pair S {ℛQ S} {ℛQ S} (RandomSource.meas₀ S tt) (RandomSource.meas₀ S tt) }
         ; to = record
             { map = record { to = Inverse.to cantorIso ; cong = λ { (≡.refl , ≡.refl) → ≡.refl } }
-            ; map-random = λ _ → tt }
+            ; map-random = λ _ → RandomSource.meas₀ S tt }
         ; iso = record
             { isoˡ = λ {r} → proj₁ (Inverse.inverse cantorIso) {r} ≡.refl
             ; isoʳ = λ { {p} → let e = proj₂ (Inverse.inverse cantorIso) {p} ≡.refl

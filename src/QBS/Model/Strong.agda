@@ -17,9 +17,11 @@ import Relation.Binary.Reasoning.Setoid as SetoidReasoning
 import Function.Construct.Composition as Comp
 
 
+import Categories.Category.SubCategory.SubHom as SH
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_)
+open import QBS.Limits using (_×Q_; rand-fst; rand-snd; rand-pair)
 open import QBS.Model.DiscreteSource
 open import QBS.Model.Semiring
 open import QBS.Model.Sums
@@ -34,6 +36,8 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   private
     open DS ℓ using (S)
     R = Lift ℓ ℕ
+  open RandomSource S using (meas₀)
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open Cantor A using (φ; ιR; ρR; push-pair-∑)
   open QBS
   open Hom
@@ -43,7 +47,7 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
   -- the left strength on pre-measures
   σPre : ∀ {X Y : QBS S} → ∣ _×Q_ S X (TQ Y) ∣ → Pre (_×Q_ S X Y)
   σPre {X} {Y} (x , q) =
-    mk < constₛ x , αₛ q >ₛ (QBS.const-random X x , α-random q)
+    mk < constₛ x , αₛ q >ₛ (rand-pair S {X} {Y} {< constₛ x , αₛ q >ₛ} (QBS.const-random X x) (α-random q))
       (μ q) (μ-ok q)
 
   private
@@ -55,27 +59,41 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
       }
 
   σH : ∀ X Y → Hom S (_×Q_ S X (TQ Y)) (TQ (_×Q_ S X Y))
-  σH X Y = record
-    { map = record
+  σH X Y = record { map = σF ; map-random = σR }
+    where
+      σF : Func (Carrier (_×Q_ S X (TQ Y))) (PreS (_×Q_ S X Y))
+      σF = record
         { to = σPre {X} {Y}
         ; cong = λ {(x , q)} {(x′ , q′)} (ex , eq) f →
             Setoid.trans Aˢ (eq (fix {X} {Y} x f))
               (∑-cong (λ r → *-cong (Setoid.refl Aˢ)
                 (Func.cong f (ex , Setoid.refl (Carrier Y)))))
         }
-    ; map-random = λ {β} (pb , w) → record
-        { wαₛ = < (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρR >ₛ
-        ; wα-random = QBS.pre-random X {f = ⇑ ιR} pb tt , QBS.pre-random Y {f = ⇑ ρR} (wα-random w) tt
-        ; wg = λ r → push (φ (lower r)) (wg w r)
-        ; wg-ok = λ r → ok-push (φ (lower r)) (wg-ok w r)
-        ; w-eq = λ r f →
-            Setoid.trans Aˢ (w-eq w r (fix {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
-              (Setoid.sym Aˢ (push-pair-∑ (lower r) (wg w r) (λ u → f ⟨$⟩ B (β ⟨$⟩_) w u)))
-        }
-    }
-    where
+
       B : ∀ (β : R → ∣ _×Q_ S X (TQ Y) ∣) → Wit (λ r → proj₂ (β r)) → ℕ × ℕ → ∣ _×Q_ S X Y ∣
       B β w u = proj₁ (β (lift (proj₁ u))) , wα w (lift (proj₂ u))
+
+      abstract
+        -- the strength of a random family: the witness of its second component, paired with its first
+        σR : ∀ {β} → Random (_×Q_ S X (TQ Y)) β → Random (TQ (_×Q_ S X Y)) (σF ∘ₛ β)
+        σR {β} m =
+          let pb = rand-fst S {X} {TQ Y} {β} m
+              w₀ = rand-snd S {X} {TQ Y} {β} m
+              w = proj₂ (probe w₀)
+              γ = < proj₁ₛ ∘ₛ β , proj₁ (probe w₀) >ₛ in
+          mem ( σF ∘ₛ γ
+              , record
+                  { wαₛ = < (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρR >ₛ
+                  ; wα-random = rand-pair S {X} {Y} {< (proj₁ₛ ∘ₛ β) ∘ₛ ⇑ ιR , wαₛ w ∘ₛ ⇑ ρR >ₛ}
+                      (QBS.pre-random X {f = ⇑ ιR} pb (meas₀ {⇑ ιR} tt))
+                      (QBS.pre-random Y {f = ⇑ ρR} (wα-random w) (meas₀ {⇑ ρR} tt))
+                  ; wg = λ r → push (φ (lower r)) (wg w r)
+                  ; wg-ok = λ r → ok-push (φ (lower r)) (wg-ok w r)
+                  ; w-eq = λ r f →
+                      Setoid.trans Aˢ (w-eq w r (fix {X} {Y} (proj₁ (β ⟨$⟩ r)) f))
+                        (Setoid.sym Aˢ (push-pair-∑ (lower r) (wg w r) (λ u → f ⟨$⟩ B (γ ⟨$⟩_) w u)))
+                  } )
+            (λ {r} → Func.cong σF (Setoid.refl (Carrier X) , reads w₀ {r}))
 
   open import Categories.Monad.Strong using (Strength; StrongMonad)
   import Categories.Monad.Strong.Properties
@@ -125,12 +143,18 @@ module Strength {ℓ} (A : CompleteSemiring ℓ) (K : WeightClass A) where
     module SP = Categories.Monad.Strong.Properties
     module RS = SP.Right.Shorthands (SP.Strength⇒RightStrength braided strength)
 
-  commutative : Commutative braided strongMonad
-  commutative = record { commutes = λ {X} {Y} {(s , t)} g →
+  -- the two ways of integrating a pair of measures against `g`, as a statement about pre-measures only
+  commuteEq : ∀ {X Y : QBS S} (s : Pre X) (t : Pre Y) (g : Func (Carrier (_×Q_ S X Y)) Aˢ) →
+    ∫ (joinPre (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t)))) g
+      ≈ ∫ (joinPre (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t)))) g
+  commuteEq {X} {Y} s t g =
     Setoid.trans Aˢ
-      (∫-join (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
+      (∫-join {_×Q_ S X Y} (mapPre (RS.τ {X} {Y}) (σPre {TQ X} {Y} (s , t))) g)
       (Setoid.trans Aˢ (fubini {X} {Y} s t g)
-        (Setoid.sym Aˢ (∫-join (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g))) }
+        (Setoid.sym Aˢ (∫-join {_×Q_ S X Y} (mapPre (σH X Y) (map (RS.τ {X} {TQ Y}) ⟨$⟩ (s , t))) g)))
+
+  commutative : Commutative braided strongMonad
+  commutative = record { commutes = λ {X} {Y} {(s , t)} g → commuteEq {X} {Y} s t g }
 
   -- packaged here, where `V` and `braided` are in scope, so that `Model/ProbInstance` need not re-check
   -- `strongMonad` against `Braided.monoidal braided` (that conversion took ~30 s there)

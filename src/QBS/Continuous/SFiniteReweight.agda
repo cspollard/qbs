@@ -13,7 +13,7 @@ open import Data.Product.Function.NonDependent.Setoid using (proj₂ₛ)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (_×Q_; pairQ)
+open import QBS.Limits using (_×Q_; pairQ; rand-fst; rand-snd; rand-pair)
 open import QBS.Analysis.Omega
 open import QBS.Analysis.Measure
 open import QBS.Analysis.Meas using (module Meas)
@@ -26,7 +26,7 @@ open import QBS.Classical using (LEM₀)
 module SFiniteReweight (lem : LEM₀) where
   open JParam lem
   open Meas lem
-  open Weights lem using (WQ; mulW)
+  open Weights lem using (WQ; mulW; rand-Meas; Meas-rand)
   open OmegaSemiring A using (_≈_; _*_; *-cong; *-assoc)
   open Integration A
   open SFinite lem
@@ -42,8 +42,11 @@ module SFiniteReweight (lem : LEM₀) where
   -- multiply the weight of each sample by the density at its point
   reweightPre : ∀ {X : QBS S} → Hom S X WQ → Pre (XW X) → Pre (XW X)
   reweightPre {X} d p = mk (rwₛ ∘ₛ α p)
-    (Meas-⊗ {λ r → proj₁ (α p ⟨$⟩ r)} {λ r → map d ⟨$⟩ proj₂ (α p ⟨$⟩ r)}
-       (proj₁ (α-random p)) (map-random d {proj₂ₛ ∘ₛ α p} (proj₂ (α-random p))) , proj₂ (α-random p))
+    (rand-pair S {WQ} {X} {rwₛ ∘ₛ α p}
+      (Meas-rand (Meas-⊗ {λ r → proj₁ (α p ⟨$⟩ r)} {λ r → map d ⟨$⟩ proj₂ (α p ⟨$⟩ r)}
+        (rand-Meas (rand-fst S {WQ} {X} (α-random p)))
+        (rand-Meas (map-random d {proj₂ₛ ∘ₛ α p} (rand-snd S {WQ} {X} (α-random p))))))
+      (rand-snd S {WQ} {X} (α-random p)))
     (m p) (ok p)
     where
       rwₛ : Func (Carrier (XW X)) (Carrier (XW X))

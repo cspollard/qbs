@@ -9,7 +9,7 @@ open import Level using (Lift; lift)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Data.Nat.Base using (ℕ)
 import Data.Nat.Base as ℕ
-open import Data.Product.Base using (_,_)
+open import Data.Product.Base using (_,_; proj₂)
 open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 import Data.Sum.Relation.Binary.Pointwise as ⊎ʳ
@@ -23,11 +23,13 @@ import Function.Construct.Composition as Comp
 import Categories.Monad.Strong as CMS
 import Categories.Category.CartesianClosed.Canonical as Canonical
 import Categories.Category.Cocartesian as Cocartesian
-open import QBS.Colimits using (_+Q_; Piece; ev)
+open import QBS.Colimits using (_+Q_; Piece; ev; ⊎S)
 
 open import QBS.Core
 open import QBS.Category
-open import QBS.Limits using (1Q)
+open import QBS.Limits using (1Q; codisc-random)
+import Categories.Category.SubCategory.SubHom as SH
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import QBS.Probability
 open import QBS.Statistical
 open import QBS.Model.Pairing
@@ -51,6 +53,7 @@ module StatNormalize {ℓ} (N : NormalizableSemiring ℓ) where
     r₀ : R
     r₀ = lift 0
   open Cantor A
+  open SH (Setoids ℓ ℓ) using (mem; probe; reads)
   open QBS
   open Hom
   open MA using (Pre; mk; α; ∫; ∫ᶠ; mapPre; ηPre; joinPre; ∫-η; ∫-join; TQ; TH; TM; TF)
@@ -164,14 +167,16 @@ module StatNormalize {ℓ} (N : NormalizableSemiring ℓ) where
 
     -- normalisation of a random family of measures is random in Prob + 1
     normRandomᵈ : QBS.Random (_+Q_ S (MP.TQ X) (1Q S)) (⇑ (λ r → normC′ (β r) (d r)))
-    normRandomᵈ = ⇑ℕ idxᵈ , tt , c , eq
+    normRandomᵈ = mem (⇑ℕ idxᵈ , mem (⇑ℕ idxᵈ , tt) (Setoid.refl ℕˢ) , c)
+                    (λ {r} → Setoid.sym (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S))) (eq r))
       where
         c : ℕ → Piece S (MP.TQ X) (1Q S)
-        c ℕ.zero = inj₁ (⇑ (λ r → γ′ r (d r)) , Wγ)
-        c (ℕ.suc _) = inj₂ (constₛ tt , tt)
+        c ℕ.zero = inj₁ (⇑ (λ r → γ′ r (d r))
+                       , mem (⇑ (λ r → γ′ r (d r)) , Wγ) (Setoid.refl (Carrier (MP.TQ X))))
+        c (ℕ.suc _) = inj₂ (constₛ tt , codisc-random S _ _)
 
         eq : ∀ r → Setoid._≈_ (⊎ʳ.⊎-setoid (Carrier (MP.TQ X)) (Carrier (1Q S)))
-               (normC′ (β r) (d r)) (ev S (MP.TQ X) (1Q S) (c (idx′ (d r))) r)
+               (normC′ (β r) (d r)) (ev S (MP.TQ X) (1Q S) (c (idx′ (d r))) ⟨$⟩ r)
         eq r with d r in ed
         ... | inj₁ (n , h) = ⊎ʳ.inj₁ (≡.subst (λ e → MP._≈ᵖ_ (normP n (β r) h) (γ′ r e)) (≡.sym ed) (λ f → Setoid.refl Aˢ))
         ... | inj₂ _ = ⊎ʳ.inj₂ ≡.refl
@@ -240,7 +245,11 @@ module StatNormalize {ℓ} (N : NormalizableSemiring ℓ) where
   normScale c d cd p (inj₂ _) (inj₂ _) = ⊎ʳ.inj₂ ≡.refl
 
   normH : ∀ X → Hom S (MA.TQ X) (_+Q_ S (MP.TQ X) (1Q S))
-  normH X = record
-    { map = record { to = normC ; cong = normC-cong }
-    ; map-random = normRandom
-    }
+  normH X = record { map = F ; map-random = λ {α} m → R′ m }
+    where
+      F : Func (Carrier (MA.TQ X)) (⊎S S (MP.TQ X) (1Q S))
+      F = record { to = normC ; cong = normC-cong }
+
+      R′ : ∀ {α} → Random (MA.TQ X) α → Random (_+Q_ S (MP.TQ X) (1Q S)) (F ∘ₛ α)
+      R′ {α} m = QBS.random-resp (_+Q_ S (MP.TQ X) (1Q S)) (λ r → normC-cong (reads m {r}))
+                   (normRandom (proj₂ (probe m)))
