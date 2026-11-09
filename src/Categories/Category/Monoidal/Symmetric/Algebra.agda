@@ -94,13 +94,14 @@ module _ {X : Obj} (K : IsCommutativeComonoid X) where
       zero⇒ : unit ⇒ X
 
     module Mul = IsCommutativeMonoid *-isCommutativeMonoid
+    open Mul public using () renaming (μ to μ*; η to η*)
 
     field
-      zeroʳ : Mul.μ ∘ (id ⊗₁ zero⇒) ≈ zero⇒ ∘ δ ∘ unitorʳ.from
+      zeroʳ : μ* ∘ (id ⊗₁ zero⇒) ≈ zero⇒ ∘ δ ∘ unitorʳ.from
       -- `δ` is a monoid homomorphism from the multiplication into the trivial monoid on the unit, and a retraction
       -- of `0` (all automatic when `unit` is terminal)
-      δ-unit : δ ∘ Mul.η ≈ id
-      δ-mul : δ ∘ Mul.μ ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
+      δ-unit : δ ∘ η* ≈ id
+      δ-mul : δ ∘ μ* ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
       δ-zero : δ ∘ zero⇒ ≈ id
 
   record IsCommutativeSemiring : Set (h ⊔ e) where
@@ -109,23 +110,25 @@ module _ {X : Obj} (K : IsCommutativeComonoid X) where
       *-isCommutativeMonoid : IsCommutativeMonoid X
 
     module Add = IsCommutativeMonoid +-isCommutativeMonoid
+    open Add public using () renaming (μ to μ⁺; η to η⁺)
     module Mul = IsCommutativeMonoid *-isCommutativeMonoid
+    open Mul public using () renaming (μ to μ*; η to η*)
 
     field
-      -- `x · (y + z) = x · y + x · z`; the other side follows from commutativity of `Mul.μ`
-      distribˡ : Mul.μ ∘ (id ⊗₁ Add.μ) ≈ Add.μ ∘ (Mul.μ ⊗₁ Mul.μ) ∘ swap-mid ∘ (Δ ⊗₁ id)
+      -- `x · (y + z) = x · y + x · z`; the other side follows from commutativity of `μ*`
+      distribˡ : μ* ∘ (id ⊗₁ μ⁺) ≈ μ⁺ ∘ (μ* ⊗₁ μ*) ∘ swap-mid ∘ (Δ ⊗₁ id)
       -- `x · 0 = 0`; with no terminal unit the right side discards `x` with `δ`
-      zeroʳ : Mul.μ ∘ (id ⊗₁ Add.η) ≈ Add.η ∘ δ ∘ unitorʳ.from
+      zeroʳ : μ* ∘ (id ⊗₁ η⁺) ≈ η⁺ ∘ δ ∘ unitorʳ.from
       -- `δ` is a monoid homomorphism from the multiplication into the trivial monoid on the unit, and a retraction
       -- of `0` (all automatic when `unit` is terminal)
-      δ-unit : δ ∘ Mul.η ≈ id
-      δ-mul : δ ∘ Mul.μ ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
-      δ-zero : δ ∘ Add.η ≈ id
+      δ-unit : δ ∘ η* ≈ id
+      δ-mul : δ ∘ μ* ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
+      δ-zero : δ ∘ η⁺ ≈ id
 
     isCommutativeMonoidWithZero : IsCommutativeMonoidWithZero
     isCommutativeMonoidWithZero = record
       { *-isCommutativeMonoid = *-isCommutativeMonoid
-      ; zero⇒ = Add.η
+      ; zero⇒ = η⁺
       ; zeroʳ = zeroʳ
       ; δ-unit = δ-unit
       ; δ-mul = δ-mul
@@ -139,14 +142,16 @@ module _ {X : Obj} (K : IsCommutativeComonoid X) where
       *-isCommutativeMonoid : IsCommutativeMonoid X
 
     module Add = IsAbelianGroup +-isAbelianGroup
+    open Add public using () renaming (μ to μ⁺; η to η⁺)
     module Mul = IsCommutativeMonoid *-isCommutativeMonoid
+    open Mul public using () renaming (μ to μ*; η to η*)
 
     field
-      distribˡ : Mul.μ ∘ (id ⊗₁ Add.μ) ≈ Add.μ ∘ (Mul.μ ⊗₁ Mul.μ) ∘ swap-mid ∘ (Δ ⊗₁ id)
-      zeroʳ : Mul.μ ∘ (id ⊗₁ Add.η) ≈ Add.η ∘ δ ∘ unitorʳ.from
-      δ-unit : δ ∘ Mul.η ≈ id
-      δ-mul : δ ∘ Mul.μ ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
-      δ-zero : δ ∘ Add.η ≈ id
+      distribˡ : μ* ∘ (id ⊗₁ μ⁺) ≈ μ⁺ ∘ (μ* ⊗₁ μ*) ∘ swap-mid ∘ (Δ ⊗₁ id)
+      zeroʳ : μ* ∘ (id ⊗₁ η⁺) ≈ η⁺ ∘ δ ∘ unitorʳ.from
+      δ-unit : δ ∘ η* ≈ id
+      δ-mul : δ ∘ μ* ≈ unitorˡ.from ∘ (δ ⊗₁ δ)
+      δ-zero : δ ∘ η⁺ ≈ id
 
     isCommutativeSemiring : IsCommutativeSemiring
     isCommutativeSemiring = record

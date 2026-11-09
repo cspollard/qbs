@@ -43,6 +43,11 @@ private
 Writer-F : Endofunctor C
 Writer-F = A ⊗-
 
+-- `tell w = (w, *)`: the generating operation of the writer monad.  A monad morphism out of the writer monad is
+-- determined by its component at the unit object, precomposed with `tell`.
+tell : A ⇒ A ⊗₀ unit
+tell = ρ⇐
+
 -- `η x = (1, x)`
 Writer-η : NaturalTransformation idF Writer-F
 Writer-η = record

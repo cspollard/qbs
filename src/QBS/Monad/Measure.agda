@@ -10,58 +10,55 @@
 -- random element and a measure on R, modulo equal push-forward).
 -- Divergences, deliberate: a measure on ℛ is a global element `⊤ ⇒ T ℛ`, with no separate set of measures; and
 -- `generated` lets the measure range over all of `⊤ ⇒ T ℛ`, which is weaker than ranging over a chosen subset.
-module QBS.Monad.Measure where
+open import Categories.Category.Core using (Category)
+import Categories.Category.CartesianClosed.Canonical as Canonical
+
+module QBS.Monad.Measure
+  {o h e} {C : Category o h e}
+  (ℛ : Category.Obj C)
+  (CC : Canonical.CartesianClosed C)
+  where
 
 open import Level using (_⊔_)
 open import Data.Product.Base using (Σ)
 
-open import Categories.Category.Core using (Category)
-import Categories.Category.CartesianClosed.Canonical as Canonical
+open import Categories.Category using (_[_,_])
+open import Categories.Category.Construction.Kleisli using (Kleisli)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Commutative using (CommutativeMonad)
 import Categories.Morphism.Reasoning as MR
 
 open import QBS.Monad.CommMonad using (CartCommMonad)
 
-module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where
+-- (`MeasureMonad`, the bundle, follows `IsMeasureMonad`)
+record IsMeasureMonad (cm : CartCommMonad CC) : Set (o ⊔ h ⊔ e) where
+  open Category C
+  open Canonical.CartesianClosed CC using (⊤; !)
+  private
+    module T = Monad (CommutativeMonad.M cm)
+    -- the Kleisli category of the monad: `K [ X , Y ]` is `X ⇒ T Y`
+    K = Kleisli (CommutativeMonad.M cm)
 
-  -- (`MeasureMonad`, the bundle, follows `IsMeasureMonad`)
-  record IsMeasureMonad (cm : CartCommMonad CC) : Set (o ⊔ h ⊔ e) where
-    open Category C
-    open Canonical.CartesianClosed CC using (⊤; !)
-    private module T = Monad (CommutativeMonad.M cm)
-    field
-      -- every global element of the monad is the push-forward of a measure on ℛ along a probe (HKSY Def. 10)
-      generated : ∀ {X} (t : ⊤ ⇒ T.F.F₀ X) → Σ (ℛ ⇒ X) λ a → Σ (⊤ ⇒ T.F.F₀ ℛ) λ μ → T.F.F₁ a ∘ μ ≈ t
+  -- a measure on `X` is a global element of the monad, a Kleisli arrow `⊤ → X`; a measure on ℛ:
+  ℛ-Measure : Set h
+  ℛ-Measure = K [ ⊤ , ℛ ]
 
-    -- a measure on ℛ is a global element of the monad
-    Measure : Set h
-    Measure = ⊤ ⇒ T.F.F₀ ℛ
+  -- the push-forward `a_* μ` of a measure along a probe `a : ℛ ⇒ X` (HKSY §V.C): the image of `μ` under `T a`
+  pushforward : ∀ {X} → (ℛ ⇒ X) → ℛ-Measure → K [ ⊤ , X ]
+  pushforward a μ = T.F.F₁ a ∘ μ
 
-    open HomReasoning
-    open MR C
+  field
+    -- every measure on `X` is the push-forward of a measure on ℛ along a probe (HKSY Def. 10)
+    generated : ∀ {X} (t : K [ ⊤ , X ]) → Σ (ℛ ⇒ X) λ a → Σ ℛ-Measure λ μ → pushforward a μ ≈ t
 
-    -- the push-forward `a_* μ` of a measure along a probe `a : ℛ ⇒ X` (HKSY §V.C): the image of `μ` under `T a`
-    pushforward : ∀ {X} → (ℛ ⇒ X) → Measure → ⊤ ⇒ T.F.F₀ X
-    pushforward a μ = T.F.F₁ a ∘ μ
+-- a measure monad: a commutative monad with the property `IsMeasureMonad` (as `Monoid` and `IsMonoid`)
+record MeasureMonad : Set (o ⊔ h ⊔ e) where
+  field
+    commutativeMonad : CartCommMonad CC
+    isMeasure : IsMeasureMonad commutativeMonad
 
-    pushforward-resp : ∀ {X} {a b : ℛ ⇒ X} → a ≈ b → ∀ μ → pushforward a μ ≈ pushforward b μ
-    pushforward-resp a≈b μ = T.F.F-resp-≈ a≈b ⟩∘⟨refl
+  -- the underlying monad
+  monad : Monad C
+  monad = CommutativeMonad.M commutativeMonad
 
-    -- `P f [α, μ] = [f ∘ α, μ]` (HKSY Prop. 22.1)
-    pushforward-map : ∀ {X Y} (f : X ⇒ Y) (a : ℛ ⇒ X) μ → T.F.F₁ f ∘ pushforward a μ ≈ pushforward (f ∘ a) μ
-    pushforward-map f a μ = pullˡ (Equiv.sym T.F.homomorphism)
-
-    -- reparametrising the probe by `m : ℛ ⇒ ℛ` pushes the measure forward along `m` first: `[α ∘ m, μ] = [α, m_* μ]`
-    pushforward-pre : ∀ {X} (a : ℛ ⇒ X) (m : ℛ ⇒ ℛ) μ → pushforward (a ∘ m) μ ≈ pushforward a (pushforward m μ)
-    pushforward-pre a m μ = begin
-      T.F.F₁ (a ∘ m) ∘ μ           ≈⟨ T.F.homomorphism ⟩∘⟨refl ⟩
-      (T.F.F₁ a ∘ T.F.F₁ m) ∘ μ    ≈⟨ assoc ⟩
-      T.F.F₁ a ∘ T.F.F₁ m ∘ μ      ∎
-
-  -- a measure monad: a commutative monad with the property `IsMeasureMonad` (as `Monoid` and `IsMonoid`)
-  record MeasureMonad : Set (o ⊔ h ⊔ e) where
-    field
-      commutativeMonad : CartCommMonad CC
-      isMeasure : IsMeasureMonad commutativeMonad
-    open IsMeasureMonad isMeasure public
+  open IsMeasureMonad isMeasure public

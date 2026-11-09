@@ -7,7 +7,7 @@
 --     at a point and `join-tensor`: the join of the images of `ν` along the kernel is the image of `tensor μ ν` along `γ ∘ from`.
 -- A property of the commutative monad and the splitting only: it uses neither the probability-monad axioms nor
 -- `pushforward` (`QBS.Monad.Measure`), so images of measures are written `T a ∘ μ` for a global element `μ : ⊤ ⇒ T ℛ`.
--- Route: `ψ-point` and `σ-point` (`StrongPoint`) turn the strength at points into the kernel; `bind-nat` (`Bind`) commutes
+-- Route: `ψ-point` and `σ-point` (`StrongPoint`) turn the strength at points into the kernel; naturality of `μ` commutes
 -- `T γ` past the join.
 module QBS.Monad.Fubini where
 
@@ -22,7 +22,6 @@ import Categories.Morphism.Reasoning as MR
 
 open import QBS.Monad.CommMonad using (CartCommMonad)
 import QBS.Monad.StrongPoint as SP
-open import QBS.Monad.Bind using (module Bind)
 
 module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where
   private
@@ -40,7 +39,6 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
     private module Mor = Morph C
     -- `σ`, `τ`, `ψ` and the strength-at-a-point lemmas `σ-point`, `τ-point`, `ψ-point` are generic: see `StrongPoint`
     open SP.Strength-at-points CC cm
-    open Bind (CommutativeMonad.M cm) using (bind-nat)
 
     field
       split : ℛ Mor.≅ (ℛ × ℛ)
@@ -83,12 +81,13 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
         ≈⟨ pullˡ (Equiv.sym T.F.homomorphism) ⟩
       T.F.F₁ (γ ∘ ⟨ r ∘ ! , id ⟩) ∘ ν ∎
 
-    -- Tγ commutes past the join (`bind-nat`), and the kernel assembles from the strength
+    -- Tγ commutes past the join (naturality of `μ`), and the kernel assembles from the strength
     join-kernel : ∀ {X} (γ : ℛ × ℛ ⇒ X) ν (s : ⊤ ⇒ T.F.F₀ ℛ) →
       T.F.F₁ γ ∘ T.μ.η (ℛ × ℛ) ∘ T.F.F₁ (σ.η (ℛ , ℛ)) ∘ T.F.F₁ ⟨ id , ν ∘ ! ⟩ ∘ s
         ≈ T.μ.η X ∘ T.F.F₁ (kernel γ ν) ∘ s
     join-kernel γ ν s =
-      (refl⟩∘⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism)) ○ bind-nat γ (σ.η (ℛ , ℛ) ∘ ⟨ id , ν ∘ ! ⟩) s
+      (refl⟩∘⟨ refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism)) ○ extendʳ (T.μ.sym-commute γ)
+        ○ (refl⟩∘⟨ pullˡ (Equiv.sym T.F.homomorphism))
 
     join-tensor : ∀ {X} (γ : ℛ × ℛ ⇒ X) μ ν →
       T.μ.η X ∘ T.F.F₁ (kernel γ ν) ∘ μ ≈ T.F.F₁ (γ ∘ Mor._≅_.from split) ∘ tensor μ ν

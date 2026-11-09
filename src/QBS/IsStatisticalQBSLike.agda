@@ -6,6 +6,7 @@ module QBS.IsStatisticalQBSLike where
 open import Level using (suc; _⊔_)
 
 open import Categories.Category.Core using (Category)
+import Categories.Category.CartesianClosed.Canonical as Canonical
 
 open import QBS.IsQBSLike
 open import QBS.Statistical using (StatisticalInterface)
@@ -18,3 +19,4 @@ record IsStatisticalQBSLike {o h e} (C : Category o h e) : Set (suc (o ⊔ h ⊔
   open IsQBSLike base public
   field
     statistical : StatisticalInterface ℛ cartesianClosed prob binaryCoproducts
+      (countableCoproducts (λ _ → Canonical.CartesianClosed.⊤ cartesianClosed))

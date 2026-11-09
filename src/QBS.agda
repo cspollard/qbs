@@ -59,13 +59,11 @@ import QBS.Monad.Fubini as Fubini
 -- global elements, generic over any such monad.
 import QBS.Monad.CommMonad as CommMonad
 import QBS.Monad.StrongPoint as StrongPoint
-import QBS.Monad.Bind as Bind
 import QBS.Monad.IntegralMonad as IntegralMonad
 
--- `StatisticalInterface`: weights (`Weights`, a commutative monoid with zero), a measure monad with `score`, countable sums and
--- scaling, and `normalize : M X ⇒ Prob X + 1`.  `StatisticalLemmas` has bind linear in the measure.
+-- `StatisticalInterface`: weights (`Weights`, a commutative monoid with zero), a measure monad with `score`, the counting
+-- measure (countable sums), and `normalize : M X ⇒ Prob X + 1`.
 import QBS.Statistical as Statistical
-import QBS.StatisticalLemmas as StatisticalLemmas
 
 -- `IsQBSLike` and `IsStatisticalQBSLike`: the minimal structure for probability the QBS way, and for soft conditioning;
 -- `Instance` gives them for `QBSCat S` from the monads.

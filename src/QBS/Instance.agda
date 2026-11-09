@@ -7,6 +7,7 @@ module QBS.Instance where
 
 
 import Categories.Category.Cocartesian as Cocartesian
+import Categories.Category.CartesianClosed.Canonical as Canonical
 
 open import QBS.Core
 open import QBS.Category
@@ -46,6 +47,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
   -- Likewise for conditioning: the measure monad is a hypothesis.
   isStatisticalQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
     StatisticalInterface (ℛQ S) (cartesianClosed S) P
-      (Cocartesian.Cocartesian.coproducts (cocartesian S)) →
+      (Cocartesian.Cocartesian.coproducts (cocartesian S))
+      (countableCoproduct S (λ _ → Canonical.CartesianClosed.⊤ (cartesianClosed S))) →
     IsStatisticalQBSLike (QBSCat S)
   isStatisticalQBSLike P F St = record { base = isQBSLike P F ; statistical = St }
