@@ -15,7 +15,7 @@ open import QBS.Colimits
 open import QBS.Complete
 open import QBS.Exponential
 open import QBS.Probability
-open import QBS.Probes
+open import QBS.RandomElements
 open import QBS.IsQBSLike
 open import QBS.Statistical
 open import QBS.IsStatisticalQBSLike

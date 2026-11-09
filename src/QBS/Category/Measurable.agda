@@ -22,7 +22,7 @@ open import Categories.Functor.Properties using (Faithful; Full)
 open import QBS.Core
 open import QBS.Category
 open import QBS.Category.Forget
-open import QBS.Probes using (ℛQ; unprobe)
+open import QBS.RandomElements using (ℛQ; unprobe)
 
 module _ {ℓ} (S : RandomSource ℓ) where
   open RandomSource S

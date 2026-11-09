@@ -19,7 +19,10 @@ Contents:
 
 ## Abstract layer
 
-### `QBS.Core`
+### `QBS.Core`, `QBS.SetoidMaps`, `QBS.MeasurableMaps`, `QBS.Probes`, `QBS.RandomSource`
+`QBS.Core` re-exports `QBS.SetoidMaps` (the helpers `_∘ₛ_`, `constₛ`, `ℕˢ`, `glueₛ`), `QBS.MeasurableMaps` (`MeasurableMaps`),
+`QBS.Probes` (`Probes`, `measProbes`) and `QBS.RandomSource` (`Partitions`, `IsRandomSource`, `RandomSource`); the names below
+are defined in those modules and `QBS.Core` itself (`QBS`, `Hom`, `idH`).
 - `idH` — `idH S {X}`: the identity morphism (`S` explicit).
 - `RandomSource` (a setoid `Rˢ` with `IsRandomSource Rˢ`) — a one-object site: a `subcat` (an agda-categories `SubCat` of `Setoids` with one object, the setoid `Rˢ`) and `MeasurableMaps subcat` (carrier `R`, equality `≈ᴿ`; `Meas f` — `f` equal to a hom of `subcat`, the image of `Sub`, so `meas-resp`, `meas-id`, `meas-∘` are derived — plus `Meas₀-const`, giving `meas-const`), `Partitions` (`Idx`, the probes of discrete `ℕˢ`, along which `Meas` glues: `Meas₀-glue`, giving `meas-glue`) plus `common-refinement` (covers compose: a partition `k` refining `j` by the `i n`, with `decode` recovering `(j r , i (j r) r)` from `k r`); their fields are re-exported.
 - `constₛ-isConstant`, `fromSubHom` — `constₛ x` is a constant morphism of `Setoids` (`IsConstant` of Categories.Morphism.Constant, with `const x = x ∘ !` at a terminal object); a subpresheaf of `Rˢ ⇒ X` whose image contains the constants is a `Probes`, and `measProbes` is `Meas` itself (the representable).
@@ -36,7 +39,7 @@ Contents:
 - `QBS.Exponential`: `cartesianClosed` — `CartesianClosed (QBSCat S)`; `QBS.Limits`: terminal object and products; `QBS.Colimits`: coproducts.
 - `QBS.Complete`: `countableProduct`, `countableCoproduct` — indexed products and coproducts.
 
-### `QBS.Probes`
+### `QBS.RandomElements`
 - `ℛQ` — the probe object, the space of random sources; random elements of `X` correspond to morphisms `ℛQ ⇒ X`.
 
 ### Abstract layer map

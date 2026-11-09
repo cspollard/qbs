@@ -22,7 +22,7 @@ open import Categories.Object.Product using (Product)
 open import QBS.Core
 open import QBS.Category
 open import QBS.Limits
-open import QBS.Probes using (ℛQ; probe)
+open import QBS.RandomElements using (ℛQ; probe)
 open import QBS.Pieces
 
 module _ {ℓ} (S : RandomSource ℓ) where

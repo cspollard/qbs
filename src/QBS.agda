@@ -23,7 +23,11 @@ module QBS where
 -- The category of quasi-Borel spaces
 
 -- A random source (the "reals" R, measurable maps R → R, measurable countable partitions), quasi-Borel spaces over it,
--- and their homs.
+-- and their homs.  The source is built from setoid-map helpers, the measurable maps, probes and the source itself.
+import QBS.SetoidMaps as SetoidMaps
+import QBS.MeasurableMaps as MeasurableMaps
+import QBS.Probes as Probes
+import QBS.RandomSource as RandomSource
 import QBS.Core as Core
 
 -- `QBSCat S` as an agda-categories `Category`.
@@ -38,7 +42,7 @@ import QBS.Complete as Complete
 import QBS.Exponential as Exponential
 
 -- The space ℛQ of random sources: random elements of X are exactly the maps ℛQ ⇒ X.
-import QBS.Probes as Probes
+import QBS.RandomElements as RandomElements
 
 ------------------------------------------------------------------------
 -- Probability and soft conditioning, abstractly

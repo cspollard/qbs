@@ -20,7 +20,7 @@ One line per module: [Modules.md](Modules.md) (generated). The public names: [In
     │   StatInstance                ▼
     │                            Borel/    σ-algebra on 2^ℕ, π–λ, merge/lead, Cells, Borel.Source
     ▼                               ▼
- Abstract: Core, Category, Limits, Colimits, Complete, Exponential, Probes,
+ Abstract: SetoidMaps, MeasurableMaps, Probes, RandomSource, Core, Category, Limits, Colimits, Complete, Exponential, RandomElements,
            Probability, Statistical, IsQBSLike, IsStatisticalQBSLike, Instance
 ```
 
