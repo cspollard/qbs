@@ -7,7 +7,7 @@
 --     at a point and `join-tensor`: the join of the images of `ν` along the kernel is the image of `tensor μ ν` along `γ ∘ from`.
 -- A property of the commutative monad and the splitting only: it uses neither the probability-monad axioms nor
 -- `pushforward` (`QBS.Monad.Measure`), so images of measures are written `T a ∘ μ` for a global element `μ : ⊤ ⇒ T ℛ`.
--- Route: `ψ-point` and `σ-point` (`StrongPoint`) turn the strength at points into the kernel; naturality of `μ` commutes
+-- Route: `ψ-point` and `σ-point` (`DoubleStrength`) turn the strength at points into the kernel; naturality of `μ` commutes
 -- `T γ` past the join.
 module QBS.Monad.Fubini where
 
@@ -16,12 +16,11 @@ open import Data.Product.Base using (_,_)
 
 open import Categories.Category.Core using (Category)
 import Categories.Category.CartesianClosed.Canonical as Canonical
-open import Categories.Monad.Commutative using (CommutativeMonad)
 import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR
 
 open import QBS.Monad.CommMonad using (CartCommMonad)
-import QBS.Monad.StrongPoint as SP
+import Categories.Monad.Commutative.DoubleStrength as DoubleStrength
 
 module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where
   private
@@ -37,8 +36,8 @@ module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.Car
     open BinaryProducts (Cartesian.products cartesian) using (_⁂_; ⟨⟩∘; ⟨⟩-cong₂; project₁; project₂; ⁂∘⟨⟩; η)
     open Terminal (Cartesian.terminal cartesian) using (!-unique; !-unique₂)
     private module Mor = Morph C
-    -- `σ`, `τ`, `ψ` and the strength-at-a-point lemmas `σ-point`, `τ-point`, `ψ-point` are generic: see `StrongPoint`
-    open SP.Strength-at-points CC cm
+    -- `σ`, `τ`, `ψ` and the strength-at-a-point lemmas `σ-point`, `τ-point`, `ψ-point` are generic: see `DoubleStrength`
+    open DoubleStrength CC cm
 
     field
       split : ℛ Mor.≅ (ℛ × ℛ)

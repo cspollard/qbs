@@ -8,7 +8,7 @@
 open import Categories.Category.Core using (Category)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Algebraic using (IsAlgebraic)
-open import Categories.Theory.Equational using (Theory; Term; var; app)
+open import Categories.Theory.Equational using (Theory; var; app)
 
 module Categories.Monad.Algebraic.Properties
   {o h e} {C : Category o h e} (T : Theory) (M : Monad C) (AL : IsAlgebraic T M)

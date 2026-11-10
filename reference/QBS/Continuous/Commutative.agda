@@ -167,7 +167,7 @@ module Commutativity (A : OmegaSemiring (L.suc L.zero)) (lem : LEM₀) (K : Inte
                 (mapCong (σH X Y)
                   (λ k → Setoid.trans Aˢ (τ-red {X} {TQ Y} p k) (F-app (B⇐ X (TQ Y)) _ k)) (∫ᶠ {X V.⊗₀ Y} g)))))))
 
-  -- Kock's double strength `ψ = μ ∘ F₁ σ ∘ τ` (right-associated, as in `StrongPoint`) on a pair, as a `joinPre` of pre-measures
+  -- Kock's double strength `ψ = μ ∘ F₁ σ ∘ τ` (right-associated, as in `DoubleStrength`) on a pair, as a `joinPre` of pre-measures
   ψ-join : ∀ {X Y : QBS S} (p : ∣ TQ X V.⊗₀ TQ Y ∣) (g : Hom S (X V.⊗₀ Y) AQ) →
     ∫ {X V.⊗₀ Y} (map (SM.M.μ.η (X V.⊗₀ Y) C.∘ (SM.M.F.₁ (SP.Left.Shorthands.σ SM.strength) C.∘ RS.τ {X} {TQ Y})) ⟨$⟩ p) g
     ≈ ∫ {X V.⊗₀ Y} (joinPre (mapPre (σH X Y) (mapPre (B⇐ X (TQ Y)) (σPre {TQ Y} {X} (proj₂ p , proj₁ p))))) g

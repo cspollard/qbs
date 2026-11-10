@@ -4,7 +4,7 @@
 -- A measure monad (`IsMeasureMonad`, `QBS.Monad.Measure`) that is affine (`IsProbMonad`): every measure has total mass one.
 -- The splitting ℛ ≅ ℛ × ℛ with the bind (Fubini) axioms is a separate property of a commutative monad: `QBS.Monad.Fubini`.
 -- A hypothesis of the abstract layer, supplied by the discrete and continuous models.
--- The generic strong-monad calculation (`ψ`, strength at points) is in `StrongPoint`; `CartCommMonad` is in `CommMonad`.
+-- The generic strong-monad calculation (`ψ`, strength at points) is in `Categories.Monad.Commutative.DoubleStrength`; `CartCommMonad` is in `CommMonad`.
 --
 -- Source: affine monads are Fritz, *A synthetic approach to Markov kernels* (arXiv:1908.07021), §3 (`T I ≅ I`);
 -- Prop. 22.4 of Heunen–Kammar–Staton–Yang (arXiv:1701.02547) (`P X ≅ G X` for standard Borel X) identifies probability
@@ -13,7 +13,6 @@
 module QBS.Monad.Probability where
 
 open import Level using (_⊔_)
-open import Data.Product.Base using (_,_)
 
 open import Categories.Category.Core using (Category)
 import Categories.Category.CartesianClosed.Canonical as Canonical
@@ -24,7 +23,7 @@ open import Categories.Monad.Strong using (StrongMonad)
 import Categories.Morphism.Reasoning as MR
 
 open import QBS.Monad.CommMonad using (CartCommMonad)
-open import QBS.Monad.Measure using (IsMeasureMonad; MeasureMonad)
+open import QBS.Monad.Measure using (IsMeasureMonad)
 
 -- `ProbMonad` is a commutative monad together with `IsProbMonad`, its property of being a measure monad that is affine.
 module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where

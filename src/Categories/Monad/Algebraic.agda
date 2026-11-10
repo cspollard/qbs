@@ -13,7 +13,6 @@ open import Categories.Category.Core using (Category)
 module Categories.Monad.Algebraic {o h e} {C : Category o h e} where
 
 open import Level using (_⊔_)
-open import Data.Nat.Base using (ℕ)
 open import Data.Fin.Base using (Fin)
 
 open import Categories.Category using (_[_,_])

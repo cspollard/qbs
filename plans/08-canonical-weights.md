@@ -9,10 +9,14 @@ context, so internal by Yoneda), `⋆` from the strength, `0 = 𝟘`, `1 = η �
 semiring and a semiring homomorphism form the slice `CSemiring(C) / S`; `(S, id)` is terminal, `(ℕ, unit)` initial.  So
 the weights need not be chosen: take `W := S`, and `score` is the identity.
 
-In the code, `scalarModel` (`Monad.Algebraic.Scalars`) says that `M ⊤` is an internal semiring: a model of the theory `CommSemiring`
-(`Theory.Equational.Model`, an object whose hom-sets `Z ⇒ X` carry the operations of the theory naturally in `Z`).  Terminality of
-`(S, id)` is then slice-category general nonsense and is not formalized; the equations of `T` on the scalars come from
-`IsAlgebraic.laws` at `X = Z`, `Y = ⊤`.
+In the code, `scalarCommSemiring` (`Monad.Algebraic.Scalars`) says that `M ⊤` is an internal semiring: a model of the theory
+`CommSemiring` (`Theory.Equational.Model`, an object whose hom-sets `Z ⇒ X` carry the operations of the theory naturally in
+`Z`).  It is assembled by `fromMonoids` from the additive model (`M-model`, from `IsAlgebraic`), the multiplicative model
+`(⋆, 𝟙)` (strength and commutativity), and two interaction laws (distributivity from `⋆-op`, annihilation from `⋆-comm`).
+`M` is not `IsAlgebraic CommSemiring`: `⋆` is natural in the context but not linear in the continuation.  Terminality of
+`(S, id)` is slice-category general nonsense and is not formalized.
+
+The semiring structure is what makes `M ⊤` a weights candidate, so the multiplicative laws are on the critical path.
 
 ## Categories
 
@@ -27,8 +31,8 @@ In the code, `scalarModel` (`Monad.Algebraic.Scalars`) says that `M ⊤` is an i
 
 - Dropped: `Weights`, `SemiringWeights`, `Global`, `score`, `SoftConditioning`, `Statistical`, the free additive monad,
   `Monad.Additive` (replaced by `Monad.Algebraic` for `CommMonoid`) and the scalars functor into `Semirings`.
-- The weights are the scalars `M ⊤`.  The contextual product `⋆`, and `scalarModel` (`IsModel CommSemiring (M ⊤)`, three holes), are in
-  `Categories.Monad.Algebraic.Scalars`.
+- The weights are the scalars `M ⊤`.  The contextual product `⋆` and `scalarCommSemiring` (`IsModel CommSemiring (M ⊤)`) are in
+  `Categories.Monad.Algebraic.Scalars`, with no holes.
 - Normalization is the predicate "mass is `𝟙`" (`QBS.Monad.Normalized`: `Prob X ↪ M X` is the equalizer of mass and `𝟙`).
   Dividing by mass is not part of the interface.
 - `IsStatisticalQBSLike` and `Instance` carry `additive : IsAlgebraic CommMonoid M` and load.
@@ -77,11 +81,9 @@ multiplication to an arbitrary `T`.
 
 ## Open
 
-- Holes in `scalarModel` (`Monad.Algebraic.Scalars`): `op-cong`; `op-resp-∘` (for `mul`: `(f ⋆ g) ∘ h ≈ (f ∘ h) ⋆ (g ∘ h)`,
-  strength naturality; for `one`: `!-unique`; the rest is `Properties.M-model`); and `laws` (eight equations of
-  `CommSemiring`: the additive ones from `IsAlgebraic.laws`, the monoid and commutativity laws of `⋆` from the strength and
-  commutativity, distributivity and annihilation from `op-resp-∘`).  The proved `kleisli-semiring` was deleted with
-  `Monad.Additive`; see git history.  Lemma wanted: `f ⋆ g ≈ g K.∘ f` at `⊤`.
+- Done in `Monad.Algebraic.Scalars` (no holes): `⋆-cong`, `⋆-∘` (change of context), `⋆-identityˡ`, `⋆-op` (linearity in the
+  continuation), `⋆-assoc` (only the strong-monad axioms: `σ-bind`, `σ-diag` from `strength-assoc`), `⋆-comm` (Kock's `ψ`
+  and `commutes`: `⋆-ψ`, `⋆-ψ′`), and `scalarCommSemiring`.  The strength lemmas are in `Categories.Monad.Commutative.DoubleStrength` (with `ψ`, formerly `QBS.Monad.StrongPoint`).  The full lax monoidal structure of `(M, ψ)` was not needed.
 - Check against the model (`reference/QBS/Continuous/SFinite*`): inhabit `IsAlgebraic CommMonoid` and show `M ⊤` is
   `[0,∞]` with the usual sum and product (`0·∞ = 0`).  Not verified.
 - Additivity as a property (Coumans–Jacobs Def. 16, `Object.Biproduct` in `Kleisli M`) giving the algebraic structure, so

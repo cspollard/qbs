@@ -2,7 +2,7 @@
 
 -- `braidedOf CC` and `CartCommMonad CC`: the one spelling of "a commutative monad on a cartesian closed category", for the
 -- symmetric monoidal structure of its products.  Use `CartCommMonad CC` for every field or parameter of this type in the
--- abstract layer (`Probability`, `Statistical`, `StrongPoint`) rather than writing `CommutativeMonad braided`.
+-- abstract layer (`Probability`, `Statistical`, `DoubleStrength`) rather than writing `CommutativeMonad braided`.
 
 open import Categories.Category.Core using (Category)
 

@@ -6,7 +6,7 @@
 module Categories.Theory.Equational.CommutativeSemiring where
 
 open import Data.Nat.Base as ℕ using (ℕ)
-open import Data.Fin.Base using (Fin; zero; suc)
+open import Data.Fin.Base using (zero; suc)
 
 open import Categories.Theory.Equational
 import Categories.Theory.Equational.CommutativeMonoid as CM

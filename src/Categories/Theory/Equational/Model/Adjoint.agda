@@ -16,7 +16,7 @@ open import Data.Fin.Base using (Fin)
 
 import Categories.Theory.Equational.Model C T as MC
 import Categories.Theory.Equational.Model D T as MD
-open import Categories.Theory.Equational using (Term; var; app)
+open import Categories.Theory.Equational using (var; app)
 
 private
   module C = Category C

@@ -15,7 +15,7 @@ module Categories.Theory.Equational.Model {o h e} (C : Category o h e) (T : Theo
 open import Level using (_⊔_)
 open import Data.Fin.Base using (Fin)
 
-open import Categories.Theory.Equational using (Term; var; app)
+open import Categories.Theory.Equational using (var; app)
 
 open Category C hiding (op)
 open Theory T

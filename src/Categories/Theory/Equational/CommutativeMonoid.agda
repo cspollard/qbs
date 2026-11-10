@@ -5,7 +5,7 @@
 module Categories.Theory.Equational.CommutativeMonoid where
 
 open import Data.Nat.Base using (ℕ)
-open import Data.Fin.Base using (Fin; zero; suc)
+open import Data.Fin.Base using (zero; suc)
 
 open import Categories.Theory.Equational
 

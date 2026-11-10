@@ -2,8 +2,11 @@
 
 -- Scalars of a commutative monad `M`: the kernels `Z ⇒ M ⊤` (measures on the one-point space depending on a context `Z`).
 -- The product `f ⋆ g` runs `f`, then `g` in the same context (the strength of `M`); its unit is the Dirac mass `𝟙`.
--- `scalarModel AL`: for a monad algebraic for commutative monoids (`Monad.Algebraic`), `M ⊤` is a model of `CommSemiring`
--- internal to `C` (`Theory.Equational.Model`): `⊕`, `𝟘` from the kernels, `⋆`, `𝟙` from the strength, and the semiring laws.
+-- `⋆` is associative and commutative with unit `𝟙` in every context (`⋆-assoc`: the strong-monad axioms; `⋆-comm`: Kock's
+-- double strength and `commutes`), so `(⋆, 𝟙)` is a commutative monoid model (`scalarMulMonoid`).
+-- `scalarCommSemiring AL`: for a monad algebraic for commutative monoids (`Monad.Algebraic`), `M ⊤` is a model of
+-- `CommSemiring` internal to `C` (`Theory.Equational.Model`): `⊕`, `𝟘` from the kernels (`scalarModel`), `⋆`, `𝟙` as above,
+-- distributivity from the linearity of `⋆` in the continuation (`⋆-op`), annihilation from `⋆-comm`.
 -- For abelian groups the analogue is a ring.
 -- That `(M ⊤, id)` is terminal among semirings `W` with a homomorphism `W → M ⊤` is general nonsense (any `(S, id)` is
 -- terminal in the slice over `S`), so it is not formalized: the weights are `M ⊤`, not further data
@@ -17,7 +20,6 @@ module Categories.Monad.Algebraic.Scalars
   (cm : CartCommMonad CC)
   where
 
-open import Level using (_⊔_)
 open import Data.Fin.Base using (Fin; zero; suc)
 open import Data.Product.Base using (_,_)
 open import Algebra using (Op₂)
@@ -34,23 +36,18 @@ import Categories.Monad.Algebraic.Properties as Properties
 open import Categories.Theory.Equational.Model.CommutativeSemiring C using (fromMonoids)
 import Categories.NaturalTransformation as NT
 open import Categories.Monad.Commutative using (CommutativeMonad)
-open import Categories.Monad.Strong using (StrongMonad; Strength)
+open import Categories.Monad.Strong using (StrongMonad; Strength; RightStrength)
 open import Categories.Monad.Algebraic using (IsAlgebraic)
+open import Categories.Monad.Commutative.DoubleStrength CC cm using (ψ; ψ′; ψ≈ψ′; σ-nat; σ-bind; σ-diag; τ-ctx)
 open import Categories.Theory.Equational using (Theory)
-open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Category.Cartesian C using (Cartesian)
 
 
 open Category C hiding (op)
 open HomReasoning
 open Canonical.CartesianClosed CC using (⊤; !; !-unique; _×_; π₁; π₂; π₁-comp; π₂-comp; ⟨_,_⟩; isCartesian)
-open CartesianMonoidal isCartesian using (monoidal)
-open import Categories.Object.Monoid monoidal using (IsMonoid)
-open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.BinaryProducts C using (module BinaryProducts)
-open BinaryProducts (Cartesian.products isCartesian) using (_⁂_; ⁂∘⟨⟩; ⟨⟩∘; ⟨⟩-cong₂; ⁂-cong₂; π₁∘⁂)
-open Monoidal monoidal using (module associator)
-import Algebra.Structures as S
+open BinaryProducts (Cartesian.products isCartesian) using (_⁂_; ⁂∘⟨⟩; ⟨⟩∘; ⟨⟩-cong₂; ⁂-cong₂; π₁∘⁂; π₂∘⁂; assocˡ; assocˡ∘⟨⟩; η)
 import Categories.Morphism.Reasoning C as MR
 open MR using (pullˡ; pullʳ; cancelˡ)
 
@@ -60,6 +57,8 @@ private
   module Str = Strength (StrongMonad.strength (CommutativeMonad.strongMonad cm))
   module K = Category (Kleisli (CommutativeMonad.M cm))
   module σ = NT.NaturalTransformation (Strength.strengthen (StrongMonad.strength (CommutativeMonad.strongMonad cm)))
+  module ρ = RightStrength (CommutativeMonad.rightStrength cm)
+  module τ = NT.NaturalTransformation (RightStrength.strengthen (CommutativeMonad.rightStrength cm))
 
 Scalar : Obj
 Scalar = M.₀ ⊤
@@ -85,16 +84,13 @@ _⋆_ {Z} f g = M.μ ⊤ ∘ M.₁ (g ∘ π₁) ∘ σ.η (Z , ⊤) ∘ ⟨ id 
   M.μ ⊤ ∘ M.₁ (k ∘ π₁) ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩ ∘ g
     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (⟨⟩∘ ○ ⟨⟩-cong₂ identityˡ Equiv.refl ○ ⟺ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ identityˡ)) ⟩
   M.μ ⊤ ∘ M.₁ (k ∘ π₁) ∘ σ.η (Z , ⊤) ∘ (g ⁂ id) ∘ ⟨ id , f ∘ g ⟩
-    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ σ-nat ⟩∘⟨refl ○ assoc) ⟩
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ σ-nat g ⟩∘⟨refl ○ assoc) ⟩
   M.μ ⊤ ∘ M.₁ (k ∘ π₁) ∘ M.₁ (g ⁂ id) ∘ σ.η (W , ⊤) ∘ ⟨ id , f ∘ g ⟩
     ≈⟨ refl⟩∘⟨ pullˡ (⟺ M.homomorphism) ⟩
   M.μ ⊤ ∘ M.₁ ((k ∘ π₁) ∘ (g ⁂ id)) ∘ σ.η (W , ⊤) ∘ ⟨ id , f ∘ g ⟩
     ≈⟨ refl⟩∘⟨ (M.₁-resp-≈ (assoc ○ refl⟩∘⟨ π₁∘⁂ ○ sym-assoc) ⟩∘⟨refl) ⟩
   (f ∘ g) ⋆ (k ∘ g)
     ∎
-  where
-    σ-nat : σ.η (Z , ⊤) ∘ (g ⁂ id) ≈ M.₁ (g ⁂ id) ∘ σ.η (W , ⊤)
-    σ-nat = refl⟩∘⟨ ⁂-cong₂ Equiv.refl (⟺ M.identity) ○ σ.commute (g , id)
 
 ⋆-identityˡ : ∀ {Z} (f : ScalarAt Z) → 𝟙 ⋆ f ≈ f
 ⋆-identityˡ {Z} f = begin
@@ -114,10 +110,63 @@ _⋆_ {Z} f g = M.μ ⊤ ∘ M.₁ (g ∘ π₁) ∘ σ.η (Z , ⊤) ∘ ⟨ id 
     ∎
 
 ⋆-assoc : ∀ {Z} (f g k : ScalarAt Z) → (f ⋆ g) ⋆ k ≈ f ⋆ (g ⋆ k)
-⋆-assoc f g k = {!!}
+⋆-assoc {Z} f g k = begin
+  (f ⋆ g) ⋆ k
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ σ-bind (g ∘ π₁) (σ.η (Z , ⊤) ∘ ⟨ id , f ⟩) ⟩
+  M.μ ⊤ ∘ M.₁ (k ∘ π₁) ∘ M.μ (Z × ⊤) ∘ M.₁ (σ.η (Z , ⊤)) ∘ M.₁ (id ⁂ (g ∘ π₁)) ∘ σ.η (Z , Z × ⊤)
+    ∘ ⟨ id , σ.η (Z , ⊤) ∘ ⟨ id , f ⟩ ⟩
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ σ-diag f ⟩
+  M.μ ⊤ ∘ M.₁ (k ∘ π₁) ∘ M.μ (Z × ⊤) ∘ M.₁ (σ.η (Z , ⊤)) ∘ M.₁ (id ⁂ (g ∘ π₁)) ∘ M.₁ ⟨ π₁ , id ⟩
+    ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ (refl⟩∘⟨ (sym-assoc ○ (⟺ (M.μ-commute (k ∘ π₁)) ⟩∘⟨refl) ○ assoc)) ○ (sym-assoc ○ (⟺ Mon.assoc ⟩∘⟨refl) ○ assoc) ⟩
+  M.μ ⊤ ∘ M.₁ (M.μ ⊤) ∘ M.₁ (M.₁ (k ∘ π₁)) ∘ M.₁ (σ.η (Z , ⊤)) ∘ M.₁ (id ⁂ (g ∘ π₁)) ∘ M.₁ ⟨ π₁ , id ⟩
+    ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ refl⟩∘⟨ (pullˡ (⟺ M.homomorphism) ○ pullˡ (⟺ M.homomorphism) ○ pullˡ (⟺ M.homomorphism) ○ pullˡ (⟺ M.homomorphism)) ⟩
+  M.μ ⊤ ∘ M.₁ ((((M.μ ⊤ ∘ M.₁ (k ∘ π₁)) ∘ σ.η (Z , ⊤)) ∘ (id ⁂ (g ∘ π₁))) ∘ ⟨ π₁ , id ⟩) ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ refl⟩∘⟨ (M.₁-resp-≈ inner ⟩∘⟨refl) ⟩
+  f ⋆ (g ⋆ k)
+    ∎
+  where
+    -- the continuation of `f ⋆ (g ⋆ k)`, `g ⋆ k` over the context, agrees with `g`, then `k`, run at the copied context
+    inner : (((M.μ ⊤ ∘ M.₁ (k ∘ π₁)) ∘ σ.η (Z , ⊤)) ∘ (id ⁂ (g ∘ π₁))) ∘ ⟨ π₁ , id ⟩ ≈ (g ⋆ k) ∘ π₁
+    inner = assoc ○ assoc ○ assoc ○ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ diag) ○ ⟺ (assoc ○ refl⟩∘⟨ (assoc ○ refl⟩∘⟨ assoc))
+      where diag : (id ⁂ (g ∘ π₁)) ∘ ⟨ π₁ , id ⟩ ≈ ⟨ id , g ⟩ ∘ π₁
+            diag = ⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityˡ identityʳ ○ ⟺ (⟨⟩∘ ○ ⟨⟩-cong₂ identityˡ Equiv.refl)
+
+-- `⋆` is Kock's double strength followed by `M !`: run `f`, then `g` (`ψ`) ...
+⋆-ψ : ∀ {Z} (f g : ScalarAt Z) → f ⋆ g ≈ M.₁ π₂ ∘ ψ ⊤ ⊤ ∘ ⟨ f , g ⟩
+⋆-ψ {Z} f g = ⟺ (begin
+  M.₁ π₂ ∘ ψ ⊤ ⊤ ∘ ⟨ f , g ⟩
+    ≈⟨ refl⟩∘⟨ (assoc ○ refl⟩∘⟨ assoc) ⟩
+  M.₁ π₂ ∘ M.μ (⊤ × ⊤) ∘ M.₁ (σ.η (⊤ , ⊤)) ∘ τ.η (⊤ , Scalar) ∘ ⟨ f , g ⟩
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ τ-ctx f g ⟩
+  M.₁ π₂ ∘ M.μ (⊤ × ⊤) ∘ M.₁ (σ.η (⊤ , ⊤)) ∘ M.₁ ⟨ π₂ , g ∘ π₁ ⟩ ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ sym-assoc ○ (⟺ (M.μ-commute π₂) ⟩∘⟨refl) ○ assoc ⟩
+  M.μ ⊤ ∘ M.₁ (M.₁ π₂) ∘ M.₁ (σ.η (⊤ , ⊤)) ∘ M.₁ ⟨ π₂ , g ∘ π₁ ⟩ ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ refl⟩∘⟨ (pullˡ (⟺ M.homomorphism) ○ pullˡ (⟺ M.homomorphism)) ⟩
+  M.μ ⊤ ∘ M.₁ ((M.₁ π₂ ∘ σ.η (⊤ , ⊤)) ∘ ⟨ π₂ , g ∘ π₁ ⟩) ∘ σ.η (Z , ⊤) ∘ ⟨ id , f ⟩
+    ≈⟨ refl⟩∘⟨ (M.₁-resp-≈ (Str.identityˡ ⟩∘⟨refl ○ π₂-comp) ⟩∘⟨refl) ⟩
+  f ⋆ g
+    ∎)
+
+-- ... or `g`, then `f` (`ψ′`)
+⋆-ψ′ : ∀ {Z} (f g : ScalarAt Z) → g ⋆ f ≈ M.₁ π₁ ∘ ψ′ ⊤ ⊤ ∘ ⟨ f , g ⟩
+⋆-ψ′ {Z} f g = ⟺ (begin
+  M.₁ π₁ ∘ ψ′ ⊤ ⊤ ∘ ⟨ f , g ⟩
+    ≈⟨ refl⟩∘⟨ (assoc ○ refl⟩∘⟨ assoc) ⟩
+  M.₁ π₁ ∘ M.μ (⊤ × ⊤) ∘ M.₁ (τ.η (⊤ , ⊤)) ∘ σ.η (Scalar , ⊤) ∘ ⟨ f , g ⟩
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (refl⟩∘⟨ ⟺ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ identityˡ) ○ sym-assoc ○ σ-nat {B = ⊤} f ⟩∘⟨refl ○ assoc) ⟩
+  M.₁ π₁ ∘ M.μ (⊤ × ⊤) ∘ M.₁ (τ.η (⊤ , ⊤)) ∘ M.₁ (f ⁂ id) ∘ σ.η (Z , ⊤) ∘ ⟨ id , g ⟩
+    ≈⟨ sym-assoc ○ (⟺ (M.μ-commute π₁) ⟩∘⟨refl) ○ assoc ⟩
+  M.μ ⊤ ∘ M.₁ (M.₁ π₁) ∘ M.₁ (τ.η (⊤ , ⊤)) ∘ M.₁ (f ⁂ id) ∘ σ.η (Z , ⊤) ∘ ⟨ id , g ⟩
+    ≈⟨ refl⟩∘⟨ (pullˡ (⟺ M.homomorphism) ○ pullˡ (⟺ M.homomorphism)) ⟩
+  M.μ ⊤ ∘ M.₁ ((M.₁ π₁ ∘ τ.η (⊤ , ⊤)) ∘ (f ⁂ id)) ∘ σ.η (Z , ⊤) ∘ ⟨ id , g ⟩
+    ≈⟨ refl⟩∘⟨ (M.₁-resp-≈ (ρ.identityˡ ⟩∘⟨refl ○ π₁∘⁂) ⟩∘⟨refl) ⟩
+  g ⋆ f
+    ∎)
 
 ⋆-comm : ∀ {Z} (f g : ScalarAt Z) → f ⋆ g ≈ g ⋆ f
-⋆-comm f g = {!!}
+⋆-comm f g = ⋆-ψ f g ○ (M.₁-resp-≈ (⟺ (!-unique π₂) ○ !-unique π₁) ⟩∘⟨ (ψ≈ψ′ ⟩∘⟨refl)) ○ ⟺ (⋆-ψ′ f g)
 
 -- 1. For every theory `T` that `M` supports, the scalars are a `T`-model: the operations of the kernels `K [ Z , ⊤ ]`.
 -- 2. `⋆` is a `T`-homomorphism in each argument (the second, the continuation, by `op-resp-∘`; the first by `⋆-comm`).

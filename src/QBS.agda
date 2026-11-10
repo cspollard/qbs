@@ -57,16 +57,17 @@ import QBS.Monad.Probability as Probability
 import QBS.Monad.Normalized as Normalized
 import QBS.Monad.Fubini as Fubini
 
--- `CartCommMonad CC` (`CommMonad`): a commutative monad on a cartesian closed category.  `StrongPoint`: its strength at
--- global elements, generic over any such monad.
+-- `CartCommMonad CC` (`CommMonad`): a commutative monad on a cartesian closed category.  `DoubleStrength`: its strength
+-- calculus (Kock's `ψ`, the strength in a context and at global elements), generic over any such monad.
 import QBS.Monad.CommMonad as CommMonad
-import QBS.Monad.StrongPoint as StrongPoint
+import Categories.Monad.Commutative.DoubleStrength as DoubleStrength
 import QBS.Monad.IntegralMonad as IntegralMonad
 
 -- Additive kernels and their scalars: the algebraic monads of a theory `T` (`Monad.Algebraic`), here commutative monoids, and
--- the scalars `M ⊤` of a commutative monad (`Monad.Algebraic.Scalars`, not imported here while `scalarModel` has holes).
+-- the scalars `M ⊤` of a commutative monad (`Monad.Algebraic.Scalars`: a commutative semiring internal to the category).
 -- The weights are these scalars.
 import Categories.Monad.Algebraic as Algebraic
+import Categories.Monad.Algebraic.Scalars as Scalars
 
 -- `IsQBSLike` and `IsStatisticalQBSLike`: the minimal structure for probability the QBS way, and for measures with additive kernels;
 -- `Instance` gives them for `QBSCat S` from the monads.
