@@ -21,12 +21,12 @@ One line per module: [Modules.md](Modules.md) (generated).
     │                            Borel/    σ-algebra on 2^ℕ, π–λ, merge/lead, Cells, Borel.Source
     ▼                               ▼
  Abstract: SetoidMaps, MeasurableMaps, Probes, RandomSource, Core, Category, Limits, Colimits, Complete, Exponential, RandomElements,
-           Probability, Statistical, IsQBSLike, IsStatisticalQBSLike, Instance
+           Probability, Statistical, QBSLike, Instance
 ```
 
 - **Abstract layer.** `QBSCat S` for a `RandomSource S` is complete, cocomplete and cartesian closed
   (no hypotheses). `ProbabilityInterface` and `StatisticalInterface` describe the measure monads abstractly;
-  `Instance` packages them as `IsQBSLike` / `IsStatisticalQBSLike`.
+  `Instance` packages them as `IsQBSLike`.
 - **Discrete model.** Measures are weighted countable families over a complete semiring. Everything is generic in
   the semiring; the Boolean, Viterbi and additive `[0,∞]` semirings are instances (`ℕ∞` is `Analysis.ExtNat`, an
   `OmegaSemiring`).

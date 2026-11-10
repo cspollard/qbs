@@ -46,7 +46,7 @@ Files live under `src/QBS/`. Roughly, each area builds on those above it in this
 
 | Area | Where | What |
 |---|---|---|
-| Abstract layer | `Core`, `Category`, `Limits`, `Colimits`, `Complete`, `Exponential`, `Probability`, `Statistical`, `IsQBSLike`, `IsStatisticalQBSLike`, `Instance` | `QBSCat S` (QBSs over a random source `S`) is complete, cocomplete and cartesian closed. `ProbabilityInterface` and `StatisticalInterface` say what a probability monad and a soft-conditioning monad are. |
+| Abstract layer | `Core`, `Category`, `Limits`, `Colimits`, `Complete`, `Exponential`, `Probability`, `Statistical`, `QBSLike`, `Instance` | `QBSCat S` (QBSs over a random source `S`) is complete, cocomplete and cartesian closed. `ProbabilityInterface` and `StatisticalInterface` say what a probability monad and a soft-conditioning monad are. |
 | Discrete model | `Model/` | Random source `ℕ`. Measures are weighted countable families over a complete semiring (Boolean, Viterbi, `ℕ∞`, additive `[0,∞]`). |
 | Continuous model | `Borel/`, `Analysis/`, `Continuous/` | Random source Cantor space `2^ℕ`. Measures are Daniell functionals (integrals) on measurable functions. It has the fair coin, the uniform distribution, an s-finite measure monad, and integrals of unbounded `[0,∞]`-valued functions. |
 | Signed layer | `Analysis/Signed*`, `Continuous/Signed*` | Signed values and expectations of signed tests, built on the non-negative core. |
@@ -113,7 +113,7 @@ Information quantities:
 
 - To see a program run: `src/QBS/Example/Program.agda`, then `Example/Recipes.agda`.
 - For the overview of everything: [src/QBS.agda](src/QBS.agda), one section per area in reading order.
-- For the abstract statement of probability: `Statistical.agda` and `IsStatisticalQBSLike.agda`.
+- For the abstract statement of probability: `Statistical.agda` and `QBSLike.agda`.
 - For the continuous construction: `Continuous/FairCoin.agda`, then `Continuous/Uniform.agda`.
 - For statistics: `Inference/Frequentist.agda` and `Inference/Bayesian.agda`.
 - For tasks ("how do I condition on data?"): [docs/Guide.md](docs/Guide.md).

@@ -13,7 +13,7 @@ line per module.
 | Layer | Headline result | Read |
 |---|---|---|
 | Abstract: quasi-Borel spaces over a random source | `QBSCat S` is complete, cocomplete, cartesian closed | `QBS.Core`, `QBS.Category`, `QBS.Exponential` |
-| Abstract: probability and soft conditioning | a commutative strong monad with Fubini (`ProbabilityInterface`), plus scoring and sums (`StatisticalInterface`); Kleisli vocabulary in `QBS.Bind` | `QBS.Probability`, `QBS.Statistical`, `QBS.CommMonad`, `QBS.IsStatisticalQBSLike` |
+| Abstract: probability and soft conditioning | a commutative strong monad with Fubini (`ProbabilityInterface`), plus scoring and sums (`StatisticalInterface`); Kleisli vocabulary in `QBS.Bind` | `QBS.Probability`, `QBS.Statistical`, `QBS.CommMonad`, `QBS.QBSLike` |
 | Discrete model | weighted programs over any complete semiring; Bayes' rule and rejection; `discreteStatisticalQBSLike` | `QBS.Model.Discrete`, `QBS.Example.Program`, `QBS.Example.Recipes` |
 | Lower reals | `[0,∞]` as lower cuts of ℚ: Ω, then Arch/Min, then series and instances | `QBS.Analysis.Omega` (header), `QBS.Analysis.LowerReals` |
 | Measure construction | the fair coin on Cantor space as a Daniell functional, with uniqueness and regularity | `QBS.Analysis.CoinIntegral`, `QBS.Analysis.Daniell.Facts`, `QBS.Analysis.Uniqueness`, `QBS.Continuous.FairCoin` |
@@ -29,12 +29,12 @@ There is one abstract interface and two concrete models of it.
 
 | I want to… | Use | Random source | Values | Hypotheses |
 |---|---|---|---|---|
-| prove something for *any* probability/measure monad | `IsStatisticalQBSLike` (`QBS.IsStatisticalQBSLike`) | any `RandomSource` | abstract weights `W` | none: the monad is an argument |
+| prove something for *any* probability/measure monad | `IsQBSLike` (`QBS.QBSLike`) | any `RandomSource` | abstract weights `W` | none: the monad is an argument |
 | write and run small probabilistic programs (`do`-notation), discrete distributions, Bayes' rule, rejection | discrete model: `Example.Program`, `Model.*` | `ℕ` (`discreteSource`) | any complete semiring: Boolean, Viterbi, ℕ∞, additive `[0,∞]` | `lem` only for the real-valued semirings (at `Set₁` for the additive one) |
 | continuous distributions (uniform, fair coin, exponential, Gaussian), integrals of measurable functions, soft conditioning, normalisation, signed expectations, variance, KL divergence | continuous model: `Continuous.*`, `Analysis.*` | Cantor space `2^ℕ` | `[0,∞]` as lower cuts of ℚ | `lem` and `lem₁` (excluded middle at `Set`, `Set₁`); see [Classical.md](Classical.md) |
 
 Rules of thumb:
-- A theorem about *estimators and inference* should be stated generically (over `IsStatisticalQBSLike` or over a
+- A theorem about *estimators and inference* should be stated generically (over `IsQBSLike` or over a
   semiring), then instantiated. That is how `Example.Bayes` and `Example.Probability` are written, and it also keeps
   compile times down (at the concrete lower-cut semiring Agda unfolds the cuts; see Architecture.md, "Compile time").
 - The core integral is non-negative (`[0,∞]`). Signed quantities (variance, bias, log-likelihood ratios) are built on top

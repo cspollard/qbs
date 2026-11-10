@@ -12,11 +12,11 @@
 --
 --   Abstract layer   `QBSCat S` is complete, cocomplete and cartesian closed, for every random source S, with no
 --                    hypotheses.  `ProbMonad`, `MeasureMonad` and `Monad.Algebraic` describe the measure monads;
---                    `IsQBSLike` and `IsStatisticalQBSLike` bundle them with the category.
+--                    `IsQBSLike` (bundle `QBSLike`) packages them with the category.
 --   Concrete models (discrete, continuous, inference, examples, Borel source) are stashed outside the build in
 --                    `reference/QBS/…` on this branch; they are not on the Agda include path.
 --
--- Start with `IsStatisticalQBSLike` for the abstract statement.
+-- Start with `IsQBSLike` for the abstract statement.
 module QBS where
 
 ------------------------------------------------------------------------
@@ -69,8 +69,8 @@ import QBS.Monad.IntegralMonad as IntegralMonad
 import Categories.Monad.Algebraic as Algebraic
 import Categories.Monad.Algebraic.Scalars as Scalars
 
--- `IsQBSLike` and `IsStatisticalQBSLike`: the minimal structure for probability the QBS way, and for measures with additive kernels;
--- `Instance` gives them for `QBSCat S` from the monads.
-import QBS.IsQBSLike as IsQBSLike
-import QBS.IsStatisticalQBSLike as IsStatisticalQBSLike
+-- `IsQBSLike`: a countably bicartesian closed category with a commutative measure monad with additive kernels;
+-- `Instance` gives it for `QBSCat S` from the monad.
+import Categories.Category.CountablyBicartesianClosed as CountablyBicartesianClosed
+import QBS.QBSLike as QBSLike
 import QBS.Instance as Instance

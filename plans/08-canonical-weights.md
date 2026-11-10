@@ -35,7 +35,7 @@ The semiring structure is what makes `M ⊤` a weights candidate, so the multipl
   `Categories.Monad.Algebraic.Scalars`, with no holes.
 - Normalization is the predicate "mass is `𝟙`" (`QBS.Monad.Normalized`: `Prob X ↪ M X` is the equalizer of mass and `𝟙`).
   Dividing by mass is not part of the interface.
-- `IsStatisticalQBSLike` and `Instance` carry `additive : IsAlgebraic CommMonoid M` and load.
+- `IsQBSLike` and `Instance` carry `additive : IsAlgebraic CommMonoid M` and load.
 
 ## Limits
 

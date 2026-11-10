@@ -108,7 +108,7 @@ the validation instance (signed arithmetic for `a + c·u`); `E-resp` (hard, opti
 - **Decision-theoretic:** Bayes risk `∫ π(θ) · risk(θ̂, θ)` for an estimator, linking the two views.
 - **Likelihood principle:** the likelihood function (θ ↦ density at the observed x) is the shared object; both the MLE
   and the posterior are defined from it.
-- **Laws as hypotheses:** all theorems are generic in `IsStatisticalQBSLike`, so they hold for the discrete models
+- **Laws as hypotheses:** all theorems are generic in `IsQBSLike`, so they hold for the discrete models
   (finite examples, cheap to run) and the continuous model alike.
 
 ## Staging

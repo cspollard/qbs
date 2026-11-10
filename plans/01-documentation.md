@@ -15,7 +15,7 @@ n iid draws is unbiased", after reading only a short guide, without opening the 
 - Two states of the project are described inconsistently: README "The s-finite monad (in progress)" and
   TODO.md's "Audit" section describe holes that have since been filled.
   (`make check` now passes with 0 holes.)
-- It is unclear which layer a user should target: abstract `IsStatisticalQBSLike`, the discrete model, or the
+- It is unclear which layer a user should target: abstract `IsQBSLike`, the discrete model, or the
   continuous model. Which examples work at which level is not stated.
 - `Docs/` and `docs/` are the same directory on macOS and would collide on Linux.
   Settle on one (see Step 0).

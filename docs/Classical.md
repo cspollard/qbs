@@ -53,7 +53,7 @@ Two points about the form of `lem`:
 Of 322 modules, about 90 do not mention `lem` at all:
 
 * the abstract layer: `Core`, `Category`, `Limits`, `Colimits`, `Complete`, `Exponential`, `Probes`,
-  `Probability`, `Statistical`, `StatisticalLemmas`, `IsQBSLike`, `IsStatisticalQBSLike`, `Instance`;
+  `Probability`, `Statistical`, `StatisticalLemmas`, `QBSLike`, `Instance`;
 * the whole discrete model: `Model/{Semiring, Sums, Monad, Strong, ProbInstance, StatInstance, SubProb,
   WeightClasses, Cantor, Pairing, DiscreteSource, Discrete}`;
 * `Borel/{Core, Source, Category, Measure, Merge, Cons}` (the Borel σ-algebra is inductive and closed
