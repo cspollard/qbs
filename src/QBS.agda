@@ -61,7 +61,7 @@ import QBS.Monad.CommMonad as CommMonad
 import QBS.Monad.StrongPoint as StrongPoint
 import QBS.Monad.IntegralMonad as IntegralMonad
 
--- Independent structures: `AdditiveKernels` (kernels can be added), `SoftConditioning` (`score`, a semiring
+-- Independent structures: `IsAdditive` (kernels can be added), `SoftConditioning` (`score`, a semiring
 -- homomorphism from the weights to the scalars of the Kleisli category), and `IsNormalizedInclusion` (Prob as the
 -- mass-one part of a measure monad).
 -- `Normalization` (`normalize : M X ⇒ Prob X + 1`) is an optional extension.

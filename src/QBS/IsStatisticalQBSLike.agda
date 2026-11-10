@@ -9,12 +9,13 @@ open import Level using (suc; _⊔_)
 open import Categories.Category.Core using (Category)
 open import Categories.Monad.Morphism.Strong using (StrongMonad⇒)
 open import Categories.Monad.Strong using (StrongMonad)
+open import Categories.Monad.Additive using (IsAdditive)
 
 open import QBS.IsQBSLike
 open import QBS.Monad.Measure using (MeasureMonad)
 open import QBS.Monad.Probability using (ProbMonad)
 open import QBS.Statistical using
-  (SemiringWeights; SoftConditioning; IsNormalizedInclusion; AdditiveKernels)
+  (SemiringWeights; SoftConditioning; IsNormalizedInclusion)
 
 -- A QBS-like category that also supports (soft) conditioning: a measure monad
 -- containing the probability monad, with additive kernels and `score`.
@@ -27,5 +28,5 @@ record IsStatisticalQBSLike {o h e} (C : Category o h e) : Set (suc (o ⊔ h ⊔
     probInclusion : StrongMonad⇒ (ProbMonad.strongMonad prob) (MeasureMonad.strongMonad measures)
     probIsNormalized : IsNormalizedInclusion probInclusion
     weights : SemiringWeights cartesianClosed
-    additive : AdditiveKernels (MeasureMonad.monad measures)
+    additive : IsAdditive (MeasureMonad.monad measures)
     conditioning : SoftConditioning weights (StrongMonad.strength (MeasureMonad.strongMonad measures)) additive
