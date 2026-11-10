@@ -53,6 +53,8 @@ import QBS.RandomElements as RandomElements
 -- separate: `IsFubini`, a splitting ℛ ≅ ℛ × ℛ with the bind (Fubini) axioms.
 import QBS.Monad.Measure as Measure
 import QBS.Monad.Probability as Probability
+-- `IsNormalizedInclusion`: Prob as the mass-one part of a measure monad (an equalizer of mass and 1), with no weights.
+import QBS.Monad.Normalized as Normalized
 import QBS.Monad.Fubini as Fubini
 
 -- `CartCommMonad CC` (`CommMonad`): a commutative monad on a cartesian closed category.  `StrongPoint`: its strength at
@@ -61,10 +63,9 @@ import QBS.Monad.CommMonad as CommMonad
 import QBS.Monad.StrongPoint as StrongPoint
 import QBS.Monad.IntegralMonad as IntegralMonad
 
--- Independent structures: `IsAdditive` (kernels can be added), `SoftConditioning` (`score`, a semiring
--- homomorphism from the global weights to the scalars of the Kleisli category), and `IsNormalizedInclusion` (Prob as the
--- mass-one part of a measure monad).
--- `Normalization` (`normalize : M X ⇒ Prob X + 1`) is an optional extension.
+-- Independent structures: `IsAdditive` (kernels can be added) and `SoftConditioning` (`score : W ⇒ M ⊤`, a semiring
+-- homomorphism from the weights to the scalars of the Kleisli category in every context).
+-- `Normalization` (`normalize : M X ⇒ Prob X + 1`) is an optional extension tying `score` to `IsNormalizedInclusion`.
 import QBS.Statistical as Statistical
 
 -- `IsQBSLike` and `IsStatisticalQBSLike`: the minimal structure for probability the QBS way, and for soft conditioning;

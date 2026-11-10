@@ -22,6 +22,7 @@ open import Categories.Monad.Morphism.Strong using (StrongMonad⇒)
 open import Categories.Monad.Additive using (IsAdditive)
 open import QBS.RandomElements
 open import QBS.IsQBSLike
+open import QBS.Monad.Normalized
 open import QBS.Statistical
 open import QBS.IsStatisticalQBSLike
 
@@ -55,7 +56,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     IsNormalizedInclusion inc →
     (SW : SemiringWeights (cartesianClosed S)) →
     (CM : IsAdditive (MeasureMonad.monad MM)) →
-    SoftConditioning SW CM →
+    SoftConditioning SW (MeasureMonad.commutativeMonad MM) CM →
     IsStatisticalQBSLike (QBSCat S)
   isStatisticalQBSLike P F MM inc isN SW CM SC = record
     { base = isQBSLike P F
