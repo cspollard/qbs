@@ -3,7 +3,7 @@
 -- The cartesian, cartesian-monoidal and braided structures of `QBSCat S`, named once.  They are read off the
 -- canonical cartesian closed structure (`QBS.Exponential.cartesianClosed`) the way agda-categories reads them
 -- off any cartesian closed category; the models that build strengths and commutativity proofs over `QBSCat S`
--- (`Model.Strong`, `Continuous.Strong`, `Continuous.SFiniteCommute`, `IntegralMonad`) share these names instead
+-- (`Model.Strong`, `Continuous.Strong`, `Continuous.SFiniteCommute`, `Monad.Integral`) share these names instead
 -- of each rebuilding them.  (`CommMonad.braidedOf` does the same over an abstract category `C`.)
 -- Import as `open import QBS.Category.Cartesian S using (V; braided)`.  The INLINE pragmas keep the projections
 -- reducing while the models are type-checked.

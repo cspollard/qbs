@@ -61,7 +61,7 @@ import QBS.Monad.Fubini as Fubini
 -- calculus (Kock's `ψ`, the strength in a context and at global elements), generic over any such monad.
 import QBS.Monad.CommMonad as CommMonad
 import Categories.Monad.Commutative.DoubleStrength as DoubleStrength
-import QBS.Monad.IntegralMonad as IntegralMonad
+import QBS.Monad.Integral as Integral
 
 -- Additive kernels and their scalars: the algebraic monads of a theory `T` (`Monad.Algebraic`), here commutative monoids, and
 -- the scalars `M ⊤` of a commutative monad (`Monad.Algebraic.Scalars`: a commutative semiring internal to the category).

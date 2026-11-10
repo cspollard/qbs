@@ -35,7 +35,7 @@ module _ {ℓ} (S : RandomSource ℓ) where
     IsQBSLike (QBSCat S)
   isQBSLike MM F CM = record
     { ℛ = ℛQ S
-    ; structure = record
+    ; countablyBicartesianClosed = record
         { cartesianClosed = cartesianClosed S
         ; binaryCoproducts = Cocartesian.Cocartesian.coproducts (cocartesian S)
         ; countableProducts = countableProduct S
