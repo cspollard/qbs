@@ -2,7 +2,7 @@
 
 -- Algebraic monad morphisms: a monad morphism `α : S ⇒ T` between algebraic monads (for a theory `Th`) that preserves
 -- every operation of kernels, `α_Y ∘ op f gs ≈ op f (α_Y ∘ gs)`; equivalently, the induced functor `Kℓ(S) → Kℓ(T)`
--- preserves the operations.  The analogue of `Monad.Additive.Morphism`.
+-- preserves the operations. 
 --   `IsAlgebraic⇒ Th S T α`   the preservation law, as a property of a monad morphism `α`
 --   `Algebraic⇒ Th S T`       a monad morphism together with `IsAlgebraic⇒`, with `Algebraic⇒-id` and `Algebraic⇒-∘ f g`
 --                             (`f` first)

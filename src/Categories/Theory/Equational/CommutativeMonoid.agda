@@ -1,7 +1,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 -- The equational theory of commutative monoids: a constant `unit` and a binary `plus` with associativity, commutativity
--- and the left unit law.  Its algebraic monads are the additive monads (`Monad.Additive.Algebraic`).
+-- and the left unit law.  Its algebraic monads are the additive monads.
 module Categories.Theory.Equational.CommutativeMonoid where
 
 open import Data.Nat.Base using (ℕ)

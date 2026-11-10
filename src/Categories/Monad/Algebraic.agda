@@ -3,7 +3,7 @@
 -- Algebraic monads: a monad `M` that supports the operations of an equational theory `T` (Plotkin–Power's algebraic
 -- operations).  Each operation acts on every kernel set `K [ X , Y ]` of the Kleisli category `K` of `M`, satisfying the
 -- equations of `T`, and composition (bind) commutes with it in every argument.  For the theory of commutative monoids
--- this is `Monad.Additive` (`⊕`, `𝟘`); for the theory of abelian groups, signed measures.
+-- this is additive monads (`⊕`, `𝟘`); for the theory of abelian groups, signed measures.
 --   `Operations T M`   `op` on every kernel set, with `op-cong` and `op-resp-∘` (bind is linear); `eval` of a term
 --   `IsAlgebraic T M`  `Operations` satisfying the equations of `T` (`laws`)
 --   `Algebraic T`      a monad with `IsAlgebraic`

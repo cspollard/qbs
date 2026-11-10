@@ -19,11 +19,11 @@ open import QBS.Monad.Probability
 open import QBS.Monad.Fubini
 open import QBS.Monad.Measure using (MeasureMonad)
 open import Categories.Monad.Morphism.Strong using (StrongMonad⇒)
-open import Categories.Monad.Additive using (IsAdditive)
+open import Categories.Monad.Algebraic using (IsAlgebraic)
+open import Categories.Theory.Equational.CommutativeMonoid using (CommMonoid)
 open import QBS.RandomElements
 open import QBS.IsQBSLike
 open import QBS.Monad.Normalized
-open import QBS.Statistical
 open import QBS.IsStatisticalQBSLike
 
 module _ {ℓ} (S : RandomSource ℓ) where
@@ -48,22 +48,17 @@ module _ {ℓ} (S : RandomSource ℓ) where
     ; fubini = F
     }
 
-  -- Likewise for conditioning: the measure monad, its inclusion of Prob, additive kernels and soft conditioning
-  -- are hypotheses.
+  -- Likewise for conditioning: the measure monad, its inclusion of Prob and additive kernels are hypotheses.
   isStatisticalQBSLike : (P : ProbMonad (ℛQ S) (cartesianClosed S)) → FubiniOf P →
     (MM : MeasureMonad (ℛQ S) (cartesianClosed S)) →
     (inc : StrongMonad⇒ (ProbMonad.strongMonad P) (MeasureMonad.strongMonad MM)) →
     IsNormalizedInclusion inc →
-    (SW : SemiringWeights (cartesianClosed S)) →
-    (CM : IsAdditive (MeasureMonad.monad MM)) →
-    SoftConditioning SW (MeasureMonad.commutativeMonad MM) CM →
+    (CM : IsAlgebraic CommMonoid (MeasureMonad.monad MM)) →
     IsStatisticalQBSLike (QBSCat S)
-  isStatisticalQBSLike P F MM inc isN SW CM SC = record
+  isStatisticalQBSLike P F MM inc isN CM = record
     { base = isQBSLike P F
     ; measures = MM
     ; probInclusion = inc
     ; probIsNormalized = isN
-    ; weights = SW
     ; additive = CM
-    ; conditioning = SC
     }

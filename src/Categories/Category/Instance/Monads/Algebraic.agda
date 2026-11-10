@@ -2,7 +2,7 @@
 
 -- The category of algebraic monads on a category `C` for a theory `T`: monads supporting the operations of `T`
 -- (`Monad.Algebraic`) and the monad morphisms that preserve them (`Monad.Algebraic.Morphism`), up to equality of
--- components.  With `T` the theory of commutative monoids this is `Instance.Monads.Additive`.
+-- components.  With `T` the theory of commutative monoids this is the category of additive monads.
 --   `Forget`   the forgetful functor to `Monads C`
 open import Level using (_⊔_)
 
