@@ -1,8 +1,8 @@
 # Contributing
 
 How code in this library is written, checked and documented.  Read [Architecture.md](Architecture.md) first for the
-layers and what is slow to compile; [Guide.md](Guide.md) shows the library in use, [Interface.md](Interface.md) lists
-the public names and [Modules.md](Modules.md) has one line per module.  The last section is for LLM agents.
+layers and what is slow to compile; [Guide.md](Guide.md) shows the library in use and [Modules.md](Modules.md) has one line per
+module.  The last section is for LLM agents.
 
 ## Philosophy
 
@@ -151,7 +151,7 @@ unfolding is never needed) rather than repeating it.
 | Command | When |
 |---|---|
 | `agda src/QBS/…/X.agda` | after every change to X; this checks X and anything it imports that changed |
-| `make doccheck` | before committing; headers, [Modules.md](Modules.md), excerpts in the docs, [Interface.md](Interface.md), no `rewrite` |
+| `make doccheck` | before committing; headers, [Modules.md](Modules.md), excerpts in the docs, no `rewrite` |
 | `make longcheck` | before committing; declaration length |
 | `make import-check` | occasionally, after `make html` |
 | `make progress` | to check modules with holes (it builds an overlay in `_build/progress` that allows unsolved metas) |
@@ -167,7 +167,6 @@ of new modules in the plan's outcome paragraph.  A change to a widely imported m
 ## Documentation to update
 
 - [Modules.md](Modules.md): regenerate with `python3 scripts/modindex.py` after adding a module or changing a header.
-- [Interface.md](Interface.md): new public names, by module, one line each.
 - [Guide.md](Guide.md): for a new kind of task; code excerpts start with `-- from: path` and are checked verbatim.
 - [README](../README.md) "Headline results" and [Architecture.md](Architecture.md) when a major result or layer lands.
 - [History.md](History.md) and [TODO.md](../TODO.md) for lessons learnt (especially performance) and open work.
@@ -196,7 +195,7 @@ These rules come from what has gone wrong in practice.  They apply in addition t
 
 **Before writing code**
 - Read this file, the relevant plan in [plans/](../plans/), and the headers of the modules you will use.  Search
-  for an existing lemma before writing one: [Interface.md](Interface.md), [Modules.md](Modules.md), `grep` over
+  for an existing lemma before writing one: [Modules.md](Modules.md), `grep` over
   `src/`, or the Agda MCP tools (`agda_search_library`, `agda_get_module_summary`) when they are available.
 - Check that a statement is true before proving it, including at ∞, at 0 · ∞ = 0, and where `_≐_` is not transitive.
   A brute-force search over a small grid of values (say {0, 1, 2, 3, ∞}) in Python is cheap and has caught false

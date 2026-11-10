@@ -1,14 +1,14 @@
 # Guide: using the library
 
-Task-oriented tour. For the full list of public names see [Interface.md](Interface.md); for how the modules fit
-together see [Architecture.md](Architecture.md); for one line per module see [Modules.md](Modules.md).
+Task-oriented tour. For how the modules fit together see [Architecture.md](Architecture.md); for one line per module
+see [Modules.md](Modules.md).
 Code blocks that start with `-- from: path` are verbatim excerpts of that file; `scripts/doccheck.py` checks
 that they are still there (run `make doccheck`).
 
 ## Reader's map
 
-The library in layer order, with the headline result of each layer and where to read it. `Interface.md` follows
-the same order; `Modules.md` has one line per module.
+The library in layer order, with the headline result of each layer and where to read it. `Modules.md` has one
+line per module.
 
 | Layer | Headline result | Read |
 |---|---|---|
@@ -21,7 +21,7 @@ the same order; `Modules.md` has one line per module.
 | Lebesgue measure and convergence | `leb-unique` (one uniqueness lemma, then shift, scale, change of variables `push-eq`), `fatou`, `dct` | `QBS.Continuous.LebesgueInterval`, `QBS.Continuous.UniquenessCantor`, `QBS.Continuous.ChangeOfVariables`, `QBS.Continuous.Fatou`, `QBS.Continuous.Dominated` |
 | Distributions | one density recipe `densDist`; uniform, exponential, Gaussian moments (certificate calculus `QBS.Analysis.Deriv*`) | `QBS.Continuous.DensityDist`, `QBS.Continuous.Uniform`, `QBS.Continuous.HalfLineMomentFact`, `QBS.Analysis.Deriv` |
 | Signed layer and information | signed tests and expectations, variance, KL divergence | `QBS.Analysis.Signed`, `QBS.Continuous.SignedTest`, `QBS.Continuous.SignedExpect`, `QBS.Continuous.KLDiv` |
-| Inference | Bayes' rule for s-finite measures (`bayes`), conjugacy, conditionally iid data, Chebyshev and the weak law | `QBS.Inference.CoinPosterior`, `QBS.Inference.ExpFamily`, `QBS.Inference.CondIID`, `QBS.Inference.WeakLaw` (table "Inference: read first" in `Interface.md`) |
+| Inference | Bayes' rule for s-finite measures (`bayes`), conjugacy, conditionally iid data, Chebyshev and the weak law | `QBS.Inference.CoinPosterior`, `QBS.Inference.ExpFamily`, `QBS.Inference.CondIID`, `QBS.Inference.WeakLaw` |
 
 ## 0. Which model do I use?
 
@@ -109,7 +109,7 @@ Three tools, in increasing generality:
    ```
 
    Abstractly, the same operations are the fields `score`, `scaleM` and `normalize` of `StatisticalInterface`
-   (Interface.md, §Abstract layer).
+   (`QBS.Monad.Statistical`).
 
 ## 3. Continuous distributions and integrals
 
@@ -234,11 +234,11 @@ family with base measure `h` and statistics `T` as `h` reweighted by `e^{⟨η, 
 `Z(η)`; `Continuous.ExpFamilyPost` proves conjugate updating: the prior `priorPre (χ, ν)` reweighted by the likelihood of
 `N` observations with summed statistic `ΣT` is `priorPre (χ + ΣT, ν + N)`. `Continuous.RandomVector` gives mean vectors
 and covariance matrices of square-integrable signed tests, with `Cov (A X + b) = A Cov(X) Aᵀ`, and `Continuous.SgSample`
-proves that the sample mean and the sample variance are unbiased. See `Interface.md` for the names.
+proves that the sample mean and the sample variance are unbiased.
 
 ## 6. Estimators and inference
 
-- **Where to start** (full table in `Interface.md`, "Inference: read first"): Bayes' rule is `Inference.CoinPosterior`
+- **Where to start** : Bayes' rule is `Inference.CoinPosterior`
   (`posterior`, `bayes`) and `Example.Bayes`; conjugacy for exponential families is `Inference.ExpFamily` (discrete) and
   `Continuous.ExpFamilyPost` (continuous); `Inference.CondIID` and `CondIIDCoin` give conditionally iid observations;
   `Inference.IIDLaw` and `WeakLaw` give the moments of iid sums, Chebyshev and the weak law of large numbers.

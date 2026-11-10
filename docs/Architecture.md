@@ -1,7 +1,7 @@
 # Architecture
 
 How the layers depend on each other, where the hypotheses come in, and what is slow to compile.
-One line per module: [Modules.md](Modules.md) (generated). The public names: [Interface.md](Interface.md).
+One line per module: [Modules.md](Modules.md) (generated).
 
 ## Layers (arrows: "imports")
 

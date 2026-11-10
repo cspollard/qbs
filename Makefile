@@ -17,7 +17,7 @@
 #   make longcheck     flag unwieldy declarations (scripts/longdecls.py: > 25 lines, 1500 characters or 160 columns);
 #                      known offenders are listed in scripts/longdecls.baseline, anything new fails.  Needs no Agda.
 #   make doccheck      check the docs against the code (scripts/doccheck.py): every module has a header comment,
-#                      docs/Modules.md is current (regenerate with scripts/modindex.py), docs/Interface.md names exist,
+#                      docs/Modules.md is current (regenerate with scripts/modindex.py),
 #                      verbatim excerpts in docs/*.md are still in the sources.  Needs no Agda.
 #   make clean         delete the Agda interfaces (_build/) and the logs, for a from-scratch check.
 #   make profile       typecheck from scratch with `--profile=modules` (one mode per run in Agda 2.7) and write

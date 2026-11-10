@@ -163,7 +163,7 @@ use `lem`.
 ### 3.9 The signed layer, Gaussians and information quantities
 
 These areas (`Continuous/Signed*`, `Continuous/{Entropy, KLDiv, InfoProduct, Log*, XLog}`, `Inference/Gauss*`,
-`Inference/{Frequentist, UniformExperiment}`; see `Interface.md`) all take `lem₁` and add few new uses of it.
+`Inference/{Frequentist, UniformExperiment}`) all take `lem₁` and add few new uses of it.
 Most of the work is algebra over an abstract ω-semiring, which needs nothing. The direct uses are of three kinds.
 
 * **Is a value finite or infinite?** `Continuous/SignedInf` (`≃∞-trans`, `≤∞-trans`) and `SignedSq`
