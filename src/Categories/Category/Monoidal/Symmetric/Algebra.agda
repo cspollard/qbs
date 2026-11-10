@@ -28,9 +28,9 @@ module Categories.Category.Monoidal.Symmetric.Algebra
 open import Level using (_⊔_)
 
 open import Categories.Category.Monoidal.Braided.Properties using (module Shorthands)
-open import Categories.Category.Monoidal.Properties M using (monoidal-Op)
+open import Categories.Category.Monoidal.Opposite M using (Opposite)
 import Categories.Object.Monoid M as Mon
-import Categories.Object.Monoid monoidal-Op as Comon
+import Categories.Object.Monoid Opposite as Comon
 
 open Category C
 open Symmetric S
