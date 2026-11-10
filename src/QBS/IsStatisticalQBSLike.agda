@@ -8,7 +8,6 @@ open import Level using (suc; _⊔_)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Monad.Morphism.Strong using (StrongMonad⇒)
-open import Categories.Monad.Strong using (StrongMonad)
 open import Categories.Monad.Additive using (IsAdditive)
 
 open import QBS.IsQBSLike
@@ -29,4 +28,4 @@ record IsStatisticalQBSLike {o h e} (C : Category o h e) : Set (suc (o ⊔ h ⊔
     probIsNormalized : IsNormalizedInclusion probInclusion
     weights : SemiringWeights cartesianClosed
     additive : IsAdditive (MeasureMonad.monad measures)
-    conditioning : SoftConditioning weights (StrongMonad.strength (MeasureMonad.strongMonad measures)) additive
+    conditioning : SoftConditioning weights additive

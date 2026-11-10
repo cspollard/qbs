@@ -41,10 +41,12 @@ does not give).  An experiment showed `IsAdditive` equivalent to commutative-mon
 
 ## To do
 
-- [ ] A. **Bridge to `Scalars`** (needs the done layer; the key missing link).  `Global SW`: the semiring of global
-  elements `⊤ ⇒ W` (pointwise distributivity from the diagonal-relative one); `w ↦ score ∘ w` as a homomorphism
-  `Global SW → kleisli-semiring ⊤`; state `SoftConditioning` as the comma object plus a strength, and prove the universal laws
-  follow.  Provides: the categorical meaning of `SoftConditioning`, and the connection to `FreeAdditiveMonad`.
+- [ ] A. **Bridge to `Scalars`**.  `SoftConditioning SW AK` is now the single field `score-hom : Global SW →
+  kleisli-semiring ⊤` (a semiring homomorphism, i.e. an object of `const! (Global SW) ↓ Scalars ⊤`); no strength.
+  `score`, `zero`, `scale`, `zero-bind` are derived.  Done.
+  - [x] `Global SW` is `Cartesian.GlobalElements.globalSemiring` (pointwise laws; the comonoid is the diagonal).
+  - [x] `Statistical`, `IsStatisticalQBSLike`, `Instance`, `QBS` check.
+  - [ ] Link to `FreeAdditiveMonad`: a morphism out of the free monad gives the comma object.
 - [ ] B. **Docs** (after A).  Header of `Statistical` (still says "stated at global elements"), Guide §4–5,
   `Interface.md`, `Modules.md` (when the full tree is back).  Optional sanity lemma: `score-mul-global`.
 - [ ] C. **Instances** (independent; blocked, the working tree has 32 modules).  `IsAdditive` as sums of measures, the
