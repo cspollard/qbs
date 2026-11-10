@@ -9,7 +9,7 @@
 -- (as in `Morphism.Strong`, a morphism `S ⇒ T` is a `Monad⇒-id T.M S.M`.)
 open import Categories.Category.Core using (Category)
 
-module Categories.Monad.Morphism.Additive {o h e} {C : Category o h e} where
+module Categories.Monad.Additive.Morphism {o h e} {C : Category o h e} where
 
 open import Level using (_⊔_)
 

@@ -3,7 +3,7 @@
 -- Additive monads: a monad `M` whose Kleisli category `K` is enriched over commutative monoids, so that kernels
 -- `X ⇒ M Y` can be added (for a measure monad, `⊕` is the sum of measures and `𝟘` the zero measure).
 --   `IsAdditive M`  the structure: `𝟘`, `⊕` on every `K [ X , Y ]`, with bilinear composition; derived: `⊕-cong`,
---                   `⊕-distribˡ`, `⊕-distribʳ`, and the semiring `End X` of endomorphisms
+--                   `⊕-distribˡ`, `⊕-distribʳ`, and the semiring `kleisli-semiring X` of endomorphisms
 --   `AdditiveMonad` a monad with `IsAdditive`
 --   `KleisliCM`     the `CM-Category` (agda-categories) of an additive monad, with underlying category `Kleisli M`
 -- The free commutative monoid monad is not constructed: as in `CMonoidEnriched`, the additive structure is axiomatic.
@@ -80,9 +80,14 @@ record IsAdditive (M : Monad C) : Set (o ⊔ h ⊔ e) where
 
   -- The endomorphism semiring of an object `X` of the Kleisli category: `(⊕, 𝟘)` and `(K.∘, K.id)`, distributing by
   -- `⊕-resp-∘` and annihilating by `𝟘-resp-∘`.  At `X = ⊤` these are the scalars of `SoftConditioning`.
-  End : Category.Obj C → Semiring h e
-  End X = record
-    { Carrier = K [ X , X ] ; _≈_ = K._≈_ ; _+_ = _⊕_ ; _*_ = K._∘_ ; 0# = 𝟘 ; 1# = K.id
+  kleisli-semiring : Category.Obj C → Semiring h e
+  kleisli-semiring X = record
+    { Carrier = K [ X , X ]
+    ; _≈_ = K._≈_
+    ; _+_ = _⊕_
+    ; _*_ = K._∘_
+    ; 0# = 𝟘
+    ; 1# = K.id
     ; isSemiring = record
       { isSemiringWithoutAnnihilatingZero = record
         { +-isCommutativeMonoid = isCommutativeMonoid

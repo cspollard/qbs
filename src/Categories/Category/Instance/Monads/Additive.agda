@@ -2,7 +2,7 @@
 
 -- The category of additive monads on a category `C` (`AMnd(C)` of Coumans–Jacobs, Scalars, Monads, and Categories):
 -- monads with additive kernels (`Monad.Additive`) and the monad morphisms that preserve `⊕` and `𝟘`
--- (`Monad.Morphism.Additive`), up to equality of components.  As in `Instance.Monads`, an arrow `S ⇒ T` has a monad
+-- (`Monad.Additive.Morphism`), up to equality of components.  As in `Instance.Monads`, an arrow `S ⇒ T` has a monad
 -- morphism `α : S.F ⇒ T.F` underneath.
 --   `Forget`   the forgetful functor to `Monads C`
 -- Route: the laws are those of `Instance.Monads`, componentwise; identity and composition are `AdditiveMonad⇒-id` and
@@ -11,14 +11,14 @@ open import Level using (_⊔_)
 
 open import Categories.Category.Core using (Category)
 
-module Categories.Category.Instance.AdditiveMonads {o h e} (C : Category o h e) where
+module Categories.Category.Instance.Monads.Additive {o h e} (C : Category o h e) where
 
 open import Relation.Binary.Construct.On using (isEquivalence)
 
 open import Categories.Category.Instance.Monads C using (Monads)
 open import Categories.Functor using (Functor)
 open import Categories.Monad.Additive using (AdditiveMonad)
-open import Categories.Monad.Morphism.Additive
+open import Categories.Monad.Additive.Morphism
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
 
 open Category C
