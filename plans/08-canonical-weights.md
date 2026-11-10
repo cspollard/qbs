@@ -21,9 +21,9 @@ the weights need not be chosen: take `W := S`, and `score` is the identity.
 ## Design consequences
 
 - Drop `Weights`, `SemiringWeights`, `Global`, `WeightsAt`, `score`, `score-hom`, `SoftConditioning`.  The weights are
-  `kleisli-semiring ⊤` (product: Kleisli composition); `Statistical` keeps only `Normalization`, with `scale w m = m ∘ w`.
+  `kleisli-semiring ⊤` (product: Kleisli composition); `Statistical` was removed; normalization is the predicate "mass is `𝟙`" (`QBS.Monad.Normalized`).
   The contextual product `⋆` and its laws (`ScalarAlgebra`, one hole) live in `Categories.Monad.Algebraic.Scalars`.
-- `src/QBS/Statistical.agda` is hole-free.  `IsStatisticalQBSLike`, `Instance`, `QBS` still use the old
+- `src/QBS/Statistical.agda` is gone.  `IsStatisticalQBSLike`, `Instance`, `QBS` still use the old
   interface and do not load.
 
 ## Other algebraic structures

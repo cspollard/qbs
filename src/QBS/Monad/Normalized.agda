@@ -4,7 +4,7 @@
 -- morphism `inc : Prob ⇒ M`, `ι X : Prob X ⇒ M X` is the equalizer, inside `M X`, of the mass `M ! : M X ⇒ M ⊤`
 -- (pushforward to the point) and the constant unit measure `η ⊤ ∘ !`.  So `ι` is monic, and every kernel `Z ⇒ M X` of
 -- total mass one factors uniquely through `Prob X`.  This says what a probability measure is, without any division and
--- without weights; dividing by mass is `Normalization` (`QBS.Statistical`).
+-- without weights.  Dividing by mass is not part of the interface.
 open import Level using (_⊔_)
 
 open import Categories.Category.Core using (Category)
