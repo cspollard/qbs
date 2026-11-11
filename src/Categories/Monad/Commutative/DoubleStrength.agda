@@ -139,7 +139,7 @@ open MR C
   T.μ (A × B) ∘ T.₁ (σ.η (A , B)) ∘ T.₁ ⟨ id , t ∘ ! ⟩ ∘ s ∎
 
 ψ≈ψ′ : ∀ {A B} → ψ A B ≈ ψ′ A B
-ψ≈ψ′ = ⟺ (CommutativeMonad.commutes cm)
+ψ≈ψ′ = sym-assoc ○ ⟺ (CommutativeMonad.commutes cm) ○ assoc
 
 -- the strength in a context `Z`
 
