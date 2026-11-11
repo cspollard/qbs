@@ -1,4 +1,18 @@
 - Denotational validation of higher-order Bayesian inference https://arxiv.org/abs/1711.03219
 - On S-Finite Measures and Kernels https://arxiv.org/abs/1810.01837
-
-
+- A convenient category for higher-order probability theory https://arxiv.org/abs/1701.02547
+- A domain theory for statistical probabilistic programming https://arxiv.org/abs/1811.04196
+- Integrals and valuations https://arxiv.org/abs/0808.1522
+- Formal topology and constructive mathematics: the Gelfand and Stone-Yosida representation theorems https://arxiv.org/abs/0808.2705
+- Measure theory via locales https://arxiv.org/abs/2510.08826
+- Brouwer's Fan Theorem as an axiom and as a contrast to Kleene's Alternative https://arxiv.org/abs/1106.2738
+- Families of sets in constructive measure theory https://arxiv.org/abs/2207.04000
+- Scalars, monads, and categories https://arxiv.org/abs/1003.0585
+- Pre-measure spaces and pre-integration spaces in predicative Bishop-Cheng measure theory https://arxiv.org/abs/2207.08684
+- Probability sheaves and the Giry monad https://doi.org/10.4230/LIPIcs.CALCO.2017.1
+- Infinite sets that satisfy the principle of omniscience in any variety of constructive mathematics https://doi.org/10.2178/jsl.7803040
+- Combining effects: sum and tensor https://doi.org/10.1016/j.tcs.2006.03.013
+- A localic theory of lower and upper integrals https://doi.org/10.1002/malq.200710028
+- Measure, randomness and sublocales https://doi.org/10.1016/j.apal.2011.12.014
+- A monad of valuation locales (no arXiv or DOI found) https://sjvickers.github.io/Riesz.pdf
+- The troublesome probabilistic powerdomain (no arXiv or DOI found) https://achimjungbham.github.io/pub/papers/Jung-Tix-1998-The-troublesome-probabilistic-powerdomain.pdf
