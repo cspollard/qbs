@@ -19,7 +19,7 @@ import Categories.Category.CartesianClosed.Canonical as Canonical
 import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.Monad.CommMonad using (CartCommMonad)
+open import Categories.Monad.Commutative.Cartesian using (CartCommMonad)
 import Categories.Monad.Commutative.DoubleStrength as DoubleStrength
 
 module _ {o h e} {C : Category o h e} (ℛ : Category.Obj C) (CC : Canonical.CartesianClosed C) where

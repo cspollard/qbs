@@ -4,7 +4,7 @@
 -- canonical cartesian closed structure (`QBS.Exponential.cartesianClosed`) the way agda-categories reads them
 -- off any cartesian closed category; the models that build strengths and commutativity proofs over `QBSCat S`
 -- (`Model.Strong`, `Continuous.Strong`, `Continuous.SFiniteCommute`, `Monad.Integral`) share these names instead
--- of each rebuilding them.  (`CommMonad.braidedOf` does the same over an abstract category `C`.)
+-- of each rebuilding them.  (`Categories.Monad.Commutative.Cartesian.braidedOf` does the same over an abstract category `C`.)
 -- Import as `open import QBS.Category.Cartesian S using (V; braided)`.  The INLINE pragmas keep the projections
 -- reducing while the models are type-checked.
 import Categories.Category.Cartesian.Monoidal as CM

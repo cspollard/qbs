@@ -13,7 +13,7 @@
 -- (`plans/08-canonical-weights.md`).
 open import Categories.Category.Core using (Category)
 import Categories.Category.CartesianClosed.Canonical as Canonical
-open import QBS.Monad.CommMonad using (CartCommMonad)
+open import Categories.Monad.Commutative.Cartesian using (CartCommMonad)
 
 module Categories.Monad.Algebraic.Scalars
   {o h e} {C : Category o h e} {CC : Canonical.CartesianClosed C}

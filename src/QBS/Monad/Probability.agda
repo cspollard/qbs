@@ -22,7 +22,7 @@ open import Categories.Monad.Commutative using (CommutativeMonad)
 open import Categories.Monad.Strong using (StrongMonad)
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.Monad.CommMonad using (CartCommMonad)
+open import Categories.Monad.Commutative.Cartesian using (CartCommMonad)
 open import QBS.Monad.Measure using (IsMeasureMonad)
 
 -- `ProbMonad` is a commutative monad together with `IsProbMonad`, its property of being a measure monad that is affine.

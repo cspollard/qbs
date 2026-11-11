@@ -57,9 +57,9 @@ import QBS.Monad.Probability as Probability
 import QBS.Monad.Normalized as Normalized
 import QBS.Monad.Fubini as Fubini
 
--- `CartCommMonad CC` (`CommMonad`): a commutative monad on a cartesian closed category.  `DoubleStrength`: its strength
+-- `CartCommMonad CC` (`Categories.Monad.Commutative.Cartesian`): a commutative monad on a cartesian closed category.  `DoubleStrength`: its strength
 -- calculus (Kock's `ψ`, the strength in a context and at global elements), generic over any such monad.
-import QBS.Monad.CommMonad as CommMonad
+import Categories.Monad.Commutative.Cartesian as CommutativeCartesian
 import Categories.Monad.Commutative.DoubleStrength as DoubleStrength
 import QBS.Monad.Integral as Integral
 

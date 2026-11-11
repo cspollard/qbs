@@ -28,11 +28,16 @@ record IsQBSLike {o h e} (C : Category o h e) : Set (suc (o ⊔ h ⊔ e)) where
 
   field
     measures : MeasureMonad ℛ cartesianClosed
-    fubini   : IsFubini ℛ cartesianClosed (MeasureMonad.commutativeMonad measures)
-    additive : IsAlgebraic CommMonoid (MeasureMonad.monad measures)
+
+  open MeasureMonad measures public
+
+  field
+    additive : IsAlgebraic CommMonoid monad
+    fubini   : IsFubini ℛ cartesianClosed commutativeMonad
 
 record QBSLike o h e : Set (suc (o ⊔ h ⊔ e)) where
   field
     Carrier : Category o h e
     isQBSLike : IsQBSLike Carrier
+
   open IsQBSLike isQBSLike public

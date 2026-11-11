@@ -13,7 +13,7 @@ line per module.
 | Layer | Headline result | Read |
 |---|---|---|
 | Abstract: quasi-Borel spaces over a random source | `QBSCat S` is complete, cocomplete, cartesian closed | `QBS.Core`, `QBS.Category`, `QBS.Exponential` |
-| Abstract: probability and soft conditioning | a commutative strong monad with Fubini (`ProbabilityInterface`), plus scoring and sums (`StatisticalInterface`); Kleisli vocabulary in `QBS.Bind` | `QBS.Probability`, `QBS.Statistical`, `QBS.CommMonad`, `QBS.QBSLike` |
+| Abstract: probability and soft conditioning | a commutative strong monad with Fubini (`ProbabilityInterface`), plus scoring and sums (`StatisticalInterface`); Kleisli vocabulary in `QBS.Bind` | `QBS.Probability`, `QBS.Statistical`, `Categories.Monad.Commutative.Cartesian`, `QBS.QBSLike` |
 | Discrete model | weighted programs over any complete semiring; Bayes' rule and rejection; `discreteStatisticalQBSLike` | `QBS.Model.Discrete`, `QBS.Example.Program`, `QBS.Example.Recipes` |
 | Lower reals | `[0,∞]` as lower cuts of ℚ: Ω, then Arch/Min, then series and instances | `QBS.Analysis.Omega` (header), `QBS.Analysis.LowerReals` |
 | Measure construction | the fair coin on Cantor space as a Daniell functional, with uniqueness and regularity | `QBS.Analysis.CoinIntegral`, `QBS.Analysis.Daniell.Facts`, `QBS.Analysis.Uniqueness`, `QBS.Continuous.FairCoin` |

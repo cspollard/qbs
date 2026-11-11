@@ -9,7 +9,8 @@
 -- Source: Heunen–Kammar–Staton–Yang (arXiv:1701.02547), Def. 10 and §V.D (`P X` is the set of classes `[α, μ]` of a
 -- random element and a measure on R, modulo equal push-forward).
 -- Divergences, deliberate: a measure on ℛ is a global element `⊤ ⇒ T ℛ`, with no separate set of measures; and
--- `generated` lets the measure range over all of `⊤ ⇒ T ℛ`, which is weaker than ranging over a chosen subset.
+-- `generated` lets the measure range over all of `⊤ ⇒ T ℛ`, which is weaker than ranging over a chosen subset, and
+-- is required only for inhabited `X` (so that a zero measure on the empty space is not excluded).
 open import Categories.Category.Core using (Category)
 import Categories.Category.CartesianClosed.Canonical as Canonical
 
@@ -30,7 +31,7 @@ open import Categories.Monad.Commutative using (CommutativeMonad)
 open import Categories.Monad.Strong using (StrongMonad)
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.Monad.CommMonad using (CartCommMonad)
+open import Categories.Monad.Commutative.Cartesian using (CartCommMonad)
 
 -- (`MeasureMonad`, the bundle, follows `IsMeasureMonad`)
 record IsMeasureMonad (cm : CartCommMonad CC) : Set (o ⊔ h ⊔ e) where
@@ -50,8 +51,12 @@ record IsMeasureMonad (cm : CartCommMonad CC) : Set (o ⊔ h ⊔ e) where
   pushforward a μ = T.₁ a ∘ μ
 
   field
-    -- every measure on `X` is the push-forward of a measure on ℛ along a probe (HKSY Def. 10)
-    generated : ∀ {X} (t : K [ ⊤ , X ]) → Σ (ℛ ⇒ X) λ a → Σ ℛ-Measure λ μ → pushforward a μ ≈ t
+    -- every measure on an inhabited `X` is the push-forward of a measure on ℛ along a probe (HKSY Def. 10).  `X` must be
+    -- inhabited (`x : ⊤ ⇒ X`): the zero measure on the initial object `0` would need a probe `ℛ ⇒ 0`, which does not exist
+    -- (in QBS there is no map ℝ → ∅; in general it would force ℛ ≅ 0).  HKSY avoid this as their measures are nonzero.
+    generated
+      : ∀ {X} (x : ⊤ ⇒ X) (t : K [ ⊤ , X ])
+      → Σ (ℛ ⇒ X) λ a → Σ ℛ-Measure λ μ → pushforward a μ ≈ t
 
 -- a measure monad: a commutative monad with the property `IsMeasureMonad` (as `Monoid` and `IsMonoid`)
 record MeasureMonad : Set (o ⊔ h ⊔ e) where

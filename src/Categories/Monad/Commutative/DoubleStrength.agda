@@ -21,7 +21,7 @@ import Categories.NaturalTransformation as NT
 import Categories.Morphism as Morph
 import Categories.Morphism.Reasoning as MR
 
-open import QBS.Monad.CommMonad using (CartCommMonad)
+open import Categories.Monad.Commutative.Cartesian using (CartCommMonad)
 
 module Categories.Monad.Commutative.DoubleStrength
   {o h e} {C : Category o h e} (CC : Canonical.CartesianClosed C) (cm : CartCommMonad CC) where
