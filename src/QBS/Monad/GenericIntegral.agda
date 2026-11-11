@@ -12,7 +12,7 @@
 --     their values on points);
 --   * a monad `T` on `C` is presented by a natural monomorphism `∫ : Pt ∘ T ⇒ D ∘ Testᵒᵖ`, so that `T X` is
 --     determined by its integrals;
---   * the equations of the integral (`∫-η`, `∫-join`, `eval-∫ᶠ`) are equations between morphisms of `𝒮`, using `ι` to
+--   * the equations of the integral (`∫-η`, `∫-join`, `eval-∫ᶠ`) are equations between natural transformations, using `ι` to
 --     turn a point into the evaluation of a test at it.
 -- Not yet here: `ℛ` being a generator (so that morphisms of `C` are determined by their action on points), which
 -- needs `Pt` to be `Hom[ ℛ ,-]`.
@@ -28,9 +28,11 @@ open import Level using (_⊔_; suc)
 
 open import Categories.Category using (_[_,_]; _[_≈_]; _[_∘_])
 open import Categories.Functor using (_∘F_) renaming (id to idF)
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper; _∘ᵥ_; _∘ˡ_)
+open import Categories.Category.Construction.Functors using (Functors)
 open import Categories.Functor.Presheaf using (Presheaf)
 open import Categories.Monad using (Monad)
+open import Categories.Functor.Properties using ([_]-resp-square)
 open import Categories.Morphism using (Mono)
 
 private
@@ -48,16 +50,22 @@ DD = D ∘F Functor.op D
 Dual : ∀ {o″ ℓ″ e″} {B : Category o″ ℓ″ e″} → Functor B 𝒮 → Functor (Category.op B) 𝒮
 Dual F = D ∘F Functor.op F
 
+-- `Dual` on natural transformations (contravariant): `Dual₁ α : Dual G ⇒ Dual F` for `α : F ⇒ G`
+Dual₁ : ∀ {o″ ℓ″ e″} {B : Category o″ ℓ″ e″} {F G : Functor B 𝒮} →
+  NaturalTransformation F G → NaturalTransformation (Dual G) (Dual F)
+Dual₁ α = D ∘ˡ NaturalTransformation.op α
+
+
+-- Tests: a presheaf valued in `𝒮`, read as functions on points by `eval : Test ⇒ Dual Pt`, extensionally: each
+-- component of `eval` is a monomorphism.
+record Tests : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  field
+    Test : Presheaf C 𝒮
+    eval : NaturalTransformation Test (Dual Pt)
+    eval-mono : ∀ {X} → Mono 𝒮 (NaturalTransformation.η eval X)
+
 -- the unit of the double dual
 module _ (ι : NaturalTransformation idF DD) where
-
-  -- Tests: a presheaf valued in `𝒮`, read as functions on points by `eval : Test ⇒ Dual Pt`, extensionally: each
-  -- component of `eval` is a monomorphism.
-  record Tests : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
-    field
-      Test : Presheaf C 𝒮
-      eval : NaturalTransformation Test (Dual Pt)
-      eval-mono : ∀ {X} → Mono 𝒮 (NaturalTransformation.η eval X)
 
   -- A monad `T` presented by its integral: a natural monomorphism `∫ : Pt ∘ T ⇒ Dual Test`, `∫ X : Pt (T X) ⇒ [ Test X , V ]`.
   --   * naturality of `∫` is the push-forward equation `∫ (T f μ) g = ∫ μ (g ∘ f)`;
@@ -77,18 +85,37 @@ module _ (ι : NaturalTransformation idF DD) where
       module eval = NaturalTransformation eval
       module Test = Functor Test
 
+    private
+      module η = NaturalTransformation T.η
+      module μ = NaturalTransformation T.μ
     field
       ∫ : NaturalTransformation (Pt ∘F T.F) (Dual Test)
-
     private module ∫ = NaturalTransformation ∫
+
+    -- the following natural transformations are the whiskerings of `ι`, `eval`, `∫`, `η`, `μ` that the equations
+    -- below use, given directly (their components are those of the whiskering) so that the sources and targets are the
+    -- functors the equations need, rather than ones equal to them only up to the proofs inside a functor.
+    -- `ι` at a presheaf `P` or a functor `F`: `ιᶠ F : F ⇒ Dual (Dual F)`
+    ιᶠ : ∀ {o″ ℓ″ e″} {B : Category o″ ℓ″ e″} (F : Functor B 𝒮) → NaturalTransformation F (Dual (Dual F))
+    ιᶠ F = ntHelper record { η = λ X → ι.η (Functor.F₀ F X) ; commute = λ f → ι.commute (Functor.F₁ F f) }
+    -- `eval` at `T`: `Test ∘ Tᵒᵖ ⇒ Dual (Pt ∘ T)`
+    evalT : NaturalTransformation (Test ∘F Functor.op T.F) (Dual (Pt ∘F T.F))
+    evalT = ntHelper record { η = λ X → eval.η (TF.F₀ X) ; commute = λ f → eval.commute (TF.F₁ f) }
+    -- `η` and `μ` at `Pt`: `Pt ⇒ Pt ∘ T` and `Pt ∘ T ∘ T ⇒ Pt ∘ T`
+    ηPt : NaturalTransformation Pt (Pt ∘F T.F)
+    ηPt = ntHelper record { η = λ X → Pt.F₁ (η.η X) ; commute = λ f → [ Pt ]-resp-square (η.commute f) }
+    μPt : NaturalTransformation (Pt ∘F (T.F ∘F T.F)) (Pt ∘F T.F)
+    μPt = ntHelper record { η = λ X → Pt.F₁ (μ.η X) ; commute = λ f → [ Pt ]-resp-square (μ.commute f) }
+    -- `∫` at `T`: `Pt ∘ T ∘ T ⇒ Dual (Test ∘ Tᵒᵖ)`
+    ∫T : NaturalTransformation (Pt ∘F (T.F ∘F T.F)) (Dual (Test ∘F Functor.op T.F))
+    ∫T = ntHelper record { η = λ X → ∫.η (TF.F₀ X) ; commute = λ f → ∫.commute (TF.F₁ f) }
 
     field
       ∫-mono : ∀ {X} → Mono 𝒮 (∫.η X)
-      ∫ᶠ : ∀ X → 𝒮 [ Test.F₀ X , Test.F₀ (TF.F₀ X) ]
-      -- `eval (∫ᶠ f) μ = ∫ μ f`: both sides are maps `Test X ⇒ [ Pt (T X) , V ]`
-      eval-∫ᶠ : ∀ X → 𝒮 [ 𝒮 [ eval.η (TF.F₀ X) ∘ ∫ᶠ X ] ≈ 𝒮 [ D.F₁ (∫.η X) ∘ ι.η (Test.F₀ X) ] ]
-      -- `∫ (η x) f = f x`: both sides are maps `Pt X ⇒ [ Test X , V ]`
-      ∫-η : ∀ X → 𝒮 [ 𝒮 [ ∫.η X ∘ Pt.F₁ (NaturalTransformation.η T.η X) ] ≈ 𝒮 [ D.F₁ (eval.η X) ∘ ι.η (Pt.F₀ X) ] ]
-      -- `∫ (join p) f = ∫ p (∫ᶠ f)`: both sides are maps `Pt (T (T X)) ⇒ [ Test X , V ]`
-      ∫-join : ∀ X → 𝒮 [ 𝒮 [ ∫.η X ∘ Pt.F₁ (NaturalTransformation.η T.μ X) ]
-                          ≈ 𝒮 [ D.F₁ (∫ᶠ X) ∘ ∫.η (TF.F₀ X) ] ]
+      ∫ᶠ : NaturalTransformation Test (Test ∘F Functor.op T.F)
+      -- `eval (∫ᶠ f) μ = ∫ μ f`: both sides are maps `Test ⇒ Dual (Pt ∘ T)` of presheaves
+      eval-∫ᶠ : Functors C.op 𝒮 [ evalT ∘ᵥ ∫ᶠ ≈ Dual₁ ∫ ∘ᵥ ιᶠ Test ]
+      -- `∫ (η x) f = f x`: both sides are maps `Pt ⇒ Dual Test` of functors
+      ∫-η : Functors C 𝒮 [ ∫ ∘ᵥ ηPt ≈ Dual₁ eval ∘ᵥ ιᶠ Pt ]
+      -- `∫ (join p) f = ∫ p (∫ᶠ f)`: both sides are maps `Pt ∘ T ∘ T ⇒ Dual Test`
+      ∫-join : Functors C 𝒮 [ ∫ ∘ᵥ μPt ≈ Dual₁ ∫ᶠ ∘ᵥ ∫T ]
